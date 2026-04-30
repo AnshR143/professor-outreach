@@ -23,10 +23,14 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
   const [search, setSearch] = useState("")
   const [dragging, setDragging] = useState<string | null>(null)
 
-  const emailsSent = emails.filter(e => ["sent","opened","replied"].includes(e.status)).length
-  const accepted = researchers.filter(r => r.status === "accepted").length
-  const pending = researchers.filter(r => r.status === "awaiting").length
+  // Email status cycling stats — driven by researchers.email_status (the clickable badge)
+  const emailsSent = researchers.filter(r => ["emailed", "accepted", "rejected"].includes(r.email_status || "")).length
+  const accepted = researchers.filter(r => r.email_status === "accepted").length
+  const rejectedEmail = researchers.filter(r => r.email_status === "rejected").length
+  const pending = researchers.filter(r => r.email_status === "emailed").length
+  const notEmailed = researchers.filter(r => !r.email_status || r.email_status === "not_emailed").length
 
+  // Kanban columns use researchers.status (drag-and-drop organize tab)
   const awaiting = researchers.filter(r => r.status === "awaiting")
   const rejected = researchers.filter(r => r.status === "rejected")
   const acceptedList = researchers.filter(r => r.status === "accepted")
@@ -161,10 +165,10 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
           <div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 }}>
               {[
-                { label: "Researchers Found", value: researchers.length, sub: "Total matches", pct: "100%", color: "#3b82f6" },
-                { label: "Emails Sent", value: emailsSent, sub: "Total outreach", pct: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}%`, color: "#22c55e" },
-                { label: "Accepted", value: accepted, sub: "Positive responses", pct: `${researchers.length ? Math.round(accepted/researchers.length*100) : 0}%`, color: "#22c55e" },
-                { label: "Pending", value: pending, sub: "Awaiting response", pct: `${researchers.length ? Math.round(pending/researchers.length*100) : 0}%`, color: "#f59e0b" },
+                { label: "Researchers Found", value: researchers.length, sub: "Total in your list", pct: "100%", color: "#3b82f6" },
+                { label: "Emails Sent", value: emailsSent, sub: `${notEmailed} not yet emailed`, pct: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}% outreach rate`, color: "#f97316" },
+                { label: "Accepted", value: accepted, sub: "Replied positively", pct: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}% reply rate`, color: "#22c55e" },
+                { label: "Rejected", value: rejectedEmail, sub: `${pending} awaiting reply`, pct: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}% rejected`, color: "#ef4444" },
               ].map((k, i) => (
                 <div key={i} style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
@@ -225,28 +229,30 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
             <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>
               Visualizes your outreach funnel: Researchers Found → Emailed → Awaiting → Accepted
             </p>
-            {/* Simple flow diagram */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
+            {/* Funnel flow diagram */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 32 }}>
               {[
-                { label: "Found", value: researchers.length, color: "#3b82f6" },
-                { label: "Emailed", value: emailsSent, color: "#f97316" },
-                { label: "Awaiting", value: pending, color: "#f59e0b" },
-                { label: "Accepted", value: accepted, color: "#22c55e" },
-              ].map((node, i) => (
+                { label: "Found", value: researchers.length, color: "#3b82f6", sub: "total" },
+                { label: "Emailed", value: emailsSent, color: "#f97316", sub: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}%` },
+                { label: "Awaiting", value: pending, color: "#f59e0b", sub: `${emailsSent ? Math.round(pending/emailsSent*100) : 0}%` },
+                { label: "Accepted", value: accepted, color: "#22c55e", sub: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}%` },
+                { label: "Rejected", value: rejectedEmail, color: "#ef4444", sub: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}%` },
+              ].map((node, i, arr) => (
                 <div key={node.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div style={{ textAlign: "center" }}>
-                    <div style={{ width: 80, height: 60, borderRadius: 8, background: node.color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-                      <div style={{ fontSize: 22, fontWeight: 700 }}>{node.value}</div>
+                    <div style={{ width: 90, height: 70, borderRadius: 10, background: node.color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+                      <div style={{ fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{node.value}</div>
+                      <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>{node.sub}</div>
                     </div>
-                    <div style={{ fontSize: 12, color: "#64748b", marginTop: 6, fontWeight: 500 }}>{node.label}</div>
+                    <div style={{ fontSize: 12, color: "#64748b", marginTop: 6, fontWeight: 600 }}>{node.label}</div>
                   </div>
-                  {i < 3 && <div style={{ color: "#cbd5e1", fontSize: 20 }}>→</div>}
+                  {i < arr.length - 1 && <div style={{ color: "#cbd5e1", fontSize: 20, marginBottom: 18 }}>→</div>}
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 24, fontSize: 13, color: "#94a3b8" }}>
-              Conversion: {researchers.length > 0 ? Math.round(emailsSent / researchers.length * 100) : 0}% emailed,{" "}
-              {emailsSent > 0 ? Math.round(accepted / emailsSent * 100) : 0}% accepted
+            <div style={{ fontSize: 13, color: "#94a3b8" }}>
+              {notEmailed} researchers haven&apos;t been emailed yet •{" "}
+              Overall acceptance rate: {emailsSent > 0 ? Math.round(accepted / emailsSent * 100) : 0}%
             </div>
           </div>
         )}

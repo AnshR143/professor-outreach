@@ -19,9 +19,9 @@ export default function DashboardClient({ profile, researchers, activities, emai
   const [aiSummary, setAiSummary] = useState("")
   const [loadingSummary, setLoadingSummary] = useState(false)
 
-  const emailsSent = emails.filter(e => ["sent", "opened", "replied"].includes(e.status)).length
-  const accepted = researchers.filter(r => r.status === "accepted").length
-  const awaiting = researchers.filter(r => r.status === "awaiting").length
+  const emailsSent = researchers.filter(r => ["emailed", "accepted", "rejected"].includes(r.email_status || "")).length
+  const accepted = researchers.filter(r => r.email_status === "accepted").length
+  const awaiting = researchers.filter(r => r.email_status === "emailed").length
   const topFields = [...new Set(researchers.flatMap(r => r.research_areas))].slice(0, 3)
   const topUnis = [...new Set(researchers.map(r => r.university))].slice(0, 2)
 
