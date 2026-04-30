@@ -90,8 +90,9 @@ export async function POST(req: Request) {
   const supabase = await createServiceClient()
   const { fields, universities, keyword, count } = await req.json()
 
-  const { data: profile } = await supabase
+  const { data: profileRaw } = await supabase
     .from("profiles").select("*").eq("user_id", user.id).single()
+  const profile = profileRaw as { resume_text?: string } | null
 
   // Extract resume keywords for matching
   const resumeKeywords = profile?.resume_text

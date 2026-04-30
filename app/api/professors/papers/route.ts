@@ -56,11 +56,12 @@ export async function POST(req: Request) {
 
   if (!researcher) return NextResponse.json({ error: "Researcher not found" }, { status: 404 })
 
-  const { data: profile } = await supabase
+  const { data: profileRaw } = await supabase
     .from("profiles")
     .select("groq_api_key")
     .eq("user_id", user.id)
     .single()
+  const profile = profileRaw as { groq_api_key?: string } | null
 
   // 1. Try to resolve Semantic Scholar ID if we don't have one
   let semanticId = researcher.semantic_scholar_id

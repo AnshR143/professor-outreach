@@ -7,11 +7,12 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ summary: "" })
 
-  const { data: profile } = await supabase
+  const { data: profileRaw } = await supabase
     .from("profiles")
     .select("groq_api_key, gemini_api_key, name")
     .eq("user_id", user.id)
     .single()
+  const profile = profileRaw as { groq_api_key?: string; gemini_api_key?: string; name?: string } | null
 
   const body = await req.json()
   const groqKey = profile?.groq_api_key || process.env.GROQ_API_KEY

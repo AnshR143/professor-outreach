@@ -10,7 +10,8 @@ export async function POST(req: Request) {
 
   const { researcherId, originalBody, daysSince } = await req.json()
   const { data: researcher } = await supabase.from("researchers").select("name").eq("id", researcherId).single()
-  const { data: profile } = await supabase.from("profiles").select("groq_api_key, gemini_api_key").eq("user_id", user.id).single()
+  const { data: profileRaw } = await supabase.from("profiles").select("groq_api_key, gemini_api_key").eq("user_id", user.id).single()
+  const profile = profileRaw as { groq_api_key?: string; gemini_api_key?: string } | null
 
   const groqKey = profile?.groq_api_key || process.env.GROQ_API_KEY
   const geminiKey = profile?.gemini_api_key || process.env.GEMINI_API_KEY

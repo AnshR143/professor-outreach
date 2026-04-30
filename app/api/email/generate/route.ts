@@ -15,11 +15,12 @@ export async function POST(req: Request) {
     .eq("id", researcherId)
     .single()
 
-  const { data: profile } = await supabase
+  const { data: profileRaw } = await supabase
     .from("profiles")
     .select("*")
     .eq("user_id", user.id)
     .single()
+  const profile = profileRaw as { groq_api_key?: string; gemini_api_key?: string; name?: string; academic_level?: string; resume_text?: string; interests?: string[] } | null
 
   if (!researcher) return NextResponse.json({ error: "Researcher not found" }, { status: 404 })
 
