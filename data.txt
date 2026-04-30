@@ -1,0 +1,437 @@
+University of PittsburghLiang ZhanComputational neuroimaging, AI, imaging genetics, LLM__https://sites.pitt.edu/~liz119/__
+Arizona State UniversityYixuan HeGraph neural networks, machine learning, graph+LLM/VLM, AI for science__https://sherylhyx.github.io__
+Chinese University of Hong KongDiwen XueSecurity, Network, Measurement__https://diwenx.com__
+Chinese University of Hong Kong, ShenzhenYunming XiaoNetworks, systems, security__https://yunmingxiao.github.io/__
+Chinese University of Hong Kong, ShenzhenWenjing MaAI4Omics__https://marvinquiet.github.io/__
+Chinese University of Hong Kong, ShenzhenMengnan DuTrustworthy LLMs, LLM reasoning, LLM applications__https://mengnandu.com/__
+City University of Hong KongXiangyu ZhaoLLMs, Agents, Recommender System, IR, Trustworthy AI, Smart City, AI+Healthcare__https://zhaoxyai.github.io/__
+Claude Bernard University Lyon 1, FranceChao ZhangData Systems and AI, Query Processing, Indexing Methods, Data Agents__https://____chaozhang-cs.github.io/__
+Clemson UniversityLan ZhangCyber-Pysical Systems, Collaborative AI, Wireless Intelligence, Trustworthy AI__https://sites.google.com/view/lan-zhang/home__
+Clemson UniversityXiaoyong YuanTrustworthy AI, Efficient AI, AI for drug discovery__https://sites.google.com/view/xiaoyong-yuan/__
+Clemson UniversityFeng YeStatistical Deep Learning, Spatio-temporal Modeling, Physics-guided GenAI, Forecast-informed Decision Making__https://feye2024.github.io/__
+College of William MaryAshley GaoAudio-LLMs, Affective Computing , NLP__https://lindagaw.github.io/__
+Florida State UniversityYifang WangHuman-AI Collaboration, LLMs, AI Agents, Data Visualization, HCI, Generative AI, AI Scientist, AI for Science, AI for Decision-making, Healthcare, Science Policy-making__https://wangyifang.top/__
+Florida State UniversityGuang WangSpatiotemporal Data Mining, LLMs, Generative AI__https://guangwang.me/__
+HKUST(GZ)Jintai ChenGenerative AI, LLM Agent, Multimodality, Large Tabular Model, AI for Health__https://whatashot.github.io/__
+HKUST(GZ)Yan LONGSecurity, AI Security, AI For Security __https://yanlong.site/__
+HKUST(GZ)Zhijiang GuoLLM, Agent, Multimodality__https://cartus.github.io/__
+Hong Kong Baptist University__Yifan Chen__Data Science (graphs, time series, multimodal data), Machine Learning (for LLM and for Science)__https://ychen-stat-ml.github.io/__
+Hong Kong University of Science and TechnologyYi R. (May) FungLanguage, Vision, Multimodality__https://mayrfung.github.io/__
+Johns Hopkins UniversityChaowei XiaoLLM, Agent, Emboided Agent__https://xiaocw11.github.io/__
+Michigan Technological UniversityBo ZhangHPC, LLM for Scientific Computing, Digital twinsNational University of SingaporeDianbo LiuAI scientist, creativity of LLM__www.ASintelligence__.xyzOregon State UniversityWenqian DongHigh-Performance Computing; System for AI/ML; Parallelism & Distributed Systems for LLM Inference; Multi-Agent Framework Optimization__https://wdong5.github.io/__
+Rochester Institute of TechnologyYinxi LiuProgram Analysis (Neural-Guided Verification, application in blockchain & CPS & infra)__https://yinxi.site/__
+Singapore University of Technology and Design Na Zhao3D Computer Vision, 3D Generation/Editing, Embodied AI__https://na-z.github.io__
+Singapore University of Technology and DesignYihan DuMachine Learning Theory, Reinforcement Learning, The Application of RL in LLMs (e.g., RLHF and Reasoning), Diffusion Models for RL, Online Learning__https://yihandu.github.io/__
+South Dakota State UniXiangrui XuEfficient & Secure ML (SMPC, HE, OT, GC, ZKP) GPU-based Private Inference__https://sites.google.com/view/xiangrui/xiangruis-page__
+Temple UniversityMindy ShiAI in Health, Trustworthy ML__https://cis.temple.edu/~mindyshi/__
+Temple UniversityYu WangML/AI for networking and distributed system, Optimization/algorithm for networking and computing, Quantum networking and computing, AI for science __https://cis.temple.edu/~yu/__
+Texas A&M UniversityZhengzhong TuMLLM Agent, Video Generation__https://____taco-group.github.io/__
+Texas A&M UniversityYiwei LyuRobotics, robot learning, world modeling, safe decision-making and control, multi-robot system, human robot interaction__https://____yiweilyu-tamu.github.io/homepage/__
+Texas Christian University Shuteng NiuGraph Representation Learning, Agentic AI, Biomedical Informatics__https://sites.google.com/view/homepagesniu/home-research__
+The Ohio State UniversityPing ZhangMultimodal LLMs, MLLM Agent, Agentic Vision, Medical Image Analysis__https://www.pingzhang.net/__
+UMass AmherstMengfan XuBandits, Multi-agent Learning__https://mengfanxu1997.github.io/__
+University of ArizonaBo LiuRL, Multi-agent, VLM, healthcare, trustworthy AI, Agentic AI__https://ergodicmarkovian.github.io/main/__
+University of ArizonaJohn ChenHuman-AI Interaction, Generative AI in Games, AI and Human Learning__https://____civitas-john.github.io/__
+University of ArizonaJialu LiSpeech LLM, Speech and Audio Processing, Children's speech analysis__https://sites.google.com/view/jialuli__
+University of ArkansasDongyi WangRobotic Manipulation, hyperspectral imaging__https://____dw-bioag.github.io/safelab__
+University of California, MercedYiwei WangNLP, LLM__https://wangywust.github.io/__
+University of Central Florida__Yuzhang Shang__Efficient AI, Model Compression, Efficient Large-scale (language and visual) models__https://____42shawn.github.io/__
+University of ConnecticutYuyang WangIntegrated photonics, heterogeneous integration, advanced packaging__https://wangyy.phd__
+University of ConnecticutDongjin Song(Multimodal) Time Series Analysis/(Multimodal) LLMs & Foundation Models; AI for Healthcare; Agentic AI__https://songdj.github.io/__
+University of North FloridaYongzhao WangAI, Multiagent Systems, Game Theory, LLMs__https://sites.google.com/umich.edu/yongzhao-wang/__
+University of South Florida__Xiaomin Lin__Underwater Robotics, Multi-modal perception, Edge VLM, LLM__https://xiaominlin.github.io/__
+University of Tennessee, KnoxvilleSuyaGenerative AI, Security, Privacy, System Security__https://fsuya.org__
+University of Texas at ArlingtonDianqi HanAI security__https://hendersen.github.io/__
+University of Wisconsin-MadisonYang LuAI4Science, Computational Biology__https://____batmen-lab.github.io/__
+Universty of Tennessee, KnoxvilleDongsheng DingReinforcement Leanring and Stochastic Systems, Generative Artificial Intelligence, Optimization and Control, AI Safety and Alignment__https://dongshed.github.io__
+University College Dublin, IrelandWanling CaiHuman-AI Interaction, HCI for Health and Wellbeing, Digital Mental Health__https://wanlingcai.github.io/__
+Washington State UniversityXuanyu CaoDistributed learning/optimization, federated learning, bilevel optimization, wireless networks__https://labs.wsu.edu/xuanyu/__
+University of Louisiana at LafayetteHao ZhengComputer Vision, Machine Learning, Multi-modal Analysis, Healthcare, NLP/LLM__https://hzaoheng123.github.io/HZ/__
+City University of Hong KongKaidi XuAgent, AI4Science, LLM reasoning__https://kaidixu.com/__
+University of Hong KongJian QianMachine Learning Theory, Reinforcement Learning, Online Learning__https://jianqian80.github.io/my-homepage/__
+University of Hong KongCheng ChenAI for Healthcare, Multimodal Medical AI, LLM/Agentic AI__https://____cchen-cc.github.io/__
+Columbia UniversityZhuo ZhangSoftware and System Security, Program Analysis__https://zzhang.xyz/__
+Temple UniversityHongchang GaoDistributed Optimization, Efficient Optimization for LLM, Foundation Models__https://hcgao.github.io/index.html__
+Virginia TechXuan WangSmall, Open-Source, and Multimodal Language Model Agents for Science and Society, with applications in robotics, biomedicine, and social studies__https://xuanwang91.github.io/__
+Binghamton UniveristyYiming ZengQuantum networking and computing__https://sites.google.com/view/yiming-zeng/home__
+Auburn UniversityJiaqi WangMulti-agent, responsible AI/LLMs, AI for Healthcare__https://jackqqwang.github.io/__
+University of MississippiHawk Bo WangComputer Vision, Human-Object Interaction (HOI), Human Pose and Motion Analysis, Robustness and Generalization, Multimodal Foundation Models (e.g., VLMs)__https://hawkrsrch.github.io/__
+Wayne State University Lihui LiuLLM reasoning, LLM/Agentic AI, AI for Healthcare, Graph Neural Network__https://lihuiliullh.github.io/__
+Washington State UniversityHonghao WeiReinforcement Learning, Optimization, RLHF__https://honghaow.me/__
+Rowan UniversityGuimu GuoGPU-accelerated Algorithms, Graph Neural Networks, Parallel Graph Mining__https://guimuguo.github.io/__
+Virginia TechDawei ZhouLLM Evaluation and Diagnosis, AI for Math, Physical Simulation__https://sites.google.com/view/dawei-zhou/home__
+University of GeorgiaFei DouMachine learning, Intelligent Sensing, Ubiquitous Computing, Human-Centered AI, AI for Health, AI for Time Series, Federated Learning__https://fayedou.github.io/__
+University of GeorgiaZion BasqueSoftware Security, AI for Cybersecurity, Reverse Engineering, Human Factors in Security__https://zionbasque.com__
+University of Queensland (Australia)Yadan Luo3D Vision, Autonomous Driving, VLA, World Model, Test-time Adaptation__https://luoyadan.github.io/__
+Chinese University of Hong Kong, ShenzhenSidong FengAI/LLM for Software Engineering, AI/LLM for HCI, Graphical User Interface__https://sidongfeng.github.io/__
+University of Waterloo (Canada)Jialu ZhangLLM for Code, LLM Agent, AI for Education, Automated Debugging__https://jialuzhang.netlify.app__
+University of Colorado DenverXiaojian WangSatellite networks, edge computing, network security, quantum networking__https://____xiaojian-wang.github.io/__
+The University of Hong KongXihui LiuComputer vision, generative AI, multimodal AI, embodied AI__https://____xh-liu.github.io/__
+University of OklahomaChongle PanAI for Health, Medical Imaging, Human-Centered AI, LLM/Agentic AI, Bioinformatics__https://www.thepanlab.com__
+Texas A&M UniversityKuan-Hao HuangTrustworthy NLP, LLMs, VLMs__https://khhuang.me/__
+Arizona State UniversityJianping ZengCompiler, Computer Architecture, and Computer Security__https://jianpingzeng.github.io__
+Universiti MalayaChee Seng ChanFederated Unlearning; Text Detection and Recognition__http://____cs-chan.com/__
+Northeastern University (Boston USA)Ryan Qi WangLLM Reasoning, LLM/Agentic AI, AI for Urban Science__https://sites.google.com/view/uirlab__
+Washington State UniversityLeon LiHardware security, EDA, Testing, Hardware Reliability__https://cseweb.ucsd.edu/~xul065/__
+Iowa State UniversityGuanzhou WeiPDE-based Statistical Learning, Scientific Machine Learning__https://sites.google.com/view/gz-wei/home__
+University of California, RiversideZhouxing ShiLLM post-training and reasoning, AI x formal methods, trustworthy AI__https://shizhouxing.github.io/__
+Concordia University (Canada)Zhijie WangSoftware engineering, software engineering for AI, AI for software engineering__https://wangzhijie.me__
+Auburn University (AL, USA)Akond RahmanSecurity for Model Context Protocol, Secure MLOps__https://akondrahman.github.io/__
+Tampere UniversityAlexandros IosifidisDeep Learning for Machine and Robot Perception__https://sites.google.com/view/iosifidis__
+University of ArizonaYulin YuHuman-AI Intereaction, Computational Social Science, Data Science, AI4Science__https://____yulin-yu.github.io/__
+Kennesaw State UniversityHuayue Guquantum networking and communication, distributed quantum computing, satellite networks, AI for quantum__https://gghhhyy.github.io/__
+Hong Kong Baptist UniversityLin TianSpatial Intelligence for Healthcare, 3D Vision, Inverse Problem, PINN, Simulation (Physics+Data)__https://lintian-a.github.io/__
+Arizona State UniversityHua WeiReinforcement Learning, LLM Reasoning, Urban Data Mining26 Fall__https://labs.engineering.asu.edu/hw/__
+Arizona State UniversityXiyang HuLLM, Agents, Reasoning, RL, Trustworthy, Social NLP26 Fall__https://xiyanghu.github.io/__
+Arizona State UniversityChenkai WengCryptography, computer security and privacy2025 Fall__https://ckweng.github.io/__
+Arizona State University__Wanxin Jin__Robotics, robot learning, manipulation, human-robot interaction, control 25 Spring/Fall__https://____asu-iris.github.io/__
+Arizona State University__Qiaoning Zhang__Human-AI Collaboration, Human-Robot Interaction, and User Experience (UX) Design.2025 Fall__https://____qiaoning-zhang.github.io/__
+Arizona State UniversityJiaqi Gu(1) Efficient AI, AI system, model compression; (2) Electronic design automation (EDA), ML for EDA; (3) Photonic computing and interconnect system; Hardware/algorithm Co-Design; AI for Physics;2026 Spring/Fall__https://____scopex-asu.github.io/__
+Arizona State UniversityZhichao CaoData System with AI/ML optimizations and System for LLMs (offloading, caching, dedup)2026 Fall__https://search.asu.edu/profile/4082902__
+Arizona State UniversityYixuan HeML, Graph Neural Networks26 Fall__https://sherylhyx.github.io/__
+Arizona State UniversityJeff ZhangComputer Architecture; AI Hardware and Systems; ML for System; EDA26 Spring, 26 Fall__https://search.asu.edu/profile/4346755__
+Arizona State UniversityJia ZouDatabase Systems for AI/ML (including LLM inferences) and Privacy25 Fall, 26 Spring, 26 Fall__https://sites.google.com/view/jiazou-web/home__
+Auburn UniversityJiaqi WangAI for healthcare, LLMs, Multimodal Learning, Multi-agent Systems26 Spring/ Fall__https://jackqqwang.github.io/__
+Auburn UniversityPan HeComputer Vision, Deep Learning2025 Spring / Fall__https://panhe.org/__
+Auburn UniversitySanchuan ChenSoftware security, Machine Learning Security, Hardware Security, Cryptanalysis2026 Spring/Fall__https://schuan.github.io/__
+Auburn UniversityShuai HuangAI for healthcare, computer vision, GNN, biomedical imaging, MRI2026 Spring/Fall__https://____shuai-huang.github.io/__
+Augusta UniversityYuyan BaoFormal Verification, Programming Languages, Software Security2025 Fall/2026 Spring__https://yuyanbao.github.io/__
+Baylor UniversityMengfei RenSoftware/System Testing & Security, IoT Wireless Protocols, AI4SE2026 Fall__https://____mengfei-ren.github.io/__
+Binghamton UniversityKai-Cheng YangAI for social impact, computational social science2026 Fall__https://www.kaichengyang.me/__
+Boise State UniversityJun ZhuangTrustworthy AI (robustness), Medical Imaging, Quantum ML2026 Fall__http://junzhuang.xyz/__
+Boise State UniversityYu ZhangComputer Vision, Robotics, Edge AI, Remote Sensing2026 Fall__https://yuzhang03.github.io/__
+Boise State UniversityJianshu LiuDistributed System, Cloud Computing, MLSys2025 Spring/Fall__https://jianshuliu1721.github.io/__
+Boston CollegeYuan YuanMultimodal AI, Generative AI, AI for health/science2026 Fall__https://yyuanad.github.io/__
+Boston UniversityChang XiaoHCI, Human-AI Interaction, XR26 Fall__https://chang.engineer/__
+Boston UniversityXuezhou ZhangReinforcement Learning25 Fall / 26 Fall__https://zhangxz1123.github.io/__
+Carleton University, CanadaSriram SubramanianReinforcement Learning, Multi-agent Systems, Game Theory, Generative AI, AI Safety26 Fall Case Western Reserve UniversityJing MaTrustworthy AI (causality, explanation, robustness), Causal ML, Graph learning, LLM, AI+X2025 Sping / Fall__https://jma712.github.io/__
+ Chapman UniversitySherry WangEthical Healthcare AI__https://www.chapman.edu/pharmacy/research/Women-in-AI.aspx__
+Chinese University of Hong KongDiwen XueSecurity, Privacy, Network, Internet Measurement2026 Fall__https://diwenx.com/__
+Chinese University of Hong Kong, ShenzhenZhongxiang Dai2025 Spring/Fall__https://daizhongxiang.github.io__
+Chinese University of Hong Kong, ShenzhenYunming XiaoComputer systems, networks, and security2026 Fall__https://yunmingxiao.github.io/__
+Chinese University of Hong Kong, ShenzhenMengnan DuTrustworthy LLMs, LLM reasoning, LLM applications2026 Fall__https://mengnandu.com/__
+Chinese University of Hong Kong, ShenzhenSidong FengAI/LLM for Software Engineering, AI/LLM for HCI, Graphical User InterfaceFall 26 or Spring 27__https://sidongfeng.github.io/__
+City University of Hong KongXiangyu ZhaoLLMs, Recommender System, IR, Trustworthy AI, Smart City, AI+Healthcare26 Fall__https://zhaoxyai.github.io/__
+Claude Bernard University Lyon 1, FranceChao ZhangData Systems and AI, Query Processing, Indexing Methods, Data Agents26 Fall, 27 Spring__https://____chaozhang-cs.github.io/__
+Clemson University__Siyu Huang__Computer Vision, 2D and 3D Generation25 Fall__https://siyuhuang.github.io/__
+Clemson UniversityYongkai WuResponsible and Trustworthy AI, Causal Inference, AI for Science26 Fall/Spring__https://www.yongkaiwu.com/__
+Clemson UniversityFeng YeStatistical Deep Learning, Physics-informed Data Science, Spatio-temporal Modeling, Forecast-informed Decision Making25 Fall, 26 Spring /Fall__https://feye2024.github.io/__
+Clemson UniversityNianyi LiMultimodal machine learning, Robotics, 3D Reconstruction25/26 Fall/Spring__https://nianyil.people.clemson.edu__
+Clemson UniversityGe Lv Wearable Robots, Assistive Robots, Exoskeletons and Prostheses, Gait Analysis, Biomechancis 26 Spring/Fall __https://assistiveroboticslaboratory.github.io__
+Clemson UniversityLuyang ZhaoRobotics, robot design, perception, learning2026 Spring/Fall__https://luyangzhao.github.io/__
+Clemson UniversityKunpeng LiuReinforcement Learning, LLM Reasoning, LLM Fine-tuning26 Spring, 26 Fall__https://kunpengliu.com/__
+Clemson UniversityLan ZhangCyber-Pysical Systems, Collaborative AI, Wireless Intelligence, Trustworthy AI26 Fall, 27 Spring__https://sites.google.com/view/lan-zhang/home__
+Clemson UniversityXiaoyong YuanTrustworthy AI, Efficient AI, AI for drug discovery26 Fall, 27 Spring__https://sites.google.com/view/xiaoyong-yuan/__
+College of William & MaryHuajie ShaoPhysics-informed ML, Reinforcement Learning, and Generative AI 2026 Fall__https://huajieshao.github.io/__
+Columbia UniversityXuhai “Orson” XuHCI for Health, AI/ML for Health, Human-AI Interaction2026 Fall__https://orsonxu.com/__
+Cornell UniversityLirong XiangAI, Computer vision, Robotics in Agriculture2026 Fall__https://____lr-xiang.github.io/lxweb/__
+Dartmouth CollegeNianqiao Phyllis Ju Statistical learning, data privacy, computational statistics, Monte Carlo methods2026 Fall, Postdoc and Applied Math PhD__nianqiaoju.github.io__
+Dartmouth CollegeYaoqing YangTheory of Large Language ModelsPhD (26 fall), Postdoc (anytime)__https://sites.google.com/site/yangyaoqingcmu/__
+Drexel UniversityKaidi XuTrustworthy AI2025 spring /fall__https://kaidixu.com/__
+Drexel University__Feng Liu __Computer Vision, 3D Vision26 spring/fall__https://liufeng2915.github.io/__
+Drexel UniversityHarry ZhangNLP, LLM, reasoning, planning25 Spring / Fall__https://zharry29.github.io/__
+Duke Kunshan__Jiacheng Shen__MLSys, Distributed System26 Fall (open until Apr. 15), 27 Spring__https://bernardshen.github.io/__
+Duke UniversityYi ZhangML/AI for genomics/biomedical data science, digital pathology, large-scale genomics, computational biology/bioinformatics__https://yi-zhang-compbio-lab.github.io/__
+Emory UniversityWei JinLLMs, Time Series, Graph, Healthcare, Machine Learning and Data Mining in general26 Spring/Fall__https://www.cs.emory.edu/~wjin30/__
+Emory UniversityKai ShuData Mining, Machine Learning, Natural Language Processing, Social Computing2025 Fall__https://www.cs.emory.edu/~kshu5/__
+Emory UniversityYun WangVLM+Medical Imaging, AI+healthcare, Agentic AI, Multimodal AI. 2026 Fall__https://med.emory.edu/directory/profile/?u=YWAN303__
+Florida Atlantic UniversityZebo YangQuantum Computing, Quantum Networks, AI26 Spring/Fall__https://zeboyang.com/__
+Florida International UniversityFahad SaeedMachine Learning for Health and Biomedical DataOpen__https://pcdslab.github.io__
+Florida International UniversityXuyu WangWireless Sensing, Smart Health, IoT Security, Generative AI, Trustworthy ML, LLMs2026 Fall/2027 Spring__https://users.cs.fiu.edu/~xuywang/__
+Florida International UniversityChen ChenHuman-Computer Interactions, Virtual and Augmented Reality, Creativity Support Tools25 Fall/26 Spring__https://chen-chen.me__
+Florida International UniversityWeidong ZhuSystem security, AI-assisted Software Security, Ransomware Defense, Security and Privacy in the Storage system, Cyber-physical Security26 Spring, 26 Fall__https://____weidong-zhu.github.io/__
+Florida State UniversityGuang WangSpatiotemporal Data Mining, LLMs, Generative AI2026 Fall, 2027 Spring__http://guangwang.me/__
+Florida State UniversityYushun DongTrustworthy AI, Data Mining, Graph Learning, AI/ML + x(applications), LLMs25 Spring / FallFlorida State UniversityShibo LiAI for Physical Simulations, LLMs enabled Scientific Discovery, Probabilistic Machine Learning, Interactive Machine Learning26 Spring/Fall__https://imshibo.com/__
+Florida State UniversityMulong LuoAI for security, system security, hardware security, side channels, AI security26 spring/Fall__https://mulongluo.me__
+Florida State University__Yifang Wang__Human-AI Collaboration, LLMs, AI Agents, Data Visualization, HCI, Generative AI, AI Scientist, AI for Science, AI for Decision-making, Healthcare, Science Policy-making26 Spring, 26 Fall, 27 Spring__https://wangyifang.top/__
+Florida State University__Xiaonan Zhang__Networked Edge AI, AI infrastructure for Health 26 Fall, 27 Spring __https://www.cs.fsu.edu/~xzhang/____ __
+George Mason UniversityLei YangAI for Science including healthcare and geophysics2025 Sping / Fall__https://leiyang0416.github.io/__
+George Mason UniversityZiyu YaoLLM Reasoning, Interpretability, LLM Agent26 Fall__https://ziyuyao.org/__
+George Mason UniversityMingrui LiuMachine Learning Theory, Optimization, Deep Learning, Foundation Models26 Spring, 26 Fall__https://mingrliu.github.io__
+George Mason University__Yicheng Zhang__AR/VR Security, System Security, GPU Security26 Spring, 26 Fall__https://yichez.site/__
+Georgia Institute of Technology Molei TaoGen-AI (e.g., Diffusion Model), AI4Science (e.g., Quantum), Deep Learning Theory (e.g., Optimization and Generalization)26 Fall__https://mtao8.math.gatech.edu/__
+Georgia Institute of Technology Lu MiNeuroAI, Computational Neuroscience, AI4Science25 Spring/FallGeorgia Institute of Technology __Kai Wang__AI for social impact, differentiable optimization, online learning, multi-agent systems, public health25 Spring/Fall__https://guaguakai.com/__
+Georgia Institute of Technology Wei XuNLP, LLM, machine learning, computational social science26 Spring/Fall__https://cocoxu.github.io/__
+Georgia Institute of Technology Yingyan (Celine) LinEfficient LLM/VLM algorithms, Efficient AI, AI accelerator design, Agentic AI 26 Spring/Fall__https://eiclab.scs.gatech.edu/index.html__
+Georgia Institute of Technology Larry HeckConversational AI, NLP, Multimodal LLMs (inference and generation), AI Discovery26 Spring/Fall__https://larryheck.github.io/__
+Georgia Institute of Technology Jiayun (Peter) Wangvision, multimodality, 3D, generative models, representation learning, AI for science, AI for medicine, computationall imaging26 Fall__https://pwang.pw/__
+Georgia State UniversityLipeng WanAI for science, AI-integrated data infrastrcuture for science26 Spring/Fall__https://lwan86.github.io/__
+Georgia State UniversityHuadi ZhuCybersecurity, human-centered computing, immersive technology27 Spring/Fall__https://huadizhu.com/__
+Georgia State UniversityPing XuTrustworthy distributed learning, multi-agent reinforcement learning26 Spring/Fall__https://sites.google.com/view/ping-xu-gsu/home__
+Geroge Washington University __Jie Zhou__Systems and Software Security, Compilers25 Fall, 26 Fall__https://jiezhoucs.github.io/__
+Harvard UniversityJuncheng YangComputer Systems, systems for machine learning26 Fall__https://junchengyang.com__
+HKUST(GZ)Jintai ChenGenerative AI, LLM Agent, Multimodality, Large Tabular Model, AI for Health26 Fall, 27 Spring, 27 Fall__https://whatashot.github.io/__
+Hong Kong Baptist UniversityJiaxin BaiKnoweldge Graph, Neural Graph Database, Retrieval Augmented Generation26 Fall__https://bjx.fun/p/joining-hkbu-in-2026-recruiting-phd-students-for-fall-2026/__
+Hong Kong Baptist University__Yifan Chen__Data Science (graphs, time series, multimodal data), Machine Learning (for LLM and for Science)26 Fall (open until Apr. 15) / 27 Spring__https://zhuanlan.zhihu.com/p/651070296__
+Hong Kong Polytechnic UniversityXingyi YangGenerative AI, 3D Vision, Computer Vision, Efficiency, Agantic Learning26 Spring/Fall__https://adamdad.github.io/__
+Hong Kong University of Science and TechnologyMay FungNLP/ML/AI25 Spring/Fall__https://mayrfung.github.io/__
+Hong Kong University of Science and TechnologyXiaomin OuyangML for IoT, Smart Health, Mobile Sensing25 Spring/Fall__https://xmouyang.github.io/__
+Hong Kong University of Science and TechnologyBinhang YuanML System, LLM for Data Management25 Spring/Fall__https://binhangyuan.github.io/site/__
+Hong Kong University of Science and TechnologyZhiyao XieML for EDA/Chip Design, EDA, Computer Architecture25 Fall/26 Spring__https://zhiyaoxie.com/__
+Hong Kong University of Science and TechnologyQijia ShaoMobile and ubiquitous computing, HCI; Healthcare, Education and Interaction25 Fall/26 Spring__https://qijiashao.github.io/__
+Hong Kong University of Science and Technology__Chaojian Li__Computer Architecture and Systems, Algorithm-Hardware Co-Design for LLM, 3D Intelligence 26 Spring / Fall__https://____sponge-lab.github.io/join.html__
+Hong Kong University of Science and Technology (Guangzhou)Zhijiang GuoLLM/NLP/ML26 Fall__https://cartus.github.io/__
+Hong Kong University of Science and Technology (Guangzhou)Chengwei QinLLM/NLP/DL25 Fall/26 Spring__https://qcwthu.github.io/__
+Hong Kong University of Science and Technology (Guangzhou)Jintai ChenAI for Healthcare, AI for Drug Design25 Fall/26 Spring__https://whatashot.github.io/__
+Hong Kong University of Science and Technology (Guangzhou)Zhiqing HongUbiquitous Computing, Embodied AI, Efficient LLM26 Fall, 27 Spring__http://www.zhiqinghong.one/__
+Illinois Institute of TechnologyMinxuan ZhouComputer architecture, systems, machine learning acceleration, privacy-preserving computing25 Fall, 26 Spring__https://zhouminxuan.github.io/__
+Illinois Institute of TechnologyYue DaiMachine learning acceleration, deep graph learning, adversarial security, efficient LLM serving26 Fall, 27 Spring__https://yud42.github.io/__
+Illinois Institute of TechnologyYibo HuTrustworthy AI, social computing, AI for cybersecuity26 Fall__https://itm.iit.edu/hu/__
+Imperial College LondonHongxiang FanMachine Learning Hardware and System, Computer Architecture, Algorithm and Hardware Co-Design2025 Spring/Fall__https://____os-hxfan.github.io/__
+Indiana University BloomingtonDa YanData systems and algorithms (req: C++, CUDA, etc.), deep learning (req: PyTorch, etc.), check: __https://bit.ly/danielYan__ 25 Fall__https://bit.ly/danielYan __
+Iowa State University__Guanzhou Wei__Physics-Informed Statistical Learning, Data Mining, Natural Disasters25 Fall, 26 Spring__https://sites.google.com/view/gz-wei/home__
+Iowa State UniversityMengdi HuaiTrustworthy AI (robustness, interpretability, uncertainty, security, and privacy), LLMs, and VLMs26 Fall__https://mdhuai.github.io/__
+Iowa State UniversityChenglin MiaoTrustworthy and Efficient AI for IoT and CPS, Embodied AI, Cyber Security26 Fall__https://clmiao.github.io/__
+Johns Hopkins UniversityHaimin HuRobotics, HRI, Embodied AI Safety, Multi-Agent RL, Foundation Models, Trajectory Optimization26 Fall__https://haiminhu.org/__
+Johns Hopkins University__Nico Christianson__Learning-augmented algorithms, uncertainty quantification, ML for optimization, energy systems26 Fall__https://nicochristianson.com/__
+Johns Hopkins University__Chaowei Xiao__Generative AI, AI Safety, Embodied AI, Agent26 Spring/Fall__https://xiaocw11.github.io/__
+Kansas State UniversityXiaolong GuoLarge Language Model, Generative AI, Hardware Security2026 Spring/Fall__https://____ece.k-state.edu/research/hardware-security/llm.html__
+Kansas State UniversityHongyu WuMathmatical modeling, Optimization, Machine learning application in Smart Grid2026 Spring/Fall__https://____ece.k-state.edu/about/people/faculty/wu/__
+Kennesaw State UniversityHonghui XuData Privacy and Security in AI, Internet of Things2025 Spring/Fall__https://honghuixuhenry.github.io__
+Kent State University/Miami UniversityQiang GuanQuantum Computing, Quantum Sensing, Quantum HPC26 SpringFall__https://www.cs.kent.edu/~qguan/__
+King Abdullah University of Science and Technology (KAUST)Xiaohang LiAdvanced semiconductor materials, devices, and integrated circuits (ECE, Physics, Materials Science)25 Spring / Fall__https://www.kaust.edu.sa/en/study/faculty/xiaohang-li__
+King Abdullah University of Science and Technology (KAUST)Tao NiCybersecurity, Cyber-physical Security, Embodied AI Security, Low-power Mobile Computing26 Fall__https://taoni.xyz__
+King's College London, UKYali DuReinforcement learning, multi-agent cooperation, embodied intelligence26 Spring/Fall__https://yalidu.github.io/__
+Lehigh university Lichao sunTrustworthy AI, Medical AI, Embodied AI2026 Spring / Fall__https://____lichao-sun.github.io/__
+Lehigh University Yuntao LiuHardware security, VLSI design, computer engineering26 Spring/Fall__https://engineering.lehigh.edu/faculty/yuntao-liu__
+Louisiana State University Ruyi DingHardware security, AI security, side-channel analysis, LLM, GNN26 Fall (opening until April 26) / 27 Spring __https://rollinding.github.io/__
+Louisiana State University Xugui ZhouDependability & Security, Cyber-Physical Systems, ML, Autonomous Driving, Smart Health 26 Spring/Fall__https://____xugui-zhou.github.io/__
+Massachusetts Institute of TechnologyPaul Liang multimodal machine learning, multimodal LLMs, human-AI interaction, applications in health, education, arts and sciences25 Spring/Fall__https://pliang279.github.io/__
+MBZUAIXiuying ChenTrustworthy text generation, LLM-based agents, High-stakes NLP applications26 Spring / Fall__https://iriscxy.github.io/__
+MBZUAIDongxia WuProbabilistic Machine Learning, LLM trustworthiness, Spatiotemporal Modeling, AI for Healthcare/Science, Multimodal Foundation Models26 Fall__https://dongxiaw.github.io/__
+MBZUAIJunpei KomiyamaBandits, EconML, LLM Reasoning, Algorithmic Fairness26 Spring/26 Fall__https://sites.google.com/view/junpeikomiyama/home__
+MBZUAIXingxing ZuoRobotics, Embodied AI, 3D Computer Vision, Generative Model, Control, Planning25 Fall/26 Fall__https://xingxingzuo.github.io/__
+MBZUAIJian KangAI + X, graph learning, trustworthy ML (robustness, uncertainty, factuality, interpretability), model evaluation, data attribution26 Fall__https://jiank2.github.io/__
+Michigan State University__Zijun Cui__Physics-informed Machine Learning; Probabilistic Modeling26 Spring and 26 Fall__https://zijunjkl.github.io/__
+Michigan State UniversityRuofeng LiuMobile computing, Wireless sensing, Applied Machine Learning26 Sping/Fall__https://liux4189.github.io/__
+Michigan Technological UniversityKaichen YangCPS security, hardware security, AI security2025 Spring/Fall__https://sites.google.com/view/kaicheny__
+Michigan Technological UniversityJie WuAI for Software Engineering, Trustworthy AI/AIware, AI Engineering (Machine Learning in Production), Human-Centered AI25 Fall/26 Spring__https://____jie-jw-wu.github.io/__
+Missouri S&TCe ZhouAI Security, Cyber-Physical System security, Autonomous Driving Security, LLM security26 Spring, 26 Fall__https://sites.google.com/view/cezhou/__
+Missouri S&TXiaowei YuMedical AI, Brain-inspired AI, Heathcare26 Fall__https://shawey94.github.io/__
+Nanyang Technological University, SingaporeSean DuReliable machine learning and foundation models2026 Spring/Fall__https://d12306.github.io/__
+Nanyang Technological University, SingaporeWanhua LiComputer Vision, Spatial Intelligence, Embodied AI26 Spring/26 Fall__https://____li-wanhua.github.io/__
+Nanyang Technological University, Singapore __Aditya Nair__NeuroAI, Interpretable AI, Neural Imaging, Computer Vision, Dynamical Systems2026 Sping/FallNanyang Technological University, Singapore __Bryan G. Pantoja-Rosero__AI for structural and construction engineering (digital twins, structural health monitoring, construction monitoring/automation, robotics)August 2026 / January 2027__https://____disclab.pantoja-rosero.com/__
+National University of SingaporeWenqi JiangSystems for ML, Database, Computer Architecture, RAG, vector search26 Fall__https://wenqijiang.github.io/__
+National University of SingaporeDianbo LiuAI scientist, creativity of LLM2026 Fall (still open) / 2027 Spring__www.ASintelligence__.xyzNational University of SingaporeJiaheng ZhangBlockchain and crypto, LLM security and privacy, applied cryptography, ZKP.25 Spring / 25 Fall / 26 Spring__zjhzjh123.github.io__
+National University of SingaporePeichen ZhongAI for Science in Materials & ChemistryLong-term opening__http://zhongpc.github.io/__
+National University of Singapore__Junyuan Hong__LLM, AI for Health (ADRD), Responsible AI, AI + Cognitive Science27 Fall__https://jyhong.gitlab.io/__
+ NC State UniversityXiaorui LiuLarge-scale ML, Robust ML, Graph Learning, Generative AI2026 Fall__https://sites.google.com/ncsu.edu/xiaorui/__
+NC State UniversityChau-Wai WongFederated learning, Large language models, Diffusion models2026 Spring / Fall__https://____ncsu-wong.org/__
+NC State UniversityYuan LiuQuantum algorithms, quantum machine learning, quantum computing2025 Fall__http://yuanliu.group__
+NC State UniversityHuining LiMobile Computing, AI/ML for Health, Internet of Things, Cybersecurity26 Fall__https://____huining-li.github.io/__
+NC State UniversityRuozhou YuWireless Network, Quantum Network, Blockchain, Distributed/Federated Learning, Learn to Optimize, Security & Privacy, Edge Computing25 Fall__https://ruozhouy.github.io/__
+NC State UniversityPeng GaoMulti-Robot System, Human-Robot Teaming, Lifelong Learning and Adaptation26 Fall__https://research.csc.ncsu.edu/corob__
+NC State UniversityJaemin LeeHumanoids, Legged robots, Foundation Model, AI/ML based manipulation26 Fall__https://____hier-robotics.github.io/__
+New Jersey Institute of TechnologyShivvrat AryaNeurosymbolic AI, Probabilistic Methods, Explainable AI and Combinatorial Optimization2026 Spring / Fall__https://shivvrat.github.io/__
+New Jersey Institute of TechnologyArnob GhoshReinforcement Learning, Multi-agent Learning, Dynamical Systems, Robotics, Safe AI26 Fall__https://sites.google.com/site/arnob008/__
+New Jersey Institute of TechnologyYingcong LiMathematical foudations of LLM, Foundation Model26 Fall__https://____yingcong-li.github.io/__
+New York UniversityZongyi LiAI for Science, Neural Operator, Flow Matching, Partial differential equations, Weather and Climate26 Fall__https://____zongyi-li.github.io/__
+New York University - Shanghai Track __Qiaoyu Tan__LLM Reasoning, Multimodal LLM, Graph Machine Learning, RAG/GraphRAG26 Fall__https://____qiaoyu-tan.github.io/__
+North Carolina A&T State UniversityShaohu ZhangLLM, Mobile System, Cybersecurity 26 Spring/Fall__https://zhangshaohu.github.io/__
+North Carolina State UniversityYuchen LiuDigital Twins, Computer/Wireless Networking, Generative AI, Cyber-Security and Privacy2026 Sping / Fall__https://nicelab.us/#yliu__
+North Carolina State UniversityChenhan XuMobile Computing, wireless and wearable sensing, Human-Computer Interaction25 FallNorth Carolina State UniversityKaixiong Zhou25 Spring / FallNorth Carolina State UniversityQiao (Georgie) JinXR+AI for education, social computing, HCI, AR/VR/MR26 Fall__http://georgiejin.com/__
+Northeastern University__Tianshi Li__HCI, Human-Centered AI Privacy25 Fall__https://tianshili.me__
+Northeastern UniversityHongyang ZhangML, statistical learning, language models25 FallNortheastern UniversityZiming ZhaoSystems for DL/LLM (e.g., OS/Arch/Security); Systems and software security26 Fall__https://zzm7000.github.io/__
+Northeastern UniversityYang YeRobotics, 3D vision, human-robot interaction2025 Spring/Fall__https://____gilbert-yangye.github.io/__
+Northwestern UniversityHan LiuAI/ML, Machine Learning, Foundation Models, Robotics, AI for Science26 Fall__http://magics.cs.northwestern.edu/index.html__
+Northwestern UniversityManling LiAI/ML, Multimodal Foundation Models, NLP, CV, Robotics26 Fall__limanling.github.io__
+Northwestern UniversityRuohan ZhangRobotics, robot learning, cognitive science, human-robot interaction, perception, art26 Fall__ai.stanford.edu/~zharu__
+Northwestern UniversityYiping Luscaling law of AI, ML Thoery, Sequential Monte Carlo for LLM/Diffusion Model, Ai for Physics and Chemsitry26 Spring/Fall__https://____scale-lab-northwestern.github.io/__
+Northwestern UniversityKaize DingReliable ML, Data-Efficient Leanring, AI for healthcare, environmental science26 Fall__https://kaize0409.github.io/__
+Northwestern University__Zikai Xiong__optimization algorithm, mathematical programming, computation, with applications in operations research and ML26 Fall__https://zikaixiong.github.io/__
+Ohio State UniversityXia NingLLMs (multimodal foundation models, reasoning, planning, in-contex learning, agents), generative AI for scienceimmediately, or 26 Spring/Fall__https://go.osu.edu/ninglab/__
+Ohio State University__Ping Zhang__Multimodal Large Language Models, Human-Computer Interaction, Medical Image Analysis26 Fall/26 Spring__https://www.pingzhang.net/__
+Ohio UniversityZiyang Song AI4health, Trustworthy LLMs, biomedical LLM, statistical ML, NLP, time series26 Spring, 26 Fall__https://ziyangs.github.io/__
+Oklahoma State UniversityYing ZhangLLM, GenAI, Edge Computing, Distirbuted Systems for Energy System Opeartion2026 Spring/Fall__https://yingzhangee.com__
+Oklahoma State UniversityZheyu JiangAI4PDE, flow matching, diffusion model, AI for Materials, optimization26 Summer, Fall__https://checlams.github.io/__
+Okland University__Jiannan Tian__High-performance computing (HPC), scientific computing, data compression, parallel computing, GPU, AI for science, HPC x AI, HPC x IoT26 Spring/Fall__https://jti.one__
+Ontario Tech University / University of Toronto (Canada) __Annie Lee__NLP, LLM, ML, multilinguality25 Fall/26 Spring__https://www.cs.toronto.edu/~ealee/public/__
+Ontario Tech University / Western University (Canada) __Li Yang__AutoML, ML Optimization,Trustworthy AI, Cybersecurity, Online/Continual Learning, Adversarial Machine Learning, IoT, EV security, Intrusion/Anomaly Detection26 Spring/Summer/Fall__https://sites.google.com/view/li-yang-phd/__
+Oregon State UniversityWenqian DongHigh-Performance Computing; System for AI/ML; Parallelism & Distributed Systems for LLM Inference; Multi-Agent Framework Optimization2026 Spring/Fall __https://wdong5.github.io/__
+Oregon State UniversityHuazheng WangReinforcement Learning, Bandits, Information Retrieval, Agents2025 Spring / Fall__https://huazhengwang.github.io/__
+Osaka University (Japan)Zheng ChenAI for Health, Computational Neuroscience, AI for Drug Discovery, NeuroAI, Bioinformatics Fall 26 or Spring 27__https://zhengchen3.github.io__
+Penn State UniversityYing ChenVirtual and augmented reality, machine learning, HCI2026 Fall__https://yingchen115.github.io/bio/__
+Penn State UniversityHuijuan Xucomputer vision, vision and language25 Fall, 26 Spring__https://visionlanguagelab.github.io/__
+Penn State UniversityYuchen YangTrustworthy AI, Certified Robustness, LLM, VLM, Privacy, Human Factors in Cybersecurity26 Fall, 27 Spring/Fall__https://yuchenyang.org/__
+Purdue University__Haoran You__Efficient AI/ML; Algorithm-Hardware Co-Design; MLSys26 Fall, 27 Spring/Fall__http://haoranyou.com/__
+Purdue UniversityXupeng MiaoMLSys25 Spring / FallPurdue UniversityHanshen XiaoInformation security&privacy, trustworthy machine learning and learning theory25 FallPurdue UniversityRuqi ZhangStatistical ML, Bayesian deep learning, LLM alignment, Uncertainty quantification, Sampling/MCMC25 Spring/FallPurdue UniversityYuxiang PengProgramming language and system design for quantum computers.25 Fall__https://pickspeng.github.io/__
+Purdue UniversityJinghan SunML for Systems, Memory/Storage Systems for LLM26 Fall__https://____my-henrys.github.io/__
+Purdue UniversityJingbo WangFormal Verification, Program Synthesis/Analysis, Neuro-Symbolic AI, SE26 FallRensselaer Polytechnic InstituteShaowu PanAI4PDE, Agents for Science, Scientific Machine Learning, Computational Physics, Data-Driven Dynamical Systems26 Spring(ignore the deadline)/Fall__https://www.shaowupan.com__
+Rensselaer Polytechnic InstituteMeng WangTrustworth AI, AI computation and memory efficiency, AI theoretical guarantees26 Fall, 27 Spring__https://sites.ecse.rpi.edu/~wang/index.html__
+Rice UniversityWei QiuAI for Biomedicine, including aging and age-related diseases, foundation models, and explainable/trustworthy AI (XAI)26 Fall__https://qiuweipku.github.io/__
+Rochester Institute of TechnologyYinxi LiuProgram Analysis, Symbolic Reasoning, Software/Web security, Algorithmic Complexity25 Fal / 26 Spring__https://yinxi.site/__
+Rochester Institute of TechnologyHaibo YangReviewer #22025 Fall__https://____haibo-yang-osu.github.io/homepage/__
+Rochester Institute of TechnologyChongzhou FangSystem security, hardware security, IoT & embedded systems25 Fall/26 Spring__https://chongzhoufang.github.io/__
+Rochester Institute of TechnologyPengfei LiTrustworthy online algorithms, reliable generative AI, decision-focused learning26 Spring__https://people.rit.edu/pflics/__
+Rowan University__Guimu Guo__Data Mining (Graph), Parallel Computing, GPGPU2025 Spring/Fall__https://guimuguo.github.io/__
+Rowan UniversitySihan YuIoT, Network Security, Mobile Computing, Wireless Communication, AI26 Spring/Fall__https://csm.rowan.edu/departments/cs/facultystaff/compsci_full_part/yu.html__
+Rowan UniversityXiajun JiangAdaptive AI, physics-informed deep learning, AI in health care26 Fall / 27 Spring__https://____john-x-jiang.github.io/__
+Rowan UniversityQianqian ZhangWireless Communication, network resilience and security, ML and AI for next-generation wireless systems26 Fall / 27 Spring__https://qianqianzhangece.github.io/__
+Rutgers UniversityChengzhi MaoComputer Vision, Large Language Model, Interpretable Machine Learning, Robotics 25 FallRutgers University__Yifan Hu__Optimization, RL, Causality26 Fall__https://sites.google.com/view/yifan-hu/home__
+Rutgers University__Hao Wang__Large Language Model (LLM), Bayesian Deep Learning, LLM Reasoning, Interpretable Machine Learning (ML), ML for Healthcare25 Fall, 26 Spring__http://wanghao.in/__
+Rutgers UniversityLesia SemenovaTrustworhy AI: Intepretable ML, Model Multiplicity/Uncertainty, Reasoning in LLM, AI EvaluationFall 2026__https://lesiasemenova.github.io/__
+Saint Louis UniversityTianyi LiAI in transprtation/traffic systems, automated vehicles25 Spring / FallSan Diego State UniversityXin ZhangSpatial-temporal data science, AI, Reinforcement Learning, Generative models25 FallSan Diego State University__Yifan Zhang__System Security & Privacy; AI Security & Privacy26 Fall__https://1phan.com__
+Simon Fraser UniversityWuyang ChenAI-for-Math, 3D/4D Reconstruction and Generation2026 Spring / Fall__https://____delta-lab-ai.github.io/__
+Simon Fraser University__Linyi Li__Trustworthy ML and ML Security, LLM Theory 2026 Spring / Fall__linyil.com__
+Singapore University of Technology and DesignYihan DuMachine Learning Theory, Reinforcement Learning, The Application of RL in LLMs (e.g., RLHF and Reasoning), Diffusion Models for RL, Online LearningPhD, Visiting Students, RAs__https://yihandu.github.io/__
+Singapore University of Technology and Design Na Zhao3D Computer Vision, 3D Generation/Editing, Embodied AI (VLN/VLA)26 Fall, 27 Spring__https://na-z.github.io__
+South Dakota State UniversityXiangrui XuEfficient & Secure ML (SMPC, HE, OT, GC, ZKP) GPU-based Private Inference 2 PhD for Fall 26 or Spring 27__https://sites.google.com/view/xiangrui/xiangruis-page__
+Southern University of Science and Technology (Shenzhen, China)Ye YeAI for population health, AI for medicine, multimodal, LLM, medical informatics25 Fall (RA, postdoc), 26 Fall (Phd, MS)https://sph.sustech.edu.cn/faculty/detail/id/275.html?lang=zh-cn&cid=120 and https://ai-in-population-health-lab.github.io/homePage/Stanford UniversityPan LuLLM reasoning, LLM agents, AI for mathematics, AI for scientific reasoning and discovery2025 Spring, Summer, Fall__https://lupantech.github.io/__
+Stevens Institute of TechnologyShaoyi HuangEfficient AI, ML system, ML for EDA2026 Fall__https://www.shaoyihuang.com/__
+Stevens Institute of Technology__Hao Wang__LLM Systems (Inference, MoE, RAG), Serverless Computing, Federated Learning25 Spring / Fallhttps://intellisys.haow.ca/haowang/Stevens Institute of TechnologyDenghui ZhangDM/AI/NLP, LLM and social science2026 Fall__https://zhangdenghui.site/__
+Stevens Institute of Technology__Zining Zhu__NLP, Safety25/26 Fall__https://____ecailab.org__ Stony Brook UniversityTengfei MaMachine Learning, Graph Learning, AI for Health, Natural Language ProcessingStony Brook UniversityChenyu YouMachine Learning, Computer Vision, AI for Health, Multi-modal Learning26 Spring / 26 Fall__https://chenyuyou.me/__
+Stony Brook University__Ben Zhang__Human-Computer Interaction (HCI), Social Computing, Responsible AI, Work and Labor, Health and Wellbeing, Design Research25 Spring / 26 Fall __benzhang.info__
+SUNY AlbanyHaoyu WangData Ming, LLM, Efficient AI26 Spring/Fall__https://wanghaoyu0408.github.io/__
+Suny BuffaloVishnu LokhandeVision Language Models26 Spring/Fall__https://____vlokhande-ub.github.io/__
+Suny BuffaloKaiyi JiMachine learning (multi-task learning, continual learning), optimization (bilevel opt, LLM opt), federated learning 2026 Spring / Fall__https://cse.buffalo.edu/~kaiyiji/__
+Temple UniversityMindy ShiAI for health, Trustworthy AI/ML26s, 26f, 27s__https://cis.temple.edu/~mindyshi/__
+Temple UniversityYu WangML/AI for networking and distributed system, Optimization/algorithm for networking and computing, Quantum networking and computing, AI for science 26 Spring, 26 fall, 27 spring__https://cis.temple.edu/~yu/__
+Texas A&M UniversityZhiyuan YuTrustworthy MLSys; Multimodal generative AI; Usable and human-centric security; Intelligent healthcare systems26 Spring / Fall__https://zhiyuanyu.org__
+Texas A&M UniversityZhengzhong TuMultimodal LLM Agents, Video Generation26 Fall__https://vztu.github.io/__
+Texas A&M University__Kuan-Hao Huang__Trustworthy NLP, LLMs, VLMs; Multilingual NLPPhD (27 Fall), intern (anytime)__https://khhuang.me/__
+Texas A&M UniversityYu ZhangNLP (LLMs, scientific/biomedical text mining), data mining, AI for science25 Spring / FallTexas A&M UniversityShuiwang JiAI for science, machine learning, language models and agents for science25 Fall/26 Spring__https://people.tamu.edu/~sji/__
+Texas A&M UniversityZhiwen Fan3D Computer Vision, Embodied AI, 3D Multimodal Models (3D Vision-language Model, World Model)25 Fall/26 Spring/26 Fall__https://zhiwenfan.github.io/__
+Texas A&M UniversityYiwei LyuRobotics, robot learning, world modeling, safe decision-making and control, multi-robot system, human robot interaction27 Spring / 27 Fall__http://www.cs.cmu.edu/~yiweilyu/__
+Texas Tech University Zihao ZhanSystem Security, Microarchitecture Security, Side channel Security, Hardware Security 25 Spring__https://zihaozhan.github.io/__
+Texas Tech University Song LiaoSecurity, Usable Privacy, Policy Compliance27 Spring__https://songacademic.github.io/__
+The Hong Kong University of Science and Technology (Guangzhou)__Jian Zhang__Computer System, Storage, Distributed Systems26 Spring/Fall, PhD/RAsThe University of Hong KongXihui LiuComputer vision, generative models, multimodal AI, embodied AIall year round, long-term effective__https://____xh-liu.github.io/__
+The University of Hong KongJionghao LinAI in Education, Machine Learning for Education, GenAI System, HCI26 Spring / 26 Fall__https://sites.google.com/site/jiognhaolin/home?authuser=0__
+Toyota Technological Institute at ChicagoNicholas TomlinLanguage models, reasoning, interaction, AI safety26 Fall__https://nickatomlin.github.io/__
+Tulane UniversityJiyuan WangSoftware Engineering, Quantum, Testing, Debugging, Compiler25 Fall/26 Spring/26 Fall__https://____wjy99-c.github.io/__
+Universiti Malaya__Chee Seng Chan__Federated Unlearning; Text Detection and Recognition26 Spring/26 Fall__http://____cs-chan.com/__
+University at Albany, SUNYChong LiuMachine Learning (Bayesian optimization, bandit algorithms, active learning) and AI for Science (experimental design, drug discovery, and materials science)2025 Spring/Fall__https://____chong-l.github.io/__
+University at Albany, SUNYDola SahaMachine Learning for Wireless Signals - __https://www.dolasaha.info__ University at Buffalo__Jiayu Peng__ML/AI for Materials and Chemistry: Combining data science and machine learning with materials physics and surface chemistry to design materials and interfaces for decarbonization and sustainability (please check __https://ubwp.buffalo.edu/jiayu-peng-lab/join-us/)__2025 Fall__https://ubwp.buffalo.edu/jiayu-peng-lab/join-us/__
+University at Buffalo__Lin Zhang__Wireless sensing, Robotics, Biomedical imaging, Medical devices26 Spring/26 Fall__https://sites.google.com/site/linzhangmaterials/__ University College Dublin, IrelandWanling CaiHuman-AI Interaction, HCI for Health and Wellbeing, Digital Mental Health2026 Fall__https://wanlingcai.github.io/__
+University College London - UCLYao LuNatural Language Processing, LLMs, Multilingual NLP, Pretraining (Group website: __https://nlp.cs.ucl.ac.uk/)__26 Fall__https://yaolu.github.io/__
+University of AlabamaRunlong YuAI for Science, Data Mining, Physics-Guided Machine Learning, Foundation Models, Evolutionary Computation, Water Science, Environmental Science, GeoAI26 Fall__https://runlongyu.github.io/__
+University of Alabama in HuntsvilleDinh NguyenQuantum machine learning, security and privacy, and wireless networkSpring 26__https://sites.google.com/view/dinh-chi-nguyen/home__
+University of ArizonaBo LiuRL, Multi-agent, VLM, healthcare, trustworthy AI, Agentic AILong-term effective__https://ergodicmarkovian.github.io/main/__
+University of ArizonaLiangming PanNatural Language Processing, Trustworthy Large Language Models25 Spring / FallUniversity of ArizonaJohn ChenHuman-AI Interaction, Playful Learning, Generative AI for Games and Education26 Spring / Fall__https://____civitas-john.github.io/__
+University of ArizonaYulin YuComputational Social Science, Network Science, Impact of AI on Society, Innovation, Human-AI Interaction26 Spring / Fall__https://____yulin-yu.github.io/__
+University of ArizonaJialu LiSpeech and Audio Processing, AI for healthcare, AI for education, Children's speech analysis, Multimodal/Audio LLM26 Spring / Fall__https://sites.google.com/view/jialuli/__
+University of ArizonaQingzhao ZhangSoftware security, AI security, and applications to cyber-physical systems2026 Fall__https://zqzqz.github.io/__
+University of ArkansasDongyi WangRobotics, 3D vision, hyperspectral imaging in agriculture26 Spring / Fall__https://____dw-bioag.github.io/safelab/__
+University of AucklandQian LiuNLP, Large Language Model2025 Spring/Fall__https://profiles.auckland.ac.nz/liu-qian__
+University of British Columbia__Thomas Pasquier__Security, Systems, Application of ML2026 Fall/Sping__https://tfjmp.org/__
+University of British ColumbiaXin TangAI for Biomedicine, foundation models, and explainable/trustworthy AI (XAI)26 Fall/Spring__https://tanglab.msl.ubc.ca/__
+University of British ColumbiaXiaoxiao LIAI Efficiency and Trustworthiness, Agentic AI, AI for Health26 Fall__https://tea.ece.ubc.ca/__
+University of California, BerkeleyWeiqiang ZhuAI for Science25 Fall__https://ai4eps.github.io/homepage/__
+University of California, DavisMuhao ChenNLP, ML, AI Safety, Agentic AI26 Fall__https://muhaochen.github.io/__
+University of California, DavisYunpeng Shi3D vision, 3D imaging for proteins (cryo-EM), signal/image processing, robust estimation, optimal transport25 FallUniversity of California, Irvine __Fei Xia__joint design of hardware and software for optical microscopy, sensing, and information processing, computational optics, optical instrumentation, machine learning, biomedical application25 Fall__https://sites.coecis.cornell.edu/feixia/__
+University of California, Los AngelesHanrui WangEfficient AI Computing, Quantum Computing, AI+Quantum, Domain-Specific Architecture2025 Fall / 2026 SpringUniversity of California, Los Angeles__Yuzhe Yang__ML, AI for Healthcare, AI for Medicine, AI for Science, Trustworthy ML25 Fall__https://www.mit.edu/~yuzhe/__
+University of California, Los AngelesYangruibo Robin DingLLM for Code and Reasoning, Agentic AI, Software Engineering, Program Analysis, Security2026 Fall__https://____robin-y-ding-columbia.github.io/__
+University of California, Los AngelesChen TangAutonomous Driving, Robotics, AI/ML for Control26 Fall__https://chentangmark.github.io__
+University of California, MercedYiwei WangNatural Language Processing, Multi-modal Large Language ModelsUniversity of California, MercedQian WangQuantum computing, Advanced cryptos implementation (FHE, PQC), Sidechannel attacks, Security for ML system26 Spring/Fall__https://____sequoia-lab.github.io/join.html__
+University of California, MercedXiaofan YuEmbedded System, Edge AI, CPS/IoT, Neuromorphic Computing26 Fall__https://yuccalab.ucmerced.edu/__
+University of California, Riverside__Jiachen Li__Robotics, Embodied AI, Human-Robot Interaction, Multi-Robot Systems, Autonomous Driving, Multi-Agent Learning, Trustworthy AI2026 Fall__https://tasl.ucr.edu/__
+University of California, Riverside__Yinglun Zhu__Machine Learning, Reinforcement Learning, LLMs, Efficient Learning/Training, MLSys25 Spring / Fall__https://yinglunz.com/__
+University of California, Riverside__Zhouxing Shi__Machine Learning, LLM, Trustworthy AI, formal verification26 Fall__https://shizhouxing.github.io/__
+University of California, Riverside__Bingyao Li__Computer architecture, System, LLM26 Spring/Fall__https://libingyao.github.io/__
+University of California, San Diego__Zhijian Liu__Efficient machine learning, systems and applications (such as LLMs, generative AI)2025 FallUniversity of California, Santa BarbaraYuheng BuTrustworthy AI, learning theory, information theory26 Fall__https://buyuheng.github.io/__
+University of California, Santa BarbaraXin Eric WangAI, ML, NLP, Computer Vision26 Fall__https://eric-xw.github.io__
+University of California, Santa BarbaraWenbo GuoRL-based LLM reasoning; Agentic AI for SE and security26 Fall__https://henrygwb.github.io/__
+University of California, Santa Barbara__Zhen Dong__LLM/VLM Post-training, Efficient AI, AI Agents, AI4Science, Robotics, VideoGen26 Fall__https://____dong-zhen.com/__
+University of California, Santa CruzYuanchao XuComputer architecture, security, and ML systems 25 Fall__https://yuanchaoxu6.github.io/__
+University of Central Florida__Chen Chen__Computer Vision (VLMs, image and video generation, motion generation)26 Spring/Fall__https://www.crcv.ucf.edu/chenchen/__
+University of Central Florida__Yu Tian__Computer Vision, Medical AI (with Harvard and UPenn), Trustworthy AI, AI for Science26 Spring/ 26 Fall__https://yutianyt.com/__
+University of Central FloridaQian LouSecure and Safe Machine Learning, System, LLM26 Fall__https://www.qlou.org/__
+University of Central Florida__Yu Fu__Data Visualization, HCI26 Spring/26 Fall__https://fuyugt.github.io/__
+University of Central Florida__Yuzhang Shang__Efficient AI, Model Compression, Efficient Large-scale (language and visual) models26 Fall/27 Spring__https://____42shawn.github.io/__
+University of Central FloridaMengxin ZhengLLM, Security26 Fall__https://mxzheng.github.io/__
+University of Central FloridaZhenyi WangContinual Learning, Trustworthy AI, Data-efficient Learning, adaptive LLM26 S[romg, 26 Fall__https://____joey-wang123.github.io/__
+University of Central Florida__Fan Yao__Computer Architecture, AI Hardware Security, Privacy-preserving and Trusted AI Systems, Microarchitecture Security, Hardware SecurityUniversity of Central Florida Aashish YadavallyAI for Software Engineering, LLM Reasoning about Source Code, AI For Software Security26 Spring, 26 Fall__http://aashishyadavally.github.io__
+University of Central Florida __Hao Zheng__Computer Architecture, Hardware Accelerator, AI/ML Systems, and Efficient AIUniversity of Central Florida Song WangMulti-modal Learning, Multi-Agent System, AI for Healthcare, General AI/ML/NLP26 Fall__https://____songw-sw.github.io/__
+University of Colorado BoulderYide ZhangPhotoacoustic Imaging, Quantum Imaging, Ultrafast Imaging, Fluorescence Imaging, Machine Learning2025 Spring/Fall __https://yzhang34.github.io/__
+University of Colorado Boulder__Mark Zhao__Systems for Machine Learning (e.g., OS/DB/Arch/Security)26 Fall__Boulder AI and Systems Infrastructure Lab__
+University of Colorado DenverZhengxiong LiEmbodied AI, AI Robotics, IoT, Cybersecurity2027 Spring/Fall__https://cse.ucdenver.edu/~lizheng/__
+University of Colorado DenverXiaojian WangSatellite networks, edge computing, network security, quantum networking26Fall, 27 Spring/Fall__https://____xiaojian-wang.github.io/__
+University of ConnecticutYuan HongAI Security, LLM Security, Privacy, Applied Cryptography25 Fall__https://yhongcs.github.io/__
+University of ConnecticutYuyang WangIntegrated photonics, optical interconnects, photonic computing, heterogeneous integration and advanced packaging, electronic-photonic design automation26 Fall__https://wangyy.phd__
+University of ConnecticutDongjin Song(Multimodal) Time Series Analysis/(Multimodal) LLMs & Foundation Models; AI for Healthcare; Agentic AI2-3 PhDs for Fall 26/Spring 27__https://songdj.github.io/__
+University of Delaware__Yixiang Deng__Scientific Machine Learning, Health Informatics, Bioinformatics, Reinforcement Learning Applied26 Spring/FallUniversity of Edinburgh__Fengxiang He__deep learning theory, decentralised learning, privacy and fairness in machine learning, symmetry in machine learning, algorithmic game theory, and their applications in economics and finance26 Fall__https://fengxianghe.github.io/__
+University of Florida__Zhe Jiang__AI, ML, LLM, Spatiotemporal Data, Health Informatics25 Spring/Fall__www.jiangteam.org__
+University of FloridaYanjun LiAI-driven Drug Discovery, AI4Science, Molecule Design and Optimization26 Spring/Fall__https://____yanjun-li.com/__
+University of FloridaYuanyuan LeiNatural Language Processing, Large Language Models, Multi-Modality Learning2026 Fall__https://sites.google.com/view/yuanyuan-lei__
+University of GeorgiaWei NiuML System, High Performance Computing, Compiler Optimization2025 Spring / Fall__https://www.niuwei.info__
+University of Georgia__Fei Dou__Machine learning, Intelligent Sensing, Ubiquitous Computing, AI for Health, AI for Time Series, Federated Learning2026 Spring/Fall__https://fayedou.github.io/__
+University of GeorgiaGuoyu LuRobotics, computer vision, AI, ML25 Spring / FallUniversity of GeorgiaZhenlin Anwireless and mobile computing, AI for networks, AR/VR25 Fall, 26 Spring/Fall__https://anplus.github.io/__
+University of GeorgiaHaijian SunGenerative models, AI for wireless, learning thoery26 Spring/Fall__https://sunlab.uga.edu__
+University of Hawaii at ManoaHaoyue TangNetworking, Information Theory, Generative Models26 Fall__https://loveisbasa.github.io/thy.github.io/index.html__
+University of Hawaii at ManoaYifan WangAI+Database, Vector database, LLM for data system, Retrieval-augmented generation (RAG), Information retrieval2025 Fall__https://wyfunique.github.io/__
+University of Hawaii at ManoaHaopeng ZhangNLP, LLM, Large Multimodal models, summarization, NLP4science25 Spring / FallUniversity of Hong Kong__Shinan Liu__Machine Learning Systems, Network Security and Privacy, Cyber-physical Intelligence26 Fall__https://naisslab.github.io/__
+University of Hong KongJian QianMachine Learning Theory, Reinforcement Learning, Online Learning26 Summer/Fall__https://jianqian80.github.io/my-homepage/__
+University of Hong KongCheng ChenAI for Healthcare, Multimodal Medical AI, LLM/Agentic AI26 Summer/Fall__https://____cchen-cc.github.io/__
+University of HoustonJingchao NiMachine Learning, Data Mining, AI for Time Series (with LVMs/LLMs/LMMs/agents)26 Spring / Fall__https://nijingchao.github.io/__
+University of HoustonJinyang LiuHigh-performance Computing, Data Compression, AI for Science25 Spring / Fall__https://nijingchao.github.io/__
+University of HoustonJianyi YangTrustworthy AI, Reinforcement Learning, LLMs25 Spring/Fall__https://jyang-ai.github.io__
+University of HoustonChengming ZhangML System, large scale LLM, multimodal, GPU optimization2025 Spring / Fall__https://chengmingzh8.github.io/__
+University of Illinois ChicagoLu ChengResponsible and Reliable AI, Causal ML, LLMs, AI for Computational BiologySelf-motivated and qualified students are always welcome__Lu Cheng__
+University of Illinois Urbana-Champaign__Jiaxuan You__LLM agents, graph deep learning, AI4Science25/26 Fall__https://cs.stanford.edu/~jiaxuan/__
+University of Illinois Urbana-Champaign__Ge Liu__Generative models, protein design (from Nobel prize group), AI4Science25/26 Fall__https://www.mit.edu/~geliu/__
+University of Illinois Urbana-ChampaignYaoyao LiuContinual learning, few-shot learning, semi-supervised learning, generative models, 3D geometry models, and medical imaging.25 Spring / Fall__https://yaoyaoliu.web.illinois.edu/__
+University of Illinois Urbana-ChampaignIsmini LourentzouMulitmodal AI, Embodied AI, VLMs/LLMs (reasoning, segmentation, etc.), 3D (generation, reconstruction, reasoning). Not recruiting in AI4H2026 Fall__https://____plan-lab.github.io/__
+University of Illinois Urbana-ChampaignDominic KaoVirtual Reality, HCI, Games Research, AI/LLMs2026 Fall__https://people.csail.mit.edu/dkao/__
+University of IowaMuchao YeLarge Language Models, Multi-modal AI (Video Understanding)2026 Fall__https://sites.google.com/view/mcye__
+University of IowaTianyu ZhangCPS, 5G, TSN, real-time computing2026 Fall__https://tianyuzhang.org/__
+University of Louisiana at Lafayette__Hao Zheng__Computer Vision, Machine Learning, Multi-modal Analysis, Healthcare, NLP/LLM26 Fall / 27 Spring__https://hzaoheng123.github.io/HZ/__
+University of Louisiana at LafayetteSongyang ZhangWireless communications, IoT Intelligence, Remote Sensing, Learning Theory25 Spring/Fall__https://sites.google.com/view/sydzhang__
+University of MacauJianbing ShenComputer Vision, Vision and Language, Self-Driving Cars, AI in Healthcare26 Spring/Fall__https://scholar.google.com/citations?user=_Q3NTToAAAAJ&hl=zh-CN&oi=ao__
+University of MacauZhedong ZhengComputer Vision, Uncertainty, 3D Vision, Person re-ID25 Fall__https://____zdzheng.xyz__ University of MaineZhangyu WangGeoAI, Spatial Computing, AI4Science26 Spring/26 FallUniversity of MaineZihan WuHCI, Educational Technology, AI for Education26 Fall__https://zihanwu.com/__
+University of Maryland, Baltimore CountyTejas GokhaleComputer Vision, Multimodal Learning, Generative Models, Robustness, Open-World Learning, Active Perception26 Spring/Fall__https://www.tejasgokhale.com/__
+University of Maryland, Baltimore CountyDong LiMobile Computing, Mobile Health, Wireless Sensing, Wearable Sensing, Multi-model Sensing26 Spring / 26 Fall__https://leetton.github.io__
+University of Maryland, Baltimore CountySanjay PurushothamFoundation Models (LLM/VLM) - Reasoning, AI Agents; AI Safety and Security; Federated Learning; Medical AI; Digital Twins; AI for Sciences;all year round, Self-motivated students are always welcome__https://sanjayp.is.umbc.edu/__
+University of Maryland, College ParkRunzhou TaoQuantum Computing, Programming Languages, Operating Systems, Formal Verification26 Fall__https://runzhoutao.github.io__
+University of Maryland, College ParkFumeng YangHCI & Visualization: model explanation, uncertainty communication, decision-making, data and AI literacy, trust25 FallUniversity of Maryland, College ParkKaiqing ZhangReinforcement Learning, Game Theory, Generative AI, Agents, Robotics26 Spring/Fall__https://kzhang66.github.io/__
+University of Massachusetts Amherst __Mengfan Xu__Multi-armed Bandit, Online Learning, Multi-agent Systems, Causal Inference, Operation Research25 Spring/FallUniversity of Melbourne Ting DangMobile Health, Artificial Intelligence, and Speech/Audio Processing25 Spring/FallUniversity of MemphisHaomiao NiComputer Vision, Generative AI (image&video), Video Analysis, Medical Image Analysis, Foundation Models25 Spring/FallUniversity of MiamiMingzhe ChenFederated Learning, Edge Learning, Wireless Networks, Unmanned Aerial Vehicle, Extended Reality 2025 Spring/Fall __https://winslab.us/__
+University of Michigan, Ann Arbor__Ke Sun__Mobile Computing, Internet of things, Wearable Computing, Multi-modal and LLM for Mobile, Wearable and IoT, Mobile Health, Mobile and IoT Security and Privacy, Wireless Systems, Embedded Systems25 Fall__https://samsonsjarkal.github.io/KeSun/__
+University of Michigan, Ann ArborAlexander RodríguezTime series, AI for science, LLMs26 Fall__https://alrodri.engin.umich.edu/__
+University of MinnesotaZirui LiuLLM, Agent memory system, AI for science, multi-modal, efficiency26 Fall__https://____zirui-ray-liu.github.io/__
+University of Minnesota, Twin-CitiesZhu-Tian ChenData Visualization, Human-Computer Interaction, Intelligent AR systems2026 Spring/Fall__chenzhutian.org__
+University of Minnesuta, Twin-CitiesYang ZhaoHardware acceleration for emerging applications, ASIC, FPGA2025 Fall__https://www.yangkatiezhao.net/__
+University of Minnesuta, Twin-CitiesCaiwen DingLLM for Chip Deisgn, FPGA/ASIC Design, GPU Kernel Design26 Fall__https://caiwending.github.io/web/home.html__
+University of Minnesuta, Twin-CitiesZhenman FangHardware acceleration, FPGA, GPU, LLM for chip design26 Spring/Fall__https://zhenman.github.io/__
+University of North Carolina at Chapel HillZhun Dengmachine learning, learning theory, AI ethics2025 Spring/FallUniversity of North Carolina at Chapel HillSishuai GongOperating System; System Reliability & Security; Program Analysis; Machine Learning for Systems; Verification; Testing26 Spring, Fall__https://sishuaigong.github.io/__
+University of North Carolina at Chapel Hill__Mingyu Ding__Robotics, Robot Learning, Embodied AI, 3D Vision, Graphics, (Multimodal) Language Models26 Fall__https://dingmyu.github.io/__
+University of North Carolina at Chapel Hill__Chudi Zhong__Trustworthy AI25 Fall __https://chudizhong.github.io/__
+University of North Carolina at Chapel HillHuaxiu YaoFoundation Models (LLM/VLM), Reasoning, Alignment, AI Agent, Medical AI, Robot Learning (VLA)2026 Fall__https://www.huaxiuyao.io/__
+University of North Carolina at Chapel Hill__Ziping Xu__Reinforcement Learning, Mobile Health, Machine Learning Theory2026 Fall__https://zipingxu.github.io__
+University of North Carolina at Charlotte__Jinzhen Wang__High-performance Computing, Data reduction and compression, AI+System25Fall/26Spring__https://sites.google.com/charlotte.edu/hpdilab/hpdi-lab__
+University of North Carolina at CharlotteGuanchu WangTrustworthy AI (for LLM), Explainable AI (for LLM), LLM safety, LLM reasoning25 Fall/26 Spring/26 Fall__https://guanchuwang.github.io/__
+University of North Carolina at CharlotteMatin YarmandHCI, Educational Technology, Healthcare, Applied AI26 Fall/26 Spring__https://www.matinyarmand.com/__
+University of North Carolina at CharlotteXuyang LiScientific Machine Learning, AI for Engineering Applications26 Fall/26 Spring__https://____xuyang-lx.github.io/__
+University of North TexasKewei ShaEdge Computing，Edge AI25 Spring/FallUniversity of North TexasTao HouCybersecurity, Trustworthy AI2026 Spring/Fall__https://tao-hou.com__
+University of North TexasTao WangTrustworthy AI, Cybersecurity, Next-Generation Network, Cyber-Physical System2026 Spring/Fall__https://tao-wang.com__
+University of Notre Dame Yanfang YeLLM, AI4Science26 Fall__https://engineering.nd.edu/faculty/yanfang-fanny-ye/__
+University of Notre Dame __Meng Jiang__AI for Material Science, Reasoning, Multimodality | AI Ethics, Unlearning 26 Spring/Fall__http://____www.meng-jiang.com/__
+University of Notre Dame __Toby Li__HCI, Human-AI Interaction, LLM Agents, AI Security and Privacy 26 Fall__https://toby.li/__
+University of OklahomaJie CaoMulti-party/Multi-modal Dialogue, NLP, AI for Education/Healthcare, Deep Structured Prediction2025 Spring/Fall__https://mlciv.com__
+University of Oregon__Yu Wang__Neural-Symbolic AI, Agentic Social Network, Trustworthy AI, Information Retrieval, Cybersecurity25 Spring/26 Fall__https://yuwvandy.github.io/__
+University of OregonTao HouTopological data analysis, Topological machine learning, Computational topology, Theory25 Fall__https://taohou01.github.io/__
+University of PennsylvaniaJing HuangMedical AI26 Fall__https://www.med.upenn.edu/apps/faculty/index.php/g275/p8929019__
+University of PittsburghXiaowei JiaData Mining, Knowledge-guided Machine Learning, AI for Science, Spatio-temporal Data Mining25 Spring/FallUniversity of PittsburghXulong TangMulti-GPU infra for LLM, Software hardware co-design for edge AI, Fault tolerant quantum compiler and system26 Fall__https://xzt102.github.io/__
+University of Queensland (Australia)Yadan Luo3D Vision, Autonomous Driving, VLA, World Model, Test-time AdaptationFall 26 or Spring 27__https://luoyadan.github.io/ __
+University of Queensland, AustraliaRuihong QiuGraphs, LLMs, RecSys26 Anytime__https://ruihongqiu.github.io/__
+ University of RochesterJian KangAI for Material Science and Public Health; Algorithmic Fairness; Graph Learning; Trustworthy ML2025 Spring/Fall__https://____jiank2.github.io__
+ University of South Florida__Xiaomin Lin__Underwater Robotics, Multi-modal perception, Edge VLM, LLM26 Spring/Fall__https://xiaominlin.github.io/__
+University of South FloridaYili RenMobile Computing, Wireless Sensing, Cybersecurity2025 Sping / Fall__https://yiliren.github.io/__
+University of South FloridaYi ShengAI for science, AI system25 Fall/26 Spring__https://scholar.google.com/citations?user=SN69Jk0AAAAJ&hl=en__
+University of South FloridaSantosh PandeyMachine Learning for Systems, High Performance Computing, Computer Architecture26 Spring/Fall__https://____concept-inversion.github.io/__
+University of South FloridaUtkarsh OjhaGenerative models for images; Fake image detection; Difference between real and AI generated contentFall 25/Spring/Fall '26__https://utkarshojha.github.io/__
+University of Southern CaliforniaMengyuan LiSystem Security, Cloud Security, Trusted Execution Environment, GPU security, Confidential Computing2025 Fall/2026 Fall__https://people.csail.mit.edu/mengyuanli/__
+University of Southern California__Sai Praneeth Karimireddy__Privacy-preserving ML, Federated Learning, Game theory and Incentives (Data Economics)25 Fall__https://spkreddy.org/__
+University of Southern CaliforniaYue ZhaoTrustworthy AI, AI Robustness, AI for Social Science, ML Systems26 Fall__https://____viterbi-web.usc.edu/~yzhao010/__
+University of Southern CaliforniaRuishan LiuAI for health, Biomedical AI26 Fall__https://____viterbi-web.usc.edu/~ruishanl/__
+University of Southern CaliforniaYue WangRobotics, 3D computer vision, AI26 Fall__https://____yuewang.xyz____ __
+University of Southern CaliforniaJieyu ZhaoLLM, RL, Efficiency, Agents2026Fall__https://jyzhao.net/__
+University of Southern CaliforniaParia RashidinejadLLMs, Reinforcement Learning, Reasoning, Model Steering, Interpretability, Theoretical Foundations of AI, AI SafetyFall 2026__https://scholar.google.com/citations?user=BgQkdsYAAAAJ&hl=en&oi=ao__
+University of TennesseeXiongye XiaoAI for Science, Neural Operators, Complex Networks 2026 Spring/ 2026 Fall__https://xiongyexiao.com__
+University of TennesseeFnu SuyaTrustworthy Machine Learning, AI for Cybersecurity2026 Spring/ 2026 Fall__https://fsuya.org__
+University of Tennessee, Knoxville__Fei Liu__Robotics, Surgical Robotics, Control and Motion Planning, Physics-based Simulation, Emboided AIFall 2026__https://lnnx2006.github.io/__
+Universty of Tennessee, KnoxvilleDongsheng DingReinforcement Leanring and Stochastic Systems, Generative Artificial Intelligence, Optimization and Control, AI Safety and Alignment1-2 PhDs for Fall 2026, 1-2 PhDs for 2027__https://dongshed.github.io__
+University of Texas at ArlingtonBinbin Xie2025 Spring / Fall__https://people.cs.umass.edu/~binbinxie/__
+University of Texas at ArlingtonSihong HeReinforcement Learning, Decision Making, Robust Optimization, Cyber-Physical Systems, Multiagent LLM, Robotics 2026 Fall__https://sihonghe.com__
+University of Texas at ArlingtonDianqi HanAI security, security of networked systems2026 Spring/Fall__https://hendersen.github.io/__
+University of Texas at ArlingtonHarry ShomerData Mining, Graph Machine Learning2026 Spring/Fall__https://harryshomer.github.io/recruiting/__
+University of Texas at AustinChenfeng XuEfficient Machine Learning, Gen AI, Embodied AI, 2026 Fall__https://www.chenfengx.com__
+University of Texas at Austin__Jiaxin Pei__Large Language Model (LLM), Human Computer Interaction (HCI), Computational Social Science, AI Agent2026 Fall__https://jiaxin-pei.github.io__
+University of Texas at AustinHairong WangML/AI for healthcare2026 Fa

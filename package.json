@@ -1,0 +1,47 @@
+{
+  "name": "professor-outreach",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "seed": "npx tsx scripts/seed-professors.ts"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.4",
+    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-tabs": "^1.1.2",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.48.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "groq-sdk": "^0.9.1",
+    "lucide-react": "^0.474.0",
+    "next": "16.2.4",
+    "pdf-parse": "^1.1.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "recharts": "^2.15.0",
+    "tailwind-merge": "^2.6.0",
+    "tsx": "^4.19.2",
+    "framer-motion": "^12.38.0",
+    "@radix-ui/react-slot": "^1.2.4",
+    "three": "^0.171.0",
+    "next-themes": "^0.4.4",
+    "@radix-ui/react-icons": "^1.3.2",
+    "@types/three": "^0.171.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
