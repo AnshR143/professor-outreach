@@ -23,6 +23,55 @@ export interface GlobalProfessor {
   source?: string
 }
 
+// Known non-person words that appear in Semantic Scholar/OpenAlex topic results
+const TOPIC_WORDS = new Set([
+  "entomology","biology","chemistry","physics","ecology","genomics","proteomics",
+  "neuroscience","pharmacology","epidemiology","toxicology","botany","zoology",
+  "microbiology","immunology","pathology","oncology","cardiology","dermatology",
+  "radiology","pediatrics","psychiatry","endocrinology","hematology","nephrology",
+  "gastroenterology","pulmonology","rheumatology","orthopedics","ophthalmology",
+  "cotton","wheat","rice","maize","soybean","corn","tomato","potato","barley",
+  "management","department","laboratory","institute","center","programme","program",
+  "research","studies","science","engineering","technology","analysis","review",
+  "journal","proceedings","committee","society","association","foundation","group",
+  "effect","effects","impact","role","study","comparison","evaluation","assessment",
+])
+
+/**
+ * Returns true only if the name looks like a real person's name.
+ * Rejects topic names, single words, all-caps acronyms, etc.
+ */
+function isRealPersonName(name: string, university: string): boolean {
+  if (!name || name.trim().length < 4) return false
+  if (!university || university.toLowerCase() === "unknown") return false
+
+  const parts = name.trim().split(/\s+/)
+  // Must have at least 2 parts (first + last)
+  if (parts.length < 2) return false
+  // Must not be longer than 6 words (not a sentence)
+  if (parts.length > 6) return false
+
+  const lower = name.toLowerCase()
+
+  // Reject if any word in the name is a known topic word
+  for (const part of parts) {
+    const cleaned = part.replace(/[^a-z]/gi, "").toLowerCase()
+    if (TOPIC_WORDS.has(cleaned)) return false
+  }
+
+  // Reject all-uppercase names (likely acronyms or department names)
+  if (name === name.toUpperCase() && name.length > 4) return false
+
+  // Each part should start with a capital letter (proper noun)
+  const properNoun = parts.every(p => /^[A-Z]/.test(p) || /^[a-z]{1,3}$/.test(p)) // allow "de", "von", etc.
+  if (!properNoun) return false
+
+  // Reject names that contain numbers
+  if (/\d/.test(name)) return false
+
+  return true
+}
+
 /**
  * Search the global pool first, then live APIs if needed.
  * Newly found professors are automatically saved back to global_professors.
@@ -92,6 +141,8 @@ export async function findGlobalProfessors(
           for (const a of authors) {
             if (!a.name || existingNames.has(a.name.toLowerCase())) continue
             const affiliation = a.affiliations?.[0] || uni || "Unknown"
+            // Only accept real person names with a known institution
+            if (!isRealPersonName(a.name, affiliation)) continue
             fresh.push({
               name: a.name,
               university: affiliation,
@@ -113,6 +164,8 @@ export async function findGlobalProfessors(
             if (!a.display_name || existingNames.has(a.display_name.toLowerCase())) continue
             const normalized = normalizeOAAuthor(a)
             if (!normalized.university || normalized.university === "Unknown") continue
+            // Only accept real person names
+            if (!isRealPersonName(normalized.name, normalized.university)) continue
             fresh.push({ ...normalized, source: "openalex" })
             existingNames.add(a.display_name.toLowerCase())
           }
