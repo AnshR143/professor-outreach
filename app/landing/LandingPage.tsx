@@ -178,17 +178,11 @@ export default function LandingPage() {
           src="/hero-bg.mp4"
         />
 
-        {/* Blue gradient overlay — fully opaque at top (hides any artifact), rich blue tint throughout */}
+        {/* Light blue gradient overlay — matches original section colors, opaque at top/bottom */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(to bottom, #0a1628 0%, rgba(10,22,60,0.82) 18%, rgba(15,30,80,0.72) 45%, rgba(10,22,60,0.82) 80%, #0a1628 100%)",
+          background: "linear-gradient(to bottom, #bae6fd 0%, rgba(186,230,253,0.88) 12%, rgba(219,241,255,0.72) 40%, rgba(240,249,255,0.78) 70%, #ffffff 100%)",
           zIndex: 1,
-        }} />
-        {/* Extra blue shimmer layer */}
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(37,99,235,0.18) 0%, transparent 70%)",
-          zIndex: 2,
         }} />
 
         {/* Content */}
@@ -197,24 +191,24 @@ export default function LandingPage() {
           {/* Section heading */}
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <div className="ani-1" style={{ display: "inline-flex", alignItems: "center", gap: 8,
-              background: "rgba(59,130,246,0.18)", border: "1px solid rgba(99,179,237,0.35)",
+              background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
               borderRadius: 999, padding: "6px 16px", marginBottom: 20 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#60a5fa",
-                boxShadow: "0 0 10px #60a5fa" }} />
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#93c5fd",
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#3b82f6",
+                boxShadow: "0 0 8px #3b82f6" }} />
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#1e40af",
                 textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 Why OutreachAI
               </span>
             </div>
             <h2 className="ani-2" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 800,
-              color: "#f0f9ff", margin: "0 0 16px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
+              color: "#0f172a", margin: "0 0 16px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
               Every tool you need to land<br />
-              <span style={{ background: "linear-gradient(to right,#60a5fa,#a78bfa)",
+              <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 research opportunities
               </span>
             </h2>
-            <p className="ani-3" style={{ fontSize: 17, color: "#bae6fd", maxWidth: 560,
+            <p className="ani-3" style={{ fontSize: 17, color: "#334155", maxWidth: 560,
               margin: "0 auto", lineHeight: 1.6 }}>
               Built for undergrads, Masters, and PhD students who want a systematic,
               AI-powered approach to cold outreach.
@@ -227,38 +221,36 @@ export default function LandingPage() {
               <div key={f.title}
                 className="ani-3"
                 style={{
-                  background: "rgba(15,30,80,0.55)",
-                  border: "1px solid rgba(96,165,250,0.22)",
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
+                  background: "rgba(255,255,255,0.75)",
+                  border: "1px solid rgba(59,130,246,0.15)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
                   borderRadius: 20,
                   padding: "28px 28px",
-                  backdropFilter: "blur(18px)",
-                  transition: "border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s",
+                  backdropFilter: "blur(14px)",
+                  transition: "border-color 0.2s, background 0.2s, transform 0.2s",
                   animationDelay: `${0.1 + i * 0.08}s`,
                 }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(96,165,250,0.55)"
-                  ;(e.currentTarget as HTMLDivElement).style.background = "rgba(15,30,80,0.75)"
-                  ;(e.currentTarget as HTMLDivElement).style.transform = "translateY(-5px)"
-                  ;(e.currentTarget as HTMLDivElement).style.boxShadow = "0 16px 48px rgba(37,99,235,0.25), inset 0 1px 0 rgba(255,255,255,0.1)"
+                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(59,130,246,0.35)"
+                  ;(e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.95)"
+                  ;(e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)"
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(96,165,250,0.22)"
-                  ;(e.currentTarget as HTMLDivElement).style.background = "rgba(15,30,80,0.55)"
+                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(59,130,246,0.15)"
+                  ;(e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.75)"
                   ;(e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"
-                  ;(e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)"
                 }}>
-                <div style={{ width: 46, height: 46, borderRadius: 13,
-                  background: "linear-gradient(135deg,rgba(37,99,235,0.35),rgba(79,70,229,0.35))",
-                  border: "1px solid rgba(96,165,250,0.35)",
+                <div style={{ width: 44, height: 44, borderRadius: 12,
+                  background: "linear-gradient(135deg,rgba(59,130,246,0.1),rgba(129,140,248,0.1))",
+                  border: "1px solid rgba(59,130,246,0.25)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   marginBottom: 16 }}>
-                  <f.icon style={{ width: 22, height: 22, color: "#60a5fa" }} />
+                  <f.icon style={{ width: 22, height: 22, color: "#2563eb" }} />
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f0f9ff", margin: "0 0 8px" }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>
                   {f.title}
                 </h3>
-                <p style={{ fontSize: 14, color: "#93c5fd", lineHeight: 1.6, margin: 0 }}>
+                <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.6, margin: 0 }}>
                   {f.desc}
                 </p>
               </div>
