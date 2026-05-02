@@ -10,7 +10,7 @@
  * 3. Save newly discovered professors back to global_professors
  */
 
-import { searchByConceptAndInstitution, normalizeOAAuthor } from "@/lib/apis/openalex"
+import { findProfessorsByField, normalizeOAAuthor } from "@/lib/apis/openalex"
 import { SupabaseClient } from "@supabase/supabase-js"
 
 export interface GlobalProfessor {
@@ -121,7 +121,7 @@ export async function findGlobalProfessors(
     for (const uni of uniTargets) {
       promises.push((async () => {
         try {
-          const authors = await searchByConceptAndInstitution(term, uni, 25)
+          const authors = await findProfessorsByField(term, uni, 25)
           for (const a of authors) {
             if (!a.display_name || existingNames.has(a.display_name.toLowerCase())) continue
             const normalized = normalizeOAAuthor(a)
