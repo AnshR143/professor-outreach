@@ -2,7 +2,7 @@
 import { motion, useInView } from "framer-motion"
 import { ArrowRight, Brain, Mail, BarChart3, Zap, Shield, CheckCircle,
          Hexagon, Triangle, Command, Ghost, Gem, Cpu } from "lucide-react"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import Link from "next/link"
 import Lenis from "@studio-freight/lenis"
 
@@ -64,7 +64,20 @@ const navItems = [
    LANDING PAGE
    ═══════════════════════════════════════════════════ */
 export default function LandingPage() {
-  
+  const [mouse, setMouse] = useState({ x: 0, y: 0 })
+  const heroRef = useRef<HTMLDivElement>(null)
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2   // -1 to 1
+    const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 2  // -1 to 1
+    setMouse({ x, y })
+  }
+
+  function handleMouseLeave() {
+    setMouse({ x: 0, y: 0 })
+  }
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -97,15 +110,30 @@ export default function LandingPage() {
           SECTION 1 — Video Hero
           ═══════════════════════════════════════════ */}
       <div style={{ height: "100vh", width: "100%", padding: 10 }}>
-        <div style={{ position: "relative", height: "100%", width: "100%",
-          overflow: "hidden", borderRadius: 28 }}>
+        <div
+          ref={heroRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ position: "relative", height: "100%", width: "100%",
+            overflow: "hidden", borderRadius: 28 }}>
 
+          {/* Video with mouse parallax — moves opposite to cursor for depth */}
           <video autoPlay loop muted playsInline
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+            style={{
+              position: "absolute",
+              inset: "-3%",          /* slight oversize so edges don't show on shift */
+              width: "106%",
+              height: "106%",
+              objectFit: "cover",
+              transform: `translate(${mouse.x * -14}px, ${mouse.y * -10}px)`,
+              transition: "transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94)",
+              willChange: "transform",
+            }}
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
 
+          {/* Lighter gradient — brighter mid-section, softer darks */}
           <div style={{ pointerEvents: "none", position: "absolute", inset: 0,
-            background: "linear-gradient(to bottom,rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.0) 35%,rgba(0,0,0,0.7) 100%)" }} />
+            background: "linear-gradient(to bottom,rgba(0,0,0,0.22) 0%,rgba(0,0,0,0.0) 30%,rgba(0,0,0,0.45) 100%)" }} />
 
           {/* Navbar */}
           <nav style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
