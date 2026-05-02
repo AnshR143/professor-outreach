@@ -1,5 +1,6 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { PRELOADED_PROFESSORS } from "@/lib/data/professors"
+import { findGlobalProfessors } from "@/lib/apis/global-professors"
 
 // Extract meaningful keywords from resume text for matching
 function extractResumeKeywords(resumeText: string): string[] {
@@ -113,6 +114,7 @@ export async function POST(req: Request) {
       .from("researchers").select("name").eq("user_id", user!.id)
     const existingNames = new Set((existing || []).map(r => r.name.toLowerCase()))
 
+    // ── Step 1: Match from preloaded list ──────────────────────────────────
     const matching = PRELOADED_PROFESSORS.filter(prof => {
       if (existingNames.has(prof.name.toLowerCase())) return false
 
@@ -135,7 +137,6 @@ export async function POST(req: Request) {
       return matchesField && matchesUni && matchesKeyword
     })
 
-    // Sort by match score desc, then shuffle within same score bucket for variety
     const scored = matching.map(prof => {
       const { score, fieldMatches, resumeMatches } = calcMatchScore(
         prof.areas, fields, resumeKeywords, prof.university
@@ -148,15 +149,34 @@ export async function POST(req: Request) {
     })
     const toAdd = scored.slice(0, count)
 
-    if (toAdd.length === 0) {
+    // ── Step 2: If preloaded list didn't have enough, hit global pool ───────
+    const stillNeeded = count - toAdd.length
+    let globalProfs: Array<{ name: string; university: string; research_areas: string[]; bio?: string; profile_url?: string | null }> = []
+
+    if (stillNeeded > 0) {
+      send({ type: "progress", found: toAdd.length, total: count, current: "Searching Semantic Scholar & OpenAlex..." })
+      try {
+        const raw = await findGlobalProfessors(supabase, fields, universities, keyword, stillNeeded * 3)
+        globalProfs = raw
+          .filter(p => !existingNames.has(p.name.toLowerCase()) && !toAdd.some(t => t.prof.name.toLowerCase() === p.name.toLowerCase()))
+          .slice(0, stillNeeded)
+      } catch (e) {
+        console.error("Global pool fetch failed:", e)
+      }
+    }
+
+    const totalToAdd = toAdd.length + globalProfs.length
+    if (totalToAdd === 0) {
       send({ type: "done", found: 0 })
       writer.close()
       return
     }
 
     let added = 0
+
+    // Insert from preloaded list
     for (const { prof, score, fieldMatches, resumeMatches } of toAdd) {
-      send({ type: "progress", found: added, total: toAdd.length, current: `Adding ${prof.name}...` })
+      send({ type: "progress", found: added, total: totalToAdd, current: `Adding ${prof.name}...` })
 
       const whyMatch = buildWhyMatch(fieldMatches, resumeMatches, prof.areas, prof.university)
 
@@ -188,7 +208,45 @@ export async function POST(req: Request) {
         }).then(() => {}).catch(() => {})
 
         added++
-        send({ type: "progress", found: added, total: toAdd.length, current: `Added ${prof.name} (${score}% match)` })
+        send({ type: "progress", found: added, total: totalToAdd, current: `Added ${prof.name} (${score}% match)` })
+      }
+    }
+
+    // Insert from global pool (Semantic Scholar / OpenAlex)
+    for (const prof of globalProfs) {
+      send({ type: "progress", found: added, total: totalToAdd, current: `Adding ${prof.name} from live search...` })
+
+      const areas = prof.research_areas || []
+      const { score, fieldMatches, resumeMatches } = calcMatchScore(areas, fields, resumeKeywords, prof.university)
+      const whyMatch = buildWhyMatch(fieldMatches, resumeMatches, areas, prof.university)
+
+      const { data: researcher } = await supabase.from("researchers").insert({
+        user_id: user!.id,
+        name: prof.name,
+        university: prof.university,
+        department: null,
+        bio: prof.bio || `${prof.name} is a researcher at ${prof.university} working on ${areas.slice(0, 3).join(", ")}.`,
+        match_score: score,
+        status: "unsorted",
+        research_areas: areas,
+        profile_links: prof.profile_url ? { Homepage: prof.profile_url } : {},
+        semantic_scholar_id: null,
+        why_match: whyMatch,
+        email_status: "not_emailed",
+      }).select().single()
+
+      if (researcher) {
+        await supabase.from("activities").insert({
+          user_id: user!.id,
+          type: "researcher_found",
+          researcher_id: researcher.id,
+          researcher_name: prof.name,
+          university: prof.university,
+          description: "Researcher discovered via Semantic Scholar / OpenAlex live search",
+        }).then(() => {}).catch(() => {})
+
+        added++
+        send({ type: "progress", found: added, total: totalToAdd, current: `Added ${prof.name} from live database (${score}% match)` })
       }
     }
 

@@ -1,0 +1,496 @@
+Professor	Institution	Subject	Source
+Oha Abdeljaber	New Jersey Institute of Technology	Mathematics	Great Courses Faculty
+Kathleen Adams	Loyola Univ. of Chicago	Anthropology	Great Courses Faculty
+Dr. Vittorio Addona	Macalester College	Mathematics	Great Courses Faculty
+Beverly McCullough Almond	Univ. of Mary Washington	English	Great Courses Faculty
+Paul Anderson	Albion College	Mathematics	Great Courses Faculty
+Paul Christopher Anderson	Clemson Univ.	History	Great Courses Faculty
+Erik Anderson	Drew Univ.	Philosophy	Great Courses Faculty
+Robert M. Anderson M.D.	Mills College	Anthropology	Great Courses Faculty
+Arnie Arluke	Northeastern Univ.	Sociology	Great Courses Faculty
+Denis Auroux	Univ. of California â€“ Berkeley	Mathematics	Great Courses Faculty
+Rick Axtell	Centre College	Religion	Great Courses Faculty
+Dr. David Baker	Austin College	Physics	Great Courses Faculty
+Elizabeth Barnes	College of William & Mary	English	Great Courses Faculty
+Kenn Barron	James Madison Univ.	Psychology	Great Courses Faculty
+Susan R. Barry	Mount Holyoke College	Biology	Great Courses Faculty
+Jennifer Basil	City University of New York â€“ Brooklyn College	Biology	Great Courses Faculty
+Charlie Bass	Wofford College	Chemistry	Great Courses Faculty
+Lori Bassman	Harvey Mudd College	Engineering	Great Courses Faculty
+Fred Baumann	Kenyon College	Political Science	Great Courses Faculty
+T. Randolph Beard Ph.D.	Auburn Univ.	Economics	Great Courses Faculty
+P. Robert Beatty	Univ. of California â€“ Berkeley	Biology	Great Courses Faculty
+John Beeler	Univ. of Alabama â€“ Tuscaloosa	History	Great Courses Faculty
+Arthur Benjamin	Brigham Young Univ.	Biology	Great Courses Faculty
+Curtis Bennett	Harvey Mudd College	Mathematics	Great Courses Faculty
+Jeffrey Berman	Loyola Marymount Univ.	Mathematics	Great Courses Faculty
+David Bernstein	State University of New York â€“ Albany	English	Great Courses Faculty
+Joe Biel	James Madison Univ.	Computer Science	Great Courses Faculty
+Kathleen A. Bishop Ph.D.	California State Univ. â€“ Fullerton	Art (Studio)	Great Courses Faculty
+Joyce Boland-DeVito Esq.	New York Univ.	Humanities	Great Courses Faculty
+Rick Bommelje	St. John's University (NY)	Business Law	Great Courses Faculty
+David Bost	Rollins College	Communication	Great Courses Faculty
+Paul Bracken	Furman Univ.	Foreign Language (Spanish)	Great Courses Faculty
+Charles L. Brewer	Yale Univ.	Management	Great Courses Faculty
+Victoria Brown	Furman Univ.	Psychology	Great Courses Faculty
+Peter Burns	Grinnell College	History	Great Courses Faculty
+Dale F. Burnside	Loyola Univ. New Orleans	Political Science	Great Courses Faculty
+John W. Burton	Lenoir-Rhyne Univ.	Biology	Great Courses Faculty
+Dara N. Byrne Ph.D.	Connecticut College	Anthropology	Great Courses Faculty
+Victor L. Cahn	John Jay College of Criminal Justice	Communication	Great Courses Faculty
+Gerard Callanan	Skidmore College	English	Great Courses Faculty
+Scott Campbell	West Chester Univ. of Pennsylvania	Management	Great Courses Faculty
+Walter Campbell	Nazareth College	Philosophy	Great Courses Faculty
+Hector R. Campos	Univ. of California â€“ Santa Cruz	Foreign Language (German)	Great Courses Faculty
+Richard Capobianco	Georgetown Univ.	Foreign Language (Spanish)	Great Courses Faculty
+Matthew Carnes	Stonehill College	Philosophy	Great Courses Faculty
+Ralph G. Carter	Georgetown Univ.	Government	Great Courses Faculty
+Rebecca Walker Clarke	Texas Christian Univ.	Political Science	Great Courses Faculty
+Anne Clem	Brigham Young Univ.	English	Great Courses Faculty
+Regis Clifford	Iowa State University	Accounting	Great Courses Faculty
+Paul Clingan	St. John's University (NY)	Marketing	Great Courses Faculty
+Bradford R. Collins	Ohio State Univ.	Engineering	Great Courses Faculty
+Dr. Bruce Michael Conforth	Univ. of South Carolina	Art (History)	Great Courses Faculty
+Thomas Conner	Univ. of Michigan-Ann Arbor	American Culture	Great Courses Faculty
+Kevin Corcoran	Hillsdale College	History	Great Courses Faculty
+Phillip Cornwell	Calvin College	Philosophy	Great Courses Faculty
+Javier Corrales	Rose Hulman Institute of Technology	Engineering	Great Courses Faculty
+Jay Corrigan Ph.D.	Amherst College	Political Science	Great Courses Faculty
+Lisa Cravens-Brown	Kenyon College	Economics	Great Courses Faculty
+Susan Croll	Ohio State Univ.	Psychology	Great Courses Faculty
+Jane F. Crosthwaite	City Univ. of New York â€“ Queens College	Psychology	Great Courses Faculty
+Yolanda P. Cruz	Mount Holyoke College	Religion	Great Courses Faculty
+Light T. Cummins	Oberlin College	Biology	Great Courses Faculty
+Philip Daileader	Austin College	History	Great Courses Faculty
+David B. Daniel	College of William & Mary	History	Great Courses Faculty
+Susan Daniels	James Madison Univ.	Psychology	Great Courses Faculty
+David Denby	Mount Holyoke College	Theater	Great Courses Faculty
+Diana DePardo-Minsky	Tufts Univ.	Philosophy	Great Courses Faculty
+Shreesh Deshpande	Bard College	Art (History)	Great Courses Faculty
+David Dessler	Univ. of San Diego	Finance	Great Courses Faculty
+Robert Devigne	College of William & Mary	Government	Great Courses Faculty
+Del Dickson	Tufts Univ.	Political Science	Great Courses Faculty
+R.M. Douglas	Univ. of San Diego	Political Science	Great Courses Faculty
+Kimberly D.R. DuVall	Colgate Univ.	History	Great Courses Faculty
+J.C. Ellefson	James Madison Univ.	Psychology	Great Courses Faculty
+Melvin Patrick Ely	Champlain College	English (Creative Writing)	Great Courses Faculty
+Diane Evans	College of William & Mary	History	Great Courses Faculty
+Thomas Famula	Rose Hulman Institute of Technology	Mathematics	Great Courses Faculty
+Christopher Fee	Univ. of California â€“ Davis	Animal Science	Great Courses Faculty
+Timothy Fehler	Gettysburg College	English	Great Courses Faculty
+Gerald W. Feigenson	Furman Univ.	History	Great Courses Faculty
+Vinnie Ferraro	Cornell Univ.	Biochemistry	Great Courses Faculty
+Dr. W. Macy Finck	Mount Holyoke College	International Studies	Great Courses Faculty
+Rachel Fink	Auburn Univ.	Economics	Great Courses Faculty
+Richard Fleming	Mount Holyoke College	Biology	Great Courses Faculty
+Dr. Connie Fletcher	Bucknell University	Philosophy	Great Courses Faculty
+Mike Foley	Loyola Univ. of Chicago	Journalism	Great Courses Faculty
+Leonard Folgarait	Univ. of Florida	Journalism	Great Courses Faculty
+Amy Frary	Vanderbilt Univ.	Art (History)	Great Courses Faculty
+Fredrick P. Frieden Ph.D.	Mount Holyoke College	Biology	Great Courses Faculty
+Erik Fritsvold	College of William & Mary	Psychology	Great Courses Faculty
+Rachel Gans-Boriskin	Univ. of San Diego	Criminal Justice	Great Courses Faculty
+John B. Geddes	Northeastern Univ.	Communication	Great Courses Faculty
+Douglas Gentile	Franklin W. Olin College of Engineering	Mathematics	Great Courses Faculty
+Richard Gillin	Iowa State University	Psychology	Great Courses Faculty
+Mary Glaser	Washington College	English	Great Courses Faculty
+Karen Gocsik	Tufts Univ.	Mathematics	Great Courses Faculty
+John Gordon	Dartmouth College	Writing	Great Courses Faculty
+Stephanie Gould	Connecticut College	Literature	Great Courses Faculty
+John Goulet	Austin College	Chemistry	Great Courses Faculty
+Megan M. Granich	Worcester Polytechnic Institute	Mathematics	Great Courses Faculty
+Elton Graves	Loyola Marymount Univ.	Mathematics	Great Courses Faculty
+Jared Green	Rose Hulman Institute of Technology	Mathematics	Great Courses Faculty
+Ron Gronsky	Stonehill College	English	Great Courses Faculty
+Arthur Gross-Schaefer	Univ. of California â€“ Berkeley	Engineering	Great Courses Faculty
+Stephen W. Guerrier	Loyola Marymount Univ.	Business Law	Great Courses Faculty
+Tom Gufrey	James Madison Univ.	History	Great Courses Faculty
+Michael Haaf	California State Univ. â€“ Long Beach	Chemistry	Great Courses Faculty
+Rosalind Hall	Ithaca College	Chemistry	Great Courses Faculty
+Linda Hall	Brigham Young Univ.	Music	Great Courses Faculty
+Devon W. Hanahan	Skidmore College	English	Great Courses Faculty
+Tekla A. Harms	College of Charleston	Foreign Language (Spanish)	Great Courses Faculty
+Karen Harpp	Amherst College	Geology	Great Courses Faculty
+James Hartley	Colgate Univ.	Geology	Great Courses Faculty
+Mary Stillwell Haupt	Mount Holyoke College	Economics	Great Courses Faculty
+Audrey Haynes	SUNY-Binghamton Univ.	Journalism	Great Courses Faculty
+Barrett Hazeltine	Univ. of Georgia	Political Science	Great Courses Faculty
+Richard Hazlett	Brown Univ.	Engineering	Great Courses Faculty
+Byran Hendricks	Pomona College	Geology	Great Courses Faculty
+Dan Hubbard	Univ. of Wisconsin â€“ Madison	Psychology	Great Courses Faculty
+George W. Hudler	Univ. of Mary Washington	Accounting	Great Courses Faculty
+Larry R. Huffman	Cornell Univ.	Agriculture	Great Courses Faculty
+Tom Hughes	James Madison Univ.	Education	Great Courses Faculty
+Claude Mark Hurlbert	Univ. of South Carolina	Business Law	Great Courses Faculty
+William Hutton	Indiana Univ. of Pennsylvania	English	Great Courses Faculty
+Raymond Skip Hyser	College of William & Mary	Classics	Great Courses Faculty
+Joe Irvine	James Madison Univ.	History	Great Courses Faculty
+Justin A. Jackson	Ohio State Univ.	Business Law	Great Courses Faculty
+Jon Jacobsen	Hillsdale College	English	Great Courses Faculty
+John M. Janiga	Harvey Mudd College	Mathematics	Great Courses Faculty
+Dr. David Jaynes	Loyola Univ. of Chicago	Accounting	Great Courses Faculty
+Dr. Melvin A. Jenkins	James Madison Univ.	Biology	Great Courses Faculty
+Elizabeth Jensen	Indiana Univ. of Pennsylvania	Developmental Studies	Great Courses Faculty
+Pamela Jensen	Hamilton College	Economics	Great Courses Faculty
+Doug Johnson	Kenyon College	Political Science	Great Courses Faculty
+Martin Jones	Colgate Univ.	Psychology	Great Courses Faculty
+Dr. James J. Jozefowicz	College of Charleston	Mathematics	Great Courses Faculty
+Alan Karras	Indiana Univ. of Pennsylvania	Economics	Great Courses Faculty
+Joshua T. Katz	Univ. of California â€“ Berkeley	International Studies	Great Courses Faculty
+Spencer Kelly	Princeton Univ.	Classics	Great Courses Faculty
+Panayotis Kevrekidis	Colgate Univ.	Psychology	Great Courses Faculty
+Pauline Khan	Univ. of Massachusetts-Amherst	Mathematics	Great Courses Faculty
+Sung Kyu Kim	Univ. of Michigan	Communication	Great Courses Faculty
+Professor Kimora	Macalester College	Physics	Great Courses Faculty
+Chris Kingston	John Jay College of Criminal Justice	Interdisciplinary Studies	Great Courses Faculty
+Dr. Thomas M. Kitts	Amherst College	Economics	Great Courses Faculty
+John Knox	St. John's University (NY)	English	Great Courses Faculty
+Robert Kosinski	Univ. of Georgia	Geography	Great Courses Faculty
+Dr. Robert Kostelnik	Clemson Univ.	Biology	Great Courses Faculty
+Robin Kowalski	Indiana Univ. of Pennsylvania	Sport Management	Great Courses Faculty
+Charles Kutal	Clemson Univ.	Psychology	Great Courses Faculty
+John Lachs	Univ. of Georgia	Chemistry	Great Courses Faculty
+John M. Lammert	Vanderbilt Univ.	Philosophy	Great Courses Faculty
+Joshua Landy	Gustavus Adolphus College	Biology	Great Courses Faculty
+Joseph Lauinger	Stanford Univ.	Foreign Language (French)	Great Courses Faculty
+B.M. Lavelle	Sarah Lawrence College	Literature	Great Courses Faculty
+Brad Lehman	Loyola Univ. of Chicago	Classics	Great Courses Faculty
+David Leibowitz	Northeastern Univ.	Engineering	Great Courses Faculty
+Richard Leitch	Kenyon College	Political Science	Great Courses Faculty
+Gary Lewandowski Jr.	Gustavus Adolphus College	Political Science	Great Courses Faculty
+Walter Lewin	Monmouth Univ.	Psychology	Great Courses Faculty
+Scott B. Lewis	Massachusetts Institute of Technology	Physics	Great Courses Faculty
+Ran Libeskind-Hadas	James Madison Univ.	Chemistry	Great Courses Faculty
+Miriam Liss	Harvey Mudd College	Computer Science	Great Courses Faculty
+Avi O. Liveson	Univ. of Mary Washington	Psychology	Great Courses Faculty
+Rowan Lockwood	City Univ. of New York â€“ Hunter College	Economics	Great Courses Faculty
+Stephen Long	College of William & Mary	Geology	Great Courses Faculty
+Larry Louters	Univ. of Richmond	Political Science	Great Courses Faculty
+LisaMarie Luccioni	Calvin College	Chemistry	Great Courses Faculty
+Mariah Lynch	Univ. of Cincinnati	Communication	Great Courses Faculty
+Steve Lytle	Univ. of South Carolina	Accounting	Great Courses Faculty
+John Majewski	University of Central Florida	Health	Great Courses Faculty
+N. Gregory Mankiw	Univ. of California â€“ Santa Barbara	History	Great Courses Faculty
+Catherine Marrone	Harvard College	Economics	Great Courses Faculty
+Jonathan E. Martin	State Univ. of New York â€“ Stony Brook	Sociology	Great Courses Faculty
+Evelyn McClave	Univ. of Wisconsin â€“ Madison	Atmospheric and Oceanic Studies	Great Courses Faculty
+Jeffrey W. McClurken	California State Univ. â€“ Northridge	English (Linguistics)	Great Courses Faculty
+Michallene McDaniel	Univ. of Mary Washington	History	Great Courses Faculty
+Kim McMullen	Gainesville State College	Sociology	Great Courses Faculty
+David Mease	Kenyon College	English	Great Courses Faculty
+Dr. Jonathan Millen	San Jose State Univ.	Business	Great Courses Faculty
+Daniel R. Miller	Rider Univ.	Communications	Great Courses Faculty
+Sam Mitchell	Calvin College	History	Great Courses Faculty
+John Warne Monroe	Mount Holyoke College	Philosophy	Great Courses Faculty
+Nina Moore	Iowa State University	History	Great Courses Faculty
+Patrice Mothion	Colgate Univ.	Political Science	Great Courses Faculty
+Kerry Muhlestein	Centre College	Foreign Language (French)	Great Courses Faculty
+Dr. Sri Mukherjee	Brigham Young Univ.	Ancient Studies	Great Courses Faculty
+Larry J. Nelson	Harvard College	English (Writing)	Great Courses Faculty
+Karl J. Niklas	Brigham Young Univ.	Human Development	Great Courses Faculty
+Steven Noll	Cornell Univ.	Biology	Great Courses Faculty
+Dr. James O'Keefe	Univ. of Florida	History	Great Courses Faculty
+Margaret Oakes	St. John's University (NY)	Criminal Justice	Great Courses Faculty
+Natalia Olshanskaya	Furman Univ.	English	Great Courses Faculty
+Melinda D. Papaccio	Kenyon College	Foreign Language (Russian)	Great Courses Faculty
+Steven Pedersen	Seton Hall Univ.	Writing	Great Courses Faculty
+Stephen Pennell	Univ. of California â€“ Berkeley	Chemistry	Great Courses Faculty
+Paul R. Pinet	Univ. of Massachusetts â€“ Lowell	Mathematics	Great Courses Faculty
+John J. Pitney Jr.	Colgate Univ.	Geology	Great Courses Faculty
+Ronald L. Pitcock	Claremont McKenna College	Government	Great Courses Faculty
+Dr. Constantine Pleshakov	Texas Christian Univ.	Interdisciplinary Studies	Great Courses Faculty
+Laurie Poe	Mount Holyoke College	International Studies	Great Courses Faculty
+Thad Polk	Santa Clara Univ.	Mathematics	Great Courses Faculty
+Sam Potolicchio	Univ. of Michigan	Psychology	Great Courses Faculty
+Karen A. Pressprich	Georgetown Univ.	American Politics	Great Courses Faculty
+Joseph Pucci	Clemson Univ.	Chemistry	Great Courses Faculty
+Stan Rachootin	Brown Univ.	Classics	Great Courses Faculty
+Jonathan Rajewski	Mount Holyoke College	Biology	Great Courses Faculty
+Stephanie Ravillon	Champlain College	Digital Forensics	Great Courses Faculty
+Gilda Werner Reed	Brown Univ.	Foreign Language (French)	Great Courses Faculty
+Elizabeth Renker	Univ. of New Orleans	Psychology	Great Courses Faculty
+Joel Richeimer	Ohio State Univ.	English	Great Courses Faculty
+Aric Rindfleisch	Kenyon College	Philosophy	Great Courses Faculty
+Christopher Rivers	Univ. of Wisconsin â€“ Madison	Marketing	Great Courses Faculty
+Warren Rochelle	Mount Holyoke College	Foreign Language (French)	Great Courses Faculty
+Paul Rockwell	Univ. of Mary Washington	English (Creative Writing)	Great Courses Faculty
+John P. Rogate	Amherst College	Foreign Language (French)	Great Courses Faculty
+Eric Ronis	Champlain College	Computer Science	Great Courses Faculty
+David Rosenwasser	Champlain College	Communication	Great Courses Faculty
+Andrew Russakoff	Muhlenberg College	English (Creative Writing)	Great Courses Faculty
+Mehran Sahami	St. John's University (NY)	Computer Science	Great Courses Faculty
+Catherine Sanderson	Stanford Univ.	Computer Science	Great Courses Faculty
+Dan Saracino	Amherst College	Psychology	Great Courses Faculty
+Todd Schoepflin	Colgate Univ.	Mathematics	Great Courses Faculty
+Shelly Schreier Ph.D.	Niagara Univ.	Sociology	Great Courses Faculty
+Alan Schroeder	Univ. of Michigan	Psychology	Great Courses Faculty
+Douglass Schumacher	Northeastern Univ.	Journalism	Great Courses Faculty
+Stephen Schvaneveld	Ohio State Univ.	Physics	Great Courses Faculty
+Jacqueline Scott	Clemson Univ.	Chemistry	Great Courses Faculty
+Roberto Serrano	Loyola Univ. of Chicago	Philosophy	Great Courses Faculty
+Sergei Shabanov	Brown Univ.	Economics	Great Courses Faculty
+Beverly Sher	Univ. of Florida	Mathematics	Great Courses Faculty
+Yosi Shibberu	College of William & Mary	Biology	Great Courses Faculty
+Rebecca Shiner	Rose Hulman Institute of Technology	Mathematics	Great Courses Faculty
+Dr. Melinda Anne Shoemaker	Colgate Univ.	Psychology	Great Courses Faculty
+Shalom Shoer	Broward College	Psychology	Great Courses Faculty
+Timothy Baker Shutt	Cornell Univ.	Foreign Language (Hebrew)	Great Courses Faculty
+Mark Sibley-Jones	Kenyon College	Humanities	Great Courses Faculty
+Kevin M. Simmons	Univ. of South Carolina	Literature	Great Courses Faculty
+Tony Smith	Austin College	Economics	Great Courses Faculty
+Sheldon Solomon	St. Petersburg College	Communication	Great Courses Faculty
+Mark Somerville	Skidmore College	Psychology	Great Courses Faculty
+Erl Sorensen	Franklin W. Olin College of Engineering	Engineering	Great Courses Faculty
+Trisha Spears	Bentley Univ.	Mathematics	Great Courses Faculty
+Sarah Spence Adams	Florida State Univ.	Biology	Great Courses Faculty
+Richard Stamper	Franklin W. Olin College of Engineering	Mathematics	Great Courses Faculty
+Zvezdelina Stankova	Rose Hulman Institute of Technology	Engineering	Great Courses Faculty
+Howard A. Starr Ph.D.	Univ. of California â€“ Berkeley	Mathematics	Great Courses Faculty
+Martin Sternstein	Austin College	Psychology	Great Courses Faculty
+Brad Elliott Stone	Ithaca College	Mathematics	Great Courses Faculty
+Alan Stracke	Loyola Marymount Univ.	Philosophy	Great Courses Faculty
+Allen R. Strand	Champlain College	Sociology	Great Courses Faculty
+Kevin T. Strang	Colgate Univ.	Mathematics	Great Courses Faculty
+Gregg Stull	Univ. of Wisconsin â€“ Madison	Neuroscience	Great Courses Faculty
+Daniel Stupar	Univ. of Mary Washington	Theater	Great Courses Faculty
+David N. Suggs	Brown Univ.	Art (Studio)	Great Courses Faculty
+Karen Sullivan	Kenyon College	Anthropology	Great Courses Faculty
+Jeremi Suri	Bard College	Literature	Great Courses Faculty
+Chris W. Surprenant	Univ. of Texas at Austin	History	Great Courses Faculty
+Randi Lynn Tanglen	Tulane Univ.	Philosophy	Great Courses Faculty
+Dasan M. Thamattoor	Austin College	English	Great Courses Faculty
+Ronald S. Thomas	Colby College	Chemistry	Great Courses Faculty
+Barton D. Thurber	Northeastern Univ.	Business	Great Courses Faculty
+Barrett Tilney	Univ. of San Diego	English	Great Courses Faculty
+Eleanor Townsley	Georgetown Univ.	Art (History)	Great Courses Faculty
+Gary Towsley	Mount Holyoke College	Sociology	Great Courses Faculty
+Joseph Troncale	State Univ. of New York at Geneseo	Mathematics	Great Courses Faculty
+Kenneth H. Tucker Jr.	Univ. of Richmond	Foreign Language (Russian)	Great Courses Faculty
+Cindy van Es	Mount Holyoke College	Sociology	Great Courses Faculty
+Bryan William Van Norden	Cornell Univ.	Economics	Great Courses Faculty
+Douglas A. Vander Griend	Vassar College	Philosophy	Great Courses Faculty
+Peter M. Vishton	Calvin College	Chemistry	Great Courses Faculty
+Steve Voguit	College of William & Mary	Psychology	Great Courses Faculty
+Karen von Kunes	Flagler College	History	Great Courses Faculty
+David Walker	Yale Univ.	Foreign Language (Slavic)	Great Courses Faculty
+Steven C. Walker	Oberlin College	English (Creative Writing)	Great Courses Faculty
+Mark Walters	Brigham Young Univ.	English	Great Courses Faculty
+Steve C. Wang	William Jewell College	English	Great Courses Faculty
+Paul Warne	Swarthmore College	Statistics	Great Courses Faculty
+Stephen R. Wassell	James Madison Univ.	Mathematics	Great Courses Faculty
+Steve Watkins	Sweet Briar College	Mathematics	Great Courses Faculty
+Janice Gohm Webster	Univ. of Mary Washington	English	Great Courses Faculty
+Nicole Y. Weekes	Champlain College	English	Great Courses Faculty
+Akila Weerapana	Pomona College	Neuroscience	Great Courses Faculty
+Jennifer Wegmann	Wellesley College	Economics	Great Courses Faculty
+William Weiner	State Univ. of New York â€“ Binghamton	Health	Great Courses Faculty
+David Wetzel	Rose Hulman Institute of Technology	Biology	Great Courses Faculty
+Patrick J. White	Univ. of California â€“ Berkeley	History	Great Courses Faculty
+Jim Whittenburg	Univ. of Delaware	English	Great Courses Faculty
+Lawrence Wichlinski	College of William & Mary	History	Great Courses Faculty
+Robert D. Winsor	Carleton College	Psychology	Great Courses Faculty
+Christopher B. Wolfe	Loyola Marymount Univ.	Marketing	Great Courses Faculty
+William C. Wood	Univ. of Delaware	Business Law	Great Courses Faculty
+Craig Woodard	James Madison Univ.	Economics	Great Courses Faculty
+Ephraim Woods III	Mount Holyoke College	Biology	Great Courses Faculty
+Steven E. Woodworth	Colgate Univ.	Chemistry	Great Courses Faculty
+Colby Wright	Texas Christian Univ.	History	Great Courses Faculty
+Steve J. Wurtzler	Central Michigan Univ.	Finance	Great Courses Faculty
+Samuel Yamashita	Colby College	Cinema Studies	Great Courses Faculty
+Susan M. Young	Pomona College	History	Great Courses Faculty
+Joseph Yukich	Univ. of Akron	Mathematics	Great Courses Faculty
+Nizar Zaarour	Lehigh Univ.	Mathematics	Great Courses Faculty
+Monica Zima	Northeastern Univ.	Mathematics	Great Courses Faculty
+Marc Zimmer	Miami Dade College	Engineering	Great Courses Faculty
+Ann Billetz	Massachusetts College of Liberal Arts	Biology (cell biology, microbiology, parasitology)	MCLA Faculty
+Justin Golub	Massachusetts College of Liberal Arts	Biology (animal behavior, developmental biology, evolution, biostatistics)	MCLA Faculty
+Anne Goodwin	Massachusetts College of Liberal Arts	Biology (zoology, animal physiology, marine biology, nutrition)	MCLA Faculty
+Peter Hoyt	Massachusetts College of Liberal Arts	Biology (sports medicine, exercise, injury prevention)	MCLA Faculty
+Jerry Smosky	Massachusetts College of Liberal Arts	Biology (immunology, evolution, neurobiology)	MCLA Faculty
+George Hamaoui	Massachusetts College of Liberal Arts	Biology (environmental microbiology, molecular genetics)	MCLA Faculty
+Andrew Best	Massachusetts College of Liberal Arts	Biology (anatomy and physiology, exercise physiology, biomechanics)	MCLA Faculty
+Laura Hancock	Massachusetts College of Liberal Arts	Biology (botany, plant/animal interactions, conservation biology)	MCLA Faculty
+Jonathan Clinger	Massachusetts College of Liberal Arts	Biology (general biology, herpetology, animal physiology)	MCLA Faculty
+James S. Moriarty	Massachusetts College of Liberal Arts	Business (accounting, finance)	MCLA Faculty
+Thomas Whalen	Massachusetts College of Liberal Arts	Business (management, marketing, leadership, culture studies)	MCLA Faculty
+Tara J. Barboza	Massachusetts College of Liberal Arts	Business (accounting)	MCLA Faculty
+Omotara Adeeko	Massachusetts College of Liberal Arts	Economics	MCLA Faculty
+Amir Mohsen Danesh Yazdi	Massachusetts College of Liberal Arts	Finance	MCLA Faculty
+Carolyn Dehner	Massachusetts College of Liberal Arts	Chemistry (biochemistry)	MCLA Faculty
+Robert Harris	Massachusetts College of Liberal Arts	Chemistry (organic, inorganic, forensic)	MCLA Faculty
+Yavuz Ceylan	Massachusetts College of Liberal Arts	Chemistry (inorganic, analytical, computational)	MCLA Faculty
+Amr Ibrahim Elkabbany	Massachusetts College of Liberal Arts	Chemistry (medicinal chemistry, molecular pharmacology)	MCLA Faculty
+Michael Birch	Massachusetts College of Liberal Arts	Communication (digital media production, media and cultural studies, applied theater)	MCLA Faculty
+Muge Karabag	Massachusetts College of Liberal Arts	Communication (journalism, radio television cinema)	MCLA Faculty
+Hannah Haynes	Massachusetts College of Liberal Arts	Interdisciplinary Studies (critical ethnic studies, US immigration history, American studies)	MCLA Faculty
+Rita Nnodim	Massachusetts College of Liberal Arts	Interdisciplinary Studies (cross-cultural and transnational studies, African and South Asian studies)	MCLA Faculty
+Graziana D'Elia-Brillante	Massachusetts College of Liberal Arts	Modern Languages (contemporary Hispanic novel and film, gender theory, second language acquisition)	MCLA Faculty
+Mariana BolÃ­var RubÃ­n	Massachusetts College of Liberal Arts	Modern Languages (Spanish, Latin American/Caribbean literature)	MCLA Faculty
+David Eve	Massachusetts College of Liberal Arts	Computer Science (hardware, networking, information systems, entrepreneurship)	MCLA Faculty
+Guodong Wang	Massachusetts College of Liberal Arts	Computer Science (performance optimization, smart grid, SDN and IoTs)	MCLA Faculty
+Nicholas Stroud	Massachusetts College of Liberal Arts	Education (science pedagogy)	MCLA Faculty
+Margaret Clark	Massachusetts College of Liberal Arts	Education (early childhood education, curriculum and theory)	MCLA Faculty
+Clio Stearns	Massachusetts College of Liberal Arts	Education (childhood studies, curriculum theory)	MCLA Faculty
+Amber Engelson	Massachusetts College of Liberal Arts	English (writing studies, global literacies, feminist rhetorics)	MCLA Faculty
+Zachary Finch	Massachusetts College of Liberal Arts	English (American literature, creative writing, contemporary poetry)	MCLA Faculty
+Jenna Sciuto	Massachusetts College of Liberal Arts	English (global anglophone literature, postcolonial theory)	MCLA Faculty
+Victoria Papa	Massachusetts College of Liberal Arts	English (20th-century and contemporary literatures, modernism)	MCLA Faculty
+J. Antonio Templanza	Massachusetts College of Liberal Arts	English (17th-century English literature, history of science and philosophy)	MCLA Faculty
+David Braden-Johnson	Massachusetts College of Liberal Arts	Philosophy (epistemology, metaphysics, ethics, aesthetics)	MCLA Faculty
+Paul Nnodim	Massachusetts College of Liberal Arts	Philosophy (social and political philosophy, continental philosophy, African philosophy)	MCLA Faculty
+Daniel Shustack	Massachusetts College of Liberal Arts	Environmental Studies (wildlife biology)	MCLA Faculty
+Elena Traister	Massachusetts College of Liberal Arts	Environmental Studies (stream ecology, campus sustainability)	MCLA Faculty
+Melanie Mowinski	Massachusetts College of Liberal Arts	Art (visual art, books arts, printmaking, design)	MCLA Faculty
+Gregory Scheckler	Massachusetts College of Liberal Arts	Art (drawing, painting, digital photography)	MCLA Faculty
+Lisa Donovan	Massachusetts College of Liberal Arts	Arts Management (arts education, arts integration)	MCLA Faculty
+Jerome Socolof	Massachusetts College of Liberal Arts	Arts Management (performing arts management and arts policy)	MCLA Faculty
+Paul E. LeSage	Massachusetts College of Liberal Arts	Communication (journalism, business writing, literature)	MCLA Faculty
+Christine Condaris	Massachusetts College of Liberal Arts	Music (vocal ensembles, ethnomusicology, musicology)	MCLA Faculty
+Michael Dilthey	Massachusetts College of Liberal Arts	Music (music theory/composition)	MCLA Faculty
+Laura Standley	Massachusetts College of Liberal Arts	Theatre (acting, directing, play analysis)	MCLA Faculty
+Jeremy Winchester	Massachusetts College of Liberal Arts	Theatre (theater, scenic, and lighting)	MCLA Faculty
+Michaela Petrovich	Massachusetts College of Liberal Arts	Theatre (costume design and technologies)	MCLA Faculty
+Normadeane Armstrong	Massachusetts College of Liberal Arts	Nursing (global health, infectious disease, medical history)	MCLA Faculty
+Amanda Davis	Massachusetts College of Liberal Arts	Nursing (adult acute care, pediatrics)	MCLA Faculty
+Nicole Porther	Massachusetts College of Liberal Arts	Public Health (community health education, toxicology)	MCLA Faculty
+Rebecca Relyea	Massachusetts College of Liberal Arts	Radiologic Technology (positioning lab, advanced imaging)	MCLA Faculty
+Julie Walsh	Massachusetts College of Liberal Arts	Radiologic Technology (positioning, computed tomography)	MCLA Faculty
+Kara Corlew	Massachusetts College of Liberal Arts	Radiologic Technology	MCLA Faculty
+Anthony Daly	Massachusetts College of Liberal Arts	History (European history, world civilization)	MCLA Faculty
+Kailai Huang	Massachusetts College of Liberal Arts	History (Asian history, world civilization)	MCLA Faculty
+Ely Janis	Massachusetts College of Liberal Arts	History (Post-Civil War United States, immigration, ethnicity)	MCLA Faculty
+Mariah Hepworth	Massachusetts College of Liberal Arts	History (Modern U.S., war, popular culture, gender, race & ethnicity)	MCLA Faculty
+David Cupery	Massachusetts College of Liberal Arts	Political Science (Latin America, sub-Saharan Africa, international relations)	MCLA Faculty
+Samantha Pettey	Massachusetts College of Liberal Arts	Political Science (American politics, women and politics)	MCLA Faculty
+Fredricka Bennett	Massachusetts College of Liberal Arts	Mathematics (graph theory, history of mathematics, probability theory)	MCLA Faculty
+Elizabeth Hartung	Massachusetts College of Liberal Arts	Mathematics (chemical graph theory, planar graphs, combinatorial generation)	MCLA Faculty
+Christopher L. Thomas	Massachusetts College of Liberal Arts	Mathematics (geometric group theory)	MCLA Faculty
+Erin Kiley	Massachusetts College of Liberal Arts	Mathematics (applied mathematics, mathematical modeling, computational electromagnetics)	MCLA Faculty
+Emily Maher	Massachusetts College of Liberal Arts	Physics (experimental particle physics)	MCLA Faculty
+Kebra Ward	Massachusetts College of Liberal Arts	Physics (experimental optics, physics education research)	MCLA Faculty
+Thomas Byrne	Massachusetts College of Liberal Arts	Psychology (behavior analysis, biological psychology)	MCLA Faculty
+Sharon Claffey	Massachusetts College of Liberal Arts	Psychology (social support, academic motivation)	MCLA Faculty
+Ruby Vega	Massachusetts College of Liberal Arts	Psychology (learning and motivation, socially shared regulation of learning)	MCLA Faculty
+Sara Steele	Massachusetts College of Liberal Arts	Psychology (technology and cognition, sex differences in spatial ability)	MCLA Faculty
+Samuel Bruun	Massachusetts College of Liberal Arts	Psychology (gender development, sexual minority parenthood, social anxiety)	MCLA Faculty
+Carter Carter	Massachusetts College of Liberal Arts	Psychology (psychoanalysis, clinical social work, racism and discrimination)	MCLA Faculty
+Anna Jaysane-Darr	Massachusetts College of Liberal Arts	Anthropology (community and global health, anthropology of refugees)	MCLA Faculty
+Mohamad Junaid	Massachusetts College of Liberal Arts	Anthropology (political anthropology, social movements, visual anthropology)	MCLA Faculty
+Ingrid Castro	Massachusetts College of Liberal Arts	Sociology (children and youth, race, gender, and class, cinema studies)	MCLA Faculty
+Jennifer Zoltanski	Massachusetts College of Liberal Arts	Sociology (social inequality, criminology, genocide)	MCLA Faculty
+Travis Beaver	Massachusetts College of Liberal Arts	Sociology (sociology of gender, men and masculinities, sexualities)	MCLA Faculty
+Kerri Leyda Nicoll	Massachusetts College of Liberal Arts	Social Work (poverty, inequality, social policy)	MCLA Faculty
+Whitney Gecker	Massachusetts College of Liberal Arts	Social Work (community and place, youth civic engagement)	MCLA Faculty
+Sarah Abramowitz	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Daniel A. Abut	NYU Stern School of Business	Finance	NYU Stern Faculty
+Viral V. Acharya	NYU Stern School of Business	Finance (Economics)	NYU Stern Faculty
+Salvatore Affinito	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Tommaso M. Albanese	NYU Stern School of Business	Finance	NYU Stern Faculty
+Aleksander A. Aleszczyk	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Jennifer Allen	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Adam Alter	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Edward I. Altman	NYU Stern School of Business	Finance	NYU Stern Faculty
+Steven A. Altman	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Yakov Amihud	NYU Stern School of Business	Finance	NYU Stern Faculty
+Bharat N. Anand	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Callen Anthony	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Michael Anthony	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Mor Armony	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Henry Assael	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Yossi Aviv	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Ricardo E. Ayala	NYU Stern School of Business	Management Communication	NYU Stern Faculty
+Jackie Baek	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Yannis Bakos	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Kashi R. Balachandran	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Brett Baptist	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+George Barrett	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Eli Bartov	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Vineet Bedi	NYU Stern School of Business	Finance	NYU Stern Faculty
+Valerie Rose Belanger	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Raphael Bemporad	NYU Stern School of Business	Center for Sustainable Business	NYU Stern Faculty
+Yoel Beniluz	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Jake Berlin	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Richard Berner	NYU Stern School of Business	Finance	NYU Stern Faculty
+Jed Bernstein	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Yair Berson	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Mark Bhasin	NYU Stern School of Business	Finance	NYU Stern Faculty
+Ashish Bhatia	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Kenneth Bigel	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+John S. Bildersee	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Mary Billings	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Steven L. Blader	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Andrea Bonezzi	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Simon Bowmaker	NYU Stern School of Business	Economics	NYU Stern Faculty
+Giulia Brancaccio	NYU Stern School of Business	Economics	NYU Stern Faculty
+Adam M. Brandenburger	NYU Stern School of Business	Economics	NYU Stern Faculty
+Andrew Breen	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Mark Brennan	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Karen Brenner	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Menachem Brenner	NYU Stern School of Business	Finance	NYU Stern Faculty
+Allan Brown	NYU Stern School of Business	Finance	NYU Stern Faculty
+Colin Brown	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Stephen J. Brown	NYU Stern School of Business	Finance	NYU Stern Faculty
+Bruce S. Buchanan	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Kelly Buchanan Spillers	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Ronni Burns	NYU Stern School of Business	Management Communication	NYU Stern Faculty
+Hope Byrne	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Paul Cabana	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+LuÃ­s Cabral	NYU Stern School of Business	Economics	NYU Stern Faculty
+Darren Campo	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Jennifer N. Carpenter	NYU Stern School of Business	Finance	NYU Stern Faculty
+David Cosloy	NYU Stern School of Business	Management Communication	NYU Stern Faculty
+C. Samuel Craig	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Christine Cuny	NYU Stern School of Business	Accounting	NYU Stern Faculty
+John A. Czepiel	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Ian D'Souza	NYU Stern School of Business	Finance	NYU Stern Faculty
+Aswath Damodaran	NYU Stern School of Business	Finance	NYU Stern Faculty
+Susan Davis	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Andre de Souza	NYU Stern School of Business	Finance	NYU Stern Faculty
+Marc DeBevoise	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Leonard DeLuca	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Paul DeNicola	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Tommaso Denti	NYU Stern School of Business	Economics	NYU Stern Faculty
+Rohit S. Deo	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Kathleen DeRose	NYU Stern School of Business	Finance	NYU Stern Faculty
+Mira Dewji	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Vasant Dhar	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Joseph Di Salvo	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Naomi Diamant	NYU Stern School of Business	Management Communication	NYU Stern Faculty
+Michael Dickstein	NYU Stern School of Business	Economics	NYU Stern Faculty
+Lindsey M. Dietschi	NYU Stern School of Business	Management Communication	NYU Stern Faculty
+Robert DiYanni	NYU Stern School of Business	Management Communication	NYU Stern Faculty
+Bernard S. Donefer	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Alex K. Dontoh	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Sinziana Dorobantu	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Amanda Dos Santos	NYU Stern School of Business	Finance	NYU Stern Faculty
+Yiwei Dou	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Francisco Drohojowski	NYU Stern School of Business	Finance	NYU Stern Faculty
+Larry Dryer	NYU Stern School of Business	Accounting	NYU Stern Faculty
+Yaqi Duan	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Radhika Duggal	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Roger L.M. Dunbar	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Joachim Eberhardt	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Nicholas S. Economides	NYU Stern School of Business	Economics	NYU Stern Faculty
+Jamyn Edis	NYU Stern School of Business	Marketing	NYU Stern Faculty
+J.P. Eggers	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Chisara Ehiemere	NYU Stern School of Business	Center for Sustainable Business	NYU Stern Faculty
+David Ellner	NYU Stern School of Business	Marketing	NYU Stern Faculty
+Edwin J. Elton	NYU Stern School of Business	Finance	NYU Stern Faculty
+Niklas Engbom	NYU Stern School of Business	Economics	NYU Stern Faculty
+Robert F. Engle	NYU Stern School of Business	Finance	NYU Stern Faculty
+TÃ¼lin Erdem	NYU Stern School of Business	Marketing	NYU Stern Faculty
+David Eyzenberg	NYU Stern School of Business	Finance	NYU Stern Faculty
+Gary Faber	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Frank Fabozzi	NYU Stern School of Business	Finance	NYU Stern Faculty
+Leon Falk	NYU Stern School of Business	Entertainment, Media and Technology	NYU Stern Faculty
+Kingchih Fan	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Christina H.Y. Fang	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Michael J. Feldman	NYU Stern School of Business	Technology, Operations, and Statistics	NYU Stern Faculty
+Stephen C. Figlewski	NYU Stern School of Business	Finance	NYU Stern Faculty
+James Finch	NYU Stern School of Business	Finance	NYU Stern Faculty
+Steve Finkel	NYU Stern School of Business	Finance	NYU Stern Faculty
+Andrew Foley	NYU Stern School of Business	Management and Organizations	NYU Stern Faculty
+Vincent Fontana	NYU Stern School of Business	Management Communication	NYU Stern Faculty
+Cynthia Franklin	NYU Stern School of Business	Entrepreneurship	NYU Stern Faculty
+Gary E. Fraser	NYU Stern School of Business	Business and Society	NYU Stern Faculty
+Andrea Frazzini	NYU Stern School of Business	Finance	NYU Stern Faculty
