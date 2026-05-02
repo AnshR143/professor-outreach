@@ -134,9 +134,9 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
           <button
             onClick={resetAllResearchers}
             disabled={resetting}
-            style={{ padding: "8px 14px", background: resetting ? "#fecaca" : "#fee2e2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: resetting ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}
+            style={{ padding: "7px 14px", background: "#fff", color: resetting ? "#94a3b8" : "#dc2626", border: "1px solid #fecaca", borderRadius: 8, fontSize: 12, fontWeight: 500, cursor: resetting ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}
           >
-            {resetting ? "Resetting..." : "🗑 Reset All"}
+            {resetting ? "Resetting..." : "Reset All"}
           </button>
           <LiquidGlassButton
             onClick={() => setShowFind(true)}
@@ -208,7 +208,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
             </div>
             <div style={{ fontSize: 14, color: "#94a3b8", marginBottom: 24, maxWidth: 380, margin: "0 auto 24px" }}>
               {researchers.length === 0
-                ? "Click Find Researchers to load 250+ curated professors instantly or search Semantic Scholar."
+                ? "Use Find Researchers to add professors to your list."
                 : "Try a different search term or clear the filters."}
             </div>
             {researchers.length === 0 ? (
