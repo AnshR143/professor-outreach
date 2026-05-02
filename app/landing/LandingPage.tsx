@@ -1,6 +1,6 @@
 "use client"
 import { motion, useInView } from "framer-motion"
-import { ArrowRight, Brain, Mail, BarChart3, Zap, Shield, CheckCircle,
+import { ArrowRight, Brain, Mail, Zap, Shield, CheckCircle,
          Hexagon, Triangle, Command, Ghost, Gem, Cpu } from "lucide-react"
 import { useRef, useEffect } from "react"
 import Link from "next/link"
@@ -264,7 +264,7 @@ export default function LandingPage() {
           ═══════════════════════════════════════════ */}
       <div id="how" style={{ background: "#ffffff", padding: "80px 40px 0" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 60, alignItems: "start", maxWidth: 680 }}>
 
             {/* Left: How it works */}
             <div style={{ minWidth: 0 }}>
@@ -310,106 +310,26 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Right: Stats card + university marquee */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
+          </div>
+        </div>
+      </div>
 
-              {/* Stats card */}
-              <div style={{ position: "relative", overflow: "hidden", borderRadius: 24,
-                border: "1px solid rgba(59,130,246,0.15)",
-                background: "rgba(255,255,255,1)",
-                boxShadow: "0 10px 40px rgba(0,0,0,0.04)",
-                padding: 32, backdropFilter: "blur(12px)" }}>
-                <div style={{ position: "absolute", top: -40, right: -40, width: 160, height: 160,
-                  borderRadius: "50%", background: "rgba(59,130,246,0.05)", filter: "blur(40px)",
-                  pointerEvents: "none" }} />
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 16,
-                      background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      boxShadow: "0 4px 12px rgba(59,130,246,0.3)" }}>
-                      <BarChart3 style={{ width: 24, height: 24, color: "#fff" }} />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 30, fontWeight: 800, color: "#0f172a", lineHeight: 1 }}>500+</div>
-                      <div style={{ fontSize: 13, color: "#475569", marginTop: 2 }}>Curated Professors</div>
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: 24 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between",
-                      fontSize: 13, marginBottom: 8 }}>
-                      <span style={{ color: "#475569" }}>Match Accuracy</span>
-                      <span style={{ color: "#0f172a", fontWeight: 600 }}>94%</span>
-                    </div>
-                    <div style={{ height: 6, borderRadius: 999, background: "rgba(59,130,246,0.1)", overflow: "hidden" }}>
-                      <div style={{ height: "100%", width: "94%", borderRadius: 999,
-                        background: "linear-gradient(to right,#3b82f6,#818cf8)" }} />
-                    </div>
-                  </div>
-
-                  <div style={{ height: 1, background: "rgba(59,130,246,0.1)", margin: "0 0 24px" }} />
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1px 1fr 1px 1fr", gap: 0 }}>
-                    {[{ v: "2 min", l: "Setup" }, { v: "3", l: "Steps" }, { v: "100%", l: "Free" }].map((s, i) => (
-                      <div key={s.l} style={{ display: "contents" }}>
-                        <div style={{ textAlign: "center" }}>
-                          <div style={{ fontSize: 20, fontWeight: 800, color: "#0f172a" }}>{s.v}</div>
-                          <div style={{ fontSize: 11, color: "#475569", textTransform: "uppercase",
-                            letterSpacing: "0.08em", marginTop: 2 }}>{s.l}</div>
-                        </div>
-                        {i < 2 && <div style={{ background: "rgba(59,130,246,0.15)" }} />}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div style={{ display: "flex", gap: 8, marginTop: 24, flexWrap: "wrap" }}>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
-                      border: "1px solid rgba(59,130,246,0.2)", background: "rgba(59,130,246,0.05)",
-                      borderRadius: 999, padding: "5px 12px" }}>
-                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e",
-                        boxShadow: "0 0 6px #22c55e", flexShrink: 0 }} />
-                      <span style={{ fontSize: 10, fontWeight: 600, color: "#475569",
-                        textTransform: "uppercase", letterSpacing: "0.1em" }}>ACTIVE</span>
-                    </div>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
-                      border: "1px solid rgba(59,130,246,0.2)", background: "rgba(59,130,246,0.05)",
-                      borderRadius: 999, padding: "5px 12px" }}>
-                      <span style={{ fontSize: 13 }}>✨</span>
-                      <span style={{ fontSize: 10, fontWeight: 600, color: "#475569",
-                        textTransform: "uppercase", letterSpacing: "0.1em" }}>AI-POWERED</span>
-                    </div>
-                  </div>
-                </div>
+      {/* ─── Full-width university marquee banner ─── */}
+      <div style={{ width: "100%", borderTop: "1px solid #e8edf2", borderBottom: "1px solid #e8edf2", background: "#f9fafb", overflow: "hidden", padding: "18px 0" }}>
+        <div style={{ position: "relative", overflow: "hidden" }}>
+          <div className="marquee-track" style={{ display: "flex", gap: 0, whiteSpace: "nowrap" }}>
+            {[...UNIS, ...UNIS, ...UNIS, ...UNIS].map((u, i) => (
+              <div key={i} style={{ display: "inline-flex", alignItems: "center", gap: 0 }}>
+                <span style={{
+                  fontSize: 11, fontWeight: 700, color: "#a0aec0",
+                  letterSpacing: "0.18em", textTransform: "uppercase",
+                  padding: "0 28px",
+                }}>
+                  {u.name}
+                </span>
+                <span style={{ color: "#c8d0da", fontSize: 10 }}>·</span>
               </div>
-
-              {/* University marquee card */}
-              <div style={{ borderRadius: 24, border: "1px solid rgba(59,130,246,0.15)",
-                background: "rgba(255,255,255,1)", overflow: "hidden",
-                boxShadow: "0 10px 40px rgba(0,0,0,0.04)",
-                padding: "24px 0 20px", backdropFilter: "blur(12px)" }}>
-                <p style={{ fontSize: 13, color: "#475569", fontWeight: 500,
-                  padding: "0 28px", marginBottom: 16 }}>Researchers from top institutions</p>
-                <div style={{ position: "relative", overflow: "hidden" }}
-                  onMouseEnter={e => { const t = (e.currentTarget.querySelector(".marquee-track") as HTMLElement); if(t) t.style.animationPlayState="paused" }}
-                  onMouseLeave={e => { const t = (e.currentTarget.querySelector(".marquee-track") as HTMLElement); if(t) t.style.animationPlayState="running" }}>
-                  <div style={{ maskImage: "linear-gradient(to right,transparent,black 15%,black 85%,transparent)",
-                    WebkitMaskImage: "linear-gradient(to right,transparent,black 15%,black 85%,transparent)" }}>
-                    <div className="marquee-track" style={{ display: "flex", gap: 28, whiteSpace: "nowrap", padding: "0 14px" }}>
-                      {[...UNIS, ...UNIS].map((u, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 8,
-                          opacity: 0.7, transition: "opacity 0.2s", cursor: "default" }}
-                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = "1"}
-                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = "0.7"}>
-                          <u.icon style={{ width: 18, height: 18, color: "#3b82f6" }} />
-                          <span style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{u.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
