@@ -1,2 +1,2 @@
-import { redirect } from "next/navigation"
-export default function RootPage() { redirect("/dashboard") }
+import LandingPage from "@/app/landing/LandingPage"
+export default function RootPage() { return <LandingPage /> }

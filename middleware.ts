@@ -4,7 +4,8 @@ import { NextResponse, type NextRequest } from "next/server"
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  const isPublic = pathname.startsWith("/login") ||
+  const isPublic = pathname === "/" ||
+    pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
     pathname.startsWith("/auth/")
 
