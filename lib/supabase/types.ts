@@ -48,8 +48,7 @@ export interface Profile {
   goals: string[]
   resume_text: string | null
   resume_url: string | null
-  groq_api_key: string | null
-  gemini_api_key: string | null
+  ai_api_key: string | null
   onboarding_complete: boolean
   created_at: string
   updated_at: string
@@ -70,7 +69,7 @@ export interface Researcher {
   why_match: string | null
   notes: string | null
   is_saved: boolean
-  email_status: "not_emailed" | "emailed" | "replied"
+  email_status: "not_emailed" | "emailed" | "replied" | "accepted" | "rejected"
   found_at: string
   created_at: string
 }

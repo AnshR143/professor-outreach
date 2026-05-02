@@ -58,10 +58,10 @@ export async function POST(req: Request) {
 
   const { data: profileRaw } = await supabase
     .from("profiles")
-    .select("groq_api_key")
+    .select("ai_api_key")
     .eq("user_id", user.id)
     .single()
-  const profile = profileRaw as { groq_api_key?: string } | null
+  const profile = profileRaw as { ai_api_key?: string } | null
 
   // 1. Try to resolve Semantic Scholar ID if we don't have one
   let semanticId = researcher.semantic_scholar_id
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
   }
 
   // 3. If still nothing, generate with Groq
-  const groqKey = profile?.groq_api_key || process.env.GROQ_API_KEY
+  const groqKey = profile?.ai_api_key || process.env.GROQ_API_KEY
   if (papers.length === 0 && groqKey) {
     const aiPapers = await generatePapersWithAI(
       researcher.name,

@@ -18,8 +18,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   goals TEXT[] NOT NULL DEFAULT '{}',
   resume_text TEXT,
   resume_url TEXT,
-  groq_api_key TEXT,
-  gemini_api_key TEXT,
+  ai_api_key TEXT,
   onboarding_complete BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -41,7 +40,7 @@ CREATE TABLE IF NOT EXISTS researchers (
   why_match TEXT,
   notes TEXT,
   is_saved BOOLEAN NOT NULL DEFAULT FALSE,
-  email_status TEXT NOT NULL DEFAULT 'not_emailed' CHECK (email_status IN ('not_emailed','emailed','replied')),
+  email_status TEXT NOT NULL DEFAULT 'not_emailed' CHECK (email_status IN ('not_emailed','emailed','replied','accepted','rejected')),
   found_at TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -113,9 +112,14 @@ CREATE POLICY "Users can manage own papers" ON papers FOR ALL USING (
   researcher_id IN (SELECT id FROM researchers WHERE user_id = auth.uid())
 );
 CREATE POLICY "Users can manage own emails" ON emails FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "Users can manage own templates" ON templates FOR ALL USING (
+-- Allow users to read all templates (including global ones where user_id IS NULL)
+CREATE POLICY "Users can read templates" ON templates FOR SELECT USING (
   user_id IS NULL OR auth.uid() = user_id
 );
+-- Only allow insert/update/delete on user-owned templates (not global ones)
+CREATE POLICY "Users can manage own templates" ON templates FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own templates" ON templates FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own templates" ON templates FOR DELETE USING (auth.uid() = user_id);
 CREATE POLICY "Users can manage own activities" ON activities FOR ALL USING (auth.uid() = user_id);
 
 -- Indexes for performance

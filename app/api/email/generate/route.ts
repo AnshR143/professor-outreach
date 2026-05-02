@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     .select("*")
     .eq("user_id", user.id)
     .single()
-  const profile = profileRaw as { groq_api_key?: string; gemini_api_key?: string; name?: string; academic_level?: string; resume_text?: string; interests?: string[] } | null
+  const profile = profileRaw as { ai_api_key?: string; name?: string; academic_level?: string; resume_text?: string; interests?: string[] } | null
 
   if (!researcher) return NextResponse.json({ error: "Researcher not found" }, { status: 404 })
 
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     templateBody: templateBody || undefined,
   }
 
-  const groqKey = profile?.groq_api_key || process.env.GROQ_API_KEY
+  const groqKey = profile?.ai_api_key || process.env.GROQ_API_KEY
 
   if (!groqKey) {
     return NextResponse.json(
