@@ -48,6 +48,54 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
   const [papersList, setPapersList] = useState(papers)
   const [fetchingPapers, setFetchingPapers] = useState(false)
 
+  // Professor contact email
+  const [professorEmail, setProfessorEmail] = useState<string>(
+    (researcher.profile_links as Record<string, string>)?.["Email"] || ""
+  )
+  const [savingEmail, setSavingEmail] = useState(false)
+  const [emailAddressSaved, setEmailAddressSaved] = useState(false)
+
+  function guessEmail(name: string, university: string): string {
+    const parts = name.toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/)
+    const first = parts[0] || ""
+    const last = parts[parts.length - 1] || ""
+    const uLow = university.toLowerCase()
+    const domainMap: Record<string, string> = {
+      "mit": "mit.edu", "harvard": "harvard.edu", "stanford": "stanford.edu",
+      "princeton": "princeton.edu", "yale": "yale.edu", "columbia": "columbia.edu",
+      "cornell": "cornell.edu", "duke": "duke.edu", "caltech": "caltech.edu",
+      "berkeley": "berkeley.edu", "ucla": "ucla.edu", "michigan": "umich.edu",
+      "carnegie mellon": "cmu.edu", "cmu": "cmu.edu", "nyu": "nyu.edu",
+      "northwestern": "northwestern.edu", "johns hopkins": "jhu.edu",
+      "upenn": "upenn.edu", "penn": "upenn.edu", "chicago": "uchicago.edu",
+      "uiuc": "illinois.edu", "illinois": "illinois.edu", "purdue": "purdue.edu",
+      "georgia tech": "gatech.edu", "gatech": "gatech.edu", "unc": "unc.edu",
+      "ut austin": "utexas.edu", "texas": "utexas.edu", "usc": "usc.edu",
+      "umass": "umass.edu", "ucsd": "ucsd.edu", "ucsb": "ucsb.edu",
+      "oxford": "ox.ac.uk", "cambridge": "cam.ac.uk", "toronto": "utoronto.ca",
+      "mcgill": "mcgill.ca", "waterloo": "uwaterloo.ca",
+    }
+    let domain = ""
+    for (const [key, d] of Object.entries(domainMap)) {
+      if (uLow.includes(key)) { domain = d; break }
+    }
+    if (!domain) {
+      const clean = uLow.replace(/university of\s+/i, "").replace(/\s+university$/i, "").replace(/\s+/g, "").slice(0, 8)
+      domain = `${clean}.edu`
+    }
+    return `${first}.${last}@${domain}`
+  }
+
+  async function saveProfessorEmail() {
+    if (!professorEmail.trim()) return
+    setSavingEmail(true)
+    const updatedLinks = { ...(researcher.profile_links as Record<string, string> || {}), Email: professorEmail.trim() }
+    await supabase.from("researchers").update({ profile_links: updatedLinks }).eq("id", researcher.id)
+    setSavingEmail(false)
+    setEmailAddressSaved(true)
+    setTimeout(() => setEmailAddressSaved(false), 3000)
+  }
+
   // Sync papersList when server sends fresh props (after router.refresh())
   useEffect(() => { setPapersList(papers) }, [papers])
 
@@ -113,7 +161,8 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
     if (!emailSubject || !emailBody) { setEmailValidationError("Please generate or write an email first."); return }
     setEmailValidationError("")
     setSending(true)
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+    const toEmail = professorEmail.trim() || guessEmail(researcher.name, researcher.university)
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(toEmail)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
     window.open(gmailUrl, "_blank")
 
     // Mark as sent
@@ -291,6 +340,31 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 </div>
               </div>
 
+              {/* Professor Email Address */}
+              <div style={{ marginBottom: 14, padding: "12px 14px", background: "#f8f9fb", border: "1px solid #e2e8f0", borderRadius: 8 }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", marginBottom: 6, display: "flex", alignItems: "center", gap: 5 }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  Professor's Email Address
+                </div>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <input
+                    value={professorEmail}
+                    onChange={e => setProfessorEmail(e.target.value)}
+                    placeholder={guessEmail(researcher.name, researcher.university)}
+                    style={{ flex: 1, padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", outline: "none", background: "#fff" }}
+                  />
+                  <button onClick={saveProfessorEmail} disabled={savingEmail}
+                    style={{ padding: "7px 12px", background: emailAddressSaved ? "#22c55e" : "#f97316", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
+                    {savingEmail ? "Saving..." : emailAddressSaved ? "Saved ✓" : "Save Email"}
+                  </button>
+                </div>
+                <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 5 }}>
+                  {professorEmail
+                    ? "This email will be pre-filled when you open Gmail."
+                    : `Estimated: ${guessEmail(researcher.name, researcher.university)} — confirm or correct before sending.`}
+                </div>
+              </div>
+
               {/* Subject */}
               <div style={{ marginBottom: 12 }}>
                 <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4, display: "flex", justifyContent: "space-between" }}>
@@ -353,66 +427,4 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
                 <button onClick={saveEmail} disabled={saving}
-                  style={{ flex: 1, padding: "9px 14px", background: "#22c55e", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
-                <button onClick={generateFollowUp}
-                  style={{ flex: 1, padding: "9px 14px", background: "#f8f9fb", color: "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-                  Follow-up
-                </button>
-              </div>
-
-              {/* Follow-up result */}
-              {showFollowUp && followUpEmail && (
-                <div style={{ marginTop: 12, padding: 14, background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#15803d", marginBottom: 6 }}>Follow-up Email:</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>{followUpEmail.subject}</div>
-                  <div style={{ fontSize: 12, color: "#475569", marginTop: 6, whiteSpace: "pre-line" }}>{followUpEmail.body}</div>
-                  <button onClick={() => { setEmailSubject(followUpEmail.subject); setEmailBody(followUpEmail.body); setShowFollowUp(false) }}
-                    style={{ marginTop: 8, fontSize: 11, color: "#15803d", background: "none", border: "1px solid #86efac", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
-                    Use This →
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Profile Links + Notes */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: "16px 20px" }}>
-            <h3 style={{ margin: "0 0 14px", fontSize: 14, fontWeight: 600, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-              Profile Links
-            </h3>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {Object.entries(researcher.profile_links || {}).map(([name, url]) => (
-                <a key={name} href={url} target="_blank" rel="noopener"
-                  style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: "1px solid #e2e8f0", color: "#475569", textDecoration: "none", background: "#f8f9fb" }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  {name}
-                </a>
-              ))}
-              {researcher.semantic_scholar_id && (
-                <a href={`https://www.semanticscholar.org/author/${researcher.semantic_scholar_id}`} target="_blank" rel="noopener"
-                  style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, padding: "6px 12px", borderRadius: 8, border: "1px solid #e2e8f0", color: "#475569", textDecoration: "none", background: "#f8f9fb" }}>
-                  View Google Scholar Profile →
-                </a>
-              )}
-            </div>
-          </div>
-
-          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: "16px 20px" }}>
-            <h3 style={{ margin: "0 0 14px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Notes</h3>
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} placeholder="Add private notes about this researcher..."
-              style={{ width: "100%", padding: "8px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", resize: "none", outline: "none", fontFamily: "inherit", lineHeight: 1.5 }} />
-            <button onClick={saveNotes} disabled={savingNotes}
-              style={{ marginTop: 8, padding: "7px 16px", background: "#f97316", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: savingNotes ? "not-allowed" : "pointer" }}>
-              {savingNotes ? "Saving..." : "Save Notes"}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+                  style={{ flex: 1, padding: "9px 14px", background: "#22c55e", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: saving ? "not-a

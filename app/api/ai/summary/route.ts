@@ -16,8 +16,7 @@ export async function POST(req: Request) {
 
   const body = await req.json()
   const groqKey = profile?.ai_api_key || process.env.GROQ_API_KEY
-  
-  // Try Groq
+
   if (groqKey) {
     try {
       const summary = await generateAISummary({ ...body, userName: profile?.name || body.userName, apiKey: groqKey })
