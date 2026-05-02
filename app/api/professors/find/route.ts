@@ -114,16 +114,65 @@ export async function POST(req: Request) {
       .from("researchers").select("name").eq("user_id", user!.id)
     const existingNames = new Set((existing || []).map(r => r.name.toLowerCase()))
 
-    // ── Step 1: Match from preloaded list ──────────────────────────────────
-    const matching = PRELOADED_PROFESSORS.filter(prof => {
-      if (existingNames.has(prof.name.toLowerCase())) return false
+    // Similar-field expansion map: if no results for a field, try these related terms
+    const FIELD_EXPANSIONS: Record<string, string[]> = {
+      "agriculture": ["Agricultural", "Agronomy", "Plant Science", "Crop", "Soil Science", "Food Science", "Farm"],
+      "agronomy": ["Agriculture", "Plant Science", "Crop", "Soil Science"],
+      "entomology": ["Insect", "Biology", "Ecology", "Entomology", "Chemical Ecology"],
+      "botany": ["Plant Biology", "Plant Science", "Ecology", "Biology"],
+      "zoology": ["Animal Biology", "Ecology", "Wildlife", "Biology"],
+      "ecology": ["Environmental Science", "Biology", "Conservation", "Ecosystem"],
+      "geology": ["Earth Science", "Environmental Science", "Geophysics"],
+      "astronomy": ["Astrophysics", "Cosmology", "Physics"],
+      "anthropology": ["Cultural Anthropology", "Sociology", "Archaeology"],
+      "linguistics": ["Language", "NLP", "Cognitive Science"],
+      "philosophy": ["Ethics", "Logic", "Political Theory"],
+      "art history": ["History", "Cultural Studies", "Humanities"],
+      "music": ["Music Theory", "Arts", "Acoustics"],
+      "nursing": ["Medicine", "Public Health", "Healthcare"],
+      "pharmacy": ["Pharmacology", "Chemistry", "Medicine"],
+      "dentistry": ["Medicine", "Oral Health", "Biology"],
+      "veterinary": ["Animal Science", "Biology", "Medicine"],
+      "architecture": ["Urban Planning", "Engineering", "Design"],
+      "urban planning": ["Architecture", "Sociology", "Environmental Science"],
+      "social work": ["Sociology", "Psychology", "Public Policy"],
+      "criminology": ["Criminal Justice", "Sociology", "Law"],
+      "communications": ["Media Studies", "Journalism", "Sociology"],
+      "journalism": ["Media Studies", "Communications", "Political Science"],
+      "library science": ["Information Science", "Computer Science", "Education"],
+    }
 
-      const matchesField = fields.length === 0 || fields.some((f: string) =>
-        prof.areas.some(a =>
+    // Expand fields with synonyms if needed
+    function expandFields(inputFields: string[]): string[] {
+      const expanded = new Set(inputFields)
+      for (const f of inputFields) {
+        const fLow = f.toLowerCase()
+        for (const [key, vals] of Object.entries(FIELD_EXPANSIONS)) {
+          if (fLow.includes(key) || key.includes(fLow)) {
+            vals.forEach(v => expanded.add(v))
+          }
+        }
+      }
+      return Array.from(expanded)
+    }
+
+    function matchesFields(profAreas: string[], searchFields: string[]): boolean {
+      if (searchFields.length === 0) return true
+      return searchFields.some(f =>
+        profAreas.some(a =>
           a.toLowerCase().includes(f.toLowerCase()) ||
           f.toLowerCase().includes(a.toLowerCase())
         )
       )
+    }
+
+    // ── Step 1: Match from preloaded list ──────────────────────────────────
+    const expandedFields = expandFields(fields)
+
+    const matching = PRELOADED_PROFESSORS.filter(prof => {
+      if (existingNames.has(prof.name.toLowerCase())) return false
+
+      const matchesField = matchesFields(prof.areas, expandedFields)
       const matchesUni = universities.length === 0 || universities.some((u: string) => {
         const uLow = u.toLowerCase().replace(/\buniversity\b/g, "").replace(/\buniv\b/g, "").replace(/\bcollege\b/g, "").trim()
         const pLow = prof.university.toLowerCase().replace(/\buniversity\b/g, "").replace(/\buniv\b/g, "").replace(/\bcollege\b/g, "").trim()
@@ -139,7 +188,7 @@ export async function POST(req: Request) {
 
     const scored = matching.map(prof => {
       const { score, fieldMatches, resumeMatches } = calcMatchScore(
-        prof.areas, fields, resumeKeywords, prof.university
+        prof.areas, expandedFields, resumeKeywords, prof.university
       )
       return { prof, score, fieldMatches, resumeMatches }
     })
@@ -167,7 +216,17 @@ export async function POST(req: Request) {
 
     const totalToAdd = toAdd.length + globalProfs.length
     if (totalToAdd === 0) {
-      send({ type: "done", found: 0 })
+      // Suggest related fields
+      const suggestions = expandedFields
+        .filter(f => !fields.map((x: string) => x.toLowerCase()).includes(f.toLowerCase()))
+        .slice(0, 4)
+      send({
+        type: "done",
+        found: 0,
+        suggestion: suggestions.length > 0
+          ? `No results for "${fields.join(", ")}". Try: ${suggestions.join(", ")}`
+          : `No results found. Try broader terms or clear university filters.`
+      })
       writer.close()
       return
     }

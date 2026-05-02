@@ -20,6 +20,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
     count: 5,
   })
   const [progress, setProgress] = useState({ found: 0, total: 0, current: "" })
+  const [suggestion, setSuggestion] = useState("")
   const [error, setError] = useState("")
 
   function toggle(arr: string[], item: string) {
@@ -33,6 +34,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
     }
     setError("")
     setStep("loading")
+    setSuggestion("")
     setProgress({ found: 0, total: form.count, current: "Analyzing your profile..." })
 
     try {
@@ -60,7 +62,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
           try {
             const data = JSON.parse(line.slice(6))
             if (data.type === "progress") setProgress(data)
-            if (data.type === "done") { setStep("done"); router.refresh() }
+            if (data.type === "done") { if (data.suggestion) setSuggestion(data.suggestion); setStep("done"); router.refresh() }
             if (data.type === "error") { setError(data.message); setStep("config") }
           } catch {}
         }
@@ -206,7 +208,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               </h3>
               <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 8px" }}>
                 {progress.found === 0
-                  ? "All matching professors are already in your list, or no matches were found with these filters. Try different fields or clear university filters."
+                  ? (suggestion || "All matching professors are already in your list, or no matches were found with these filters. Try different fields or clear university filters.")
                   : `${progress.found} new researcher${progress.found !== 1 ? "s" : ""} matched and added — ranked by field + resume fit.`}
               </p>
               {progress.found > 0 && (
