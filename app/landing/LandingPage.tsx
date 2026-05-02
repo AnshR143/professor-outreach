@@ -107,40 +107,62 @@ export default function LandingPage() {
           <div style={{ pointerEvents: "none", position: "absolute", inset: 0,
             background: "linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.0) 30%,rgba(0,0,0,0.42) 100%)" }} />
 
-          {/* Navbar */}
-          <nav style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
+          {/* Navbar — drops in from top first */}
+          <motion.nav
+            initial={{ y: -40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 40,
               background: "rgba(0,0,0,0.88)", backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
               borderRadius: "0 0 20px 20px", padding: "10px 36px" }}>
-              {navItems.map(item => (
-                <Link key={item.label} href={item.href}
-                  style={{ color: "rgba(225,224,204,0.75)", fontSize: 13,
-                    fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = "#E1E0CC")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(225,224,204,0.75)")}>
-                  {item.label}
-                </Link>
+              {navItems.map((item, i) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
+                >
+                  <Link href={item.href}
+                    style={{ color: "rgba(225,224,204,0.75)", fontSize: 13,
+                      fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
+                    onMouseEnter={e => (e.currentTarget.style.color = "#E1E0CC")}
+                    onMouseLeave={e => (e.currentTarget.style.color = "rgba(225,224,204,0.75)")}>
+                    {item.label}
+                  </Link>
+                </motion.div>
               ))}
             </div>
-          </nav>
+          </motion.nav>
 
           {/* Hero bottom */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 40px 8px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", alignItems: "flex-end", gap: 32 }}>
-              <h1 style={{ color: "#E1E0CC", fontWeight: 600, lineHeight: 0.85,
-                letterSpacing: "-0.06em", fontSize: "clamp(72px,19vw,280px)", margin: 0 }}>
+              {/* Heading rises up — delay 0.5 so navbar lands first */}
+              <motion.h1
+                initial={{ y: 60, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                style={{ color: "#E1E0CC", fontWeight: 600, lineHeight: 0.85,
+                  letterSpacing: "-0.06em", fontSize: "clamp(72px,19vw,280px)", margin: 0 }}>
                 <WordsPullUp text="Reach" />
-              </h1>
+              </motion.h1>
               <div style={{ display: "flex", flexDirection: "column", gap: 20, paddingBottom: 40, maxWidth: 380 }}>
-                <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                {/* Tagline — slides up after heading */}
+                <motion.p
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
                   style={{ color: "rgba(225,224,204,0.82)", fontSize: 15, lineHeight: 1.4, margin: 0 }}>
                   AI-powered professor outreach. Find researchers who match your work,
                   generate personalised cold emails, and land the research opportunity you deserve.
                 </motion.p>
-                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}>
+                {/* CTA — last to appear */}
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.7, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}>
                   <Link href="/signup"
                     style={{ display: "inline-flex", alignItems: "center", gap: 8,
                       background: "#fff", color: "#000", borderRadius: 999,
