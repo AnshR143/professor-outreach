@@ -88,7 +88,8 @@ export async function POST(req: Request) {
   if (!user) return new Response("Unauthorized", { status: 401 })
 
   const supabase = await createServiceClient()
-  const { fields, universities, keyword, count } = await req.json()
+  const { fields, universities, keyword, count: rawCount } = await req.json()
+  const count = Math.min(Math.max(1, parseInt(rawCount) || 5), 10)
 
   const { data: profileRaw } = await supabase
     .from("profiles").select("*").eq("user_id", user.id).single()
@@ -121,9 +122,11 @@ export async function POST(req: Request) {
           f.toLowerCase().includes(a.toLowerCase())
         )
       )
-      const matchesUni = universities.length === 0 || universities.some((u: string) =>
-        prof.university.toLowerCase().includes(u.toLowerCase())
-      )
+      const matchesUni = universities.length === 0 || universities.some((u: string) => {
+        const uLow = u.toLowerCase().replace(/\buniversity\b/g, "").replace(/\buniv\b/g, "").replace(/\bcollege\b/g, "").trim()
+        const pLow = prof.university.toLowerCase().replace(/\buniversity\b/g, "").replace(/\buniv\b/g, "").replace(/\bcollege\b/g, "").trim()
+        return pLow.includes(uLow) || uLow.includes(pLow)
+      })
       const matchesKeyword = !keyword ||
         prof.name.toLowerCase().includes(keyword.toLowerCase()) ||
         prof.areas.some(a => a.toLowerCase().includes(keyword.toLowerCase())) ||

@@ -98,7 +98,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               Find Researchers
             </LiquidGlassButton>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(249,115,22,0.85)", border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 14, fontWeight: 700, backdropFilter: "blur(8px)" }}>
+            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(59,130,246,0.85)", border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 14, fontWeight: 700, backdropFilter: "blur(8px)" }}>
               {profile?.name?.[0]?.toUpperCase() || "A"}
             </div>
           </div>
@@ -115,12 +115,12 @@ export default function DashboardClient({ profile, researchers, activities, emai
 
         {/* AI Summary */}
         {(aiSummary || loadingSummary) && (
-          <div style={{ background: "linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%)", border: "1px solid #fed7aa", borderRadius: 12, padding: "16px 20px", marginBottom: 24, display: "flex", gap: 12, alignItems: "flex-start" }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: "#f97316", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <div style={{ background: "linear-gradient(135deg, #eff6ff 0%, #fef3c7 100%)", border: "1px solid #bfdbfe", borderRadius: 12, padding: "16px 20px", marginBottom: 24, display: "flex", gap: 12, alignItems: "flex-start" }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#f97316", marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>AI Insight</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "#3b82f6", marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>AI Insight</div>
               <p style={{ margin: 0, fontSize: 14, color: "#7c3aed", lineHeight: 1.5 }}>
                 {loadingSummary ? "Generating personalized insights..." : aiSummary}
               </p>
@@ -149,7 +149,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
           <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0f172a" }}>Recent Activity</h3>
-              <Link href="/dashboard/history" style={{ fontSize: 12, color: "#f97316", textDecoration: "none", fontWeight: 500 }}>View all</Link>
+              <Link href="/dashboard/history" style={{ fontSize: 12, color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>View all</Link>
             </div>
             <div style={{ maxHeight: 320, overflowY: "auto" }}>
               {activities.length === 0 ? (
@@ -179,7 +179,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
           <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0f172a" }}>Top Matches</h3>
-              <Link href="/dashboard/researchers" style={{ fontSize: 12, color: "#f97316", textDecoration: "none", fontWeight: 500 }}>View all</Link>
+              <Link href="/dashboard/researchers" style={{ fontSize: 12, color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>View all</Link>
             </div>
             <div>
               {researchers.length === 0 ? (
@@ -188,7 +188,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
                 </div>
               ) : [...researchers].sort((a, b) => b.match_score - a.match_score).slice(0, 5).map(r => (
                 <Link key={r.id} href={`/dashboard/researchers/${r.id}`} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: "1px solid #f1f5f9", textDecoration: "none" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#f97316", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
                     {r.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -197,7 +197,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
                   </div>
                   <div style={{
                     width: 36, height: 36, borderRadius: "50%", flexShrink: 0,
-                    border: `2.5px solid ${r.match_score >= 85 ? "#22c55e" : r.match_score >= 70 ? "#f97316" : "#f59e0b"}`,
+                    border: `2.5px solid ${r.match_score >= 85 ? "#22c55e" : r.match_score >= 70 ? "#3b82f6" : "#f59e0b"}`,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 12, fontWeight: 700, color: "#0f172a",
                   }}>

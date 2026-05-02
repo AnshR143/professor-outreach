@@ -123,7 +123,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
     <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
       <aside style={{ width: 56, background: "#1e293b", display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 0", flexShrink: 0 }}>
         <Link href="/dashboard" style={{ marginBottom: 20, display: "block" }}>
-          <div style={{ width: 36, height: 36, borderRadius: 8, background: "#f97316", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 36, height: 36, borderRadius: 8, background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6z"/></svg>
           </div>
         </Link>
@@ -164,7 +164,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
           </Section>
 
           <Section title="Resume / CV">
-            <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#92400e", marginBottom: 16 }}>
+            <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#92400e", marginBottom: 16 }}>
               Your resume powers everything — it personalizes cold emails with your actual experience and skills, and is used to calculate how well you match each professor&apos;s research areas.
             </div>
             <div style={{ border: "2px dashed #e2e8f0", borderRadius: 10, padding: "24px", textAlign: "center" }}>
@@ -180,7 +180,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                   {uploadStatus.msg}
                 </div>
               )}
-              <label style={{ display: "inline-block", padding: "10px 20px", background: uploading ? "#fed7aa" : "#f97316", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: uploading ? "not-allowed" : "pointer" }}>
+              <label style={{ display: "inline-block", padding: "10px 20px", background: uploading ? "#bfdbfe" : "#3b82f6", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: uploading ? "not-allowed" : "pointer" }}>
                 {uploading ? "Parsing PDF..." : "Choose PDF File"}
                 <input type="file" accept=".pdf" onChange={handleResumeUpload} disabled={uploading} style={{ display: "none" }} />
               </label>
@@ -222,13 +222,13 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                   style={{ flex: 1, padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#0f172a", outline: "none", background: "#f8f9fb" }}
                 />
                 <button onClick={saveApiKey} disabled={savingKey || !apiKey.trim()}
-                  style={{ padding: "10px 20px", background: savingKey || !apiKey.trim() ? "#e2e8f0" : "#f97316", color: savingKey || !apiKey.trim() ? "#94a3b8" : "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: savingKey || !apiKey.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
+                  style={{ padding: "10px 20px", background: savingKey || !apiKey.trim() ? "#e2e8f0" : "#3b82f6", color: savingKey || !apiKey.trim() ? "#94a3b8" : "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: savingKey || !apiKey.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
                   {savingKey ? "Saving..." : "Save Key"}
                 </button>
               </div>
               <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
                 Get a free Groq key at{" "}
-                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#f97316" }}>console.groq.com/keys</a>.
+                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#3b82f6" }}>console.groq.com/keys</a>.
                 Your key is sent directly to our server over HTTPS and never stored in your browser or logs.
               </div>
             </Field>
@@ -236,7 +236,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
 
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
             <button onClick={save} disabled={saving}
-              style={{ padding: "12px 32px", background: saving ? "#fed7aa" : "#f97316", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
+              style={{ padding: "12px 32px", background: saving ? "#bfdbfe" : "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
               {saving ? "Saving..." : "Save Profile"}
             </button>
 

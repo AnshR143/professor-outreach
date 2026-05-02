@@ -22,10 +22,10 @@ const SIZE_STYLES = {
 
 const VARIANT_BASE = {
   primary: {
-    background: "linear-gradient(135deg, rgba(249,115,22,0.85) 0%, rgba(234,88,12,0.9) 100%)",
+    background: "linear-gradient(135deg, rgba(59,130,246,0.85) 0%, rgba(234,88,12,0.9) 100%)",
     border: "1px solid rgba(255,255,255,0.25)",
     color: "#fff",
-    boxShadow: "0 2px 16px rgba(249,115,22,0.35), inset 0 1px 0 rgba(255,255,255,0.25)",
+    boxShadow: "0 2px 16px rgba(59,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.25)",
   },
   secondary: {
     background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)",

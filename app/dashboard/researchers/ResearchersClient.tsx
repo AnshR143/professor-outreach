@@ -56,7 +56,7 @@ function timeLabel(dateStr: string) {
 
 function scoreColor(score: number) {
   if (score >= 85) return { border: "#22c55e", bg: "#f0fdf4", text: "#15803d" }
-  if (score >= 70) return { border: "#f97316", bg: "#fff7ed", text: "#c2410c" }
+  if (score >= 70) return { border: "#3b82f6", bg: "#eff6ff", text: "#1d4ed8" }
   return { border: "#f59e0b", bg: "#fffbeb", text: "#92400e" }
 }
 
@@ -136,7 +136,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           </button>
-          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#f97316", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {profile?.name?.[0]?.toUpperCase() || "A"}
           </div>
         </div>
@@ -167,7 +167,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
             style={{
               padding: "9px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
               border: highMatchOnly ? "none" : "1px solid #e2e8f0",
-              background: highMatchOnly ? "#f97316" : "#fff",
+              background: highMatchOnly ? "#3b82f6" : "#fff",
               color: highMatchOnly ? "#fff" : "#64748b",
             }}
           >
@@ -177,7 +177,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
 
         <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>
           Showing <strong style={{ color: "#0f172a" }}>{filtered.length}</strong> of {researchers.length} researchers
-          {highMatchOnly && <span style={{ color: "#f97316", marginLeft: 6 }}>(75%+ match filter active)</span>}
+          {highMatchOnly && <span style={{ color: "#3b82f6", marginLeft: 6 }}>(75%+ match filter active)</span>}
         </div>
 
         {/* Empty state */}
@@ -197,14 +197,14 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
             {researchers.length === 0 ? (
               <button
                 onClick={() => setShowFind(true)}
-                style={{ padding: "10px 28px", background: "#f97316", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+                style={{ padding: "10px 28px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}
               >
                 Find Researchers
               </button>
             ) : search.length > 0 ? (
               <button
                 onClick={() => setShowFind(true)}
-                style={{ padding: "10px 28px", background: "#f97316", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, margin: "0 auto" }}
+                style={{ padding: "10px 28px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, margin: "0 auto" }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 AI Search for "{search}"
@@ -226,7 +226,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
                 <Link key={r.id} href={`/dashboard/researchers/${r.id}`} style={{ textDecoration: "none" }}>
                   <div
                     style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#f97316" }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#3b82f6" }}
                     onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
                   >
                     {/* Name + score + date */}
@@ -271,7 +271,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
 
                     {/* Why match */}
                     {r.why_match && (
-                      <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5, background: "#f8fafc", borderRadius: 8, padding: "8px 10px", borderLeft: "3px solid #f97316" }}>
+                      <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5, background: "#f8fafc", borderRadius: 8, padding: "8px 10px", borderLeft: "3px solid #3b82f6" }}>
                         {r.why_match}
                       </div>
                     )}
@@ -335,7 +335,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
           {
             label: "Find Researchers",
             icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-            color: "#f97316",
+            color: "#3b82f6",
             onClick: () => setShowFind(true),
           },
           {

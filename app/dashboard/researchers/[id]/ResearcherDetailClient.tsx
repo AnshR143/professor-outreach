@@ -267,14 +267,14 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 const res = await fetch(`/api/professors/papers?researcher_id=${researcher.id}`, { method: "POST" })
                 if (res.ok) router.refresh()
                 setFetchingPapers(false)
-              }} disabled={fetchingPapers} style={{ fontSize: 12, color: "#f97316", background: "none", border: "1px solid #fed7aa", borderRadius: 6, padding: "4px 10px", cursor: fetchingPapers ? "not-allowed" : "pointer", opacity: fetchingPapers ? 0.6 : 1 }}>
+              }} disabled={fetchingPapers} style={{ fontSize: 12, color: "#3b82f6", background: "none", border: "1px solid #bfdbfe", borderRadius: 6, padding: "4px 10px", cursor: fetchingPapers ? "not-allowed" : "pointer", opacity: fetchingPapers ? 0.6 : 1 }}>
                 {fetchingPapers ? "Fetching..." : "Refresh Papers"}
               </button>
             </div>
             <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
               {fetchingPapers && papersList.length === 0 ? (
                 <div style={{ textAlign: "center", padding: 24, color: "#94a3b8", fontSize: 13 }}>
-                  <div style={{ width: 28, height: 28, border: "3px solid #f1f5f9", borderTopColor: "#f97316", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
+                  <div style={{ width: 28, height: 28, border: "3px solid #f1f5f9", borderTopColor: "#3b82f6", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
                   <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                   Looking up papers...
                 </div>
@@ -290,7 +290,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                       </div>
                       {p.abstract.length > 120 && (
                         <button onClick={() => setExpandedPaper(expandedPaper === p.id ? null : p.id)}
-                          style={{ fontSize: 11, color: "#f97316", background: "none", border: "none", cursor: "pointer", padding: 0, marginTop: 2 }}>
+                          style={{ fontSize: 11, color: "#3b82f6", background: "none", border: "none", cursor: "pointer", padding: 0, marginTop: 2 }}>
                           {expandedPaper === p.id ? "↑ Read Less" : "↓ Read More"}
                         </button>
                       )}
@@ -354,7 +354,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     style={{ flex: 1, padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", outline: "none", background: "#fff" }}
                   />
                   <button onClick={saveProfessorEmail} disabled={savingEmail}
-                    style={{ padding: "7px 12px", background: emailAddressSaved ? "#22c55e" : "#f97316", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
+                    style={{ padding: "7px 12px", background: emailAddressSaved ? "#22c55e" : "#3b82f6", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
                     {savingEmail ? "Saving..." : emailAddressSaved ? "Saved ✓" : "Save Email"}
                   </button>
                 </div>
@@ -404,7 +404,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 </div>
               )}
               {emailValidationError && (
-                <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8, padding: "8px 12px", color: "#ea580c", fontSize: 12, marginBottom: 10 }}>
+                <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "8px 12px", color: "#2563eb", fontSize: 12, marginBottom: 10 }}>
                   {emailValidationError}
                 </div>
               )}
@@ -427,4 +427,92 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
                 <button onClick={saveEmail} disabled={saving}
-                  style={{ flex: 1, padding: "9px 14px", background: "#22c55e", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: saving ? "not-a
+                  style={{ flex: 1, padding: "9px 14px", background: saving ? "#f1f5f9" : emailSaved ? "#22c55e" : "#f1f5f9", color: emailSaved ? "#fff" : "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
+                  {saving ? "Saving..." : emailSaved ? "Saved ✓" : "Save Draft"}
+                </button>
+                <button onClick={generateFollowUp}
+                  style={{ flex: 1, padding: "9px 14px", background: "#f8f9fb", color: "#64748b", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                  Follow-Up
+                </button>
+              </div>
+
+              {/* Follow-up email display */}
+              {showFollowUp && followUpEmail && (
+                <div style={{ marginTop: 16, padding: "14px 16px", background: "#f8f9fb", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a", marginBottom: 8 }}>Follow-Up Email</div>
+                  <div style={{ fontSize: 12, color: "#475569", marginBottom: 4 }}><strong>Subject:</strong> {followUpEmail.subject}</div>
+                  <div style={{ fontSize: 12, color: "#475569", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{followUpEmail.body}</div>
+                  <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                    <button onClick={() => { setEmailSubject(followUpEmail.subject); setEmailBody(followUpEmail.body); setShowFollowUp(false) }}
+                      style={{ padding: "7px 12px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                      Use This Follow-Up
+                    </button>
+                    <button onClick={() => { navigator.clipboard.writeText(followUpEmail.body) }}
+                      style={{ padding: "7px 12px", background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                      Copy
+                    </button>
+                    <button onClick={() => setShowFollowUp(false)}
+                      style={{ padding: "7px 12px", background: "#f1f5f9", color: "#94a3b8", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, cursor: "pointer" }}>
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              )}
+              {showFollowUp && !followUpEmail && (
+                <div style={{ marginTop: 16, padding: "14px 16px", background: "#f8f9fb", borderRadius: 8, border: "1px solid #e2e8f0", textAlign: "center", color: "#94a3b8", fontSize: 13 }}>
+                  <div style={{ width: 20, height: 20, border: "2px solid #f1f5f9", borderTopColor: "#3b82f6", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 6px" }} />
+                  Generating follow-up...
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", marginBottom: 20 }}>
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#0f172a", display: "flex", alignItems: "center", gap: 6 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Private Notes
+            </h3>
+            <button onClick={saveNotes} disabled={savingNotes}
+              style={{ padding: "6px 14px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: savingNotes ? "not-allowed" : "pointer", opacity: savingNotes ? 0.7 : 1 }}>
+              {savingNotes ? "Saving..." : "Save Notes"}
+            </button>
+          </div>
+          <div style={{ padding: 20 }}>
+            <textarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              rows={4}
+              placeholder="Add private notes about this researcher — research interests, conversation history, reminders..."
+              style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", lineHeight: 1.6, resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }}
+            />
+          </div>
+        </div>
+
+        {/* Email History */}
+        {emails.length > 1 && (
+          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0" }}>
+              <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Email History</h3>
+            </div>
+            <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+              {emails.slice(1).map((e, i) => (
+                <div key={e.id} style={{ padding: "12px 14px", background: "#f8f9fb", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>{e.subject || `Email ${emails.length - i - 1}`}</div>
+                    <div style={{ fontSize: 11, color: "#94a3b8" }}>
+                      {e.sent_at ? new Date(e.sent_at).toLocaleDateString() : e.status}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#475569", lineHeight: 1.5 }}>{e.body?.slice(0, 200)}{(e.body?.length || 0) > 200 ? "..." : ""}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

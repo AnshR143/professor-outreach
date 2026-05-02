@@ -125,7 +125,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           {/* Logo */}
           <Link href="/dashboard" className="logo-area">
-            <div style={{ width: 36, height: 36, borderRadius: 8, background: "#f97316", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6z"/></svg>
             </div>
             <span className="logo-text">OutreachAI</span>
@@ -142,8 +142,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   title={expanded ? undefined : label}
                   className="nav-item"
                   style={{
-                    color: active ? "#f97316" : "#94a3b8",
-                    background: active ? "rgba(249,115,22,0.12)" : "transparent",
+                    color: active ? "#3b82f6" : "#94a3b8",
+                    background: active ? "rgba(59,130,246,0.12)" : "transparent",
                   }}
                   onMouseEnter={e => {
                     if (!active) {
@@ -152,8 +152,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     }
                   }}
                   onMouseLeave={e => {
-                    ;(e.currentTarget as HTMLElement).style.background = active ? "rgba(249,115,22,0.12)" : "transparent"
-                    ;(e.currentTarget as HTMLElement).style.color = active ? "#f97316" : "#94a3b8"
+                    ;(e.currentTarget as HTMLElement).style.background = active ? "rgba(59,130,246,0.12)" : "transparent"
+                    ;(e.currentTarget as HTMLElement).style.color = active ? "#3b82f6" : "#94a3b8"
                   }}
                 >
                   <span className="nav-icon"><Icon /></span>
@@ -170,8 +170,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               title={expanded ? undefined : "Settings"}
               className="nav-item"
               style={{
-                color: pathname === "/settings" ? "#f97316" : "#94a3b8",
-                background: pathname === "/settings" ? "rgba(249,115,22,0.12)" : "transparent",
+                color: pathname === "/settings" ? "#3b82f6" : "#94a3b8",
+                background: pathname === "/settings" ? "rgba(59,130,246,0.12)" : "transparent",
               }}
             >
               <span className="nav-icon">

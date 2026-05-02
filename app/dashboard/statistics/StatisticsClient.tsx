@@ -18,7 +18,7 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
   const router = useRouter()
   const supabase = createClient()
   const [researchers, setResearchers] = useState(initial)
-  const [activeTab, setActiveTab] = useState<"organize" | "analytics" | "sankey">("organize")
+  const [activeTab, setActiveTab] = useState<"analytics" | "sankey">("analytics")
   const [showFind, setShowFind] = useState(false)
   const [search, setSearch] = useState("")
   const [dragging, setDragging] = useState<string | null>(null)
@@ -73,7 +73,7 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
           <Link href={`/dashboard/researchers/${r.id}`} style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", textDecoration: "none" }}>{r.name}</Link>
           <div style={{ fontSize: 11, color: "#64748b" }}>{r.university}</div>
         </div>
-        <div style={{ width: 34, height: 34, borderRadius: "50%", border: `2px solid ${r.match_score >= 85 ? "#22c55e" : "#f97316"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#0f172a", flexShrink: 0 }}>
+        <div style={{ width: 34, height: 34, borderRadius: "50%", border: `2px solid ${r.match_score >= 85 ? "#22c55e" : "#3b82f6"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#0f172a", flexShrink: 0 }}>
           {r.match_score}
         </div>
       </div>
@@ -117,11 +117,11 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Statistics</h1>
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={() => router.refresh()} style={{ padding: "8px 14px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, cursor: "pointer", color: "#475569" }}>↻ Refresh</button>
-          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#f97316", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Researchers
           </button>
-          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#f97316", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 4, marginBottom: 20, background: "#f1f5f9", padding: 4, borderRadius: 10, width: "fit-content" }}>
-          {([["organize", " Organize Researchers"], ["analytics", " Analytics Dashboard"], ["sankey", " Sankey View"]] as const).map(([tab, label]) => (
+          {([["analytics", " Analytics Dashboard"], ["sankey", " Sankey View"]] as const).map(([tab, label]) => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               style={{ padding: "8px 16px", borderRadius: 7, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500, background: activeTab === tab ? "#fff" : "transparent", color: activeTab === tab ? "#0f172a" : "#64748b", boxShadow: activeTab === tab ? "0 1px 3px rgba(0,0,0,0.1)" : "none" }}>
               {label}
@@ -152,21 +152,12 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
           ))}
         </div>
 
-        {activeTab === "organize" && (
-          <div style={{ display: "flex", gap: 16, overflow: "auto", paddingBottom: 8 }}>
-            <Column title="Awaiting" color="#f97316" status="awaiting" list={filtered(awaiting)} emptyMsg="awaiting" />
-            <Column title="Rejected" color="#ef4444" status="rejected" list={filtered(rejected)} emptyMsg="rejected" />
-            <Column title="Accepted" color="#22c55e" status="accepted" list={filtered(acceptedList)} emptyMsg="accepted" />
-            <Column title="Unsorted" color="#94a3b8" status="unsorted" list={filtered(unsorted)} emptyMsg="unsorted" />
-          </div>
-        )}
-
         {activeTab === "analytics" && (
           <div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 }}>
               {[
                 { label: "Researchers Found", value: researchers.length, sub: "Total in your list", pct: "100%", color: "#3b82f6" },
-                { label: "Emails Sent", value: emailsSent, sub: `${notEmailed} not yet emailed`, pct: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}% outreach rate`, color: "#f97316" },
+                { label: "Emails Sent", value: emailsSent, sub: `${notEmailed} not yet emailed`, pct: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}% outreach rate`, color: "#3b82f6" },
                 { label: "Accepted", value: accepted, sub: "Replied positively", pct: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}% reply rate`, color: "#22c55e" },
                 { label: "Rejected", value: rejectedEmail, sub: `${pending} awaiting reply`, pct: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}% rejected`, color: "#ef4444" },
               ].map((k, i) => (
@@ -194,7 +185,7 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
                 {topUniversities.map((u, i) => (
                   <div key={u.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topUniversities.length - 1 ? "1px solid #f1f5f9" : "none" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#f97316", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
+                      <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#3b82f6", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
                       <span style={{ fontSize: 13, color: "#0f172a" }}>{u.name}</span>
                     </div>
                     <span style={{ fontSize: 12, color: "#64748b" }}>{u.count} researchers</span>
@@ -210,7 +201,7 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
                 {topFields.map((f, i) => (
                   <div key={f.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topFields.length - 1 ? "1px solid #f1f5f9" : "none" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#f97316", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
+                      <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#3b82f6", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
                       <span style={{ fontSize: 13, color: "#0f172a" }}>{f.name}</span>
                     </div>
                     <span style={{ fontSize: 12, color: "#64748b" }}>{f.count} researchers</span>
@@ -233,7 +224,7 @@ export default function StatisticsClient({ researchers: initial, emails, userNam
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 32 }}>
               {[
                 { label: "Found", value: researchers.length, color: "#3b82f6", sub: "total" },
-                { label: "Emailed", value: emailsSent, color: "#f97316", sub: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}%` },
+                { label: "Emailed", value: emailsSent, color: "#3b82f6", sub: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}%` },
                 { label: "Awaiting", value: pending, color: "#f59e0b", sub: `${emailsSent ? Math.round(pending/emailsSent*100) : 0}%` },
                 { label: "Accepted", value: accepted, color: "#22c55e", sub: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}%` },
                 { label: "Rejected", value: rejectedEmail, color: "#ef4444", sub: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}%` },
