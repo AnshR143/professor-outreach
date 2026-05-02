@@ -27,7 +27,10 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
   }
 
   async function handleFind() {
-    if (form.fields.length === 0) { setError("Select at least one research field to continue."); return }
+    if (form.fields.length === 0 && !form.keyword.trim() && !form.customUniversity.trim()) {
+      setError("Select at least one field, or enter a keyword to search.")
+      return
+    }
     setError("")
     setStep("loading")
     setProgress({ found: 0, total: form.count, current: "Analyzing your profile..." })
@@ -106,11 +109,11 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               <div style={{ marginBottom: 20 }}>
                 <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>
                   What field are you interested in?{" "}
-                  <span style={{ color: "#3b82f6", fontWeight: 700 }}>*</span>
+                  <span style={{ color: "#94a3b8", fontWeight: 400 }}>(optional — or just use keyword below)</span>
                   <span style={{ color: "#94a3b8", fontWeight: 400, marginLeft: 4 }}>({form.fields.length} selected)</span>
                 </label>
                 <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 10px" }}>
-                  Match scores combine your selection with keywords from your resume for accuracy.
+                  No field? Just type your topic in the keyword box below — it'll search Semantic Scholar &amp; OpenAlex directly.
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                   {RESEARCH_FIELDS.slice(0, 20).map(f => (
@@ -168,7 +171,9 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
 
               <button onClick={handleFind}
                 style={{ width: "100%", padding: "12px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
-                Find {form.count} Researchers
+                {form.fields.length === 0 && form.keyword
+                  ? `Search "${form.keyword}" — Live Academic Search`
+                  : `Find ${form.count} Researchers`}
               </button>
             </div>
           )}
