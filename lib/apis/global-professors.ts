@@ -27,8 +27,9 @@ export interface GlobalProfessor {
 const PURE_TOPIC_PATTERNS = [
   /^(cotton|wheat|rice|maize|soybean|corn)\s+\w+$/i,
   /^(effect|impact|role|study|review|analysis)\s+of\s+/i,
-  /^\w+\s+(entomology|epidemiology|ecology|pathology|genomics)$/i,
+  /\s(entomology|epidemiology|ecology|pathology|genomics|physiology|microbiology|toxicology|botany|zoology)$/i,
   /^(department|laboratory|institute|center|journal|committee)\s+/i,
+  /\.\./,  // double dots like "K. J. .. Entomology"
 ]
 
 /**

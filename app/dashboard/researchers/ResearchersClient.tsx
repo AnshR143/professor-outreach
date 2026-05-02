@@ -79,6 +79,16 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
   const [highMatchOnly, setHighMatchOnly] = useState(false)
   // Track optimistic email status per researcher id
   const [emailStatuses, setEmailStatuses] = useState<Record<string, EmailStatus>>({})
+  const [resetting, setResetting] = useState(false)
+
+  async function resetAllResearchers() {
+    if (!confirm("Delete ALL researchers from your list? This cannot be undone.")) return
+    setResetting(true)
+    await supabase.from("researchers").delete().eq("user_id", (await supabase.auth.getUser()).data.user?.id!)
+    setResearchers([])
+    setResetting(false)
+    router.refresh()
+  }
 
   // Sync when server refreshes data (e.g. after finding new researchers)
   useEffect(() => { setResearchers(initial) }, [initial])
@@ -121,6 +131,13 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
           </span>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <button
+            onClick={resetAllResearchers}
+            disabled={resetting}
+            style={{ padding: "8px 14px", background: resetting ? "#fecaca" : "#fee2e2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: resetting ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}
+          >
+            {resetting ? "Resetting..." : "🗑 Reset All"}
+          </button>
           <LiquidGlassButton
             onClick={() => setShowFind(true)}
             variant="primary"
