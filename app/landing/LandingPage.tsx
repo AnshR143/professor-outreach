@@ -259,6 +259,22 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* ─── Full-width university marquee banner ─── */}
+      <div style={{ width: "100%", borderTop: "1px solid #e8edf2", borderBottom: "1px solid #e8edf2", background: "#f9fafb", overflow: "hidden", padding: "18px 0" }}>
+        <div style={{ position: "relative", overflow: "hidden" }}>
+          <div className="marquee-track" style={{ display: "flex", gap: 0, whiteSpace: "nowrap" }}>
+            {[...UNIS, ...UNIS, ...UNIS, ...UNIS].map((u, i) => (
+              <div key={i} style={{ display: "inline-flex", alignItems: "center", gap: 0 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#a0aec0", letterSpacing: "0.18em", textTransform: "uppercase", padding: "0 28px" }}>
+                  {u.name}
+                </span>
+                <span style={{ color: "#c8d0da", fontSize: 10 }}>·</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ═══════════════════════════════════════════
           SECTION 3 — How It Works + Trust (White bg)
           ═══════════════════════════════════════════ */}
@@ -310,26 +326,6 @@ export default function LandingPage() {
               ))}
             </div>
 
-          </div>
-        </div>
-      </div>
-
-      {/* ─── Full-width university marquee banner ─── */}
-      <div style={{ width: "100%", borderTop: "1px solid #e8edf2", borderBottom: "1px solid #e8edf2", background: "#f9fafb", overflow: "hidden", padding: "18px 0" }}>
-        <div style={{ position: "relative", overflow: "hidden" }}>
-          <div className="marquee-track" style={{ display: "flex", gap: 0, whiteSpace: "nowrap" }}>
-            {[...UNIS, ...UNIS, ...UNIS, ...UNIS].map((u, i) => (
-              <div key={i} style={{ display: "inline-flex", alignItems: "center", gap: 0 }}>
-                <span style={{
-                  fontSize: 11, fontWeight: 700, color: "#a0aec0",
-                  letterSpacing: "0.18em", textTransform: "uppercase",
-                  padding: "0 28px",
-                }}>
-                  {u.name}
-                </span>
-                <span style={{ color: "#c8d0da", fontSize: 10 }}>·</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
