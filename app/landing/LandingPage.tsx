@@ -178,10 +178,10 @@ export default function LandingPage() {
           src="/hero-bg.mp4"
         />
 
-        {/* Light blue gradient overlay — matches original section colors, opaque at top/bottom */}
+        {/* Light blue gradient overlay — semi-transparent so clouds show through */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(to bottom, #bae6fd 0%, rgba(186,230,253,0.88) 12%, rgba(219,241,255,0.72) 40%, rgba(240,249,255,0.78) 70%, #ffffff 100%)",
+          background: "linear-gradient(to bottom, rgba(186,230,253,0.45) 0%, rgba(219,241,255,0.32) 30%, rgba(240,249,255,0.38) 65%, rgba(255,255,255,0.92) 100%)",
           zIndex: 1,
         }} />
 
