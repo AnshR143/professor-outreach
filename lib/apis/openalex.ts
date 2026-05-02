@@ -35,88 +35,87 @@ export interface OAAuthor {
     domain?: { display_name: string }
   }>
   homepage_url?: string
-  ids?: { orcid?: string }
 }
 
 /**
- * Step 1: Resolve a concept name to an OpenAlex concept ID.
- * Example: "Machine Learning" → "C119857082"
+ * NEW STRATEGY: Search for WORKS (papers) by topic, then extract authors.
+ * This is much more effective than searching for authors directly by name.
  */
-export async function resolveConceptId(field: string): Promise<string | null> {
-  try {
-    const data = await oaGet(`/concepts?search=${encodeURIComponent(field)}&per_page=5&select=id,display_name,level`)
-    const results: Array<{ id: string; display_name: string; level: number }> = data?.results || []
-    // Prefer exact matches or level 1/2 concepts (specific enough)
-    const match = results.find(r =>
-      r.display_name.toLowerCase() === field.toLowerCase()
-    ) || results[0]
-    if (!match) return null
-    // Extract the short concept ID from the URL
-    return match.id.split("/").pop() || null
-  } catch {
-    return null
-  }
-}
-
-/**
- * Step 2: Fetch authors who publish in a given concept, optionally filtered by institution name.
- * This is the reliable way — searching by research topic, not author name.
- */
-export async function searchAuthorsByConcept(
-  conceptId: string,
+export async function findProfessorsByWorkSearch(
+  topic: string,
   institution?: string,
   limit = 25
 ): Promise<OAAuthor[]> {
-  let filter = `topics.id:${conceptId},last_known_institution.type:education`
-
+  // Search for works matching the topic
+  // Filter for education institutions to get professors/researchers
+  let filter = "authorships.institutions.type:education"
   if (institution) {
-    // OpenAlex doesn't support full-text institution filter in authors endpoint well,
-    // so we fetch more results and filter client-side
+    filter += `,authorships.institutions.display_name.search:${encodeURIComponent(institution)}`
   }
 
+  // Search works by topic
   const data = await oaGet(
-    `/authors?filter=${filter}&sort=cited_by_count:desc&per_page=${Math.min(limit * 2, 50)}&select=id,display_name,works_count,cited_by_count,last_known_institution,topics,homepage_url`
+    `/works?search=${encodeURIComponent(topic)}&filter=${filter}&sort=cited_by_count:desc&per_page=50&select=authorships`
   )
 
-  let results: OAAuthor[] = data?.results || []
+  const results = data?.results || []
+  const authorMap = new Map<string, OAAuthor>()
 
-  // Client-side institution filter if needed
-  if (institution) {
-    const iLow = institution.toLowerCase().replace(/\buniversity\b/g, "").replace(/\bcollege\b/g, "").trim()
-    const filtered = results.filter(a => {
-      const uName = (a.last_known_institution?.display_name || "").toLowerCase()
-      return uName.includes(iLow) || iLow.includes(uName.replace(/\buniversity\b/g, "").trim())
-    })
-    // If filtered is too narrow, return all (user might have typed slightly wrong uni name)
-    results = filtered.length > 0 ? filtered : results
+  for (const work of results) {
+    for (const auth of work.authorships || []) {
+      const author = auth.author
+      if (!author || authorMap.has(author.id)) continue
+
+      // Check if this author has an education institution in THIS authorship
+      const hasEdu = auth.institutions?.some((i: any) => i.type === "education")
+      if (!hasEdu) continue
+
+      // We need more details for the author, but we can't fetch all individually fast.
+      // We'll return a partial author and hope the detail fetcher picks it up, 
+      // or we can do a bulk fetch later.
+      // For now, let's use the institution from the authorship.
+      const inst = auth.institutions.find((i: any) => i.type === "education")
+
+      authorMap.set(author.id, {
+        id: author.id,
+        display_name: author.display_name,
+        works_count: 0, // Unknown from works search
+        cited_by_count: 0,
+        last_known_institution: {
+          display_name: inst.display_name,
+          country_code: inst.country_code || "",
+          type: "education",
+          id: inst.id
+        }
+      })
+
+      if (authorMap.size >= limit) break
+    }
+    if (authorMap.size >= limit) break
   }
 
-  return results.slice(0, limit)
+  return Array.from(authorMap.values())
 }
 
 /**
- * Convenience: resolve concept then fetch authors in one call.
+ * Fallback: Search authors by name/bio if work search fails
  */
 export async function findProfessorsByField(
   field: string,
   institution?: string,
   limit = 25
 ): Promise<OAAuthor[]> {
-  // Try to resolve the concept ID for this field
-  const conceptId = await resolveConceptId(field)
-  if (!conceptId) {
-    // Fallback: text search on author display_name (less reliable but better than nothing)
-    const data = await oaGet(
-      `/authors?filter=last_known_institution.type:education&search=${encodeURIComponent(field)}&sort=cited_by_count:desc&per_page=${limit}`
-    )
-    return data?.results || []
-  }
-  return searchAuthorsByConcept(conceptId, institution, limit)
+  // First try searching works - it's the "efficient" way
+  const authorsFromWorks = await findProfessorsByWorkSearch(field, institution, limit)
+  if (authorsFromWorks.length > 0) return authorsFromWorks
+
+  // Fallback to searching authors directly
+  const data = await oaGet(
+    `/authors?filter=last_known_institutions.type:education&search=${encodeURIComponent(field)}&sort=cited_by_count:desc&per_page=${limit}`
+  )
+  return data?.results || []
 }
 
-/**
- * Convert an OpenAlex author to a flat structure for storage.
- */
 export function normalizeOAAuthor(author: OAAuthor): {
   name: string
   university: string
@@ -134,10 +133,7 @@ export function normalizeOAAuthor(author: OAAuthor): {
     name: author.display_name,
     university: uni,
     research_areas: areas.length > 0 ? areas : ["Research"],
-    bio: `${author.display_name} is a researcher at ${uni} with ${author.works_count} publications and ${author.cited_by_count} citations.`,
+    bio: `${author.display_name} is a researcher at ${uni}.`,
     profile_url: author.homepage_url || `https://openalex.org/authors/${author.id.split("/").pop()}`,
   }
 }
-
-// Keep old export for backward compatibility
-export { findProfessorsByField as searchByConceptAndInstitution }

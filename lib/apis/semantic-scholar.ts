@@ -72,6 +72,17 @@ export async function getAuthorDetails(authorId: string): Promise<SSAuthor | nul
   }
 }
 
+export async function searchPapers(query: string, limit = 20): Promise<SSPaper[]> {
+  try {
+    const data = await ssGet(
+      `/paper/search?query=${encodeURIComponent(query)}&fields=${PAPER_FIELDS},authors.authorId,authors.name,authors.affiliations&limit=${limit}`
+    )
+    return data.data || []
+  } catch {
+    return []
+  }
+}
+
 export async function searchProfessorsByField(
   field: string,
   university: string,

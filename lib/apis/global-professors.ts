@@ -1,15 +1,13 @@
 /**
  * Global Professor Pool
  *
- * Uses OpenAlex as the primary source (structured academic data, real institutions).
- * Semantic Scholar is skipped — its text search returns paper titles, not authors.
- *
- * Flow:
- * 1. Check global_professors table (instant, free)
- * 2. Query OpenAlex by concept + institution filter
- * 3. Save newly discovered professors back to global_professors
+ * Strategy: Find researchers by their WORK. 
+ * Instead of searching for names, we search for papers matching the topic, 
+ * then extract the authors. This is the most reliable way to find professors 
+ * in specific niches like "Agriculture" or "Entomology".
  */
 
+import { searchPapers } from "@/lib/apis/semantic-scholar"
 import { findProfessorsByField, normalizeOAAuthor } from "@/lib/apis/openalex"
 import { SupabaseClient } from "@supabase/supabase-js"
 
@@ -24,46 +22,35 @@ export interface GlobalProfessor {
   source?: string
 }
 
-// Topic/non-person patterns to reject
+// Name patterns that are likely paper titles or garbage
 const BAD_NAME_PATTERNS = [
-  /\.\./,                         // double dots: "K. J. .. Entomology"
-  /\d/,                           // contains numbers
-  /^[A-Z]\.\s+\w+$/,              // single initial + word: "N. Writing"
-  /^[A-Z]\.\s+[A-Z]\.\s+\w+$/,   // "A. B. Writing"
-  // Last word is a subject/topic
-  /\s(writing|reading|notes|instruction|kindergarten|entomology|epidemiology|ecology|pathology|genomics|physiology|microbiology|toxicology|botany|zoology|nutrition|dentistry|cardiology|oncology)$/i,
-  // Starts with a non-name word
+  /\.\./,                         
+  /\d/,                           
+  /^[A-Z]\.\s+\w+$/,              
+  /^[A-Z]\.\s+[A-Z]\.\s+\w+$/,   
+  /\s(writing|reading|notes|instruction|kindergarten|entomology|ecology|pathology|genomics|physiology|toxicology|botany|zoology)$/i,
   /^(effect|impact|role|study|review|analysis|writing|reading|instruction|department|laboratory|institute|center|journal|committee|cotton|wheat|rice|maize|soybean|corn|kindergarten)\s/i,
-  // Mixed case like "INSTRuCTION" (has lowercase after uppercase in middle of word)
   /[A-Z]{2,}[a-z]/,
+  /^\w+-\w+-\w+$/, // Likely a tag or ID
 ]
 
-/**
- * Returns true only if this looks like a real human researcher name
- * with a valid institution.
- */
 function isRealResearcher(name: string, university: string): boolean {
-  // Must have a real institution
-  if (!university || university.trim().length < 3) return false
-  if (/^unknown$/i.test(university.trim())) return false
-
-  // Name basics
   if (!name || name.trim().length < 4) return false
   const parts = name.trim().split(/\s+/)
-  if (parts.length < 2) return false   // need first + last
-  if (parts.length > 6) return false   // too long = phrase, not a name
+  if (parts.length < 2) return false   
+  if (parts.length > 5) return false   // Professors rarely have 6+ word names
 
-  // Check bad patterns
   for (const pat of BAD_NAME_PATTERNS) {
     if (pat.test(name.trim())) return false
   }
 
+  // Reject if all lowercase or all uppercase
+  if (name === name.toLowerCase()) return false
+  if (name === name.toUpperCase() && name.length > 5) return false
+
   return true
 }
 
-/**
- * Search the global pool first, then OpenAlex if needed.
- */
 export async function findGlobalProfessors(
   supabase: SupabaseClient,
   fields: string[],
@@ -72,7 +59,7 @@ export async function findGlobalProfessors(
   needed: number
 ): Promise<GlobalProfessor[]> {
 
-  // ── 1. Query global_professors table ────────────────────────────────────
+  // 1. Check local global_professors table
   const { data: globalRows } = await supabase
     .from("global_professors")
     .select("*")
@@ -84,70 +71,73 @@ export async function findGlobalProfessors(
   const filtered = globalPool.filter(p => {
     const areas = p.research_areas || []
     const uni = (p.university || "").toLowerCase()
+    
+    const term = (keyword || fields[0] || "").toLowerCase()
+    if (!term) return true
 
-    const fieldMatch = fields.length === 0 || fields.some(f =>
-      areas.some(a => a.toLowerCase().includes(f.toLowerCase()) || f.toLowerCase().includes(a.toLowerCase()))
-    )
-    const uniMatch = universities.length === 0 || universities.some(u => {
-      const uLow = u.toLowerCase().replace(/\buniversity\b/g, "").replace(/\buniv\b/g, "").replace(/\bcollege\b/g, "").trim()
-      return uni.includes(uLow) || uLow.includes(uni.replace(/\buniversity\b/g, "").replace(/\bcollege\b/g, "").trim())
-    })
-    const kwMatch = !keyword ||
-      p.name.toLowerCase().includes(keyword.toLowerCase()) ||
-      areas.some(a => a.toLowerCase().includes(keyword.toLowerCase())) ||
-      uni.includes(keyword.toLowerCase())
-
-    return fieldMatch && uniMatch && kwMatch
+    return p.name.toLowerCase().includes(term) || 
+           uni.includes(term) || 
+           areas.some(a => a.toLowerCase().includes(term))
   })
 
-  if (filtered.length >= needed) {
-    return filtered.slice(0, needed)
-  }
+  if (filtered.length >= needed) return filtered.slice(0, needed)
 
-  // ── 2. Query OpenAlex (structured academic data, reliable author records) ──
+  // 2. Live Discovery via Works/Papers (The Efficient Way)
   const existingNames = new Set(globalPool.map(p => p.name.toLowerCase()))
   const fresh: GlobalProfessor[] = []
 
-  // Build search terms: keyword first, then fields
-  const searchTerms = keyword
-    ? [keyword, ...fields.slice(0, 2)]
-    : fields.slice(0, 3)
-
-  const uniTargets = universities.length > 0 ? universities.slice(0, 3) : [undefined]
+  const searchTerms = keyword ? [keyword] : fields.slice(0, 2)
+  const uniFilter = universities[0]
 
   const promises: Promise<void>[] = []
 
   for (const term of searchTerms) {
-    for (const uni of uniTargets) {
-      promises.push((async () => {
-        try {
-          const authors = await findProfessorsByField(term, uni, 25)
-          for (const a of authors) {
-            if (!a.display_name || existingNames.has(a.display_name.toLowerCase())) continue
-            const normalized = normalizeOAAuthor(a)
-
-            // Require real university
-            if (!normalized.university || normalized.university === "Unknown") continue
-
-            // Require valid person name
-            if (!isRealResearcher(normalized.name, normalized.university)) continue
-
-            // Must have at least 1 work (published something)
-            if (a.works_count < 1) continue
-
-            fresh.push({ ...normalized, source: "openalex" })
-            existingNames.add(a.display_name.toLowerCase())
-          }
-        } catch (e) {
-          console.error("OpenAlex search failed for term:", term, e)
+    // OpenAlex Work-Based Search
+    promises.push((async () => {
+      try {
+        const authors = await findProfessorsByField(term, uniFilter, 30)
+        for (const a of authors) {
+          if (!a.display_name || existingNames.has(a.display_name.toLowerCase())) continue
+          const normalized = normalizeOAAuthor(a)
+          if (!isRealResearcher(normalized.name, normalized.university)) continue
+          
+          fresh.push({ ...normalized, source: "openalex" })
+          existingNames.add(a.display_name.toLowerCase())
         }
-      })())
-    }
+      } catch (e) { console.error("OA Search failed", e) }
+    })())
+
+    // Semantic Scholar Paper-Based Search
+    promises.push((async () => {
+      try {
+        const query = uniFilter ? `${term} ${uniFilter}` : term
+        const papers = await searchPapers(query, 20)
+        for (const paper of papers) {
+          for (const auth of paper.authors || []) {
+            if (!auth.name || existingNames.has(auth.name.toLowerCase())) continue
+            
+            // Try to find an affiliation in the paper data
+            const affiliation = (auth as any).affiliations?.[0] || uniFilter || "University"
+            if (!isRealResearcher(auth.name, affiliation)) continue
+
+            fresh.push({
+              name: auth.name,
+              university: affiliation,
+              research_areas: [term],
+              bio: `${auth.name} is a researcher working on ${paper.title}.`,
+              profile_url: `https://www.semanticscholar.org/author/${auth.authorId}`,
+              source: "semantic_scholar"
+            })
+            existingNames.add(auth.name.toLowerCase())
+          }
+        }
+      } catch (e) { console.error("SS Search failed", e) }
+    })())
   }
 
   await Promise.allSettled(promises)
 
-  // ── 3. Save to global_professors ─────────────────────────────────────────
+  // 3. Save & Return
   if (fresh.length > 0) {
     const toInsert = fresh.map(p => ({
       name: p.name,
@@ -155,7 +145,7 @@ export async function findGlobalProfessors(
       research_areas: p.research_areas,
       bio: p.bio || null,
       profile_url: p.profile_url || null,
-      source: p.source || "openalex",
+      source: p.source || "api",
     }))
 
     await supabase
@@ -163,7 +153,6 @@ export async function findGlobalProfessors(
       .upsert(toInsert, { onConflict: "name,university", ignoreDuplicates: true })
   }
 
-  // ── 4. Merge and return ───────────────────────────────────────────────────
   const merged = [...filtered, ...fresh]
   return merged.slice(0, needed)
 }
