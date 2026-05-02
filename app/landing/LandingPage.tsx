@@ -1,6 +1,6 @@
 "use client"
 import { motion, useInView } from "framer-motion"
-import { ArrowRight, Brain, Mail, Zap, Shield, CheckCircle,
+import { ArrowRight, Brain, Mail, BarChart3, Zap, Shield, CheckCircle,
          Hexagon, Triangle, Command, Ghost, Gem, Cpu } from "lucide-react"
 import { useRef, useEffect } from "react"
 import Link from "next/link"
