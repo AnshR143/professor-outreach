@@ -17,9 +17,9 @@ const WordsPullUp = ({ text }: { text: string }) => {
         const isLast = i === words.length - 1
         return (
           <motion.span key={i}
-            initial={{ y: 40, opacity: 0 }}
+            initial={{ y: 60, opacity: 0 }}
             animate={isInView ? { y: 0, opacity: 1 } : {}}
-            transition={{ duration: 0.7, delay: i * 0.09, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.9, delay: 0.5 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
             style={{ display: "inline-block", position: "relative", marginRight: isLast ? 0 : "0.25em" }}>
             {word}
           </motion.span>
@@ -84,12 +84,6 @@ export default function LandingPage() {
       <style>{`
         @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
         .marquee-track { animation: marquee 35s linear infinite; }
-        @keyframes fadeSlideIn { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }
-        .ani-1 { animation: fadeSlideIn 0.8s ease-out 0.1s both; }
-        .ani-2 { animation: fadeSlideIn 0.8s ease-out 0.25s both; }
-        .ani-3 { animation: fadeSlideIn 0.8s ease-out 0.4s both; }
-        .ani-4 { animation: fadeSlideIn 0.8s ease-out 0.55s both; }
-        .ani-5 { animation: fadeSlideIn 0.8s ease-out 0.7s both; }
       `}</style>
 
       {/* ═══════════════════════════════════════════
@@ -103,11 +97,10 @@ export default function LandingPage() {
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
 
-          {/* Lighter overlay — just a gentle vignette, no heavy darks */}
           <div style={{ pointerEvents: "none", position: "absolute", inset: 0,
             background: "linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.0) 30%,rgba(0,0,0,0.42) 100%)" }} />
 
-          {/* Navbar — drops in from top first */}
+          {/* Navbar — drops in from top */}
           <motion.nav
             initial={{ y: -40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -139,17 +132,13 @@ export default function LandingPage() {
           {/* Hero bottom */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 40px 8px" }}>
             <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", alignItems: "flex-end", gap: 32 }}>
-              {/* Heading rises up — delay 0.5 so navbar lands first */}
-              <motion.h1
-                initial={{ y: 60, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                style={{ color: "#E1E0CC", fontWeight: 600, lineHeight: 0.85,
-                  letterSpacing: "-0.06em", fontSize: "clamp(72px,19vw,280px)", margin: 0 }}>
+              {/* Heading — WordsPullUp owns the y motion; no double-animation here */}
+              <h1 style={{ color: "#E1E0CC", fontWeight: 600, lineHeight: 0.85,
+                letterSpacing: "-0.06em", fontSize: "clamp(72px,19vw,280px)", margin: 0 }}>
                 <WordsPullUp text="Reach" />
-              </motion.h1>
+              </h1>
               <div style={{ display: "flex", flexDirection: "column", gap: 20, paddingBottom: 40, maxWidth: 380 }}>
-                {/* Tagline — slides up after heading */}
+                {/* Tagline */}
                 <motion.p
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -158,7 +147,7 @@ export default function LandingPage() {
                   AI-powered professor outreach. Find researchers who match your work,
                   generate personalised cold emails, and land the research opportunity you deserve.
                 </motion.p>
-                {/* CTA — last to appear */}
+                {/* CTA */}
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -190,7 +179,6 @@ export default function LandingPage() {
         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
         padding: "100px 40px", overflow: "hidden" }}>
 
-        {/* Video background */}
         <video
           autoPlay muted loop playsInline
           style={{
@@ -200,48 +188,65 @@ export default function LandingPage() {
           src="/hero-bg.mp4"
         />
 
-        {/* Light blue gradient overlay — semi-transparent so clouds show through */}
         <div style={{
           position: "absolute", inset: 0,
           background: "linear-gradient(to bottom, rgba(186,230,253,0.45) 0%, rgba(219,241,255,0.32) 30%, rgba(240,249,255,0.38) 65%, rgba(255,255,255,0.92) 100%)",
           zIndex: 1,
         }} />
 
-        {/* Content */}
         <div style={{ position: "relative", zIndex: 10, maxWidth: 1100, width: "100%" }}>
 
-          {/* Section heading */}
+          {/* Section heading — scroll-triggered */}
           <div style={{ textAlign: "center", marginBottom: 64 }}>
-            <div className="ani-1" style={{ display: "inline-flex", alignItems: "center", gap: 8,
-              background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
-              borderRadius: 999, padding: "6px 16px", marginBottom: 20 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8,
+                background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
+                borderRadius: 999, padding: "6px 16px", marginBottom: 20 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#3b82f6",
                 boxShadow: "0 0 8px #3b82f6" }} />
               <span style={{ fontSize: 12, fontWeight: 600, color: "#1e40af",
                 textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 Why OutreachAI
               </span>
-            </div>
-            <h2 className="ani-2" style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 800,
-              color: "#0f172a", margin: "0 0 16px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.65, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              style={{ fontSize: "clamp(32px,5vw,56px)", fontWeight: 800,
+                color: "#0f172a", margin: "0 0 16px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
               Every tool you need to land<br />
               <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 research opportunities
               </span>
-            </h2>
-            <p className="ani-3" style={{ fontSize: 17, color: "#334155", maxWidth: 560,
-              margin: "0 auto", lineHeight: 1.6 }}>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              style={{ fontSize: 17, color: "#334155", maxWidth: 560,
+                margin: "0 auto", lineHeight: 1.6 }}>
               Built for undergrads, Masters, and PhD students who want a systematic,
               AI-powered approach to cold outreach.
-            </p>
+            </motion.p>
           </div>
 
-          {/* Feature grid */}
+          {/* Feature grid — staggered scroll-triggered cards */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 20 }}>
             {FEATURES.map((f, i) => (
-              <div key={f.title}
-                className="ani-3"
+              <motion.div key={f.title}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.55, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
                 style={{
                   background: "rgba(255,255,255,0.75)",
                   border: "1px solid rgba(59,130,246,0.15)",
@@ -249,18 +254,15 @@ export default function LandingPage() {
                   borderRadius: 20,
                   padding: "28px 28px",
                   backdropFilter: "blur(14px)",
-                  transition: "border-color 0.2s, background 0.2s, transform 0.2s",
-                  animationDelay: `${0.1 + i * 0.08}s`,
+                  transition: "border-color 0.2s, background 0.2s",
                 }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(59,130,246,0.35)"
                   ;(e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.95)"
-                  ;(e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)"
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(59,130,246,0.15)"
                   ;(e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.75)"
-                  ;(e.currentTarget as HTMLDivElement).style.transform = "translateY(0)"
                 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12,
                   background: "linear-gradient(135deg,rgba(59,130,246,0.1),rgba(129,140,248,0.1))",
@@ -275,7 +277,7 @@ export default function LandingPage() {
                 <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.6, margin: 0 }}>
                   {f.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -298,35 +300,49 @@ export default function LandingPage() {
       </div>
 
       {/* ═══════════════════════════════════════════
-          SECTION 3 — How It Works + Trust (White bg)
+          SECTION 3 — How It Works
           ═══════════════════════════════════════════ */}
       <div id="how" style={{ background: "#ffffff", padding: "80px 40px 0" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 60, alignItems: "start", maxWidth: 680 }}>
 
-            {/* Left: How it works */}
             <div style={{ minWidth: 0 }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
-                background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
-                borderRadius: 999, padding: "6px 14px", marginBottom: 24 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 8,
+                  background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
+                  borderRadius: 999, padding: "6px 14px", marginBottom: 24 }}>
                 <span style={{ fontSize: 12, fontWeight: 600, color: "#2563eb",
                   textTransform: "uppercase", letterSpacing: "0.1em" }}>How It Works</span>
-              </div>
-              <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800,
-                color: "#0f172a", margin: "0 0 48px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
+              </motion.div>
+              <motion.h2
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.65, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800,
+                  color: "#0f172a", margin: "0 0 48px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
                 From zero to<br />
                 <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
                   WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                   professor reply
                 </span>
-              </h2>
+              </motion.h2>
 
               {[
                 { step: "01", title: "Upload your resume", desc: "Paste or upload your CV. Our parser extracts keywords, skills, and research keywords automatically." },
                 { step: "02", title: "Set your fields & filters", desc: "Pick your research areas and optionally filter by university tier or name. Match scores update in real time." },
                 { step: "03", title: "Generate & send emails", desc: "Click Generate — your Groq AI key crafts a tailored cold email. Open Gmail pre-filled and hit send." },
               ].map((s, i) => (
-                <div key={s.step} style={{ display: "flex", gap: 20, marginBottom: i < 2 ? 36 : 0 }}>
+                <motion.div key={s.step}
+                  initial={{ opacity: 0, x: -28 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.6, delay: 0.2 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ display: "flex", gap: 20, marginBottom: i < 2 ? 36 : 0 }}>
                   <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <div style={{ width: 48, height: 48, borderRadius: 14,
                       background: "linear-gradient(135deg,rgba(59,130,246,0.1),rgba(129,140,248,0.1))",
@@ -344,7 +360,7 @@ export default function LandingPage() {
                     <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: "0 0 6px" }}>{s.title}</h3>
                     <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
@@ -361,14 +377,19 @@ export default function LandingPage() {
           {[
             { plan: "Free", price: "$0", desc: "Everything you need to start reaching professors.", features: ["Unlimited researchers", "AI email generation", "Resume parsing", "Match scoring", "Follow-up engine"], cta: "Get started", href: "/signup", primary: true },
             { plan: "Pro (coming soon)", price: "$12/mo", desc: "Advanced analytics and bulk outreach for serious applicants.", features: ["Everything in Free", "Bulk email campaigns", "Advanced analytics", "Priority support", "Custom templates"], cta: null, href: "#", primary: false },
-          ].map(p => (
-            <div key={p.plan} style={{
-              borderRadius: 24, padding: 32,
-              background: p.primary ? "linear-gradient(135deg,rgba(59,130,246,0.15),rgba(129,140,248,0.12))" : "rgba(255,255,255,1)",
-              border: p.primary ? "1px solid rgba(59,130,246,0.35)" : "1px solid rgba(59,130,246,0.15)",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.03)",
-              backdropFilter: "blur(12px)",
-            }}>
+          ].map((p, i) => (
+            <motion.div key={p.plan}
+              initial={{ opacity: 0, y: 36 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                borderRadius: 24, padding: 32,
+                background: p.primary ? "linear-gradient(135deg,rgba(59,130,246,0.15),rgba(129,140,248,0.12))" : "rgba(255,255,255,1)",
+                border: p.primary ? "1px solid rgba(59,130,246,0.35)" : "1px solid rgba(59,130,246,0.15)",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.03)",
+                backdropFilter: "blur(12px)",
+              }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: p.primary ? "#2563eb" : "#64748b",
                 textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>{p.plan}</div>
               <div style={{ fontSize: 40, fontWeight: 800, color: "#0f172a", marginBottom: 8 }}>{p.price}</div>
@@ -395,7 +416,7 @@ export default function LandingPage() {
                   {p.cta}
                 </Link>
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -405,9 +426,14 @@ export default function LandingPage() {
           ═══════════════════════════════════════════ */}
       <div style={{ background: "#ffffff", padding: "0 40px 80px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ borderRadius: 28, padding: "72px 48px", textAlign: "center",
-            background: "linear-gradient(135deg,rgba(59,130,246,0.1) 0%,rgba(79,70,229,0.1) 100%)",
-            border: "1px solid rgba(59,130,246,0.2)", backdropFilter: "blur(12px)" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 44 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            style={{ borderRadius: 28, padding: "72px 48px", textAlign: "center",
+              background: "linear-gradient(135deg,rgba(59,130,246,0.1) 0%,rgba(79,70,229,0.1) 100%)",
+              border: "1px solid rgba(59,130,246,0.2)", backdropFilter: "blur(12px)" }}>
             <h2 style={{ fontSize: "clamp(28px,5vw,52px)", fontWeight: 800,
               color: "#0f172a", margin: "0 0 16px", letterSpacing: "-0.03em", lineHeight: 1.1 }}>
               Ready to land your<br />
@@ -432,7 +458,7 @@ export default function LandingPage() {
               Get started for free
               <ArrowRight style={{ width: 18, height: 18 }} />
             </Link>
-          </div>
+          </motion.div>
         </div>
       </div>
 
