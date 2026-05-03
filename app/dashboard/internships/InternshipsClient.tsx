@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { InternshipContact } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
+import FindInternshipContactsModal from "@/components/internships/FindInternshipContactsModal"
 
 const EMAIL_STATUS_CYCLE = ["not_emailed", "emailed", "rejected", "accepted"] as const
 type EmailStatus = typeof EMAIL_STATUS_CYCLE[number]
@@ -31,6 +32,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
   const [emailStatuses, setEmailStatuses] = useState<Record<string, EmailStatus>>({})
   const [search, setSearch] = useState("")
   const [showAdd, setShowAdd] = useState(false)
+  const [showFind, setShowFind] = useState(false)
   const [form, setForm] = useState<AddForm>(EMPTY_FORM)
   const [adding, setAdding] = useState(false)
   const [resetting, setResetting] = useState(false)
@@ -97,7 +99,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
-      {/* Top bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Internship Contacts</h1>
@@ -114,6 +115,11 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             style={{ padding: "8px 10px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", color: "#64748b" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           </button>
+          <button onClick={() => setShowFind(true)}
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Find Contacts
+          </button>
           <button onClick={() => setShowAdd(true)}
             style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -126,7 +132,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
       </div>
 
       <div style={{ padding: "24px 28px" }}>
-        {/* Search */}
         <div style={{ marginBottom: 16 }}>
           <div style={{ position: "relative" }}>
             <svg style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -139,7 +144,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
           Showing <strong style={{ color: "#0f172a" }}>{filtered.length}</strong> of {contacts.length} contacts
         </div>
 
-        {/* Empty state */}
         {filtered.length === 0 && (
           <div style={{ textAlign: "center", padding: "72px 20px", background: "#fff", borderRadius: 16, border: "1px solid #e2e8f0" }}>
             <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
@@ -149,18 +153,25 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               {contacts.length === 0 ? "No internship contacts yet" : `No results for "${search}"`}
             </div>
             <div style={{ fontSize: 14, color: "#94a3b8", marginBottom: 24 }}>
-              {contacts.length === 0 ? "Add companies and contacts to start cold emailing for internships." : "Try a different search term."}
+              {contacts.length === 0
+                ? "Use Find Contacts to discover real professionals on GitHub, or add companies manually."
+                : "Try a different search term."}
             </div>
             {contacts.length === 0 && (
-              <button onClick={() => setShowAdd(true)}
-                style={{ padding: "10px 28px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
-                Add First Contact
-              </button>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+                <button onClick={() => setShowFind(true)}
+                  style={{ padding: "10px 24px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                  Find Contacts
+                </button>
+                <button onClick={() => setShowAdd(true)}
+                  style={{ padding: "10px 24px", background: "#fff", color: "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                  Add Manually
+                </button>
+              </div>
             )}
           </div>
         )}
 
-        {/* Contact grid */}
         {filtered.length > 0 && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
             {filtered.map(c => {
@@ -168,22 +179,21 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.not_emailed
               return (
                 <Link key={c.id} href={`/dashboard/internships/${c.id}`} style={{ textDecoration: "none" }}>
-                  <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
+                  <div
+                    style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
                     onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#3b82f6" }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}>
-                    {/* Company + role */}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
+                  >
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", marginBottom: 3 }}>{c.company}</div>
                       <div style={{ fontSize: 12, fontWeight: 600, color: "#3b82f6" }}>{c.role}</div>
                       {c.contact_name && <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{c.contact_name}</div>}
                     </div>
-                    {/* Why apply snippet */}
                     {c.why_apply && (
                       <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5, background: "#f8fafc", borderRadius: 8, padding: "8px 10px", borderLeft: "3px solid #3b82f6" }}>
-                        {c.why_apply.slice(0, 120)}{c.why_apply.length > 120 ? "…" : ""}
+                        {c.why_apply.slice(0, 120)}{c.why_apply.length > 120 ? "..." : ""}
                       </div>
                     )}
-                    {/* Bottom row */}
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 4, borderTop: "1px solid #f1f5f9" }}>
                       <div style={{ display: "flex", gap: 8 }}>
                         {c.email && (
@@ -212,13 +222,12 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
         )}
       </div>
 
-      {/* Add Contact Modal */}
       {showAdd && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
           <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Add Internship Contact</h2>
-              <button onClick={() => setShowAdd(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 20, lineHeight: 1 }}>×</button>
+              <button onClick={() => setShowAdd(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 20, lineHeight: 1 }}>x</button>
             </div>
             <form onSubmit={handleAdd}>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -268,6 +277,12 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             </form>
           </div>
         </div>
+      )}
+
+      {showFind && (
+        <FindInternshipContactsModal
+          onClose={() => { setShowFind(false); router.refresh() }}
+        />
       )}
     </div>
   )
