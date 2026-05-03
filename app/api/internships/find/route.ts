@@ -1,125 +1,152 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
 
-const GITHUB_API = "https://api.github.com"
+// ── Dev.to API (free, no auth) ───────────────────────────────────────────────
 
-interface GitHubUser {
-  login: string
-  name: string | null
-  company: string | null
-  blog: string | null
-  location: string | null
-  email: string | null
-  bio: string | null
-  html_url: string
-  public_repos: number
-  followers: number
-}
-
-async function ghFetch(url: string, token?: string) {
-  const headers: Record<string, string> = {
-    "Accept": "application/vnd.github.v3+json",
-    "User-Agent": "internship-outreach-app",
-  }
-  if (token) headers["Authorization"] = `token ${token}`
-  const res = await fetch(url, { headers, next: { revalidate: 0 } })
-  if (res.status === 403) throw new Error("GitHub API rate limit hit. Try again in a minute or provide a GitHub token.")
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`)
-  return res.json()
-}
-
-async function fetchUserDetail(url: string, token?: string): Promise<GitHubUser | null> {
-  try {
-    const u = await ghFetch(url, token)
-    return u
-  } catch {
-    return null
+interface DevToArticle {
+  id: number
+  title: string
+  description: string
+  tag_list: string[]
+  user: {
+    name: string
+    username: string
+    github_username?: string
+    twitter_username?: string
+    website_url?: string
   }
 }
 
-// Search GitHub users by company name
-async function searchByCompany(company: string, role: string, count: number, token?: string): Promise<GitHubUser[]> {
-  const roleQuery = role ? `${role} ` : ""
-  const q = `${roleQuery}company:"${company}"`
-  const url = `${GITHUB_API}/search/users?q=${encodeURIComponent(q)}&per_page=30&sort=followers&order=desc`
+const DEVTO_TAG_MAP: Record<string, string[]> = {
+  "machine learning":       ["machinelearning", "ai", "python"],
+  "deep learning":          ["deeplearning", "machinelearning", "ai"],
+  "data science":           ["datascience", "python", "machinelearning"],
+  "artificial intelligence":["ai", "machinelearning", "deeplearning"],
+  "web development":        ["webdev", "javascript", "react"],
+  "frontend":               ["webdev", "javascript", "react", "css"],
+  "backend":                ["node", "python", "backend", "api"],
+  "full stack":             ["webdev", "fullstack", "javascript"],
+  "mobile":                 ["mobile", "reactnative", "flutter"],
+  "ios":                    ["ios", "swift", "apple"],
+  "android":                ["android", "kotlin", "java"],
+  "devops":                 ["devops", "docker", "kubernetes"],
+  "cloud":                  ["aws", "cloud", "devops"],
+  "cybersecurity":          ["security", "cybersecurity", "hacking"],
+  "blockchain":             ["blockchain", "web3", "ethereum"],
+  "game":                   ["gamedev", "unity", "cpp"],
+  "robotics":               ["robotics", "cpp", "python"],
+  "computer vision":        ["computervision", "python", "machinelearning"],
+  "nlp":                    ["nlp", "python", "machinelearning"],
+  "rust":                   ["rust", "systems"],
+  "go":                     ["go", "golang", "backend"],
+  "software engineering":   ["programming", "coding", "softwareengineering"],
+  "systems":                ["systems", "cpp", "rust"],
+  "quantitative":           ["python", "datascience", "machinelearning"],
+  "bioinformatics":         ["python", "bioinformatics", "machinelearning"],
+}
 
-  let items: any[] = []
-  try {
-    const data = await ghFetch(url, token)
-    items = data.items || []
-  } catch (e: any) {
-    // Fallback: try without quotes
+function getDevToTags(field: string, role: string): string[] {
+  const combined = `${field} ${role}`.toLowerCase()
+  for (const [key, tags] of Object.entries(DEVTO_TAG_MAP)) {
+    if (combined.includes(key)) return tags
+  }
+  // fallback: use the field words directly as tags
+  return [field.toLowerCase().replace(/\s+/g, ""), "programming"]
+}
+
+async function searchDevTo(field: string, role: string, count: number): Promise<Array<{
+  name: string; username: string; bio: string; website: string | null
+  articleTitle: string; tags: string[]
+}>> {
+  const tags = getDevToTags(field, role)
+  const seen = new Set<string>()
+  const results: Array<{ name: string; username: string; bio: string; website: string | null; articleTitle: string; tags: string[] }> = []
+
+  for (const tag of tags) {
+    if (results.length >= count * 2) break
     try {
-      const q2 = `${roleQuery}${company} in:bio`
-      const url2 = `${GITHUB_API}/search/users?q=${encodeURIComponent(q2)}&per_page=20&sort=followers`
-      const data2 = await ghFetch(url2, token)
-      items = data2.items || []
-    } catch {
-      throw e
-    }
+      const res = await fetch(
+        `https://dev.to/api/articles?tag=${tag}&per_page=20&top=1`,
+        { headers: { "User-Agent": "internship-outreach-app" }, next: { revalidate: 0 } }
+      )
+      if (!res.ok) continue
+      const articles: DevToArticle[] = await res.json()
+      for (const a of articles) {
+        const key = a.user.username
+        if (seen.has(key) || !a.user.name) continue
+        seen.add(key)
+        const links: string[] = []
+        if (a.user.website_url) links.push(a.user.website_url)
+        if (a.user.github_username) links.push(`https://github.com/${a.user.github_username}`)
+        results.push({
+          name: a.user.name,
+          username: a.user.username,
+          bio: `Writes about ${a.tag_list.join(", ")} on Dev.to. Recent: "${a.title}". ${a.description || ""}`.trim(),
+          website: a.user.website_url || (a.user.github_username ? `https://github.com/${a.user.github_username}` : null),
+          articleTitle: a.title,
+          tags: a.tag_list,
+        })
+        if (results.length >= count * 2) break
+      }
+    } catch { /* skip tag */ }
   }
-
-  const profiles: GitHubUser[] = []
-  for (const item of items) {
-    if (profiles.length >= count * 2) break
-    const detail = await fetchUserDetail(item.url, token)
-    if (detail && (detail.name || detail.email)) {
-      profiles.push(detail)
-    }
-  }
-  return profiles
+  return results.slice(0, count)
 }
 
-// Field-to-GitHub-language mapping for better results
-const LANG_MAP: [string[], string][] = [
-  [["machine learning", "deep learning", "data science", "ai ", "artificial intelligence", "python", "nlp", "computer vision"], "Python"],
-  [["web", "frontend", "react", "javascript", "typescript", "node"], "JavaScript"],
-  [["ios", "swift", "macos", "apple"], "Swift"],
-  [["android", "kotlin", "mobile"], "Kotlin"],
-  [["systems", "embedded", "firmware", "low level"], "C"],
-  [["rust", "webassembly", "systems engineering"], "Rust"],
-  [["go ", "golang", "devops", "cloud infrastructure"], "Go"],
-  [["java", "backend", "spring", "enterprise"], "Java"],
-  [["game", "unity", "unreal"], "C#"],
-  [["data engineering", "spark", "hadoop", "big data"], "Scala"],
-]
+// ── Gemini for company search ────────────────────────────────────────────────
 
-function getLanguage(field: string): string | null {
-  const f = field.toLowerCase()
-  for (const [keywords, lang] of LANG_MAP) {
-    if (keywords.some(k => f.includes(k))) return lang
-  }
-  return null
+async function callGemini(apiKey: string, prompt: string): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
+    }),
+  })
+  if (!res.ok) throw new Error(`Gemini error ${res.status}`)
+  const data = await res.json()
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || ""
 }
 
-// Search GitHub users by field / major
-async function searchByField(field: string, role: string, count: number, token?: string): Promise<GitHubUser[]> {
-  const lang = getLanguage(field)
-  const searchTerm = role || field
+interface GeminiContact {
+  name: string
+  role: string
+  bio: string
+  website?: string
+  linkedin?: string
+}
 
-  let q = lang
-    ? `${searchTerm} in:bio language:${lang}`
-    : `${searchTerm} in:bio`
+async function findByCompanyWithGemini(
+  company: string, role: string, count: number, apiKey: string
+): Promise<GeminiContact[]> {
+  const roleHint = role || "software engineer, PM, researcher, or designer"
+  const prompt = `List ${count} REAL, publicly known professionals who currently work or have recently worked at ${company} in roles like ${roleHint}.
 
-  const url = `${GITHUB_API}/search/users?q=${encodeURIComponent(q)}&per_page=30&sort=followers&order=desc`
+Only include people who have a public presence (blog, GitHub, LinkedIn, speaker profile, etc.) — people a student could realistically find and cold-email.
 
-  let items: any[] = []
+For each person return a JSON object with:
+- name: full real name
+- role: their actual title at ${company}
+- bio: 2-3 sentences about their background, what they work on at ${company}, notable projects or talks — be specific
+- website: their personal site, GitHub profile URL, or speaker profile (if known, else null)
+- linkedin: their LinkedIn URL slug like "linkedin.com/in/username" (if known, else null)
+
+Respond ONLY with a valid JSON array, no explanation. Example:
+[{"name":"Jane Smith","role":"Senior ML Engineer","bio":"Works on recommendation systems at ${company}. Previously at DeepMind. Open source contributor to PyTorch.","website":"https://janesmith.dev","linkedin":"linkedin.com/in/janesmith"}]`
+
+  const raw = await callGemini(apiKey, prompt)
+  const match = raw.match(/\[[\s\S]*\]/)
+  if (!match) return []
   try {
-    const data = await ghFetch(url, token)
-    items = data.items || []
-  } catch (e) {
-    throw e
+    const parsed = JSON.parse(match[0]) as GeminiContact[]
+    return parsed.filter(p => p.name && p.role)
+  } catch {
+    return []
   }
-
-  const profiles: GitHubUser[] = []
-  for (const item of items) {
-    if (profiles.length >= count * 2) break
-    const detail = await fetchUserDetail(item.url, token)
-    if (detail && (detail.name || detail.email)) {
-      profiles.push(detail)
-    }
-  }
-  return profiles
 }
+
+// ── Main route ────────────────────────────────────────────────────────────────
 
 export async function POST(req: Request) {
   const authClient = await createClient()
@@ -127,8 +154,14 @@ export async function POST(req: Request) {
   if (!user) return new Response("Unauthorized", { status: 401 })
 
   const supabase = await createServiceClient()
-  const { mode, company, field, role, count: rawCount, githubToken } = await req.json()
+  const { mode, company, field, role, count: rawCount } = await req.json()
   const count = Math.min(Math.max(1, parseInt(rawCount) || 5), 10)
+
+  // Load user's AI key for company mode
+  const { data: profileRaw } = await supabase
+    .from("profiles").select("ai_api_key").eq("user_id", user.id).single()
+  const profile = profileRaw as { ai_api_key?: string | null } | null
+  const aiKey = profile?.ai_api_key || process.env.GEMINI_API_KEY || ""
 
   const encoder = new TextEncoder()
   const stream = new TransformStream()
@@ -139,127 +172,132 @@ export async function POST(req: Request) {
   }
 
   async function run() {
-    // Load existing contacts to avoid duplicates
+    // Deduplicate against existing contacts
     const { data: existing } = await supabase
-      .from("internship_contacts")
-      .select("company, contact_name")
-      .eq("user_id", user!.id)
-
-    const existingKeys = new Set(
-      (existing || []).map(c =>
-        `${c.company?.toLowerCase().trim()}::${c.contact_name?.toLowerCase().trim()}`
-      )
+      .from("internship_contacts").select("contact_name").eq("user_id", user!.id)
+    const existingNames = new Set(
+      (existing || []).map(c => (c as { contact_name: string }).contact_name?.toLowerCase().trim())
     )
 
-    send({ type: "progress", found: 0, total: count, current: "Searching GitHub for professionals..." })
+    send({ type: "progress", found: 0, total: count, current: "Searching for professionals..." })
 
-    let githubUsers: GitHubUser[] = []
-    try {
-      if (mode === "company" && company?.trim()) {
-        githubUsers = await searchByCompany(company.trim(), role?.trim() || "", count, githubToken)
-      } else if (mode === "field" && (field?.trim() || role?.trim())) {
-        githubUsers = await searchByField(field?.trim() || "", role?.trim() || "", count, githubToken)
-      } else {
-        send({ type: "done", found: 0, suggestion: "Please provide a company name or field to search." })
-        writer.close()
-        return
+    if (mode === "company") {
+      // ── Company mode: Gemini finds real people ──────────────────────────
+      if (!company?.trim()) {
+        send({ type: "done", found: 0, suggestion: "Enter a company name to search." })
+        writer.close(); return
       }
-    } catch (e: any) {
-      send({ type: "error", message: e.message || "GitHub search failed." })
-      writer.close()
-      return
-    }
+      if (!aiKey) {
+        send({ type: "error", message: "Add your Gemini API key in Settings to use company search." })
+        writer.close(); return
+      }
 
-    // Filter duplicates and prefer users with more info
-    const filtered = githubUsers
-      .filter(u => {
-        const name = (u.name || u.login).toLowerCase().trim()
-        const co = (u.company?.replace(/^@/, "").trim() || company || "").toLowerCase().trim()
-        return !existingKeys.has(`${co}::${name}`)
-      })
-      .sort((a, b) => {
-        // Prefer users with name + email + bio
-        const scoreA = (a.name ? 2 : 0) + (a.email ? 3 : 0) + (a.bio ? 1 : 0)
-        const scoreB = (b.name ? 2 : 0) + (b.email ? 3 : 0) + (b.bio ? 1 : 0)
-        return scoreB - scoreA
-      })
-      .slice(0, count)
+      send({ type: "progress", found: 0, total: count, current: `Asking AI to find professionals at ${company}...` })
+      let contacts: GeminiContact[] = []
+      try {
+        contacts = await findByCompanyWithGemini(company, role || "", count, aiKey)
+      } catch (e: any) {
+        send({ type: "error", message: `AI search failed: ${e.message}` })
+        writer.close(); return
+      }
 
-    if (filtered.length === 0) {
-      send({
-        type: "done",
-        found: 0,
-        suggestion: mode === "company"
-          ? `No results found for "${company}". Try a different spelling or a broader role type.`
-          : `No results found for "${field || role}". Try a different field or role title.`,
-      })
-      writer.close()
-      return
-    }
+      const fresh = contacts.filter(c => !existingNames.has(c.name.toLowerCase().trim()))
+      if (fresh.length === 0) {
+        send({ type: "done", found: 0, suggestion: `No new results for "${company}". Try a different company or role filter.` })
+        writer.close(); return
+      }
 
-    let added = 0
-    for (const u of filtered) {
-      const name = u.name || u.login
-      const contactCompany = u.company?.replace(/^@/, "").trim() ||
-        (mode === "company" ? company : "") || ""
+      let added = 0
+      for (const c of fresh) {
+        send({ type: "progress", found: added, total: fresh.length, current: `Adding ${c.name}...` })
+        const noteParts = [`Found via AI search at ${company}`, "Verify this person exists before emailing."]
+        if (c.linkedin) noteParts.push(`LinkedIn: ${c.linkedin}`)
 
-      send({ type: "progress", found: added, total: filtered.length, current: `Adding ${name}...` })
-
-      const roleFinal = role?.trim() || (mode === "field" ? (field?.trim() || "Professional") : "Professional")
-
-      // Build a rich bio from GitHub profile
-      const bioParts: string[] = []
-      if (u.bio) bioParts.push(u.bio)
-      if (u.location) bioParts.push(`Based in ${u.location}.`)
-      if (u.public_repos > 0) bioParts.push(`${u.public_repos} public repos on GitHub.`)
-      if (u.followers > 0) bioParts.push(`${u.followers} followers.`)
-
-      const notesParts: string[] = [`GitHub: ${u.html_url}`]
-      if (u.location) notesParts.push(`Location: ${u.location}`)
-      if (u.followers > 0) notesParts.push(`GitHub followers: ${u.followers}`)
-      if (u.public_repos > 0) notesParts.push(`Public repos: ${u.public_repos}`)
-
-      const { data: contact } = await supabase
-        .from("internship_contacts")
-        .insert({
+        await supabase.from("internship_contacts").insert({
           user_id: user!.id,
-          company: contactCompany,
-          contact_name: name,
-          role: roleFinal,
-          email: u.email || null,
-          linkedin_url: null,
-          website: u.blog?.startsWith("http") ? u.blog : u.blog ? `https://${u.blog}` : null,
-          bio: bioParts.join(" ") || null,
-          notes: notesParts.join("\n"),
+          company: company.trim(),
+          contact_name: c.name,
+          role: c.role,
+          email: null,
+          linkedin_url: c.linkedin ? (c.linkedin.startsWith("http") ? c.linkedin : `https://${c.linkedin}`) : null,
+          website: c.website || null,
+          bio: c.bio,
+          notes: noteParts.join("\n"),
           status: "unsorted",
           email_status: "not_emailed",
         })
-        .select()
-        .single()
 
-      if (contact) {
         await supabase.from("activities").insert({
-          user_id: user!.id,
-          type: "contact_added",
-          category: "internship",
-          researcher_name: name,
-          university: contactCompany,
-          description: mode === "company"
-            ? `Found via GitHub at ${contactCompany}`
-            : `Found via GitHub for ${field || role}`,
+          user_id: user!.id, type: "contact_added", category: "internship",
+          researcher_name: c.name, university: company,
+          description: `Found via AI: ${c.role} at ${company}`,
         }).then(() => {}).catch(() => {})
 
         added++
-        send({
-          type: "progress",
-          found: added,
-          total: filtered.length,
-          current: `Added ${name}${contactCompany ? ` (${contactCompany})` : ""}`,
-        })
+        send({ type: "progress", found: added, total: fresh.length, current: `Added ${c.name} — ${c.role}` })
       }
+      send({ type: "done", found: added })
+
+    } else if (mode === "field") {
+      // ── Field mode: Dev.to finds real developers ────────────────────────
+      if (!field?.trim() && !role?.trim()) {
+        send({ type: "done", found: 0, suggestion: "Enter a field or role to search." })
+        writer.close(); return
+      }
+
+      send({ type: "progress", found: 0, total: count, current: `Searching Dev.to for ${field || role} developers...` })
+      let devs: Awaited<ReturnType<typeof searchDevTo>> = []
+      try {
+        devs = await searchDevTo(field || "", role || "", count)
+      } catch (e: any) {
+        send({ type: "error", message: `Dev.to search failed: ${e.message}` })
+        writer.close(); return
+      }
+
+      const fresh = devs.filter(d => !existingNames.has(d.name.toLowerCase().trim()))
+      if (fresh.length === 0) {
+        send({ type: "done", found: 0, suggestion: `No results for "${field || role}" on Dev.to. Try a broader field like "Machine Learning" or "Web Development".` })
+        writer.close(); return
+      }
+
+      let added = 0
+      for (const d of fresh) {
+        send({ type: "progress", found: added, total: fresh.length, current: `Adding ${d.name}...` })
+        const notes = [
+          `Dev.to: https://dev.to/${d.username}`,
+          `Recent article: "${d.articleTitle}"`,
+          `Topics: ${d.tags.join(", ")}`,
+        ].join("\n")
+
+        await supabase.from("internship_contacts").insert({
+          user_id: user!.id,
+          company: "",
+          contact_name: d.name,
+          role: role || field || "Developer",
+          email: null,
+          linkedin_url: null,
+          website: d.website || null,
+          bio: d.bio,
+          notes,
+          status: "unsorted",
+          email_status: "not_emailed",
+        })
+
+        await supabase.from("activities").insert({
+          user_id: user!.id, type: "contact_added", category: "internship",
+          researcher_name: d.name, university: "",
+          description: `Found via Dev.to for ${field || role}`,
+        }).then(() => {}).catch(() => {})
+
+        added++
+        send({ type: "progress", found: added, total: fresh.length, current: `Added ${d.name}` })
+      }
+      send({ type: "done", found: added })
+
+    } else {
+      send({ type: "done", found: 0, suggestion: "Unknown mode." })
     }
 
-    send({ type: "done", found: added })
     writer.close()
   }
 
@@ -269,10 +307,6 @@ export async function POST(req: Request) {
   })
 
   return new Response(stream.readable, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      "Connection": "keep-alive",
-    },
+    headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "keep-alive" },
   })
 }
