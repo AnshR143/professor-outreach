@@ -33,6 +33,16 @@ export interface Database {
         Insert: Partial<Activity>
         Update: Partial<Activity>
       }
+      internship_contacts: {
+        Row: InternshipContact
+        Insert: Partial<InternshipContact>
+        Update: Partial<InternshipContact>
+      }
+      internship_emails: {
+        Row: InternshipEmail
+        Insert: Partial<InternshipEmail>
+        Update: Partial<InternshipEmail>
+      }
     }
   }
 }
@@ -114,10 +124,41 @@ export interface Template {
 export interface Activity {
   id: string
   user_id: string
-  type: "researcher_found" | "email_sent" | "status_changed" | "note_added" | "profile_updated"
+  type: string
+  category: "research" | "internship"
   researcher_id: string | null
   researcher_name: string | null
   university: string | null
   description: string
+  created_at: string
+}
+
+export interface InternshipContact {
+  id: string
+  user_id: string
+  company: string
+  contact_name: string
+  role: string
+  department: string | null
+  email: string | null
+  linkedin_url: string | null
+  website: string | null
+  bio: string | null
+  notes: string | null
+  status: "unsorted" | "awaiting" | "accepted" | "rejected"
+  email_status: "not_emailed" | "emailed" | "replied" | "accepted" | "rejected"
+  why_apply: string | null
+  created_at: string
+}
+
+export interface InternshipEmail {
+  id: string
+  user_id: string
+  contact_id: string
+  subject: string
+  body: string
+  status: "draft" | "sent" | "opened" | "replied"
+  tone: string
+  sent_at: string | null
   created_at: string
 }

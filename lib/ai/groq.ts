@@ -200,6 +200,109 @@ BODY:
   return { subject: result.subject || "Following Up", body: result.body || "" }
 }
 
+export async function generateInternshipEmail(params: {
+  companyName: string
+  role: string
+  contactName: string
+  bio?: string
+  userInterests: string[]
+  userLevel: string
+  userName: string
+  resumeText?: string
+  tone: "formal" | "casual" | "enthusiastic"
+  templateSubject?: string
+  templateBody?: string
+  apiKey?: string
+}): Promise<{ subject: string; body: string }> {
+  const groq = getGroq(params.apiKey)
+
+  const toneGuide = {
+    formal: "professional, respectful, concise",
+    casual: "friendly, conversational, approachable but still professional",
+    enthusiastic: "energetic, passionate, show genuine excitement about the company and role",
+  }[params.tone]
+
+  const resumeSection = params.resumeText
+    ? `STUDENT RESUME (pick the 2-3 most relevant skills/projects/experiences for this role):
+---
+${params.resumeText.slice(0, 1800)}
+---`
+    : ""
+
+  let prompt = ""
+
+  if (params.templateBody) {
+    prompt = `Fill in an email template that a student (${params.userName}) is sending TO a company contact about an internship.
+
+STUDENT (the sender):
+- Name: ${params.userName}
+- Academic Level: ${params.userLevel}
+${resumeSection}
+
+COMPANY / ROLE:
+- Company: ${params.companyName}
+- Role: ${params.role}
+- Contact: ${params.contactName || "Hiring Manager"}
+${params.bio ? `- Company info: ${params.bio.slice(0, 300)}` : ""}
+
+TEMPLATE SUBJECT: ${params.templateSubject}
+TEMPLATE BODY:
+${params.templateBody}
+
+INSTRUCTIONS:
+- Fill in the [bracketed placeholders] using real details
+- Write in FIRST PERSON ("I", "my", "me") — the student is the author
+- Reference SPECIFIC skills/projects from the resume relevant to this role
+- Keep the tone ${toneGuide}
+
+Respond in EXACTLY this format:
+SUBJECT: <subject line>
+BODY:
+<email body>`
+  } else {
+    prompt = `Write a cold email FROM a student TO a company contact, asking for an internship opportunity.
+
+CRITICAL: Write in FIRST PERSON from the student's perspective. Use "I", "my", "me".
+
+STUDENT (the sender):
+- Name: ${params.userName}
+- Academic Level: ${params.userLevel}
+${resumeSection}
+
+COMPANY / ROLE (the recipient):
+- Company: ${params.companyName}
+- Role/Position: ${params.role}
+- Contact Person: ${params.contactName || "Hiring Manager"}
+${params.bio ? `- About the company/role: ${params.bio.slice(0, 300)}` : ""}
+
+TONE: ${toneGuide}
+
+Requirements:
+1. Address: "Dear ${params.contactName || "Hiring Manager"},"
+2. Introduce yourself (name, level, school if in resume)
+3. Mention the specific role and why THIS company/role excites you
+4. Pull 1-2 SPECIFIC things from the resume (a project, skill, course) that directly relate to this role
+5. Make a clear ask (internship opportunity, 15-min call, etc.)
+6. Sign off with: ${params.userName}
+7. Under 200 words, plain text, no markdown, no bullet points in body
+
+Respond in EXACTLY this format:
+SUBJECT: <subject line>
+BODY:
+<email body>`
+  }
+
+  const completion = await groq.chat.completions.create({
+    model: MODEL,
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.7,
+    max_tokens: 900,
+  })
+
+  const raw = completion.choices[0].message.content || ""
+  return parseSubjectBody(raw)
+}
+
 export async function generateAISummary(params: {
   totalResearchers: number
   emailsSent: number

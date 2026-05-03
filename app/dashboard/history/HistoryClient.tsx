@@ -7,22 +7,38 @@ import { formatDate, formatTime } from "@/lib/utils"
 import FindResearchersModal from "@/components/researchers/FindResearchersModal"
 import { createClient } from "@/lib/supabase/client"
 
-interface Props { activities: Activity[]; userName: string }
+interface Props {
+  researchActivities: Activity[]
+  internshipActivities: Activity[]
+  userName: string
+}
 
-export default function HistoryClient({ activities: initial, userName }: Props) {
+export default function HistoryClient({ researchActivities, internshipActivities, userName }: Props) {
   const router = useRouter()
   const supabase = createClient()
-  const [activities, setActivities] = useState(initial)
+  const [researchActs, setResearchActs] = useState(researchActivities)
+  const [internshipActs, setInternshipActs] = useState(internshipActivities)
+  const [activeTab, setActiveTab] = useState<"research" | "internships">("research")
   const [search, setSearch] = useState("")
   const [showFind, setShowFind] = useState(false)
   const [resetting, setResetting] = useState(false)
 
+  const activities = activeTab === "research" ? researchActs : internshipActs
+
   async function resetHistory() {
-    if (!confirm("Clear all activity history? This cannot be undone.")) return
+    const label = activeTab === "research" ? "research" : "internship"
+    if (!confirm(`Clear all ${label} activity history? This cannot be undone.`)) return
     setResetting(true)
     const { data: { user } } = await supabase.auth.getUser()
-    if (user) await supabase.from("activities").delete().eq("user_id", user.id)
-    setActivities([])
+    if (user) {
+      if (activeTab === "research") {
+        await supabase.from("activities").delete().eq("user_id", user.id).or("category.eq.research,category.is.null")
+        setResearchActs([])
+      } else {
+        await supabase.from("activities").delete().eq("user_id", user.id).eq("category", "internship")
+        setInternshipActs([])
+      }
+    }
     setResetting(false)
   }
 
@@ -40,11 +56,14 @@ export default function HistoryClient({ activities: initial, userName }: Props) 
   })
 
   const typeConfig: Record<string, { label: string; bg: string }> = {
-    email_sent:       { label: "Email Sent",      bg: "#dcfce7" },
-    researcher_found: { label: "Researcher Found", bg: "#dbeafe" },
-    status_changed:   { label: "Status Changed",  bg: "#fef9c3" },
-    note_added:       { label: "Note Added",       bg: "#f3e8ff" },
-    profile_updated:  { label: "Profile Updated",  bg: "#f1f5f9" },
+    email_sent:                { label: "Email Sent",       bg: "#dcfce7" },
+    researcher_found:          { label: "Researcher Found", bg: "#dbeafe" },
+    status_changed:            { label: "Status Changed",   bg: "#fef9c3" },
+    note_added:                { label: "Note Added",        bg: "#f3e8ff" },
+    profile_updated:           { label: "Profile Updated",  bg: "#f1f5f9" },
+    contact_added:             { label: "Contact Added",    bg: "#fde68a" },
+    internship_email_sent:     { label: "Email Sent",       bg: "#dcfce7" },
+    internship_status_changed: { label: "Status Changed",   bg: "#fef9c3" },
   }
 
   return (
@@ -69,22 +88,48 @@ export default function HistoryClient({ activities: initial, userName }: Props) 
       </div>
 
       <div style={{ padding: "24px 28px" }}>
+        {/* Category toggle */}
+        <div style={{ display: "flex", gap: 4, marginBottom: 20, background: "#f1f5f9", padding: 4, borderRadius: 10, width: "fit-content" }}>
+          {([["research", "Research Outreach"], ["internships", "Internship Outreach"]] as const).map(([tab, label]) => (
+            <button key={tab} onClick={() => setActiveTab(tab)}
+              style={{ padding: "8px 18px", borderRadius: 7, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500,
+                background: activeTab === tab ? "#fff" : "transparent",
+                color: activeTab === tab ? "#0f172a" : "#64748b",
+                boxShadow: activeTab === tab ? "0 1px 3px rgba(0,0,0,0.1)" : "none" }}>
+              {label}
+              <span style={{ marginLeft: 6, fontSize: 11, background: activeTab === tab ? "#e2e8f0" : "transparent", padding: "1px 6px", borderRadius: 8, color: "#64748b" }}>
+                {tab === "research" ? researchActs.length : internshipActs.length}
+              </span>
+            </button>
+          ))}
+        </div>
+
         <div style={{ marginBottom: 20 }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>Recent Activity Timeline</h2>
-          <p style={{ color: "#64748b", fontSize: 14, margin: 0 }}>Track all your research activities and interactions</p>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
+            {activeTab === "research" ? "Research Activity Timeline" : "Internship Activity Timeline"}
+          </h2>
+          <p style={{ color: "#64748b", fontSize: 14, margin: 0 }}>
+            {activeTab === "research"
+              ? "Track all your research activities and interactions"
+              : "Track all your internship outreach activities"}
+          </p>
         </div>
 
         <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", padding: "16px 20px", marginBottom: 24 }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 10 }}>Search Activity</div>
           <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="Search by researcher name, university, or activity..."
+            placeholder={activeTab === "research" ? "Search by researcher name, university, or activity..." : "Search by contact name, company, or activity..."}
             style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, outline: "none", background: "#f8f9fb", color: "#0f172a", boxSizing: "border-box" }} />
         </div>
 
         {Object.keys(grouped).length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 20px" }}>
             <div style={{ fontSize: 16, fontWeight: 600, color: "#475569", marginBottom: 8 }}>No activity yet</div>
-            <div style={{ fontSize: 14, color: "#94a3b8" }}>Your research activities will appear here.</div>
+            <div style={{ fontSize: 14, color: "#94a3b8" }}>
+              {activeTab === "research"
+                ? "Your research activities will appear here."
+                : "Your internship outreach activities will appear here."}
+            </div>
           </div>
         ) : Object.entries(grouped).map(([date, items]) => (
           <div key={date} style={{ marginBottom: 28 }}>

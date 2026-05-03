@@ -328,3 +328,56 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER profiles_updated_at BEFORE UPDATE ON profiles
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================
+-- INTERNSHIP OUTREACH — Additional Tables
+-- ============================================================
+
+-- INTERNSHIP CONTACTS
+CREATE TABLE IF NOT EXISTS internship_contacts (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  company TEXT NOT NULL,
+  contact_name TEXT NOT NULL DEFAULT '',
+  role TEXT NOT NULL DEFAULT '',
+  department TEXT,
+  email TEXT,
+  linkedin_url TEXT,
+  website TEXT,
+  bio TEXT,
+  notes TEXT,
+  status TEXT NOT NULL DEFAULT 'unsorted' CHECK (status IN ('unsorted','awaiting','accepted','rejected')),
+  email_status TEXT NOT NULL DEFAULT 'not_emailed' CHECK (email_status IN ('not_emailed','emailed','replied','accepted','rejected')),
+  why_apply TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- INTERNSHIP EMAILS
+CREATE TABLE IF NOT EXISTS internship_emails (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  contact_id UUID REFERENCES internship_contacts(id) ON DELETE CASCADE NOT NULL,
+  subject TEXT NOT NULL DEFAULT '',
+  body TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','sent','opened','replied')),
+  tone TEXT NOT NULL DEFAULT 'formal',
+  sent_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Add category to activities (run once if table already exists)
+ALTER TABLE activities ADD COLUMN IF NOT EXISTS category TEXT NOT NULL DEFAULT 'research';
+
+-- RLS
+ALTER TABLE internship_contacts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE internship_emails ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own internship contacts" ON internship_contacts FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage own internship emails" ON internship_emails FOR ALL USING (auth.uid() = user_id);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_internship_contacts_user_id ON internship_contacts(user_id);
+CREATE INDEX IF NOT EXISTS idx_internship_contacts_status ON internship_contacts(status);
+CREATE INDEX IF NOT EXISTS idx_internship_emails_user_id ON internship_emails(user_id);
+CREATE INDEX IF NOT EXISTS idx_internship_emails_contact_id ON internship_emails(contact_id);
+CREATE INDEX IF NOT EXISTS idx_activities_category ON activities(category);
