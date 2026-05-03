@@ -180,7 +180,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
               {mode === "company" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div style={{ background: "#eff6ff", borderRadius: 8, padding: "9px 12px", fontSize: 12, color: "#1d4ed8", border: "1px solid #bfdbfe" }}>
-                    Uses your Gemini API key to find real publicly-known professionals at this company.
+                    Uses your Apollo API key to find real professionals at this company. Falls back to Gemini if no Apollo key is set. Add your Apollo key in Settings.
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Company Name *</label>

@@ -59,6 +59,7 @@ export interface Profile {
   resume_text: string | null
   resume_url: string | null
   ai_api_key: string | null
+  apollo_api_key: string | null
   onboarding_complete: boolean
   created_at: string
   updated_at: string

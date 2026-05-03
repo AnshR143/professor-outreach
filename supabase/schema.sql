@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   resume_text TEXT,
   resume_url TEXT,
   ai_api_key TEXT,
+  apollo_api_key TEXT,
   onboarding_complete BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()

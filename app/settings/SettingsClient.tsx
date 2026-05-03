@@ -6,9 +6,9 @@ import type { Profile } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
 import { ACADEMIC_LEVELS } from "@/lib/utils"
 
-interface Props { profile: Profile | null; hasApiKey: boolean }
+interface Props { profile: Profile | null; hasApiKey: boolean; hasApolloKey?: boolean }
 
-export default function SettingsClient({ profile: initial, hasApiKey: initialHasKey }: Props) {
+export default function SettingsClient({ profile: initial, hasApiKey: initialHasKey, hasApolloKey: initialHasApolloKey }: Props) {
   const router = useRouter()
   const supabase = createClient()
   const [saving, setSaving] = useState(false)
@@ -18,12 +18,19 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
   const [resetting, setResetting] = useState(false)
   const [resetDone, setResetDone] = useState(false)
 
-  // API key — never pre-populated, never comes from server
+  // AI API key
   const [apiKey, setApiKey] = useState("")
   const [hasKey, setHasKey] = useState(initialHasKey)
   const [savingKey, setSavingKey] = useState(false)
   const [keySaved, setKeySaved] = useState(false)
   const [clearingKey, setClearingKey] = useState(false)
+
+  // Apollo API key
+  const [apolloKey, setApolloKey] = useState("")
+  const [hasApolloKey, setHasApolloKey] = useState(initialHasApolloKey || false)
+  const [savingApolloKey, setSavingApolloKey] = useState(false)
+  const [apolloKeySaved, setApolloKeySaved] = useState(false)
+  const [clearingApolloKey, setClearingApolloKey] = useState(false)
 
   const [form, setForm] = useState({
     name: initial?.name || "",
@@ -72,6 +79,34 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
     setClearingKey(false)
   }
 
+  async function saveApolloKey() {
+    if (!apolloKey.trim()) return
+    setSavingApolloKey(true)
+    try {
+      const res = await fetch("/api/settings/apollo-key", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: apolloKey.trim() }),
+      })
+      if (res.ok) {
+        setHasApolloKey(true)
+        setApolloKey("")
+        setApolloKeySaved(true)
+        setTimeout(() => setApolloKeySaved(false), 3000)
+      }
+    } catch {}
+    setSavingApolloKey(false)
+  }
+
+  async function clearApolloKey() {
+    setClearingApolloKey(true)
+    try {
+      const res = await fetch("/api/settings/apollo-key", { method: "DELETE" })
+      if (res.ok) { setHasApolloKey(false); setApolloKey("") }
+    } catch {}
+    setClearingApolloKey(false)
+  }
+
   async function handleReset() {
     if (!confirm("This will permanently delete all your researchers, emails, and activities. Are you sure?")) return
     setResetting(true)
@@ -108,7 +143,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
             { onConflict: "user_id" }
           )
         }
-        setUploadStatus({ ok: true, msg: `Resume parsed — ${data.text.length} characters extracted across ${data.pages} page${data.pages !== 1 ? "s" : ""}. AI will use this to personalize your emails.` })
+        setUploadStatus({ ok: true, msg: "Resume parsed — " + data.text.length + " characters extracted across " + data.pages + " page" + (data.pages !== 1 ? "s" : "") + ". AI will use this to personalize your emails." })
       } else {
         setUploadStatus({ ok: false, msg: data.error || "Failed to parse resume." })
       }
@@ -135,7 +170,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
       <main style={{ flex: 1, overflowY: "auto", background: "#f8f9fb" }}>
         <div style={{ padding: "24px 32px", maxWidth: 800 }}>
           <h1 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>Settings</h1>
-          <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 28px" }}>Manage your profile, API key, and preferences</p>
+          <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 28px" }}>Manage your profile, API keys, and preferences</p>
 
           {saved && (
             <div style={{ background: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: 8, padding: "10px 16px", color: "#15803d", fontSize: 14, marginBottom: 20 }}>
@@ -164,7 +199,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
           </Section>
 
           <Section title="Resume / CV">
-            <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#92400e", marginBottom: 16 }}>
+            <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#1d4ed8", marginBottom: 16 }}>
               Your resume powers everything — it personalizes cold emails with your actual experience and skills, and is used to calculate how well you match each professor&apos;s research areas.
             </div>
             <div style={{ border: "2px dashed #e2e8f0", borderRadius: 10, padding: "24px", textAlign: "center" }}>
@@ -176,7 +211,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                 </div>
               )}
               {uploadStatus && (
-                <div style={{ background: uploadStatus.ok ? "#f0fdf4" : "#fee2e2", border: `1px solid ${uploadStatus.ok ? "#bbf7d0" : "#fecaca"}`, borderRadius: 6, padding: "8px 12px", fontSize: 12, color: uploadStatus.ok ? "#15803d" : "#dc2626", marginBottom: 12 }}>
+                <div style={{ background: uploadStatus.ok ? "#f0fdf4" : "#fee2e2", border: "1px solid " + (uploadStatus.ok ? "#bbf7d0" : "#fecaca"), borderRadius: 6, padding: "8px 12px", fontSize: 12, color: uploadStatus.ok ? "#15803d" : "#dc2626", marginBottom: 12 }}>
                   {uploadStatus.msg}
                 </div>
               )}
@@ -189,14 +224,14 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
 
           <Section title="AI API Key">
             <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#0369a1", marginBottom: 16 }}>
-              <strong>Your key is stored securely server-side and never sent to the browser.</strong> It is only used to generate emails and AI summaries on your behalf. Works with any Groq-compatible key.
+              <strong>Used to generate personalized emails.</strong> Accepts any key — Groq, Gemini, or OpenAI compatible. Stored securely server-side, never sent to your browser.
             </div>
 
             {hasKey && (
               <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: "12px 16px", marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>API key is set and active</span>
+                  <span style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>AI key is set and active</span>
                 </div>
                 <button onClick={clearApiKey} disabled={clearingKey}
                   style={{ padding: "6px 14px", background: "#fee2e2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
@@ -207,7 +242,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
 
             {keySaved && (
               <div style={{ background: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#15803d", marginBottom: 12 }}>
-                API key saved securely.
+                AI key saved securely.
               </div>
             )}
 
@@ -217,7 +252,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                   type="password"
                   value={apiKey}
                   onChange={e => setApiKey(e.target.value)}
-                  placeholder="gsk_... or sk_... (Groq, OpenAI compatible)"
+                  placeholder="gsk_... or AIza... or sk-... (Groq, Gemini, OpenAI)"
                   autoComplete="new-password"
                   style={{ flex: 1, padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#0f172a", outline: "none", background: "#f8f9fb" }}
                 />
@@ -227,9 +262,58 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                 </button>
               </div>
               <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
-                Get a free Groq key at{" "}
-                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#3b82f6" }}>console.groq.com/keys</a>.
-                Your key is sent directly to our server over HTTPS and never stored in your browser or logs.
+                Free options:{" "}
+                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#3b82f6" }}>Groq</a>
+                {" (fastest) or "}
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style={{ color: "#3b82f6" }}>Gemini</a>
+                {" — both free tiers available."}
+              </div>
+            </Field>
+          </Section>
+
+          <Section title="Apollo API Key">
+            <div style={{ background: "#faf5ff", border: "1px solid #e9d5ff", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#6b21a8", marginBottom: 16 }}>
+              <strong>Used to find real professionals at companies</strong> when searching for internship contacts by company name. Apollo.io has a free plan with 50 credits/month — more than enough for outreach.
+            </div>
+
+            {hasApolloKey && (
+              <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: "12px 16px", marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>Apollo key is set and active</span>
+                </div>
+                <button onClick={clearApolloKey} disabled={clearingApolloKey}
+                  style={{ padding: "6px 14px", background: "#fee2e2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                  {clearingApolloKey ? "Clearing..." : "Remove Key"}
+                </button>
+              </div>
+            )}
+
+            {apolloKeySaved && (
+              <div style={{ background: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#15803d", marginBottom: 12 }}>
+                Apollo key saved securely.
+              </div>
+            )}
+
+            <Field label={hasApolloKey ? "Replace with a new Apollo key" : "Paste your Apollo API key"}>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  type="password"
+                  value={apolloKey}
+                  onChange={e => setApolloKey(e.target.value)}
+                  placeholder="Your Apollo.io API key"
+                  autoComplete="new-password"
+                  style={{ flex: 1, padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#0f172a", outline: "none", background: "#f8f9fb" }}
+                />
+                <button onClick={saveApolloKey} disabled={savingApolloKey || !apolloKey.trim()}
+                  style={{ padding: "10px 20px", background: savingApolloKey || !apolloKey.trim() ? "#e2e8f0" : "#7c3aed", color: savingApolloKey || !apolloKey.trim() ? "#94a3b8" : "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: savingApolloKey || !apolloKey.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
+                  {savingApolloKey ? "Saving..." : "Save Key"}
+                </button>
+              </div>
+              <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
+                Get your free key at{" "}
+                <a href="https://app.apollo.io/#/settings/integrations/api" target="_blank" rel="noopener" style={{ color: "#7c3aed" }}>apollo.io</a>
+                {" — sign up free, go to Settings → Integrations → API Keys."}
               </div>
             </Field>
           </Section>

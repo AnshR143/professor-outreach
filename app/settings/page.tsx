@@ -16,9 +16,13 @@ export default async function SettingsPage() {
 
   const profile = profileRaw as Record<string, unknown> | null
 
-  // Only pass whether key exists — never send the actual key to the browser
+  // Only pass whether keys exist — never send the actual keys to the browser
   const hasApiKey = !!(profile?.ai_api_key)
-  if (profile) delete profile.ai_api_key
+  const hasApolloKey = !!(profile?.apollo_api_key)
+  if (profile) {
+    delete profile.ai_api_key
+    delete profile.apollo_api_key
+  }
 
-  return <SettingsClient profile={profile as any} hasApiKey={hasApiKey} />
+  return <SettingsClient profile={profile as any} hasApiKey={hasApiKey} hasApolloKey={hasApolloKey} />
 }
