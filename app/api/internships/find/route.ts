@@ -90,6 +90,48 @@ async function findByCompanyWithAI(
   }
 }
 
+
+// ── AI-powered field/role search (LinkedIn-aware) ────────────────────────────
+
+async function findByFieldWithAI(
+  field: string,
+  role: string,
+  count: number,
+  apiKey: string
+): Promise<AIContact[]> {
+  const target = [field, role].filter(Boolean).join(" / ")
+  const prompt = [
+    "List " + count + " REAL professionals who actively work in the field of " + target + ".",
+    "These should be practitioners, researchers, or engineers with a public online presence that a student could realistically find and cold-email.",
+    "Prioritize people who have LinkedIn profiles or personal websites.",
+    "",
+    "For each person return a JSON object with:",
+    "  name: full real name (first + last)",
+    "  role: their actual job title and company",
+    "  bio: 2-3 sentences about their background, what they actually work on, and any notable projects or talks",
+    "  website: personal site, GitHub, or portfolio URL if known, else null",
+    "  linkedin: LinkedIn URL like linkedin.com/in/username if publicly known, else null",
+    "",
+    "Only include people you are confident exist and are findable. Do not invent people.",
+    "Respond ONLY with a valid JSON array.",
+  ].join("\n")
+
+  const isGemini = apiKey.startsWith("AI") || apiKey.startsWith("AIza")
+  const raw = isGemini ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
+  const match = raw.match(/\[[\s\S]*\]/)
+  if (!match) return []
+  try {
+    const parsed = JSON.parse(match[0]) as AIContact[]
+    return parsed.filter(p =>
+      p.name && p.role &&
+      p.name.trim().split(/\s+/).length >= 2 &&
+      /^[A-Za-z\s\-\'.]+$/.test(p.name.trim())
+    )
+  } catch {
+    return []
+  }
+}
+
 // ── Dev.to API (free, no auth) ───────────────────────────────────────────────
 
 interface DevToArticle {
@@ -169,7 +211,7 @@ async function searchDevTo(field: string, role: string, count: number): Promise<
         results.push({
           name: a.user.name,
           username: uname,
-          bio: "Writes about " + a.tag_list.join(", ") + ' on Dev.to. Recent article: "' + a.title + '". ' + (a.description || "").slice(0, 120).trim(),
+          bio: "Writes and publishes about " + a.tag_list.join(", ") + '. Recent post: "' + a.title + '". ' + (a.description || "").slice(0, 120).trim(),
           website: a.user.website_url || (a.user.github_username ? "https://github.com/" + a.user.github_username : null),
           articleTitle: a.title,
           tags: a.tag_list,
@@ -282,18 +324,64 @@ export async function POST(req: Request) {
       }
 
       const fieldLabel = field || role || "Developer"
-      send({ type: "progress", found: 0, total: count, current: "Searching Dev.to for " + fieldLabel + " developers..." })
+
+      // If user has an AI key, use AI search for richer results with LinkedIn profiles
+      if (aiKey) {
+        const isGroq = aiKey.startsWith("gsk_")
+        const isGemini = aiKey.startsWith("AI") || aiKey.startsWith("AIza")
+        const provider = isGroq ? "Groq" : isGemini ? "Gemini" : "AI"
+        send({ type: "progress", found: 0, total: count, current: "Finding " + fieldLabel + " professionals via " + provider + "..." })
+
+        let contacts: AIContact[] = []
+        try {
+          contacts = await findByFieldWithAI(field || "", role || "", count, aiKey)
+        } catch {}
+
+        const freshAI = contacts.filter(c => !existingNames.has(c.name.toLowerCase().trim()))
+        if (freshAI.length > 0) {
+          let added = 0
+          for (const c of freshAI) {
+            send({ type: "progress", found: added, total: freshAI.length, current: "Adding " + c.name + "..." })
+            await supabase.from("internship_contacts").insert({
+              user_id: user!.id,
+              company: fieldLabel,
+              contact_name: c.name,
+              role: c.role,
+              email: null,
+              linkedin_url: c.linkedin ? (c.linkedin.startsWith("http") ? c.linkedin : "https://" + c.linkedin) : null,
+              website: c.website || null,
+              bio: c.bio,
+              notes: "Found via AI search for " + fieldLabel + "." + (c.linkedin ? "\nLinkedIn: " + c.linkedin : ""),
+              status: "unsorted",
+              email_status: "not_emailed",
+            })
+            await supabase.from("activities").insert({
+              user_id: user!.id, type: "contact_added", category: "internship",
+              researcher_name: c.name, university: fieldLabel,
+              description: "Found via AI for " + fieldLabel,
+            }).then(() => {}).catch(() => {})
+            added++
+            send({ type: "progress", found: added, total: freshAI.length, current: "Added " + c.name })
+          }
+          send({ type: "done", found: added })
+          writer.close(); return
+        }
+        // Fall through to community search if AI returned nothing
+      }
+
+      // Community search (public data, no auth required)
+      send({ type: "progress", found: 0, total: count, current: "Searching for " + fieldLabel + " professionals..." })
       let devs: Awaited<ReturnType<typeof searchDevTo>> = []
       try {
         devs = await searchDevTo(field || "", role || "", count)
       } catch (e: any) {
-        send({ type: "error", message: "Dev.to search failed: " + e.message })
+        send({ type: "error", message: "Search failed: " + e.message })
         writer.close(); return
       }
 
       const fresh = devs.filter(d => !existingNames.has(d.name.toLowerCase().trim()))
       if (fresh.length === 0) {
-        send({ type: "done", found: 0, suggestion: 'No results for "' + fieldLabel + '" on Dev.to. Try a broader field like "Machine Learning" or "Web Development".' })
+        send({ type: "done", found: 0, suggestion: 'No results for "' + fieldLabel + '". Try a broader field like "Machine Learning" or "Web Development".' })
         writer.close(); return
       }
 
@@ -302,7 +390,7 @@ export async function POST(req: Request) {
         send({ type: "progress", found: added, total: fresh.length, current: "Adding " + d.name + "..." })
         await supabase.from("internship_contacts").insert({
           user_id: user!.id,
-          company: "Dev.to – " + fieldLabel,
+          company: fieldLabel,
           contact_name: d.name,
           role: role || field || "Developer",
           email: null,
@@ -310,17 +398,17 @@ export async function POST(req: Request) {
           website: d.website || null,
           bio: d.bio,
           notes: [
-            "Dev.to: https://dev.to/" + d.username,
-            'Recent article: "' + d.articleTitle + '"',
+            d.website ? "Profile: " + d.website : "",
+            'Recent post: "' + d.articleTitle + '"',
             "Topics: " + d.tags.join(", "),
-          ].join("\n"),
+          ].filter(Boolean).join("\n"),
           status: "unsorted",
           email_status: "not_emailed",
         })
         await supabase.from("activities").insert({
           user_id: user!.id, type: "contact_added", category: "internship",
-          researcher_name: d.name, university: "Dev.to",
-          description: "Found via Dev.to for " + fieldLabel,
+          researcher_name: d.name, university: fieldLabel,
+          description: "Found via community search for " + fieldLabel,
         }).then(() => {}).catch(() => {})
         added++
         send({ type: "progress", found: added, total: fresh.length, current: "Added " + d.name })

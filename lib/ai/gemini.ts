@@ -33,6 +33,84 @@ function parseSubjectBody(raw: string): { subject: string; body: string } {
   }
 }
 
+// ── Smart resume extraction ───────────────────────────────────────────────────
+// Instead of dumping the whole resume, pull only the parts that are most
+// relevant to this specific recipient's domain. A CS professor gets your
+// CS projects; a finance contact gets your business experience.
+
+const DOMAIN_KEYWORDS: Record<string, string[]> = {
+  engineering:  ["software", "engineer", "developer", "programming", "code", "system", "api", "backend", "frontend", "fullstack", "devops", "cloud", "algorithm", "computer science", "cs", "infrastructure", "architecture", "database", "distributed", "open source", "github"],
+  ml_ai:        ["machine learning", "deep learning", "neural", "model", "training", "artificial intelligence", "nlp", "computer vision", "data science", "pytorch", "tensorflow", "huggingface", "llm", "transformer", "reinforcement", "kaggle", "scikit"],
+  business:     ["business", "product", "management", "strategy", "market", "finance", "economics", "consulting", "startup", "venture", "revenue", "growth", "operations", "leadership", "mba", "analytics", "sales", "marketing", "p&l", "b2b", "saas"],
+  research:     ["research", "paper", "publication", "lab", "study", "analysis", "experiment", "methodology", "thesis", "phd", "academic", "journal", "conference", "grant", "citation", "hypothesis"],
+  design:       ["design", "ui", "ux", "product design", "figma", "user experience", "creative", "visual", "prototype", "wireframe", "typography", "branding"],
+  biomedical:   ["biology", "medical", "health", "clinical", "biomedical", "genomics", "drug", "pharmaceutical", "life science", "chemistry", "neuroscience", "bioinformatics", "crispr", "sequencing"],
+  data:         ["data", "analytics", "statistics", "sql", "tableau", "power bi", "excel", "pandas", "numpy", "etl", "pipeline", "warehouse", "visualization", "dashboard", "reporting"],
+  security:     ["security", "cybersecurity", "cryptography", "penetration", "vulnerability", "network security", "firewall", "ethical hacking", "soc", "incident response"],
+}
+
+/** Identify which domain bucket best describes this recipient */
+function detectRecipientDomain(role: string, company: string, bio: string, areas: string[]): string[] {
+  const ctx = [role, company, bio, ...areas].join(" ").toLowerCase()
+  const scores: [string, number][] = Object.entries(DOMAIN_KEYWORDS).map(([domain, kws]) => [
+    domain,
+    kws.filter(kw => ctx.includes(kw)).length,
+  ])
+  scores.sort((a, b) => b[1] - a[1])
+  // Return keywords from top 1-2 domains that have any matches
+  const top = scores.filter(s => s[1] > 0).slice(0, 2)
+  if (top.length === 0) return []
+  return top.flatMap(([domain]) => DOMAIN_KEYWORDS[domain])
+}
+
+/**
+ * Extract the 3-5 most relevant resume lines for this specific recipient.
+ * Lines are scored by overlap with the recipient's domain keywords.
+ * Falls back to a generic snippet if nothing matches well.
+ */
+function extractRelevantResumeParts(
+  resumeText: string,
+  recipientRole: string,
+  recipientCompany: string,
+  recipientBio: string,
+  recipientAreas: string[],
+  maxLines: number = 4
+): string {
+  const domainKws = detectRecipientDomain(recipientRole, recipientCompany, recipientBio, recipientAreas)
+
+  const lines = resumeText
+    .split(/[\n\r•·–\-]/)
+    .map(l => l.trim())
+    .filter(l => l.length > 25)
+
+  if (domainKws.length === 0 || lines.length === 0) {
+    // No domain detected — fall back to first meaningful chunk
+    return lines.slice(0, maxLines).join("\n")
+  }
+
+  const scored = lines.map(line => {
+    const lower = line.toLowerCase()
+    const score = domainKws.filter(kw => lower.includes(kw)).length
+    // Bonus for lines that read like achievements (numbers, verbs)
+    const achievementBonus = /\d+%|\d+x|built|developed|led|designed|reduced|increased|deployed|published|achieved/.test(lower) ? 0.5 : 0
+    return { line, score: score + achievementBonus }
+  })
+
+  scored.sort((a, b) => b.score - a.score)
+
+  const relevant = scored.filter(s => s.score > 0).slice(0, maxLines)
+
+  if (relevant.length < 2) {
+    // Not enough domain-specific lines — blend top relevant + top overall
+    const fallback = lines.slice(0, Math.max(0, maxLines - relevant.length))
+    return [...relevant.map(s => s.line), ...fallback].slice(0, maxLines).join("\n")
+  }
+
+  return relevant.map(s => s.line).join("\n")
+}
+
+// ── Professor email ───────────────────────────────────────────────────────────
+
 export async function generateEmailGemini(params: {
   professorName: string
   university: string
@@ -55,6 +133,21 @@ export async function generateEmailGemini(params: {
 
   const recentPaper = params.papers[0]
 
+  // Pull only the resume parts that overlap with this professor's research areas
+  const smartResume = params.resumeText
+    ? extractRelevantResumeParts(
+        params.resumeText,
+        params.researchAreas.join(" "),
+        params.university,
+        "",
+        params.researchAreas
+      )
+    : ""
+
+  const resumeBlock = smartResume
+    ? `- Most relevant experience from resume:\n${smartResume}`
+    : ""
+
   let prompt: string
 
   if (params.templateBody) {
@@ -64,7 +157,7 @@ STUDENT INFO:
 - Name: ${params.userName}
 - Academic Level: ${params.userLevel}
 - Research Interests: ${params.userInterests.join(", ")}
-${params.resumeText ? `- Resume highlights: ${params.resumeText.slice(0, 500)}` : ""}
+${resumeBlock}
 
 PROFESSOR INFO:
 - Name: ${params.professorName}
@@ -85,7 +178,7 @@ STUDENT INFO:
 - Name: ${params.userName}
 - Academic Level: ${params.userLevel}
 - Research Interests: ${params.userInterests.join(", ")}
-${params.resumeText ? `- Resume highlights: ${params.resumeText.slice(0, 500)}` : ""}
+${resumeBlock}
 
 PROFESSOR INFO:
 - Name: ${params.professorName}
@@ -96,6 +189,7 @@ ${recentPaper ? `- Recent paper: "${recentPaper.title}"` : ""}
 TONE: ${toneGuide}
 
 Write a personalized cold email under 200 words. Reference their specific research. Sound like a real student.
+The resume lines above are pre-selected as the most relevant to this professor — weave 1-2 of them naturally into the email.
 Return ONLY valid JSON: {"subject": "...", "body": "..."}`
   }
 
@@ -106,6 +200,8 @@ Return ONLY valid JSON: {"subject": "...", "body": "..."}`
     body: result.body || "",
   }
 }
+
+// ── Internship / contact email ────────────────────────────────────────────────
 
 export async function generateInternshipEmailGemini(params: {
   contactName: string
@@ -131,13 +227,24 @@ export async function generateInternshipEmailGemini(params: {
 
   const personDetails: string[] = []
   if (params.bio) personDetails.push("About them: " + params.bio.slice(0, 400))
-  if (params.notes) personDetails.push("Additional info: " + params.notes.slice(0, 300))
+  if (params.notes) personDetails.push("Additional context: " + params.notes.slice(0, 300))
   if (params.website) personDetails.push("Their website/profile: " + params.website)
   if (params.linkedinUrl) personDetails.push("LinkedIn: " + params.linkedinUrl)
   if (params.whyApply) personDetails.push("Why I want to contact them: " + params.whyApply)
 
-  const resumeSection = params.resumeText
-    ? "STUDENT RESUME (use the 2-3 most relevant skills/projects for this role):\n" + params.resumeText.slice(0, 1500)
+  // Pull only the resume parts relevant to this contact's domain
+  const smartResume = params.resumeText
+    ? extractRelevantResumeParts(
+        params.resumeText,
+        params.role,
+        params.company,
+        params.bio || "",
+        params.userInterests
+      )
+    : ""
+
+  const resumeBlock = smartResume
+    ? `MOST RELEVANT RESUME LINES for this recipient's domain (use 1-2 of these specifically):\n${smartResume}`
     : ""
 
   const recipientName = params.contactName || "the contact"
@@ -147,28 +254,27 @@ export async function generateInternshipEmailGemini(params: {
   const lines = [
     "Write a cold email FROM a student TO a specific professional, asking about internship opportunities or mentorship.",
     "",
-    "STUDENT (the sender - write in first person as this person):",
+    "STUDENT (write in first person as this person):",
     "- Name: " + params.userName,
     "- Academic Level: " + params.userLevel,
     "- Interests: " + params.userInterests.join(", "),
-    resumeSection,
+    resumeBlock,
     "",
     "RECIPIENT:",
     "- Name: " + recipientName,
-    "- Company: " + recipientCompany,
+    "- Company/Org: " + recipientCompany,
     "- Role: " + params.role,
     personInfo,
     "",
-    "INSTRUCTIONS:",
-    "- Write in FIRST PERSON (I, my) - the student is the author",
-    "- MUST reference something SPECIFIC about this person from their bio/notes (e.g. a specific article they wrote, a project they work on, their background)",
-    "- Reference 1-2 SPECIFIC skills or projects from the student's resume that are relevant to this person's work",
-    "- Keep it under 180 words - short and punchy",
-    "- Do NOT use generic phrases like I admire your work or I came across your profile",
-    "- Sound like a real, thoughtful student - not a template",
+    "RULES:",
+    "- Write in FIRST PERSON (I, my) as the student",
+    "- Reference something SPECIFIC about this person (from bio/notes/website) — not generic praise",
+    "- Naturally mention 1-2 skills or projects from the resume lines above that align with their work",
+    "- Under 180 words — short and punchy",
+    "- No generic openers like 'I came across your profile' or 'I admire your work'",
+    "- Sound like a real thoughtful student, not a template",
     "- Tone: " + toneGuide,
-    "- If they have a Dev.to article, mention the article title specifically",
-    "- End with a clear, low-pressure ask (e.g. a 15-min chat, not can I intern for you)",
+    "- End with a clear low-pressure ask (e.g. a 15-min chat)",
     "",
     "Respond in EXACTLY this format:",
     "SUBJECT: <subject line>",

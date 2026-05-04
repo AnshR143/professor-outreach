@@ -204,7 +204,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
               {mode === "field" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div style={{ background: "#f0fdf4", borderRadius: 8, padding: "9px 12px", fontSize: 12, color: "#15803d", border: "1px solid #bbf7d0" }}>
-                    Uses Dev.to (free, no auth) to find real developers who actively write and share work in this field.
+                    Finds professionals who actively write and share work in this field.
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Field / Major *</label>
@@ -317,7 +317,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
               <div style={{ textAlign: "center", marginBottom: 24 }}>
                 <div style={{ width: 48, height: 48, borderRadius: "50%", border: "3px solid #e2e8f0", borderTopColor: "#3b82f6", margin: "0 auto 14px", animation: "spin 0.8s linear infinite" }} />
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#0f172a", marginBottom: 4 }}>
-                  {mode === "company" ? "Asking AI to find professionals..." : "Searching Dev.to..."}
+                  "Finding professionals..."
                 </div>
                 <div style={{ fontSize: 12, color: "#64748b" }}>{progress.current}</div>
               </div>
@@ -338,7 +338,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                   </div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>{progress.found} Contact{progress.found !== 1 ? "s" : ""} Added!</div>
                   <div style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>
-                    {mode === "company" ? `Found via AI at ${company}` : `Found via Dev.to for ${field || fieldRole}`}
+                    {mode === "company" ? `Found via AI at ${company}` : `Found for ${field || fieldRole}`}
                   </div>
                   <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 24, lineHeight: 1.5 }}>
                     Open any contact and hit Generate Email — the AI will write a tailored email referencing their specific work and your resume.
