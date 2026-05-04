@@ -39,23 +39,23 @@ function BlurWords({ text, style = {}, delay = 0, wordDelay = 0.03, duration = 0
 
 /* ─── Feature card data ─── */
 const FEATURES = [
-  { icon: Brain,       title: "AI Match Scoring",     desc: "Your resume and fields are cross-referenced against thousands of professors to surface the best fits." },
-  { icon: Mail,        title: "Cold Email Generator",  desc: "Groq-powered emails tailored to each professor's research papers, tone, and your academic background." },
-  { icon: BarChart3,   title: "Outreach Analytics",   desc: "Track response rates, email statuses, and follow-up timing across your entire researcher pipeline." },
-  { icon: Zap,         title: "Instant Discovery",    desc: "A curated database of 500+ professors across top universities, filtered by field and institution." },
-  { icon: Shield,      title: "Resume Parsing",       desc: "Upload your PDF resume once. Every match and email automatically leverages your extracted keywords." },
-  { icon: CheckCircle, title: "Follow-up Engine",     desc: "Generate perfectly-timed follow-up emails that reference your original message without being pushy." },
+  { icon: Brain,       title: "AI Match Scoring",     desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
+  { icon: Mail,        title: "Cold Email Generator",  desc: "AI-crafted emails tailored to each recipient — research papers for professors, role and company context for internships." },
+  { icon: BarChart3,   title: "Outreach Analytics",   desc: "Track reply rates, email statuses, and follow-up timing across your entire professor and internship pipeline." },
+  { icon: Zap,         title: "Dual Discovery",       desc: "Find professors at 500+ universities and internship contacts at top companies — all from one dashboard." },
+  { icon: Shield,      title: "Resume Parsing",       desc: "Upload your PDF once. Every match, email, and contact suggestion automatically draws on your extracted skills." },
+  { icon: CheckCircle, title: "Follow-up Engine",     desc: "Generate perfectly-timed follow-up emails that reference your original message — for both research and internship leads." },
 ]
 
 const HOW_STEPS = [
-  { step: "01", title: "Upload your resume",       desc: "Paste or upload your CV. Our parser extracts keywords, skills, and research areas automatically." },
-  { step: "02", title: "Set your fields & filters", desc: "Pick research areas and optionally filter by university tier or name. Match scores update live." },
-  { step: "03", title: "Generate & send emails",   desc: "Click Generate — your Groq AI key crafts a tailored cold email. Open Gmail pre-filled and hit send." },
+  { step: "01", title: "Upload your resume",        desc: "Paste or upload your CV. The parser extracts your skills, keywords, and experience in seconds." },
+  { step: "02", title: "Pick your targets",         desc: "Search professors by research field or find internship contacts by company — or do both at once." },
+  { step: "03", title: "Generate & send",           desc: "One click produces a tailored cold email. Open Gmail pre-filled or copy the draft and hit send." },
 ]
 
 const PRICING = [
-  { plan: "Free", price: "$0", desc: "Everything you need to start reaching professors.", features: ["Unlimited researchers", "AI email generation", "Resume parsing", "Match scoring", "Follow-up engine"], cta: "Get started", href: "/signup", primary: true },
-  { plan: "Pro (coming soon)", price: "$12/mo", desc: "Advanced analytics and bulk outreach for serious applicants.", features: ["Everything in Free", "Bulk email campaigns", "Advanced analytics", "Priority support", "Custom templates"], cta: null, href: "#", primary: false },
+  { plan: "Free", price: "$0", desc: "Everything you need to start cold outreach — professors and internships.", features: ["Professor discovery", "Internship contacts", "AI email generation", "Resume parsing", "Follow-up engine"], cta: "Get started", href: "/signup", primary: true },
+  { plan: "Pro (coming soon)", price: "$12/mo", desc: "Advanced tools for students running high-volume outreach campaigns.", features: ["Everything in Free", "Bulk email campaigns", "Advanced analytics", "Priority support", "Custom templates"], cta: null, href: "#", primary: false },
 ]
 
 /* ─── University marquee ─── */
@@ -72,12 +72,7 @@ const UNIS = [
   { name: "Caltech", icon: Ghost },
 ]
 
-const navItems = [
-  { label: "Features",     href: "#carousel" },
-  { label: "How It Works", href: "#carousel" },
-  { label: "Pricing",      href: "#carousel" },
-  { label: "Sign In",      href: "/login" },
-]
+// navbar is now just brand + sign-in
 
 /* ═══════════════════════════════════════════════════════════
    CAROUSEL SECTION SLIDES
@@ -96,14 +91,14 @@ function FeaturesSlide() {
 
       <h2 style={{ fontSize: "clamp(22px,3vw,36px)", fontWeight: 800, color: "#0f172a",
         margin: "0 0 8px", lineHeight: 1.2, letterSpacing: "-0.03em" }}>
-        Every tool you need to land{" "}
+        Every tool you need for{" "}
         <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-          research opportunities
+          cold outreach success
         </span>
       </h2>
       <p style={{ fontSize: 14, color: "#334155", margin: "0 0 24px", lineHeight: 1.6, maxWidth: 520 }}>
-        Built for undergrads, Masters, and PhD students who want a systematic, AI-powered approach to cold outreach.
+        One platform for professor research outreach and internship cold emails — powered by AI, personalised to each recipient.
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
@@ -149,7 +144,7 @@ function HowItWorksSlide() {
           From zero to{" "}
           <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            professor reply
+            first reply
           </span>
         </h2>
 
@@ -333,24 +328,23 @@ function SectionCarousel() {
         ))}
       </div>
 
-      {/* Carousel track — 3D perspective */}
+      {/* Carousel track — per-card perspective so scroll doesn't jitter */}
       <div style={{
         position: "relative", width: "100%", height: "620px",
         display: "flex", alignItems: "center", justifyContent: "center",
-        perspective: "1200px",
         zIndex: 10,
       }}>
         {SLIDES.map((slide, index) => {
           let offset = index - current
-          // Wrap-around for smooth looping
           if (offset > Math.floor(total / 2)) offset -= total
           if (offset < -Math.floor(total / 2)) offset += total
 
           const isCenter   = offset === 0
           const isAdjacent = Math.abs(offset) === 1
+          const isVisible  = Math.abs(offset) <= 1
 
           return (
-            <div
+            <motion.div
               key={slide.id}
               style={{
                 position: "absolute",
@@ -358,40 +352,51 @@ function SectionCarousel() {
                 height: "600px",
                 overflow: "hidden",
                 borderRadius: 28,
-                background: "rgba(255,255,255,0.88)",
+                background: "rgba(255,255,255,0.9)",
                 backdropFilter: "blur(20px)",
                 border: "1px solid rgba(59,130,246,0.14)",
+                zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
+                pointerEvents: isCenter ? "auto" : "none",
+                willChange: "transform, opacity",
+                // perspective() lives on the card itself — immune to scroll position
+                transformPerspective: 1200,
+              }}
+              animate={{
+                x: `${offset * 90}%`,
+                rotateY: offset * -12,
+                scale: isCenter ? 1 : isAdjacent ? 0.83 : 0.68,
+                opacity: isCenter ? 1 : isAdjacent ? 0.36 : 0,
+                filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(4px)" : "blur(10px)",
                 boxShadow: isCenter
                   ? "0 32px 80px rgba(59,130,246,0.18), 0 8px 32px rgba(0,0,0,0.1)"
-                  : "0 8px 32px rgba(0,0,0,0.08)",
-                // 3D carousel transform
-                transform: `
-                  translateX(${offset * 88}%)
-                  rotateY(${offset * -14}deg)
-                  scale(${isCenter ? 1 : isAdjacent ? 0.82 : 0.68})
-                `,
-                transformOrigin: "center center",
-                opacity: isCenter ? 1 : isAdjacent ? 0.38 : 0,
-                filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(5px)" : "blur(10px)",
-                transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease, filter 0.5s ease, box-shadow 0.4s ease",
-                zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
-                visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
-                pointerEvents: isCenter ? "auto" : "none",
+                  : "0 8px 32px rgba(0,0,0,0.06)",
+                visibility: isVisible ? "visible" : "hidden",
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 38,
+                mass: 1,
+                // individual property overrides for non-springable values
+                opacity:   { duration: 0.35, ease: "easeOut" },
+                filter:    { duration: 0.35, ease: "easeOut" },
+                boxShadow: { duration: 0.35, ease: "easeOut" },
+                visibility:{ duration: 0 },
               }}
             >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`${slide.id}-${current}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.28, ease: "easeOut" }}
                   style={{ height: "100%", overflowY: "auto" }}
                 >
                   {slide.content}
                 </motion.div>
               </AnimatePresence>
-            </div>
+            </motion.div>
           )
         })}
       </div>
@@ -480,30 +485,40 @@ export default function LandingPage() {
           <div style={{ pointerEvents: "none", position: "absolute", inset: 0,
             background: "linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.0) 30%,rgba(0,0,0,0.42) 100%)" }} />
 
-          {/* Navbar */}
+          {/* Navbar — brand left, sign in right */}
           <motion.nav
-            initial={{ y: -40, opacity: 0 }}
+            initial={{ y: -28, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", zIndex: 20 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 40,
-              background: "rgba(0,0,0,0.88)", backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              borderRadius: "0 0 20px 20px", padding: "10px 36px" }}>
-              {navItems.map((item, i) => (
-                <motion.div key={item.label}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}>
-                  <Link href={item.href}
-                    style={{ color: "rgba(225,224,204,0.75)", fontSize: 13,
-                      fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
-                    onMouseEnter={e => (e.currentTarget.style.color = "#E1E0CC")}
-                    onMouseLeave={e => (e.currentTarget.style.color = "rgba(225,224,204,0.75)")}>
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
+            style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, padding: "0 28px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
+              background: "rgba(0,0,0,0.82)", backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              borderRadius: "0 0 20px 20px", padding: "12px 28px" }}>
+
+              {/* Brand */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25, duration: 0.5 }}
+                style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 8,
+                  background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
+                  display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
+                </div>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#E1E0CC", letterSpacing: "-0.01em" }}>OutreachAI</span>
+              </motion.div>
+
+              {/* Sign In pill */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }}>
+                <Link href="/login"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6,
+                    background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.18)",
+                    borderRadius: 999, padding: "7px 18px", fontSize: 13, fontWeight: 600,
+                    color: "#E1E0CC", textDecoration: "none", transition: "background 0.15s, border-color 0.15s" }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.18)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.35)" }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.1)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.18)" }}>
+                  Sign In
+                </Link>
+              </motion.div>
             </div>
           </motion.nav>
 
@@ -522,7 +537,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.1, delay: 0.6 }}
                   style={{ color: "rgba(225,224,204,0.82)", fontSize: 15, lineHeight: 1.4, margin: 0 }}>
                   <BlurWords
-                    text="AI-powered professor outreach. Find researchers who match your work, generate personalised cold emails, and land the research opportunity you deserve."
+                    text="AI-powered cold outreach for research and internships. Find the right professors and companies, generate personalised emails, and land the opportunity you deserve."
                     delay={0.7} wordDelay={0.022} duration={0.25}
                   />
                 </motion.p>
@@ -594,18 +609,18 @@ export default function LandingPage() {
               border: "1px solid rgba(59,130,246,0.2)", backdropFilter: "blur(20px)" }}>
             <h2 style={{ fontSize: "clamp(28px,5vw,52px)", fontWeight: 800,
               color: "#0f172a", margin: "0 0 16px", letterSpacing: "-0.03em", lineHeight: 1.1 }}>
-              <BlurWords text="Ready to land your" delay={0} wordDelay={0.05} duration={0.3} />
+              <BlurWords text="Ready to start your" delay={0} wordDelay={0.05} duration={0.3} />
               <br />
               <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
                 display: "inline-block" }}>
-                <BlurWords text="research position?" delay={0.28} wordDelay={0.06} duration={0.32} />
+                <BlurWords text="cold outreach?" delay={0.28} wordDelay={0.06} duration={0.32} />
               </span>
             </h2>
             <p style={{ fontSize: 16, color: "#475569", maxWidth: 480,
               margin: "0 auto 36px", lineHeight: 1.6 }}>
               <BlurWords
-                text="Join students who are already reaching professors at MIT, Stanford, Harvard, and beyond — with zero cold-email experience required."
+                text="Join students already landing research positions and internships at top universities and companies — with zero cold-email experience required."
                 delay={0.5} wordDelay={0.02} duration={0.22}
               />
             </p>
