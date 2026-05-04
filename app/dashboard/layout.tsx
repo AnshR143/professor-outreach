@@ -11,7 +11,7 @@ const NAV = [
   { href: "/dashboard/researchers", label: "Researchers", icon: () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
   )},
-  { href: "/dashboard/internships", label: "Internships", icon: () => (
+  { href: "/dashboard/internships", label: "Internships", badge: "beta", icon: () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
   )},
   { href: "/dashboard/universities", label: "Universities", icon: () => (
@@ -136,7 +136,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           {/* Nav */}
           <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, width: "100%", padding: "0 8px" }}>
-            {NAV.map(({ href, label, icon: Icon }) => {
+            {NAV.map(({ href, label, icon: Icon, badge }: { href: string; label: string; icon: () => JSX.Element; badge?: string }) => {
               const active = isActive(href)
               return (
                 <Link
@@ -160,7 +160,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   }}
                 >
                   <span className="nav-icon"><Icon /></span>
-                  <span className="nav-label">{label}</span>
+                  <span className="nav-label" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {label}
+                    {badge && <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 5px", borderRadius: 4, background: "#f59e0b", color: "#fff", letterSpacing: 0.3 }}>{badge}</span>}
+                  </span>
                 </Link>
               )
             })}

@@ -22,14 +22,14 @@ async function searchApollo(
     ? [role]
     : ["Software Engineer", "Product Manager", "Data Scientist", "Engineering Manager", "Designer", "Researcher"]
 
-  const res = await fetch("https://api.apollo.io/api/v1/mixed_people/search", {
+  const res = await fetch("https://api.apollo.io/v1/mixed_people/search", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-cache",
-      "x-api-key": apolloKey,
     },
     body: JSON.stringify({
+      api_key: apolloKey,
       q_organization_name: company,
       person_titles: titles,
       per_page: count,
@@ -45,8 +45,11 @@ async function searchApollo(
   const data = await res.json()
   const people: ApolloContact[] = data.people || []
 
+  // Filter out low-quality results
+  const validName = (name: string) => /^[A-Za-z\s\-\'\.\.]+$/.test(name) && name.trim().split(" ").length >= 2
+  
   return people
-    .filter(p => p.name && p.title)
+    .filter(p => p.name && p.title && validName(p.name))
     .map(p => {
       const bioLines: string[] = []
       if (p.headline) bioLines.push(p.headline)
