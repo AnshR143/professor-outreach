@@ -153,47 +153,44 @@ export default function OnboardingPage() {
                 </select>
               </div>
 
-              <button onClick={() => setStep(2)} disabled={!form.firstName || !form.lastName || !form.academicLevel}
-                style={{ width: "100%", padding: 14, background: !form.firstName || !form.lastName || !form.academicLevel ? "#93c5fd" : "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}>
-                Next Step →
+              <div style={{ display: "flex", gap: 12 }}>
+                <button onClick={() => setStep(2)}
+                  style={{ width: "100%", padding: 14, background: "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}>
+                  Continue →
+                </button>
+              </div>
+              <button onClick={() => setStep(2)} style={{ width: "100%", marginTop: 12, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textDecoration: "underline" }}>
+                Skip for now
               </button>
             </motion.div>
           )}
 
           {step === 2 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 24px" }}>Education & Interests</h2>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 24px" }}>Education</h2>
 
               <div style={{ marginBottom: 24 }}>
-                <label style={labelStyle as any}>Current Institution</label>
+                <label style={labelStyle as any}>Current Institution / School</label>
                 <input type="text" value={form.institution} onChange={e => setForm(f => ({ ...f, institution: e.target.value }))} placeholder="e.g. Stanford University" style={inputStyle} />
               </div>
 
-              <div style={{ marginBottom: 24 }}>
+              <div style={{ marginBottom: 28 }}>
                 <MajorSearch 
                   selectedMajors={form.majors} 
                   onChange={majors => setForm(f => ({ ...f, majors }))} 
                 />
               </div>
 
-              <div style={{ marginBottom: 28 }}>
-                <label style={labelStyle as any}>Broad Research Interests</label>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 180, overflowY: "auto", padding: "4px" }}>
-                  {RESEARCH_FIELDS.map(f => (
-                    <button key={f} onClick={() => setForm(fm => ({ ...fm, interests: toggleItem(fm.interests, f) }))} style={btnStyle(form.interests.includes(f))}>
-                      {f}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <div style={{ display: "flex", gap: 12 }}>
                 <button onClick={() => setStep(1)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Back</button>
-                <button onClick={() => setStep(3)} disabled={form.majors.length === 0}
-                  style={{ flex: 2, padding: 14, background: form.majors.length === 0 ? "#93c5fd" : "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+                <button onClick={() => setStep(3)}
+                  style={{ flex: 2, padding: 14, background: "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
                   Continue
                 </button>
               </div>
+              <button onClick={() => setStep(3)} style={{ width: "100%", marginTop: 16, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textDecoration: "underline", textAlign: "center" }}>
+                Skip for now
+              </button>
             </motion.div>
           )}
 
@@ -201,7 +198,9 @@ export default function OnboardingPage() {
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 24px" }}>Resume & Goals</h2>
 
-              <ResumeUpload onUpload={(url, text) => setForm(f => ({ ...f, resumeUrl: url, resumeText: text }))} />
+              <ResumeUpload onUpload={(url, text) => {
+                setForm(f => ({ ...f, resumeUrl: url, resumeText: text }))
+              }} />
 
               <div style={{ marginBottom: 28 }}>
                 <label style={labelStyle as any}>What are your outreach goals?</label>
@@ -216,11 +215,14 @@ export default function OnboardingPage() {
 
               <div style={{ display: "flex", gap: 12 }}>
                 <button onClick={() => setStep(2)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Back</button>
-                <button onClick={() => setStep(4)} disabled={form.goals.length === 0}
-                  style={{ flex: 2, padding: 14, background: form.goals.length === 0 ? "#93c5fd" : "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+                <button onClick={() => setStep(4)}
+                  style={{ flex: 2, padding: 14, background: "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
                   Almost There
                 </button>
               </div>
+              <button onClick={() => setStep(4)} style={{ width: "100%", marginTop: 16, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textDecoration: "underline", textAlign: "center" }}>
+                Skip for now
+              </button>
             </motion.div>
           )}
 

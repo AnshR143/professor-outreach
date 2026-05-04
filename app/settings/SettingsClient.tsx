@@ -235,11 +235,12 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
             <Field label={hasKey ? "Replace with a new key" : "Paste your API key"}>
               <div style={{ display: "flex", gap: 8 }}>
                 <input
-                  type="password"
+                  type="text"
                   value={apiKey}
                   onChange={e => setApiKey(e.target.value)}
                   placeholder="gsk_... or AIza... or sk-... (Groq, Gemini, OpenAI)"
-                  autoComplete="new-password"
+                  autoComplete="one-time-code"
+                  name="api_key_confidential"
                   style={{ flex: 1, padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#0f172a", outline: "none", background: "#f8f9fb" }}
                 />
                 <button onClick={saveApiKey} disabled={savingKey || !apiKey.trim()}
