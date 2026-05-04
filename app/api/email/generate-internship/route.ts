@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { generateInternshipEmail } from "@/lib/ai/groq"
 import { generateInternshipEmailGemini } from "@/lib/ai/gemini"
+import { isGeminiKey as detectGemini } from "@/lib/ai/detect-key"
 import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
@@ -41,14 +42,14 @@ export async function POST(req: Request) {
     )
   }
 
-  const isGeminiKey = apiKey.startsWith("AI") || (!apiKey.startsWith("gsk_") && !!process.env.GEMINI_API_KEY)
+  const useGemini = detectGemini(apiKey) || (!detectGemini(apiKey) && !!process.env.GEMINI_API_KEY)
 
   try {
     let result: { subject: string; body: string }
 
     // Try Gemini first (better personalization) — fall back to Groq
-    if (isGeminiKey || process.env.GEMINI_API_KEY) {
-      const geminiKey = (isGeminiKey ? apiKey : process.env.GEMINI_API_KEY) as string
+    if (useGemini) {
+      const geminiKey = (detectGemini(apiKey) ? apiKey : process.env.GEMINI_API_KEY) as string
       result = await generateInternshipEmailGemini({
         contactName: contact.contact_name || "",
         company: contact.company || "",

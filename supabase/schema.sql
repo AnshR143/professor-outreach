@@ -98,13 +98,27 @@ CREATE TABLE IF NOT EXISTS activities (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- RLS (Row Level Security)
+-- GLOBAL PROFESSORS (Global pool for discovery)
+CREATE TABLE IF NOT EXISTS global_professors (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL,
+  university TEXT NOT NULL DEFAULT '',
+  research_areas TEXT[] NOT NULL DEFAULT '{}',
+  bio TEXT,
+  profile_url TEXT,
+  source TEXT NOT NULL DEFAULT 'api',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(name, university)
+);
+
+-- RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE researchers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE papers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE emails ENABLE ROW LEVEL SECURITY;
 ALTER TABLE templates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE global_professors ENABLE ROW LEVEL SECURITY;
 
 -- Policies: users can only see their own data
 CREATE POLICY "Users can manage own profile" ON profiles FOR ALL USING (auth.uid() = user_id);
@@ -122,6 +136,8 @@ CREATE POLICY "Users can manage own templates" ON templates FOR INSERT WITH CHEC
 CREATE POLICY "Users can update own templates" ON templates FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "Users can delete own templates" ON templates FOR DELETE USING (auth.uid() = user_id);
 CREATE POLICY "Users can manage own activities" ON activities FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Anyone can read global professors" ON global_professors FOR SELECT USING (true);
+CREATE POLICY "Only service role can manage global professors" ON global_professors FOR ALL USING (true); -- Usually restricted to service role in practice
 
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_researchers_user_id ON researchers(user_id);
@@ -131,6 +147,8 @@ CREATE INDEX IF NOT EXISTS idx_emails_user_id ON emails(user_id);
 CREATE INDEX IF NOT EXISTS idx_emails_researcher_id ON emails(researcher_id);
 CREATE INDEX IF NOT EXISTS idx_activities_user_id ON activities(user_id);
 CREATE INDEX IF NOT EXISTS idx_activities_created_at ON activities(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_global_professors_name ON global_professors(name);
+CREATE INDEX IF NOT EXISTS idx_global_professors_university ON global_professors(university);
 
 -- Seed general templates
 INSERT INTO templates (user_id, name, subject_line, body, description, type, is_default) VALUES

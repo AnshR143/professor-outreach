@@ -60,30 +60,28 @@ export async function findGlobalProfessors(
 ): Promise<GlobalProfessor[]> {
 
   // 1. Check local global_professors table
-  const { data: globalRows } = await supabase
-    .from("global_professors")
-    .select("*")
+  const searchTerm = (keyword || fields[0] || "").trim()
+  let query = supabase.from("global_professors").select("*")
+
+  if (searchTerm) {
+    query = query.or(`name.ilike.%${searchTerm}%,university.ilike.%${searchTerm}%,research_areas.cs.{${searchTerm}}`)
+  }
+
+  if (universities.length > 0) {
+    const uniFilter = universities[0]
+    query = query.ilike('university', `%${uniFilter}%`)
+  }
+
+  const { data: globalRows } = await query
     .order("created_at", { ascending: false })
-    .limit(300)
+    .limit(needed)
 
-  const globalPool: GlobalProfessor[] = (globalRows || []) as GlobalProfessor[]
+  const filtered = (globalRows || []) as GlobalProfessor[]
 
-  const filtered = globalPool.filter(p => {
-    const areas = p.research_areas || []
-    const uni = (p.university || "").toLowerCase()
-    
-    const term = (keyword || fields[0] || "").toLowerCase()
-    if (!term) return true
-
-    return p.name.toLowerCase().includes(term) || 
-           uni.includes(term) || 
-           areas.some(a => a.toLowerCase().includes(term))
-  })
-
-  if (filtered.length >= needed) return filtered.slice(0, needed)
+  if (filtered.length >= needed) return filtered
 
   // 2. Live Discovery via Works/Papers (The Efficient Way)
-  const existingNames = new Set(globalPool.map(p => p.name.toLowerCase()))
+  const existingNames = new Set(filtered.map(p => p.name.toLowerCase()))
   const fresh: GlobalProfessor[] = []
 
   const searchTerms = keyword ? [keyword] : fields.slice(0, 2)

@@ -1,4 +1,5 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
+import { detectApiKey, isGeminiKey } from "@/lib/ai/detect-key"
 
 // ── Groq AI company search (uses user's existing AI key) ─────────────────────
 
@@ -72,8 +73,7 @@ async function findByCompanyWithAI(
     '[{"name":"Jane Smith","role":"Senior ML Engineer","bio":"Works on recommendation systems at ' + company + '. Previously at DeepMind. Open source contributor to PyTorch.","website":"https://janesmith.dev","linkedin":"linkedin.com/in/janesmith"}]',
   ].join("\n")
 
-  const isGemini = apiKey.startsWith("AI") || apiKey.startsWith("AIza")
-  const raw = isGemini ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
+  const raw = isGeminiKey(apiKey) ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
 
   const match = raw.match(/\[[\s\S]*\]/)
   if (!match) return []
@@ -116,8 +116,7 @@ async function findByFieldWithAI(
     "Respond ONLY with a valid JSON array.",
   ].join("\n")
 
-  const isGemini = apiKey.startsWith("AI") || apiKey.startsWith("AIza")
-  const raw = isGemini ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
+  const raw = isGeminiKey(apiKey) ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
   const match = raw.match(/\[[\s\S]*\]/)
   if (!match) return []
   try {
@@ -267,9 +266,7 @@ export async function POST(req: Request) {
         writer.close(); return
       }
 
-      const isGroq = aiKey.startsWith("gsk_")
-      const isGemini = aiKey.startsWith("AI") || aiKey.startsWith("AIza")
-      const provider = isGroq ? "Groq" : isGemini ? "Gemini" : "AI"
+      const provider = detectApiKey(aiKey).label
 
       send({ type: "progress", found: 0, total: count, current: "Asking " + provider + " to find professionals at " + company + "..." })
       let contacts: AIContact[] = []
@@ -327,9 +324,7 @@ export async function POST(req: Request) {
 
       // If user has an AI key, use AI search for richer results with LinkedIn profiles
       if (aiKey) {
-        const isGroq = aiKey.startsWith("gsk_")
-        const isGemini = aiKey.startsWith("AI") || aiKey.startsWith("AIza")
-        const provider = isGroq ? "Groq" : isGemini ? "Gemini" : "AI"
+        const provider = detectApiKey(aiKey).label
         send({ type: "progress", found: 0, total: count, current: "Finding " + fieldLabel + " professionals via " + provider + "..." })
 
         let contacts: AIContact[] = []
