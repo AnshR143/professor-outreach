@@ -151,6 +151,20 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
     setContacts([]); setResetting(false)
   }
 
+  async function handleFindClose() {
+    setShowFind(false)
+    // Re-fetch directly from Supabase so new contacts appear immediately
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data } = await supabase
+        .from("internship_contacts")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+      if (data) setContacts(data as InternshipContact[])
+    }
+  }
+
   const filtered = contacts.filter(c => {
     const q = search.toLowerCase()
     return !q || c.company.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || c.contact_name.toLowerCase().includes(q)
@@ -360,81 +374,79 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             </div>
 
             <div style={{ padding: "16px 24px 24px" }}>
-              {/* Tone selector */}
-              <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+              {/* Tone row */}
+              <div style={{ display: "flex", gap: 8, marginBottom: 16, alignItems: "center" }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#64748b", marginRight: 2 }}>Tone</span>
                 {(["formal", "casual", "enthusiastic"] as Tone[]).map(t => {
                   const tc = TONE_COLORS[t]; const active = genTone === t
                   return (
                     <button key={t} onClick={() => setGenTone(t)}
-                      style={{ padding: "7px 14px", borderRadius: 8, border: "1.5px solid " + (active ? tc.border : "#e2e8f0"), background: active ? tc.bg : "#fff", color: active ? tc.color : "#64748b", fontSize: 12, fontWeight: 600, cursor: "pointer", textTransform: "capitalize" }}>
+                      style={{ padding: "6px 13px", borderRadius: 8, border: "1.5px solid " + (active ? tc.border : "#e2e8f0"), background: active ? tc.bg : "#fff", color: active ? tc.color : "#64748b", fontSize: 12, fontWeight: 600, cursor: "pointer", textTransform: "capitalize" }}>
                       {t}
                     </button>
                   )
                 })}
-                <button onClick={generateEmail} disabled={generating}
-                  style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 7, padding: "7px 18px", background: generating ? "#c7d2fe" : "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer" }}>
-                  {generating ? (
-                    <>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
-                      Writing...
-                    </>
-                  ) : (
-                    <>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                      Generate
-                    </>
-                  )}
-                </button>
               </div>
 
               {genError && (
                 <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#dc2626", marginBottom: 14 }}>
                   {genError}
-                  {genError.includes("key") && (
-                    <span> <a href="/settings" style={{ color: "#dc2626", fontWeight: 600 }}>Go to Settings</a> to add an API key.</span>
+                  {(genError.toLowerCase().includes("key") || genError.toLowerCase().includes("api")) && (
+                    <span> <a href="/settings" style={{ color: "#dc2626", fontWeight: 600 }}>Add your API key in Settings.</a></span>
                   )}
                 </div>
               )}
 
-              {(genSubject || genBody) && (
-                <>
-                  <div style={{ marginBottom: 10 }}>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5, display: "block", marginBottom: 5 }}>Subject</label>
-                    <input value={genSubject} onChange={e => setGenSubject(e.target.value)}
-                      style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: "#f8fafc", outline: "none", boxSizing: "border-box", fontWeight: 600 }} />
-                  </div>
-                  <div style={{ marginBottom: 14 }}>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5, display: "block", marginBottom: 5 }}>Body</label>
-                    <textarea value={genBody} onChange={e => setGenBody(e.target.value)} rows={11}
-                      style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: "#f8fafc", outline: "none", boxSizing: "border-box", resize: "vertical" as any, lineHeight: 1.6, fontFamily: "inherit" }} />
-                  </div>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button onClick={copyEmail}
-                      style={{ padding: "8px 14px", background: copied ? "#dcfce7" : "#f1f5f9", color: copied ? "#15803d" : "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-                      {copied ? "Copied!" : "Copy"}
-                    </button>
-                    <button onClick={openGmail}
-                      style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", background: "#fff", color: "#374151", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                      Open in Gmail
-                    </button>
-                    <button onClick={saveDraft} disabled={savingDraft}
-                      style={{ padding: "8px 14px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: savingDraft ? "not-allowed" : "pointer", opacity: savingDraft ? 0.7 : 1 }}>
-                      {savingDraft ? "Saved!" : "Save Draft"}
-                    </button>
-                    <Link href={"/dashboard/internships/" + emailContact.id}
-                      style={{ marginLeft: "auto", padding: "8px 14px", background: "#fff", color: "#6366f1", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>
-                      Full Details
-                    </Link>
-                  </div>
-                </>
-              )}
-
-              {!genSubject && !genBody && !generating && !genError && (
-                <div style={{ textAlign: "center", padding: "28px 0 8px", color: "#94a3b8", fontSize: 13 }}>
-                  Select a tone and click Generate to write a personalized email for {emailContact.contact_name || emailContact.company}.
+              {/* Subject — always visible */}
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Subject</label>
+                  <span style={{ fontSize: 11, color: "#94a3b8" }}>{genSubject.length}/120</span>
                 </div>
-              )}
+                <input value={genSubject} onChange={e => setGenSubject(e.target.value.slice(0, 120))}
+                  placeholder="Subject line..."
+                  style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: genSubject ? "#fff" : "#f8fafc", outline: "none", boxSizing: "border-box", fontWeight: 600 }} />
+              </div>
+
+              {/* Body — always visible */}
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Body</label>
+                  <span style={{ fontSize: 11, color: "#94a3b8" }}>{genBody.length}/1000</span>
+                </div>
+                <textarea value={genBody} onChange={e => setGenBody(e.target.value.slice(0, 1000))} rows={10}
+                  placeholder="Email body will appear here after generation..."
+                  style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: genBody ? "#fff" : "#f8fafc", outline: "none", boxSizing: "border-box", resize: "vertical" as any, lineHeight: 1.6, fontFamily: "inherit" }} />
+              </div>
+
+              {/* Action buttons */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button onClick={generateEmail} disabled={generating}
+                  style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", background: generating ? "#c7d2fe" : "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer" }}>
+                  {generating ? (
+                    <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>Generating...</>
+                  ) : (
+                    <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Generate Email</>
+                  )}
+                </button>
+                <button onClick={openGmail} disabled={!genSubject && !genBody}
+                  style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 14px", background: "#fff", color: "#374151", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: !genSubject && !genBody ? 0.4 : 1 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  Open in Gmail
+                </button>
+                <button onClick={copyEmail} disabled={!genSubject && !genBody}
+                  style={{ padding: "9px 14px", background: copied ? "#dcfce7" : "#f1f5f9", color: copied ? "#15803d" : "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: !genSubject && !genBody ? 0.4 : 1 }}>
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+                <button onClick={saveDraft} disabled={savingDraft || (!genSubject && !genBody)}
+                  style={{ padding: "9px 14px", background: "#fff", color: "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: !genSubject && !genBody ? 0.4 : 1 }}>
+                  {savingDraft ? "Saving..." : "Save Draft"}
+                </button>
+                <Link href={"/dashboard/internships/" + emailContact.id}
+                  style={{ marginLeft: "auto", padding: "9px 14px", background: "#fff", color: "#6366f1", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>
+                  Full Details →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -442,7 +454,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
 
       {showFind && (
         <FindInternshipContactsModal
-          onClose={() => { setShowFind(false); router.refresh() }}
+          onClose={handleFindClose}
         />
       )}
 
