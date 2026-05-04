@@ -121,6 +121,25 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
     e.target.value = ""
   }
 
+  async function handleDeleteAccount() {
+    if (!confirm("CRITICAL: This will permanently delete your account and all your data. This cannot be undone. Are you sure?")) return
+    if (!confirm("Final check: Are you absolutely sure?")) return
+    
+    try {
+      const res = await fetch("/api/settings/delete-account", { method: "DELETE" })
+      if (res.ok) {
+        await supabase.auth.signOut()
+        router.push("/")
+        router.refresh()
+      } else {
+        const data = await res.json()
+        alert("Error deleting account: " + (data.error || "Unknown error"))
+      }
+    } catch (error) {
+      alert("Network error while deleting account.")
+    }
+  }
+
   return (
     <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
       <aside style={{ width: 56, background: "#1e293b", display: "flex", flexDirection: "column", alignItems: "center", padding: "12px 0", flexShrink: 0 }}>
@@ -257,6 +276,24 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
               </button>
               <div style={{ fontSize: 11, color: "#94a3b8" }}>Deletes all researchers, emails &amp; activities</div>
             </div>
+          </div>
+
+          <div style={{ marginTop: 64, paddingTop: 32, borderTop: "1px solid #fee2e2" }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#991b1b", margin: "0 0 8px" }}>Danger Zone</h3>
+            <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>Once you delete your account, there is no going back. All your data will be permanently removed.</p>
+            
+            <button 
+              onClick={handleDeleteAccount}
+              style={{ 
+                padding: "10px 20px", background: "#fee2e2", color: "#991b1b", 
+                border: "1px solid #fecaca", borderRadius: 8, fontSize: 13, 
+                fontWeight: 600, cursor: "pointer", transition: "all 0.2s" 
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "#fef2f2" }}
+              onMouseLeave={e => { e.currentTarget.style.background = "#fee2e2" }}
+            >
+              Delete My Account
+            </button>
           </div>
         </div>
       </main>
