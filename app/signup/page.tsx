@@ -85,7 +85,7 @@ export default function SignupPage() {
       email, password,
       options: { 
         data: { name },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/auth/callback?next=/onboarding`
       },
     })
     if (authError) {
