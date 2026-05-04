@@ -1,122 +1,90 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
 
-// ── Apollo.io people search ──────────────────────────────────────────────────
+// ── Groq AI company search (uses user's existing AI key) ─────────────────────
 
-interface ApolloContact {
-  name: string
-  title: string
-  headline: string | null
-  linkedin_url: string | null
-  email: string | null
-  organization: { name: string } | null
-  photo_url: string | null
-}
-
-async function searchApollo(
-  apolloKey: string,
-  company: string,
-  role: string,
-  count: number
-): Promise<Array<{ name: string; role: string; bio: string; website: string | null; linkedin: string | null; email: string | null }>> {
-  const titles = role
-    ? [role]
-    : ["Software Engineer", "Product Manager", "Data Scientist", "Engineering Manager", "Designer", "Researcher"]
-
-  const res = await fetch("https://api.apollo.io/v1/mixed_people/search", {
+async function callGroq(apiKey: string, prompt: string): Promise<string> {
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "no-cache",
+      "Authorization": "Bearer " + apiKey,
     },
     body: JSON.stringify({
-      api_key: apolloKey,
-      q_organization_name: company,
-      person_titles: titles,
-      per_page: count,
-      page: 1,
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.4,
+      max_tokens: 1500,
     }),
   })
-
   if (!res.ok) {
     const err = await res.text()
-    throw new Error("Apollo error " + res.status + ": " + err.slice(0, 200))
+    throw new Error("Groq error " + res.status + ": " + err.slice(0, 200))
   }
-
   const data = await res.json()
-  const people: ApolloContact[] = data.people || []
-
-  // Filter out low-quality results
-  const validName = (name: string) => /^[A-Za-z\s\-\'\.\.]+$/.test(name) && name.trim().split(" ").length >= 2
-  
-  return people
-    .filter(p => p.name && p.title && validName(p.name))
-    .map(p => {
-      const bioLines: string[] = []
-      if (p.headline) bioLines.push(p.headline)
-      if (p.organization?.name) bioLines.push("Works at " + p.organization.name + " as " + p.title)
-      const bio = bioLines.join(". ") || (p.title + " at " + company)
-      return {
-        name: p.name,
-        role: p.title,
-        bio,
-        website: null,
-        linkedin: p.linkedin_url || null,
-        email: p.email || null,
-      }
-    })
+  return data.choices?.[0]?.message?.content || ""
 }
 
-// ── Gemini fallback for company search ──────────────────────────────────────
-
 async function callGemini(apiKey: string, prompt: string): Promise<string> {
-  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
-    }),
-  })
+  const res = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
+      }),
+    }
+  )
   if (!res.ok) throw new Error("Gemini error " + res.status)
   const data = await res.json()
   return data.candidates?.[0]?.content?.parts?.[0]?.text || ""
 }
 
-interface GeminiContact {
+interface AIContact {
   name: string
   role: string
   bio: string
-  website?: string
-  linkedin?: string
+  website?: string | null
+  linkedin?: string | null
 }
 
-async function findByCompanyWithGemini(
-  company: string, role: string, count: number, apiKey: string
-): Promise<GeminiContact[]> {
-  const roleHint = role || "software engineer, PM, researcher, or designer"
+async function findByCompanyWithAI(
+  company: string,
+  role: string,
+  count: number,
+  apiKey: string
+): Promise<AIContact[]> {
+  const roleHint = role || "software engineer, product manager, researcher, data scientist, or designer"
   const prompt = [
     "List " + count + " REAL, publicly known professionals who currently work or have recently worked at " + company + " in roles like " + roleHint + ".",
-    "",
-    "Only include people who have a public presence (blog, GitHub, LinkedIn, speaker profile, etc.)",
+    "Only include people with a public presence (LinkedIn, GitHub, personal blog, speaker profile, etc.) that a student could realistically find and cold-email.",
     "",
     "For each person return a JSON object with:",
-    '- name: full real name',
-    '- role: their actual title at ' + company,
-    '- bio: 2-3 sentences about their background and what they work on',
-    '- website: personal site or GitHub profile URL (if known, else null)',
-    '- linkedin: LinkedIn slug like "linkedin.com/in/username" (if known, else null)',
+    "  name: full real name (first + last)",
+    "  role: their actual job title at " + company,
+    "  bio: 2-3 sentences about their background and what they work on — be specific, mention actual projects or talks if known",
+    "  website: personal site or GitHub URL if known, else null",
+    "  linkedin: LinkedIn slug like linkedin.com/in/username if known, else null",
     "",
-    "Respond ONLY with a valid JSON array. Example:",
-    '[{"name":"Jane Smith","role":"Senior ML Engineer","bio":"Works on recommendation systems at ' + company + '.","website":"https://janesmith.dev","linkedin":"linkedin.com/in/janesmith"}]',
+    "IMPORTANT: Only include people you are confident are real and at this company. Do not invent people.",
+    "Respond ONLY with a valid JSON array. No explanation. Example:",
+    '[{"name":"Jane Smith","role":"Senior ML Engineer","bio":"Works on recommendation systems at ' + company + '. Previously at DeepMind. Open source contributor to PyTorch.","website":"https://janesmith.dev","linkedin":"linkedin.com/in/janesmith"}]',
   ].join("\n")
 
-  const raw = await callGemini(apiKey, prompt)
+  const isGemini = apiKey.startsWith("AI") || apiKey.startsWith("AIza")
+  const raw = isGemini ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
+
   const match = raw.match(/\[[\s\S]*\]/)
   if (!match) return []
   try {
-    const parsed = JSON.parse(match[0]) as GeminiContact[]
-    return parsed.filter(p => p.name && p.role)
+    const parsed = JSON.parse(match[0]) as AIContact[]
+    // Filter out clearly fake / no-last-name entries
+    return parsed.filter(p =>
+      p.name && p.role &&
+      p.name.trim().split(/\s+/).length >= 2 &&
+      /^[A-Za-z\s\-\'.]+$/.test(p.name.trim())
+    )
   } catch {
     return []
   }
@@ -133,7 +101,6 @@ interface DevToArticle {
     name: string
     username: string
     github_username?: string
-    twitter_username?: string
     website_url?: string
   }
 }
@@ -192,13 +159,17 @@ async function searchDevTo(field: string, role: string, count: number): Promise<
       if (!res.ok) continue
       const articles: DevToArticle[] = await res.json()
       for (const a of articles) {
-        const key = a.user.username
-        if (seen.has(key) || !a.user.name) continue
-        seen.add(key)
+        const uname = a.user.username
+        // Skip usernames that look like handles (no real name) or have numbers only
+        if (seen.has(uname) || !a.user.name) continue
+        // Require name to look like a real person (at least 2 words or common name)
+        const nameParts = a.user.name.trim().split(/\s+/)
+        if (nameParts.length < 2 && a.user.name === uname) continue // username = name, skip
+        seen.add(uname)
         results.push({
           name: a.user.name,
-          username: a.user.username,
-          bio: "Writes about " + a.tag_list.join(", ") + ' on Dev.to. Recent: "' + a.title + '". ' + (a.description || "").trim(),
+          username: uname,
+          bio: "Writes about " + a.tag_list.join(", ") + ' on Dev.to. Recent article: "' + a.title + '". ' + (a.description || "").slice(0, 120).trim(),
           website: a.user.website_url || (a.user.github_username ? "https://github.com/" + a.user.github_username : null),
           articleTitle: a.title,
           tags: a.tag_list,
@@ -221,11 +192,10 @@ export async function POST(req: Request) {
   const { mode, company, field, role, count: rawCount } = await req.json()
   const count = Math.min(Math.max(1, parseInt(rawCount) || 5), 10)
 
-  // Load user's API keys
+  // Load user's AI key (works with Groq OR Gemini — whatever they set in Settings)
   const { data: profileRaw } = await supabase
-    .from("profiles").select("ai_api_key, apollo_api_key").eq("user_id", user.id).single()
-  const profile = profileRaw as { ai_api_key?: string | null; apollo_api_key?: string | null } | null
-  const apolloKey = profile?.apollo_api_key || process.env.APOLLO_API_KEY || ""
+    .from("profiles").select("ai_api_key").eq("user_id", user.id).single()
+  const profile = profileRaw as { ai_api_key?: string | null } | null
   const aiKey = profile?.ai_api_key || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY || ""
 
   const encoder = new TextEncoder()
@@ -237,7 +207,6 @@ export async function POST(req: Request) {
   }
 
   async function run() {
-    // Deduplicate against existing contacts
     const { data: existing } = await supabase
       .from("internship_contacts").select("contact_name").eq("user_id", user!.id)
     const existingNames = new Set(
@@ -251,75 +220,56 @@ export async function POST(req: Request) {
         send({ type: "done", found: 0, suggestion: "Enter a company name to search." })
         writer.close(); return
       }
+      if (!aiKey) {
+        send({ type: "error", message: "Add your AI API key in Settings (Groq or Gemini) to search by company." })
+        writer.close(); return
+      }
 
-      // Try Apollo first, fall back to Gemini
-      let contacts: Array<{ name: string; role: string; bio: string; website: string | null; linkedin: string | null; email?: string | null }> = []
+      const isGroq = aiKey.startsWith("gsk_")
+      const isGemini = aiKey.startsWith("AI") || aiKey.startsWith("AIza")
+      const provider = isGroq ? "Groq" : isGemini ? "Gemini" : "AI"
 
-      if (apolloKey) {
-        send({ type: "progress", found: 0, total: count, current: "Searching Apollo for professionals at " + company + "..." })
-        try {
-          contacts = await searchApollo(apolloKey, company, role || "", count)
-        } catch (e: any) {
-          // Apollo failed, fall through to Gemini
-          send({ type: "progress", found: 0, total: count, current: "Apollo search failed, trying AI fallback..." })
-        }
+      send({ type: "progress", found: 0, total: count, current: "Asking " + provider + " to find professionals at " + company + "..." })
+      let contacts: AIContact[] = []
+      try {
+        contacts = await findByCompanyWithAI(company, role || "", count, aiKey)
+      } catch (e: any) {
+        send({ type: "error", message: "AI search failed: " + e.message })
+        writer.close(); return
       }
 
       if (contacts.length === 0) {
-        // Fall back to Gemini
-        if (!aiKey) {
-          send({ type: "error", message: "Add your Apollo API key in Settings to search by company. Get a free key at apollo.io." })
-          writer.close(); return
-        }
-        const geminiKey = aiKey.startsWith("gsk_") ? "" : aiKey
-        if (!geminiKey) {
-          send({ type: "error", message: "Add your Apollo or Gemini API key in Settings to search by company." })
-          writer.close(); return
-        }
-        send({ type: "progress", found: 0, total: count, current: "Asking AI to find professionals at " + company + "..." })
-        try {
-          const geminiContacts = await findByCompanyWithGemini(company, role || "", count, geminiKey)
-          contacts = geminiContacts.map(c => ({ ...c, website: c.website || null, email: null, linkedin: c.linkedin || null }))
-        } catch (e: any) {
-          send({ type: "error", message: "Search failed: " + e.message })
-          writer.close(); return
-        }
+        send({ type: "done", found: 0, suggestion: 'No results found for "' + company + '". Try a more well-known company or different role filter.' })
+        writer.close(); return
       }
 
       const fresh = contacts.filter(c => !existingNames.has(c.name.toLowerCase().trim()))
       if (fresh.length === 0) {
-        send({ type: "done", found: 0, suggestion: 'No new results for "' + company + '". Try a different company or role filter.' })
+        send({ type: "done", found: 0, suggestion: 'All found contacts already exist in your list. Try a different role filter.' })
         writer.close(); return
       }
 
       let added = 0
       for (const c of fresh) {
         send({ type: "progress", found: added, total: fresh.length, current: "Adding " + c.name + "..." })
-        const noteParts = ["Found via search at " + company]
-        if (apolloKey && contacts.length > 0) noteParts.push("Source: Apollo.io")
-        else noteParts.push("Verify this person exists before emailing.")
-        if (c.linkedin) noteParts.push("LinkedIn: " + c.linkedin)
-
         await supabase.from("internship_contacts").insert({
           user_id: user!.id,
           company: company.trim(),
           contact_name: c.name,
           role: c.role,
-          email: c.email || null,
+          email: null,
           linkedin_url: c.linkedin ? (c.linkedin.startsWith("http") ? c.linkedin : "https://" + c.linkedin) : null,
           website: c.website || null,
           bio: c.bio,
-          notes: noteParts.join("\n"),
+          notes: "Found via " + provider + " AI search. Verify this person before emailing." + (c.linkedin ? "\nLinkedIn: " + c.linkedin : ""),
           status: "unsorted",
           email_status: "not_emailed",
         })
-
         await supabase.from("activities").insert({
           user_id: user!.id, type: "contact_added", category: "internship",
           researcher_name: c.name, university: company,
-          description: "Found via search: " + c.role + " at " + company,
+          description: "Found via AI: " + c.role + " at " + company,
         }).then(() => {}).catch(() => {})
-
         added++
         send({ type: "progress", found: added, total: fresh.length, current: "Added " + c.name + " — " + c.role })
       }
@@ -331,7 +281,8 @@ export async function POST(req: Request) {
         writer.close(); return
       }
 
-      send({ type: "progress", found: 0, total: count, current: "Searching Dev.to for " + (field || role) + " developers..." })
+      const fieldLabel = field || role || "Developer"
+      send({ type: "progress", found: 0, total: count, current: "Searching Dev.to for " + fieldLabel + " developers..." })
       let devs: Awaited<ReturnType<typeof searchDevTo>> = []
       try {
         devs = await searchDevTo(field || "", role || "", count)
@@ -342,39 +293,35 @@ export async function POST(req: Request) {
 
       const fresh = devs.filter(d => !existingNames.has(d.name.toLowerCase().trim()))
       if (fresh.length === 0) {
-        send({ type: "done", found: 0, suggestion: 'No results for "' + (field || role) + '" on Dev.to. Try a broader field like "Machine Learning" or "Web Development".' })
+        send({ type: "done", found: 0, suggestion: 'No results for "' + fieldLabel + '" on Dev.to. Try a broader field like "Machine Learning" or "Web Development".' })
         writer.close(); return
       }
 
       let added = 0
       for (const d of fresh) {
         send({ type: "progress", found: added, total: fresh.length, current: "Adding " + d.name + "..." })
-        const notes = [
-          "Dev.to: https://dev.to/" + d.username,
-          'Recent article: "' + d.articleTitle + '"',
-          "Topics: " + d.tags.join(", "),
-        ].join("\n")
-
         await supabase.from("internship_contacts").insert({
           user_id: user!.id,
-          company: "",
+          company: "Dev.to – " + fieldLabel,
           contact_name: d.name,
           role: role || field || "Developer",
           email: null,
           linkedin_url: null,
           website: d.website || null,
           bio: d.bio,
-          notes,
+          notes: [
+            "Dev.to: https://dev.to/" + d.username,
+            'Recent article: "' + d.articleTitle + '"',
+            "Topics: " + d.tags.join(", "),
+          ].join("\n"),
           status: "unsorted",
           email_status: "not_emailed",
         })
-
         await supabase.from("activities").insert({
           user_id: user!.id, type: "contact_added", category: "internship",
-          researcher_name: d.name, university: "",
-          description: "Found via Dev.to for " + (field || role),
+          researcher_name: d.name, university: "Dev.to",
+          description: "Found via Dev.to for " + fieldLabel,
         }).then(() => {}).catch(() => {})
-
         added++
         send({ type: "progress", found: added, total: fresh.length, current: "Added " + d.name })
       }

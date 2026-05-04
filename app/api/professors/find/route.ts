@@ -266,6 +266,21 @@ export async function POST(req: Request) {
             : "Researcher matched via field selection",
         }).then(() => {}).catch(() => {})
 
+        // Also auto-add to internship contacts (for research internship outreach)
+        await supabase.from("internship_contacts").insert({
+          user_id: user!.id,
+          company: prof.university,
+          contact_name: prof.name,
+          role: "Research Internship / Lab Position",
+          email: null,
+          linkedin_url: null,
+          website: prof.url || null,
+          bio: `${prof.name} is a researcher at ${prof.university} working on ${prof.areas.slice(0, 3).join(", ")}.`,
+          notes: "Auto-added from researcher search. Research areas: " + prof.areas.join(", "),
+          status: "unsorted",
+          email_status: "not_emailed",
+        }).then(() => {}).catch(() => {})
+
         added++
         send({ type: "progress", found: added, total: totalToAdd, current: `Added ${prof.name} (${score}% match)` })
       }
@@ -302,6 +317,21 @@ export async function POST(req: Request) {
           researcher_name: prof.name,
           university: prof.university,
           description: "Researcher discovered via Semantic Scholar / OpenAlex live search",
+        }).then(() => {}).catch(() => {})
+
+        // Also auto-add to internship contacts
+        await supabase.from("internship_contacts").insert({
+          user_id: user!.id,
+          company: prof.university,
+          contact_name: prof.name,
+          role: "Research Internship / Lab Position",
+          email: null,
+          linkedin_url: null,
+          website: prof.profile_url || null,
+          bio: prof.bio || `${prof.name} is a researcher at ${prof.university} working on ${areas.slice(0, 3).join(", ")}.`,
+          notes: "Auto-added from researcher search. Research areas: " + areas.join(", "),
+          status: "unsorted",
+          email_status: "not_emailed",
         }).then(() => {}).catch(() => {})
 
         added++
