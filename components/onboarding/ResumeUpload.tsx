@@ -48,14 +48,23 @@ export default function ResumeUpload({ onUpload }: ResumeUploadProps) {
         .from('resumes')
         .getPublicUrl(filePath)
 
-      // In a real app, we would parse the PDF here. 
-      // For now, we'll send a placeholder or try a basic text extract if possible.
-      // Since we don't have a backend parser here, we'll just store the URL.
-      onUpload(publicUrl, `Resume of ${selected.name}`)
-      setStatus("success")
-    } catch (error) {
-      console.error("Upload error:", error)
+      // PARSING: Call our internal parsing API to extract text
+      const fd = new FormData()
+      fd.append("file", selected)
+      
+      const parseRes = await fetch("/api/resume/parse", { method: "POST", body: fd })
+      const parseData = await parseRes.json()
+
+      if (parseData.text) {
+        onUpload(publicUrl, parseData.text)
+        setStatus("success")
+      } else {
+        throw new Error(parseData.error || "Failed to parse resume text")
+      }
+    } catch (error: any) {
+      console.error("Upload/Parse error:", error)
       setStatus("error")
+      alert(error.message || "Failed to process resume. Please ensure it is a PDF and not a scanned image.")
     } finally {
       setUploading(false)
     }
