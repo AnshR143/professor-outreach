@@ -23,6 +23,86 @@ function extractResumeKeywords(resumeText: string): string[] {
   )].slice(0, 120)
 }
 
+
+// ── Fuzzy matching helpers ─────────────────────────────────────────────────
+
+/** Levenshtein distance between two strings */
+function levenshtein(a: string, b: string): number {
+  const m = a.length, n = b.length
+  if (m === 0) return n
+  if (n === 0) return m
+  const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+  )
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1])
+    }
+  }
+  return dp[m][n]
+}
+
+/** Strip noise words and punctuation for university comparison */
+function normalizeForMatch(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/(university|college|institute|institution|of|technology|the|state|and|at|&)/gi, " ")
+    .replace(/[^a-z\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+/**
+ * Fuzzy token match: returns true if every token in `input` has a close
+ * match among the tokens in `candidate` (Levenshtein ≤ floor(len/4)+1).
+ * Falls back to substring containment first.
+ */
+function fuzzyTokenMatch(input: string, candidate: string): boolean {
+  const normInput = normalizeForMatch(input)
+  const normCand  = normalizeForMatch(candidate)
+
+  // Fast path: substring
+  if (normCand.includes(normInput) || normInput.includes(normCand)) return true
+
+  const iTokens = normInput.split(" ").filter(t => t.length >= 3)
+  const cTokens = normCand.split(" ").filter(t => t.length >= 3)
+  if (iTokens.length === 0 || cTokens.length === 0) return false
+
+  // Every input token must match at least one candidate token fuzzily
+  return iTokens.every(it =>
+    cTokens.some(ct => {
+      if (ct.includes(it) || it.includes(ct)) return true
+      const maxLen = Math.max(it.length, ct.length)
+      const allowedDist = Math.floor(maxLen / 4) + 1  // ~1 error per 4 chars
+      return levenshtein(it, ct) <= allowedDist
+    })
+  )
+}
+
+/** Check if a user-typed university string fuzzy-matches a professor's university */
+function fuzzyMatchUniversity(userInput: string, profUniversity: string): boolean {
+  // Also try matching individual comma-separated entries
+  return userInput
+    .split(",")
+    .map(s => s.trim())
+    .filter(Boolean)
+    .some(term => fuzzyTokenMatch(term, profUniversity))
+}
+
+/** Check if a keyword/field term fuzzy-matches any of a professor's research areas */
+function fuzzyMatchField(term: string, profAreas: string[]): boolean {
+  const normTerm = term.toLowerCase().trim()
+  return profAreas.some(area => {
+    const normArea = area.toLowerCase()
+    // Direct substring first (fast, exact)
+    if (normArea.includes(normTerm) || normTerm.includes(normArea)) return true
+    // Fuzzy token match
+    return fuzzyTokenMatch(normTerm, normArea)
+  })
+}
+
 // Hardcoded probability formula:
 // Base = 50 (a student with resume found this prof)
 // +12 per field selected by user that overlaps with prof areas (strong intentional signal)
@@ -158,12 +238,8 @@ export async function POST(req: Request) {
 
     function matchesFields(profAreas: string[], searchFields: string[]): boolean {
       if (searchFields.length === 0) return true
-      return searchFields.some(f =>
-        profAreas.some(a =>
-          a.toLowerCase().includes(f.toLowerCase()) ||
-          f.toLowerCase().includes(a.toLowerCase())
-        )
-      )
+      // Each user-typed field term is fuzzy-matched against professor areas
+      return searchFields.some(f => fuzzyMatchField(f, profAreas))
     }
 
     // ── Step 1: Match from preloaded list ──────────────────────────────────
@@ -173,15 +249,16 @@ export async function POST(req: Request) {
       if (existingNames.has(prof.name.toLowerCase())) return false
 
       const matchesField = matchesFields(prof.areas, expandedFields)
-      const matchesUni = universities.length === 0 || universities.some((u: string) => {
-        const uLow = u.toLowerCase().replace(/\buniversity\b/g, "").replace(/\buniv\b/g, "").replace(/\bcollege\b/g, "").trim()
-        const pLow = prof.university.toLowerCase().replace(/\buniversity\b/g, "").replace(/\buniv\b/g, "").replace(/\bcollege\b/g, "").trim()
-        return pLow.includes(uLow) || uLow.includes(pLow)
-      })
-      const matchesKeyword = !keyword ||
-        prof.name.toLowerCase().includes(keyword.toLowerCase()) ||
-        prof.areas.some(a => a.toLowerCase().includes(keyword.toLowerCase())) ||
-        prof.university.toLowerCase().includes(keyword.toLowerCase())
+      const matchesUni = universities.length === 0 ||
+        universities.some((u: string) => fuzzyMatchUniversity(u, prof.university))
+      // keyword can be comma-separated; each term is fuzzy-matched
+      const keywordTerms = keyword ? keyword.split(",").map((s: string) => s.trim()).filter(Boolean) : []
+      const matchesKeyword = keywordTerms.length === 0 ||
+        keywordTerms.some((term: string) =>
+          fuzzyTokenMatch(term, prof.name) ||
+          fuzzyMatchField(term, prof.areas) ||
+          fuzzyTokenMatch(term, prof.university)
+        )
 
       return matchesField && matchesUni && matchesKeyword
     })
