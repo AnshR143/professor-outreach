@@ -233,6 +233,17 @@ export async function POST(req: Request) {
   const { mode, company, field, role, count: rawCount } = await req.json()
   const count = Math.min(Math.max(1, parseInt(rawCount) || 5), 10)
 
+  // Rate limit check: Don't allow more than 50 contacts added per hour
+  const { count: recentCount } = await supabase
+    .from("internship_contacts")
+    .select('*', { count: 'exact', head: true })
+    .eq("user_id", user.id)
+    .gt("created_at", new Date(Date.now() - 3600000).toISOString());
+
+  if ((recentCount || 0) > 50) {
+    return new Response(JSON.stringify({ type: "error", message: "Rate limit exceeded: You can only add 50 contacts per hour." }), { status: 429 });
+  }
+
   // Load user's AI key (works with Groq OR Gemini — whatever they set in Settings)
   const { data: profileRaw } = await supabase
     .from("profiles").select("ai_api_key").eq("user_id", user.id).single()

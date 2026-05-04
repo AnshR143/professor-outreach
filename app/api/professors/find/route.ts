@@ -224,6 +224,17 @@ export async function POST(req: Request) {
   const { fields, universities, keyword, count: rawCount } = await req.json()
   const count = Math.min(Math.max(1, parseInt(rawCount) || 5), 10)
 
+  // Rate limit check: Don't allow more than 50 researchers added per hour
+  const { count: recentCount } = await supabase
+    .from("researchers")
+    .select('*', { count: 'exact', head: true })
+    .eq("user_id", user.id)
+    .gt("created_at", new Date(Date.now() - 3600000).toISOString());
+
+  if ((recentCount || 0) > 50) {
+    return new Response(JSON.stringify({ type: "error", message: "Rate limit exceeded: You can only add 50 researchers per hour." }), { status: 429 });
+  }
+
   const { data: profileRaw } = await supabase
     .from("profiles").select("*").eq("user_id", user.id).single()
   const profile = profileRaw as { resume_text?: string } | null
