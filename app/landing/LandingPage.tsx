@@ -85,7 +85,7 @@ const navItems = [
 
 function FeaturesSlide() {
   return (
-    <div style={{ padding: "40px 40px 32px" }}>
+    <div style={{ padding: "28px 32px 20px" }}>
       {/* Label */}
       <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
         background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
@@ -106,7 +106,7 @@ function FeaturesSlide() {
         Built for undergrads, Masters, and PhD students who want a systematic, AI-powered approach to cold outreach.
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
         {FEATURES.map((f, i) => (
           <motion.div key={f.title}
             initial={{ opacity: 0, y: 24 }}
@@ -135,7 +135,7 @@ function FeaturesSlide() {
 
 function HowItWorksSlide() {
   return (
-    <div style={{ padding: "40px 40px 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
+    <div style={{ padding: "28px 32px 20px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, alignItems: "center" }}>
       {/* Left */}
       <div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
@@ -211,7 +211,7 @@ function HowItWorksSlide() {
 
 function PricingSlide() {
   return (
-    <div style={{ padding: "40px 40px 36px" }}>
+    <div style={{ padding: "28px 32px 24px" }}>
       <div style={{ textAlign: "center", marginBottom: 28 }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
           background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
@@ -227,7 +227,7 @@ function PricingSlide() {
         <p style={{ fontSize: 14, color: "#475569", margin: 0 }}>Start free. No credit card required.</p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16, maxWidth: 700, margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 14, maxWidth: "100%" }}>
         {PRICING.map((p, i) => (
           <motion.div key={p.plan}
             initial={{ opacity: 0, y: 24 }}
@@ -335,7 +335,7 @@ function SectionCarousel() {
 
       {/* Carousel track — 3D perspective */}
       <div style={{
-        position: "relative", width: "100%", height: "480px",
+        position: "relative", width: "100%", height: "620px",
         display: "flex", alignItems: "center", justifyContent: "center",
         perspective: "1200px",
         zIndex: 10,
@@ -354,8 +354,8 @@ function SectionCarousel() {
               key={slide.id}
               style={{
                 position: "absolute",
-                width: "min(860px, 88vw)",
-                height: "460px",
+                width: "min(900px, 90vw)",
+                height: "600px",
                 overflow: "hidden",
                 borderRadius: 28,
                 background: "rgba(255,255,255,0.88)",
@@ -571,18 +571,27 @@ export default function LandingPage() {
       <SectionCarousel />
 
       {/* ═══════════════════════════════════════
-          SECTION 5 — Final CTA
+          SECTION 5 — Final CTA (with cloud video bg)
       ═══════════════════════════════════════ */}
-      <div style={{ background: "#ffffff", padding: "0 40px 80px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ position: "relative", overflow: "hidden", padding: "120px 40px 100px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Cloud video background */}
+        <video autoPlay muted loop playsInline
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%",
+            objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }}
+          src="/hero-bg.mp4" />
+        {/* Overlay */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1,
+          background: "linear-gradient(to bottom, rgba(186,230,253,0.55) 0%, rgba(219,241,255,0.45) 40%, rgba(240,249,255,0.6) 100%)" }} />
+
+        <div style={{ position: "relative", zIndex: 10, maxWidth: 680, width: "100%", textAlign: "center" }}>
           <motion.div
             initial={{ opacity: 0, y: 44 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
             style={{ borderRadius: 28, padding: "72px 48px", textAlign: "center",
-              background: "linear-gradient(135deg,rgba(59,130,246,0.1) 0%,rgba(79,70,229,0.1) 100%)",
-              border: "1px solid rgba(59,130,246,0.2)", backdropFilter: "blur(12px)" }}>
+              background: "rgba(255,255,255,0.55)",
+              border: "1px solid rgba(59,130,246,0.2)", backdropFilter: "blur(20px)" }}>
             <h2 style={{ fontSize: "clamp(28px,5vw,52px)", fontWeight: 800,
               color: "#0f172a", margin: "0 0 16px", letterSpacing: "-0.03em", lineHeight: 1.1 }}>
               <BlurWords text="Ready to land your" delay={0} wordDelay={0.05} duration={0.3} />
