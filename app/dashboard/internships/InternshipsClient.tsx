@@ -151,6 +151,13 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
     setContacts([]); setResetting(false)
   }
 
+  async function deleteContact(e: React.MouseEvent, id: string) {
+    e.preventDefault()
+    e.stopPropagation()
+    await supabase.from("internship_contacts").delete().eq("id", id)
+    setContacts(prev => prev.filter(c => c.id !== id))
+  }
+
   async function handleFindClose() {
     setShowFind(false)
     // Re-fetch directly from Supabase so new contacts appear immediately
@@ -256,7 +263,15 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               const status = (emailStatuses[c.id] ?? c.email_status ?? "not_emailed") as EmailStatus
               const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.not_emailed
               return (
-                <div key={c.id}
+                <div key={c.id} style={{ position: "relative" }}>
+                  <button
+                    onClick={e => deleteContact(e, c.id)}
+                    title="Remove contact"
+                    style={{ position: "absolute", top: 10, right: 10, zIndex: 2, width: 22, height: 22, borderRadius: "50%", background: "#f1f5f9", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", fontSize: 14, lineHeight: 1, padding: 0 }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.color = "#dc2626" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#94a3b8" }}
+                  >×</button>
+                <div
                   onClick={e => openEmailModal(e, c)}
                   style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
                   onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#6366f1" }}
@@ -293,6 +308,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                       {cfg.label}
                     </button>
                   </div>
+                </div>
                 </div>
               )
             })}

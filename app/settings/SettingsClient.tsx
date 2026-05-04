@@ -6,9 +6,9 @@ import type { Profile } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
 import { ACADEMIC_LEVELS } from "@/lib/utils"
 
-interface Props { profile: Profile | null; hasApiKey: boolean; hasApolloKey?: boolean }
+interface Props { profile: Profile | null; hasApiKey: boolean }
 
-export default function SettingsClient({ profile: initial, hasApiKey: initialHasKey, hasApolloKey: initialHasApolloKey }: Props) {
+export default function SettingsClient({ profile: initial, hasApiKey: initialHasKey }: Props) {
   const router = useRouter()
   const supabase = createClient()
   const [saving, setSaving] = useState(false)
@@ -25,12 +25,6 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
   const [keySaved, setKeySaved] = useState(false)
   const [clearingKey, setClearingKey] = useState(false)
 
-  // Apollo API key
-  const [apolloKey, setApolloKey] = useState("")
-  const [hasApolloKey, setHasApolloKey] = useState(initialHasApolloKey || false)
-  const [savingApolloKey, setSavingApolloKey] = useState(false)
-  const [apolloKeySaved, setApolloKeySaved] = useState(false)
-  const [clearingApolloKey, setClearingApolloKey] = useState(false)
 
   const [form, setForm] = useState({
     name: initial?.name || "",
@@ -79,33 +73,6 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
     setClearingKey(false)
   }
 
-  async function saveApolloKey() {
-    if (!apolloKey.trim()) return
-    setSavingApolloKey(true)
-    try {
-      const res = await fetch("/api/settings/apollo-key", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: apolloKey.trim() }),
-      })
-      if (res.ok) {
-        setHasApolloKey(true)
-        setApolloKey("")
-        setApolloKeySaved(true)
-        setTimeout(() => setApolloKeySaved(false), 3000)
-      }
-    } catch {}
-    setSavingApolloKey(false)
-  }
-
-  async function clearApolloKey() {
-    setClearingApolloKey(true)
-    try {
-      const res = await fetch("/api/settings/apollo-key", { method: "DELETE" })
-      if (res.ok) { setHasApolloKey(false); setApolloKey("") }
-    } catch {}
-    setClearingApolloKey(false)
-  }
 
   async function handleReset() {
     if (!confirm("This will permanently delete all your researchers, emails, and activities. Are you sure?")) return
@@ -234,7 +201,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                   <span style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>AI key is set and active</span>
                 </div>
                 <button onClick={clearApiKey} disabled={clearingKey}
-                  style={{ padding: "6px 14px", background: "#fee2e2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                  style={{ padding: "5px 10px", background: "transparent", color: "#94a3b8", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 400, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>
                   {clearingKey ? "Clearing..." : "Remove Key"}
                 </button>
               </div>
@@ -271,52 +238,6 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
             </Field>
           </Section>
 
-          <Section title="Apollo API Key">
-            <div style={{ background: "#faf5ff", border: "1px solid #e9d5ff", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#6b21a8", marginBottom: 16 }}>
-              <strong>Used to find real professionals at companies</strong> when searching for internship contacts by company name. Apollo.io has a free plan with 50 credits/month — more than enough for outreach.
-            </div>
-
-            {hasApolloKey && (
-              <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: "12px 16px", marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>Apollo key is set and active</span>
-                </div>
-                <button onClick={clearApolloKey} disabled={clearingApolloKey}
-                  style={{ padding: "6px 14px", background: "#fee2e2", color: "#dc2626", border: "1px solid #fecaca", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-                  {clearingApolloKey ? "Clearing..." : "Remove Key"}
-                </button>
-              </div>
-            )}
-
-            {apolloKeySaved && (
-              <div style={{ background: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#15803d", marginBottom: 12 }}>
-                Apollo key saved securely.
-              </div>
-            )}
-
-            <Field label={hasApolloKey ? "Replace with a new Apollo key" : "Paste your Apollo API key"}>
-              <div style={{ display: "flex", gap: 8 }}>
-                <input
-                  type="password"
-                  value={apolloKey}
-                  onChange={e => setApolloKey(e.target.value)}
-                  placeholder="Your Apollo.io API key"
-                  autoComplete="new-password"
-                  style={{ flex: 1, padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#0f172a", outline: "none", background: "#f8f9fb" }}
-                />
-                <button onClick={saveApolloKey} disabled={savingApolloKey || !apolloKey.trim()}
-                  style={{ padding: "10px 20px", background: savingApolloKey || !apolloKey.trim() ? "#e2e8f0" : "#7c3aed", color: savingApolloKey || !apolloKey.trim() ? "#94a3b8" : "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: savingApolloKey || !apolloKey.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-                  {savingApolloKey ? "Saving..." : "Save Key"}
-                </button>
-              </div>
-              <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
-                Get your free key at{" "}
-                <a href="https://app.apollo.io/#/settings/integrations/api" target="_blank" rel="noopener" style={{ color: "#7c3aed" }}>apollo.io</a>
-                {" — sign up free, go to Settings → Integrations → API Keys."}
-              </div>
-            </Field>
-          </Section>
 
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
             <button onClick={save} disabled={saving}
@@ -331,7 +252,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                 </div>
               )}
               <button onClick={handleReset} disabled={resetting}
-                style={{ padding: "10px 20px", background: resetting ? "#fecaca" : "#fee2e2", color: resetting ? "#9f1239" : "#dc2626", border: "1.5px solid #fecaca", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: resetting ? "not-allowed" : "pointer" }}>
+                style={{ padding: "8px 16px", background: "transparent", color: resetting ? "#94a3b8" : "#94a3b8", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, fontWeight: 400, cursor: resetting ? "not-allowed" : "pointer" }}>
                 {resetting ? "Resetting..." : "Reset All Data"}
               </button>
               <div style={{ fontSize: 11, color: "#94a3b8" }}>Deletes all researchers, emails &amp; activities</div>
