@@ -9,20 +9,34 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- PROFILES
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
-  name TEXT NOT NULL DEFAULT '',
-  email TEXT NOT NULL DEFAULT '',
-  institution TEXT NOT NULL DEFAULT '',
-  academic_level TEXT NOT NULL DEFAULT '',
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  email TEXT NOT NULL,
+  first_name TEXT,
+  last_name TEXT,
+  name TEXT, -- Keeping for compatibility
+  birthday DATE,
+  university TEXT,
+  major TEXT, -- Single major field
+  majors TEXT[] NOT NULL DEFAULT '{}', -- Multiple majors
   interests TEXT[] NOT NULL DEFAULT '{}',
   goals TEXT[] NOT NULL DEFAULT '{}',
-  resume_text TEXT,
+  academic_level TEXT,
+  institution TEXT,
+  bio TEXT,
   resume_url TEXT,
-  ai_api_key TEXT,
-  apollo_api_key TEXT,
-  onboarding_complete BOOLEAN NOT NULL DEFAULT FALSE,
+  resume_text TEXT,
+  onboarding_complete BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id)
+);
+
+-- MAJORS (Global list for search)
+CREATE TABLE IF NOT EXISTS majors (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  category TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- RESEARCHERS
