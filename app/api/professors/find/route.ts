@@ -24,6 +24,56 @@ function extractResumeKeywords(resumeText: string): string[] {
 }
 
 
+
+// ── Abbreviation expansion ─────────────────────────────────────────────────
+// Maps abbreviations ↔ full forms so "AI" matches "Artificial Intelligence" and vice versa
+const ABBR_EXPANSIONS: Record<string, string[]> = {
+  "ai":  ["artificial intelligence", "machine learning"],
+  "ml":  ["machine learning", "artificial intelligence"],
+  "dl":  ["deep learning", "neural networks", "machine learning"],
+  "nlp": ["natural language processing", "computational linguistics", "language models"],
+  "cv":  ["computer vision", "image recognition", "visual computing"],
+  "rl":  ["reinforcement learning", "machine learning"],
+  "ds":  ["data science", "machine learning", "statistics"],
+  "cs":  ["computer science", "software engineering"],
+  "hci": ["human-computer interaction", "user interface"],
+  "ir":  ["information retrieval", "search engines"],
+  "db":  ["databases", "data engineering", "distributed systems"],
+  "se":  ["software engineering", "computer science"],
+  "bio": ["biology", "bioinformatics", "computational biology"],
+  "bioinformatics": ["computational biology", "genomics", "biology"],
+  "artificial intelligence": ["ai", "machine learning", "deep learning"],
+  "machine learning": ["ml", "ai", "deep learning", "statistical learning"],
+  "deep learning": ["dl", "neural networks", "machine learning"],
+  "natural language processing": ["nlp", "language models", "computational linguistics"],
+  "computer vision": ["cv", "image recognition", "visual computing"],
+  "reinforcement learning": ["rl", "machine learning"],
+  "data science": ["ds", "machine learning", "statistics"],
+  "neural networks": ["deep learning", "ml", "ai"],
+  "large language models": ["nlp", "gpt", "transformers", "language models"],
+  "transformers": ["natural language processing", "deep learning", "language models"],
+  "robotics": ["automation", "mechatronics", "control systems"],
+  "cybersecurity": ["security", "information security", "cryptography"],
+  "blockchain": ["distributed systems", "cryptography", "decentralized"],
+  "quantum computing": ["quantum information", "physics", "algorithms"],
+}
+
+/** Expand a single search term into itself + any known aliases */
+function expandTerm(term: string): string[] {
+  const key = term.toLowerCase().trim()
+  const expansions = ABBR_EXPANSIONS[key] || []
+  return [key, ...expansions]
+}
+
+/** Expand an array of user-typed terms, deduplicating */
+function expandAllTerms(terms: string[]): string[] {
+  const all = new Set<string>()
+  for (const t of terms) {
+    for (const exp of expandTerm(t)) all.add(exp)
+  }
+  return Array.from(all)
+}
+
 // ── Fuzzy matching helpers ─────────────────────────────────────────────────
 
 /** Levenshtein distance between two strings */
@@ -91,16 +141,18 @@ function fuzzyMatchUniversity(userInput: string, profUniversity: string): boolea
     .some(term => fuzzyTokenMatch(term, profUniversity))
 }
 
-/** Check if a keyword/field term fuzzy-matches any of a professor's research areas */
+/** Check if a keyword/field term (+ its abbreviation expansions) fuzzy-matches any research area */
 function fuzzyMatchField(term: string, profAreas: string[]): boolean {
-  const normTerm = term.toLowerCase().trim()
-  return profAreas.some(area => {
-    const normArea = area.toLowerCase()
-    // Direct substring first (fast, exact)
-    if (normArea.includes(normTerm) || normTerm.includes(normArea)) return true
-    // Fuzzy token match
-    return fuzzyTokenMatch(normTerm, normArea)
-  })
+  // Expand the input term into aliases (e.g. "AI" → ["ai","artificial intelligence","machine learning"])
+  const termsToTry = expandTerm(term)
+  return termsToTry.some(expanded =>
+    profAreas.some(area => {
+      const normArea = area.toLowerCase()
+      const normExpanded = expanded.toLowerCase().trim()
+      if (normArea.includes(normExpanded) || normExpanded.includes(normArea)) return true
+      return fuzzyTokenMatch(normExpanded, normArea)
+    })
+  )
 }
 
 // Hardcoded probability formula:
@@ -243,7 +295,9 @@ export async function POST(req: Request) {
     }
 
     // ── Step 1: Match from preloaded list ──────────────────────────────────
-    const expandedFields = expandFields(fields)
+    // Expand abbreviations first (AI→artificial intelligence etc.), then synonym-expand
+    const abbrExpanded = expandAllTerms(fields)
+    const expandedFields = expandFields([...fields, ...abbrExpanded])
 
     const matching = PRELOADED_PROFESSORS.filter(prof => {
       if (existingNames.has(prof.name.toLowerCase())) return false

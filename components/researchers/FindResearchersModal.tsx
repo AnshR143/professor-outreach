@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Loader9 } from "@/components/ui/loader-9"
 
@@ -8,17 +8,124 @@ interface Props {
   initialKeyword?: string
 }
 
+// Comprehensive suggestion list — includes full names + abbreviations
+const FIELD_SUGGESTIONS = [
+  "Artificial Intelligence", "Machine Learning", "Deep Learning",
+  "Natural Language Processing", "Computer Vision", "Reinforcement Learning",
+  "Data Science", "Computer Science", "Software Engineering",
+  "Robotics", "Cybersecurity", "Blockchain", "Quantum Computing",
+  "Distributed Systems", "Computer Graphics", "Human-Computer Interaction",
+  "Information Retrieval", "Knowledge Representation", "Multi-Agent Systems",
+  "Neural Networks", "Large Language Models", "Transformers", "Diffusion Models",
+  "Generative AI", "Federated Learning", "Transfer Learning",
+  "Mathematics", "Statistics", "Operations Research", "Optimization",
+  "Physics", "Computational Physics", "Quantum Information",
+  "Chemistry", "Computational Chemistry", "Drug Discovery",
+  "Biology", "Computational Biology", "Bioinformatics", "Genomics",
+  "Neuroscience", "Cognitive Science", "Brain-Computer Interface",
+  "Biomedical Engineering", "Medical Imaging", "Clinical AI",
+  "Environmental Science", "Climate Science", "Sustainability",
+  "Economics", "Behavioral Economics", "Finance", "Quantitative Finance",
+  "Political Science", "Public Policy", "Sociology", "Psychology",
+  "Education Technology", "Human-Robot Interaction", "Autonomous Systems",
+  "Signal Processing", "Speech Recognition", "Audio Processing",
+  "Network Science", "Social Network Analysis", "Graph Neural Networks",
+  "Fairness in AI", "Explainable AI", "AI Safety", "AI Ethics",
+]
+
+// Abbreviation aliases shown in parens
+const ABBR_LABELS: Record<string, string> = {
+  "Artificial Intelligence": "AI",
+  "Machine Learning": "ML",
+  "Deep Learning": "DL",
+  "Natural Language Processing": "NLP",
+  "Computer Vision": "CV",
+  "Reinforcement Learning": "RL",
+  "Data Science": "DS",
+  "Computer Science": "CS",
+  "Human-Computer Interaction": "HCI",
+}
+
+function getSuggestions(rawInput: string): string[] {
+  // Only suggest based on the last comma-separated token
+  const lastToken = rawInput.split(",").pop()?.trim().toLowerCase() ?? ""
+  if (lastToken.length < 2) return []
+
+  return FIELD_SUGGESTIONS.filter(f => {
+    const label = f.toLowerCase()
+    const abbr = (ABBR_LABELS[f] ?? "").toLowerCase()
+    return label.startsWith(lastToken) ||
+      label.includes(lastToken) ||
+      abbr.startsWith(lastToken) ||
+      abbr === lastToken
+  }).slice(0, 6)
+}
+
 export default function FindResearchersModal({ onClose, initialKeyword = "" }: Props) {
   const router = useRouter()
   const [step, setStep] = useState<"config" | "loading" | "done">("config")
   const [form, setForm] = useState({
-    universityText: "",   // free-text, comma-separated, fuzzy-matched on the server
-    keyword: initialKeyword, // comma-separated keywords/fields
+    universityText: "",
+    keyword: initialKeyword,
     count: 5,
   })
   const [progress, setProgress] = useState({ found: 0, total: 0, current: "" })
   const [suggestion, setSuggestion] = useState("")
   const [error, setError] = useState("")
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [highlightedIdx, setHighlightedIdx] = useState(-1)
+  const keywordRef = useRef<HTMLInputElement>(null)
+  const suggestionsRef = useRef<HTMLDivElement>(null)
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (
+        keywordRef.current && !keywordRef.current.contains(e.target as Node) &&
+        suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node)
+      ) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [])
+
+  function handleKeywordChange(value: string) {
+    setForm(fm => ({ ...fm, keyword: value }))
+    const s = getSuggestions(value)
+    setSuggestions(s)
+    setShowSuggestions(s.length > 0)
+    setHighlightedIdx(-1)
+  }
+
+  function applySuggestion(suggestion: string) {
+    // Replace the last token with the selected suggestion
+    const parts = form.keyword.split(",")
+    parts[parts.length - 1] = " " + suggestion
+    const newVal = parts.join(",").replace(/^,\s*/, "")
+    setForm(fm => ({ ...fm, keyword: newVal }))
+    setShowSuggestions(false)
+    setHighlightedIdx(-1)
+    keywordRef.current?.focus()
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (!showSuggestions || suggestions.length === 0) return
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      setHighlightedIdx(i => Math.min(i + 1, suggestions.length - 1))
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault()
+      setHighlightedIdx(i => Math.max(i - 1, -1))
+    } else if (e.key === "Enter" && highlightedIdx >= 0) {
+      e.preventDefault()
+      applySuggestion(suggestions[highlightedIdx])
+    } else if (e.key === "Escape") {
+      setShowSuggestions(false)
+    }
+  }
 
   async function handleFind() {
     if (!form.keyword.trim() && !form.universityText.trim()) {
@@ -28,27 +135,22 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
     setError("")
     setStep("loading")
     setSuggestion("")
+    setShowSuggestions(false)
     setProgress({ found: 0, total: form.count, current: "Analyzing your profile..." })
 
-    // Parse comma-separated values into arrays for the API
     const universities = form.universityText
-      .split(",")
-      .map(s => s.trim())
-      .filter(Boolean)
-
+      .split(",").map(s => s.trim()).filter(Boolean)
     const keywordList = form.keyword
-      .split(",")
-      .map(s => s.trim())
-      .filter(Boolean)
+      .split(",").map(s => s.trim()).filter(Boolean)
 
     try {
       const res = await fetch("/api/professors/find", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fields: keywordList,   // treated as field/topic terms with fuzzy matching
+          fields: keywordList,
           universities,
-          keyword: form.keyword, // also sent as raw string for global search
+          keyword: form.keyword,
           count: form.count,
         }),
       })
@@ -121,23 +223,72 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                 </div>
               )}
 
-              {/* Keywords / Fields */}
+              {/* Keywords / Fields with autocomplete */}
               <div style={{ marginBottom: 20 }}>
                 <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
                   Keywords or research fields
                   <span style={{ color: "#94a3b8", fontWeight: 400 }}> — separate multiple with commas</span>
                 </label>
                 <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
-                  Spelling and capitalisation don't matter — "machien lerning, NLP" works fine.
+                  Spelling and capitalisation don&apos;t matter. "AI", "artificial intelligence", and "machien lerning" all work.
                 </p>
-                <input
-                  value={form.keyword}
-                  onChange={e => setForm(fm => ({ ...fm, keyword: e.target.value }))}
-                  placeholder="e.g. machine learning, computer vision, NLP"
-                  style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#3b82f6")}
-                  onBlur={e => (e.target.style.borderColor = "#e2e8f0")}
-                />
+
+                {/* Input + dropdown wrapper */}
+                <div style={{ position: "relative" }}>
+                  <input
+                    ref={keywordRef}
+                    value={form.keyword}
+                    onChange={e => handleKeywordChange(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    onFocus={() => {
+                      const s = getSuggestions(form.keyword)
+                      setSuggestions(s)
+                      setShowSuggestions(s.length > 0)
+                    }}
+                    placeholder="e.g. machine learning, NLP, computer vision"
+                    style={{ ...inputStyle, borderColor: showSuggestions ? "#3b82f6" : "#e2e8f0",
+                      borderBottomLeftRadius: showSuggestions ? 0 : 10,
+                      borderBottomRightRadius: showSuggestions ? 0 : 10 }}
+                    autoComplete="off"
+                  />
+
+                  {/* Suggestions dropdown */}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div ref={suggestionsRef} style={{
+                      position: "absolute", top: "100%", left: 0, right: 0, zIndex: 50,
+                      background: "#fff",
+                      border: "1px solid #3b82f6", borderTop: "1px solid #e2e8f0",
+                      borderRadius: "0 0 10px 10px",
+                      boxShadow: "0 8px 24px rgba(59,130,246,0.12)",
+                      overflow: "hidden",
+                    }}>
+                      {suggestions.map((s, i) => (
+                        <button
+                          key={s}
+                          onMouseDown={e => { e.preventDefault(); applySuggestion(s) }}
+                          style={{
+                            display: "flex", alignItems: "center", justifyContent: "space-between",
+                            width: "100%", padding: "8px 14px",
+                            background: i === highlightedIdx ? "#eff6ff" : "transparent",
+                            border: "none", cursor: "pointer", textAlign: "left",
+                            borderBottom: i < suggestions.length - 1 ? "1px solid #f1f5f9" : "none",
+                            transition: "background 0.1s",
+                          }}
+                          onMouseEnter={() => setHighlightedIdx(i)}
+                          onMouseLeave={() => setHighlightedIdx(-1)}
+                        >
+                          <span style={{ fontSize: 13, color: "#0f172a", fontWeight: 500 }}>{s}</span>
+                          {ABBR_LABELS[s] && (
+                            <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 400, marginLeft: 8,
+                              background: "#f1f5f9", borderRadius: 4, padding: "1px 6px" }}>
+                              {ABBR_LABELS[s]}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* University */}
@@ -147,7 +298,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                   <span style={{ color: "#94a3b8", fontWeight: 400 }}> — optional, leave blank to search all</span>
                 </label>
                 <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
-                  Type one or more universities separated by commas. Fuzzy-matched, so "stanfrod" and "carnegie melon" will still work.
+                  Comma-separate multiple. Fuzzy-matched — "stanfrod" and "carnegie melon" still work.
                 </p>
                 <input
                   value={form.universityText}
@@ -210,9 +361,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                 </svg>
               </div>
               <h3 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>
-                {progress.found === 0
-                  ? "Search Complete"
-                  : `${progress.found} Researcher${progress.found !== 1 ? "s" : ""} Added`}
+                {progress.found === 0 ? "Search Complete" : `${progress.found} Researcher${progress.found !== 1 ? "s" : ""} Added`}
               </h3>
               <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 8px" }}>
                 {progress.found === 0

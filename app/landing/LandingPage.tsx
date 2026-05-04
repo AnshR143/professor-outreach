@@ -287,11 +287,6 @@ function SectionCarousel() {
     setCurrent(prev => (prev - 1 + total) % total)
   }, [total])
 
-  useEffect(() => {
-    const timer = setInterval(handleNext, 7000)
-    return () => clearInterval(timer)
-  }, [handleNext])
-
   return (
     <div id="carousel" style={{
       position: "relative", minHeight: "100vh", overflow: "hidden",
@@ -374,13 +369,12 @@ function SectionCarousel() {
               }}
               transition={{
                 type: "spring",
-                stiffness: 320,
-                damping: 38,
-                mass: 1,
-                // individual property overrides for non-springable values
-                opacity:   { duration: 0.35, ease: "easeOut" },
-                filter:    { duration: 0.35, ease: "easeOut" },
-                boxShadow: { duration: 0.35, ease: "easeOut" },
+                stiffness: 160,
+                damping: 28,
+                mass: 1.1,
+                opacity:   { duration: 0.45, ease: "easeOut" },
+                filter:    { duration: 0.45, ease: "easeOut" },
+                boxShadow: { duration: 0.45, ease: "easeOut" },
                 visibility:{ duration: 0 },
               }}
             >
@@ -485,42 +479,23 @@ export default function LandingPage() {
           <div style={{ pointerEvents: "none", position: "absolute", inset: 0,
             background: "linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.0) 30%,rgba(0,0,0,0.42) 100%)" }} />
 
-          {/* Navbar — brand left, sign in right */}
-          <motion.nav
-            initial={{ y: -28, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, padding: "0 28px" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
-              background: "rgba(0,0,0,0.82)", backdropFilter: "blur(14px)",
-              WebkitBackdropFilter: "blur(14px)",
-              borderRadius: "0 0 20px 20px", padding: "12px 28px" }}>
-
-              {/* Brand */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25, duration: 0.5 }}
-                style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8,
-                  background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
-                  display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
-                </div>
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#E1E0CC", letterSpacing: "-0.01em" }}>OutreachAI</span>
-              </motion.div>
-
-              {/* Sign In pill */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }}>
-                <Link href="/login"
-                  style={{ display: "inline-flex", alignItems: "center", gap: 6,
-                    background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.18)",
-                    borderRadius: 999, padding: "7px 18px", fontSize: 13, fontWeight: 600,
-                    color: "#E1E0CC", textDecoration: "none", transition: "background 0.15s, border-color 0.15s" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.18)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.35)" }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.1)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.18)" }}>
-                  Sign In
-                </Link>
-              </motion.div>
-            </div>
-          </motion.nav>
+          {/* Sign In — floating pill top-right, no bar */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            style={{ position: "absolute", top: 20, right: 28, zIndex: 20 }}>
+            <Link href="/login"
+              style={{ display: "inline-flex", alignItems: "center",
+                background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.28)",
+                backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+                borderRadius: 999, padding: "8px 22px", fontSize: 13, fontWeight: 600,
+                color: "#fff", textDecoration: "none", transition: "background 0.15s, border-color 0.15s" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.25)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.5)" }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.15)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.28)" }}>
+              Sign In
+            </Link>
+          </motion.div>
 
           {/* Hero bottom */}
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 40px 8px" }}>
