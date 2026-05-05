@@ -55,46 +55,61 @@ function Nav() {
 
 function SectionCarousel() {
   const [current, setCurrent] = useState(0)
-  const [direction, setDirection] = useState(0)
   const total = FEATURES.length
 
   const handleNext = useCallback(() => {
-    setDirection(1)
     setCurrent((prev) => (prev + 1) % total)
   }, [total])
 
   const handlePrev = useCallback(() => {
-    setDirection(-1)
     setCurrent((prev) => (prev - 1 + total) % total)
   }, [total])
 
   return (
-    <div style={{ position: "relative", width: "100%", height: 500, display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden" }}>
-      <AnimatePresence initial={false} custom={direction}>
-        {FEATURES.map((f, i) => i === current && (
+    <div style={{ position: "relative", width: "100%", height: 600, display: "flex", justifyContent: "center", alignItems: "center", perspective: "1000px" }}>
+      {FEATURES.map((f, i) => {
+        const offset = (i - current + total) % total
+        const isCenter = offset === 0
+        const isNext = offset === 1 || (offset === -total + 1)
+        const isPrev = offset === total - 1 || (offset === -1)
+        
+        let zIndex = 0
+        let x = 0
+        let rotateY = 0
+        let scale = 0.8
+        let opacity = 0
+        
+        if (isCenter) {
+          zIndex = 30; x = 0; rotateY = 0; scale = 1; opacity = 1
+        } else if (isNext) {
+          zIndex = 20; x = 120; rotateY = -15; scale = 0.9; opacity = 0.4
+        } else if (isPrev) {
+          zIndex = 20; x = -120; rotateY = 15; scale = 0.9; opacity = 0.4
+        }
+
+        return (
           <motion.div
             key={i}
-            custom={direction}
-            initial={{ opacity: 0, x: direction > 0 ? 300 : -300, rotateY: direction > 0 ? 45 : -45, scale: 0.8 }}
-            animate={{ opacity: 1, x: 0, rotateY: 0, scale: 1 }}
-            exit={{ opacity: 0, x: direction > 0 ? -300 : 300, rotateY: direction > 0 ? -45 : 45, scale: 0.8 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            animate={{ x, rotateY, scale, opacity, zIndex }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             style={{ 
-              position: "absolute", width: "min(600px, 90vw)", padding: "60px 40px",
-              background: "#fff", borderRadius: 32, border: "1px solid rgba(59, 130, 246, 0.1)",
-              boxShadow: "0 20px 50px rgba(59, 130, 246, 0.08)", textAlign: "center"
-            }}>
-            <h3 style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginBottom: 20 }}>{f.title}</h3>
-            <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+              position: "absolute", width: "min(500px, 85vw)", padding: "40px",
+              background: "#fff", borderRadius: 32, border: "1px solid rgba(59, 130, 246, 0.12)",
+              boxShadow: "0 25px 60px rgba(59, 130, 246, 0.1)", textAlign: "center",
+              cursor: "pointer", backfaceVisibility: "hidden"
+            }}
+            onClick={() => { if (!isCenter) setCurrent(i) }}>
+            <h3 style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", marginBottom: 16 }}>{f.title}</h3>
+            <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
           </motion.div>
-        ))}
-      </AnimatePresence>
+        )
+      })}
       
-      <div style={{ position: "absolute", bottom: 40, display: "flex", gap: 20, zIndex: 10 }}>
-        <button onClick={handlePrev} style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #e2e8f0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+      <div style={{ position: "absolute", bottom: 20, display: "flex", gap: 16, zIndex: 40 }}>
+        <button onClick={handlePrev} style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #e2e8f0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
           <ChevronLeft style={{ width: 20, height: 20, color: "#64748b" }} />
         </button>
-        <button onClick={handleNext} style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #e2e8f0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+        <button onClick={handleNext} style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #e2e8f0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
           <ChevronRight style={{ width: 20, height: 20, color: "#64748b" }} />
         </button>
       </div>
