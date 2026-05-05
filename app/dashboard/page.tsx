@@ -33,9 +33,3 @@ export default async function DashboardPage() {
     />
   )
 }
-archers || []}
-      activities={activities || []}
-      emails={emails || []}
-    />
-  )
-}

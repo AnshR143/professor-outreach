@@ -299,22 +299,3 @@ export default function LoginPage() {
     </div>
   )
 }
-ink href="/signup"
-              style={{ display: "block", textAlign: "center", padding: "10px",
-                border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontWeight: 600,
-                color: "#374151", textDecoration: "none", background: "#f8fafc",
-                transition: "border-color 0.15s,background 0.15s" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#3b82f6";
-                (e.currentTarget as HTMLAnchorElement).style.background="#eff6ff" }}
-              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#e2e8f0";
-                (e.currentTarget as HTMLAnchorElement).style.background="#f8fafc" }}>
-              Create an account
-            </Link>
-          </motion.div>
-        </div>
-      </motion.div>
-
-      <style>{`@media(min-width:768px){.md-panel{display:block!important}}`}</style>
-    </div>
-  )
-}

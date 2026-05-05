@@ -486,4 +486,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
         <MapDiscoverModal onClose={handleMapClose} />
       )}
 
-      <style>{`@keyframes spin { from { transform: rotate(0d
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
+  )
+}

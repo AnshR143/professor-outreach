@@ -261,8 +261,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Discovery failed: " + message }, { status: 500 })
   }
 }
-f Error ? err.message : "Unknown error"
-    console.error("discover-map error:", message)
-    return NextResponse.json({ error: "Discovery failed: " + message }, { status: 500 })
-  }
-}
