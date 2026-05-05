@@ -27,19 +27,19 @@ function Nav() {
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
       padding: isScrolled ? "12px 40px" : "24px 40px",
       transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-      background: isScrolled ? "rgba(253, 252, 251, 0.9)" : "transparent",
+      background: isScrolled ? "rgba(240, 249, 255, 0.85)" : "transparent",
       backdropFilter: isScrolled ? "blur(12px)" : "none",
-      borderBottom: isScrolled ? "1px solid rgba(28, 28, 28, 0.05)" : "none"
+      borderBottom: isScrolled ? "1px solid rgba(2, 132, 199, 0.1)" : "none"
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 1400, margin: "0 auto" }}>
-        <Link href="/" style={{ fontSize: 22, fontWeight: 700, color: "#1C1C1C", textDecoration: "none", fontFamily: "'Instrument Serif', serif", letterSpacing: "-0.02em" }}>
+        <Link href="/" style={{ fontSize: 22, fontWeight: 700, color: "#0C4A6E", textDecoration: "none", fontFamily: "'Instrument Serif', serif", letterSpacing: "-0.02em" }}>
           OutreachAI
         </Link>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          <Link href="/login" style={{ fontSize: 13, fontWeight: 600, color: "#1C1C1C", textDecoration: "none", opacity: 0.7 }}>Login</Link>
+          <Link href="/login" style={{ fontSize: 13, fontWeight: 600, color: "#0C4A6E", textDecoration: "none", opacity: 0.7 }}>Login</Link>
           <Link href="/signup" style={{ 
             fontSize: 13, fontWeight: 700, color: "#fff", textDecoration: "none", 
-            background: "#1C1C1C", padding: "8px 20px", borderRadius: 4, transition: "opacity 0.2s"
+            background: "#0284C7", padding: "8px 20px", borderRadius: 4, transition: "opacity 0.2s"
           }} onMouseEnter={e => e.currentTarget.style.opacity = "0.9"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
             Get Started
           </Link>
@@ -65,7 +65,7 @@ export default function LandingPage() {
 
   return (
     <div ref={containerRef} style={{ 
-      background: "#FDFCFB", color: "#1C1C1C", minHeight: "100vh", 
+      background: "#F0F9FF", color: "#0C4A6E", minHeight: "100vh", 
       fontFamily: "'Plus Jakarta Sans', sans-serif" 
     }}>
       <Nav />
@@ -80,8 +80,8 @@ export default function LandingPage() {
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
         
-        {/* Editorial Gradient Overlay */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(253, 252, 251, 0.9) 0%, rgba(253, 252, 251, 0.4) 40%, transparent 100%)", zIndex: 1 }} />
+        {/* Light Blue Overlay - More transparent for visibility */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(240, 249, 255, 0.7) 0%, rgba(240, 249, 255, 0.2) 40%, transparent 100%)", zIndex: 1 }} />
 
         <div style={{ position: "relative", zIndex: 10, maxWidth: 1000 }}>
           <motion.h1 
@@ -92,7 +92,7 @@ export default function LandingPage() {
               fontSize: "clamp(48px, 10vw, 160px)", lineHeight: 0.9, 
               fontFamily: "'Instrument Serif', serif", margin: "0 0 24px", letterSpacing: "-0.04em" 
             }}>
-            Reach <span style={{ fontStyle: "italic", color: "#D97706" }}>further.</span>
+            Reach <span style={{ fontStyle: "italic", color: "#0284C7" }}>further.</span>
           </motion.h1>
           
           <motion.div 
@@ -106,11 +106,11 @@ export default function LandingPage() {
             <div>
               <Link href="/signup" style={{ 
                 display: "inline-flex", alignItems: "center", gap: 12, 
-                fontSize: 15, fontWeight: 700, color: "#1C1C1C", textDecoration: "none",
-                padding: "16px 32px", border: "1px solid #1C1C1C", borderRadius: 4,
+                fontSize: 15, fontWeight: 700, color: "#0284C7", textDecoration: "none",
+                padding: "16px 32px", border: "1px solid #0284C7", borderRadius: 4,
                 transition: "all 0.3s ease"
-              }} onMouseEnter={e => { e.currentTarget.style.background = "#1C1C1C"; e.currentTarget.style.color = "#fff" }} 
-                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1C1C1C" }}>
+              }} onMouseEnter={e => { e.currentTarget.style.background = "#0284C7"; e.currentTarget.style.color = "#fff" }} 
+                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0284C7" }}>
                 Begin Discovery <ArrowRight size={18} />
               </Link>
             </div>
@@ -119,7 +119,7 @@ export default function LandingPage() {
       </section>
 
       {/* Marquee (Editorial style) */}
-      <section style={{ padding: "60px 0", borderBottom: "1px solid rgba(28, 28, 28, 0.05)" }}>
+      <section style={{ padding: "60px 0", borderBottom: "1px solid rgba(2, 132, 199, 0.1)" }}>
         <div style={{ overflow: "hidden", display: "flex", gap: 100 }}>
           <motion.div 
             animate={{ x: [0, -1000] }}
@@ -139,7 +139,7 @@ export default function LandingPage() {
       <section style={{ padding: "160px 80px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 120 }}>
           <div>
-            <span style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "#D97706", marginBottom: 16, display: "block" }}>Platform</span>
+            <span style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0284C7", marginBottom: 16, display: "block" }}>Platform</span>
             <h2 style={{ fontSize: 64, fontFamily: "'Instrument Serif', serif", lineHeight: 1, letterSpacing: "-0.03em", margin: "0 0 32px" }}>
               High-fidelity <br /> connections at <br /> scale.
             </h2>
@@ -155,7 +155,7 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 viewport={{ once: true }}
-                style={{ borderBottom: "1px solid rgba(28, 28, 28, 0.08)", paddingBottom: 32 }}>
+                style={{ borderBottom: "1px solid rgba(2, 132, 199, 0.1)", paddingBottom: 32 }}>
                 <h3 style={{ fontSize: 24, fontFamily: "'Instrument Serif', serif", margin: "0 0 12px" }}>{f.title}</h3>
                 <p style={{ fontSize: 15, opacity: 0.6, margin: 0, maxWidth: 450 }}>{f.desc}</p>
               </motion.div>
@@ -165,7 +165,7 @@ export default function LandingPage() {
       </section>
 
       {/* Narrative Section with Custom Image */}
-      <section style={{ padding: "80px", background: "#1C1C1C", color: "#FDFCFB" }}>
+      <section style={{ padding: "80px", background: "#0C4A6E", color: "#F0F9FF" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 100, alignItems: "center" }}>
           <div style={{ position: "relative", height: 600, overflow: "hidden", borderRadius: 4 }}>
             <img 
@@ -182,8 +182,8 @@ export default function LandingPage() {
               Our engine understands the nuances of research interests and corporate requirements. We surface the matches that actually matter, then help you craft the narrative that wins.
             </p>
             <Link href="/signup" style={{ 
-              fontSize: 14, fontWeight: 700, color: "#FDFCFB", textDecoration: "none", 
-              borderBottom: "2px solid #D97706", paddingBottom: 4 
+              fontSize: 14, fontWeight: 700, color: "#F0F9FF", textDecoration: "none", 
+              borderBottom: "2px solid #0284C7", paddingBottom: 4 
             }}>
               Join the cohort
             </Link>
@@ -191,20 +191,21 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Cloud Final Section (Restored & Styled) */}
+      {/* Cloud Final Section (Restored & Styled - More Visible) */}
       <section style={{ position: "relative", height: "80vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         <video autoPlay muted loop playsInline
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
           src="/hero-bg.mp4" />
         
-        <div style={{ position: "absolute", inset: 0, background: "rgba(253, 252, 251, 0.7)", zIndex: 1 }} />
+        {/* Much more transparent overlay to show off the clouds */}
+        <div style={{ position: "absolute", inset: 0, background: "rgba(240, 249, 255, 0.45)", zIndex: 1 }} />
 
         <div style={{ position: "relative", zIndex: 10, textAlign: "center", maxWidth: 600 }}>
           <h2 style={{ fontSize: 64, fontFamily: "'Instrument Serif', serif", margin: "0 0 32px", letterSpacing: "-0.03em" }}>
             The future of <br /> outreach is personal.
           </h2>
           <Link href="/signup" style={{ 
-            display: "inline-flex", background: "#1C1C1C", color: "#FDFCFB", 
+            display: "inline-flex", background: "#0C4A6E", color: "#F0F9FF", 
             padding: "20px 48px", borderRadius: 4, fontWeight: 700, textDecoration: "none",
             transition: "transform 0.2s"
           }} onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"} onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
@@ -214,7 +215,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: "80px", borderTop: "1px solid rgba(28, 28, 28, 0.05)" }}>
+      <footer style={{ padding: "80px", borderTop: "1px solid rgba(2, 132, 199, 0.1)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", maxWidth: 1400, margin: "0 auto" }}>
           <div>
             <h3 style={{ fontSize: 24, fontFamily: "'Instrument Serif', serif", margin: "0 0 12px" }}>OutreachAI</h3>
@@ -226,7 +227,7 @@ export default function LandingPage() {
                 <h4 style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>{col}</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {[1, 2, 3].map(i => (
-                    <a key={i} href="#" style={{ fontSize: 13, color: "#1C1C1C", textDecoration: "none", opacity: 0.6 }}>Link {i}</a>
+                    <a key={i} href="#" style={{ fontSize: 13, color: "#0C4A6E", textDecoration: "none", opacity: 0.6 }}>Link {i}</a>
                   ))}
                 </div>
               </div>
