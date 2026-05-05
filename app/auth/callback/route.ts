@@ -8,10 +8,33 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+
     if (error) {
-      console.error("Auth error:", error.message)
-      return NextResponse.redirect(`${origin}/login?error=Verification failed`)
+      console.error("Auth callback error:", error.message)
+      return NextResponse.redirect(`${origin}/login?verified=1`)
+    }
+
+    if (data?.user) {
+      const user = data.user
+      const { data: existing } = await supabase
+        .from("profiles")
+        .select("user_id, onboarding_complete")
+        .eq("user_id", user.id)
+        .single()
+
+      if (!existing) {
+        await supabase.from("profiles").insert({
+          user_id: user.id,
+          name: user.user_metadata?.name || "",
+          email: user.email || "",
+          interests: [],
+          goals: [],
+          academic_level: "",
+          institution: "",
+          onboarding_complete: false,
+        })
+      }
     }
   }
 

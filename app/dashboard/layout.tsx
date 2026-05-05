@@ -159,7 +159,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <span className="nav-icon"><Icon /></span>
                   <span className="nav-label" style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     {label}
-                    {badge && <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 5px", borderRadius: 4, background: "#f59e0b", color: "#fff", letterSpacing: 0.3 }}>{badge}</span>}
+                    {badge && <span style={{ fontSize: 9, fontWeight: 500, color: "#64748b", letterSpacing: 0.2 }}>{badge}</span>}
                   </span>
                 </Link>
               )

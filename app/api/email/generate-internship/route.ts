@@ -37,7 +37,7 @@ export async function POST(req: Request) {
   const apiKey = profile?.ai_api_key || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY
   if (!apiKey) {
     return NextResponse.json(
-      { error: "No API key found. Add your Gemini API key in Settings." },
+      { error: "No API key found. Add your API key in Settings." },
       { status: 500 }
     )
   }

@@ -75,6 +75,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [hovered, setHovered] = useState(false)
+  const [sent, setSent] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -83,7 +84,7 @@ export default function SignupPage() {
     const supabase = createClient()
     const { data, error: authError } = await supabase.auth.signUp({
       email, password,
-      options: { 
+      options: {
         data: { name },
         emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/auth/callback?next=/onboarding`
       },
@@ -91,15 +92,27 @@ export default function SignupPage() {
     if (authError) {
       setError(authError.message)
       setLoading(false)
-    } else if (data.user) {
-      await supabase.from("profiles").insert({
-        user_id: data.user.id, name, email,
-        interests: [], goals: [],
-        academic_level: "", institution: "",
-        onboarding_complete: false,
-      })
-      router.push("/onboarding")
-      router.refresh()
+      return
+    }
+    if (data.user) {
+      try {
+        await supabase.from("profiles").insert({
+          user_id: data.user.id, name, email,
+          interests: [], goals: [],
+          academic_level: "", institution: "",
+          onboarding_complete: false,
+        })
+      } catch { /* callback will handle it */ }
+
+      if (data.session) {
+        router.push("/onboarding")
+        router.refresh()
+        return
+      }
+
+      try { sessionStorage.setItem("pendingEmail", email) } catch { /* ignore */ }
+      setSent(true)
+      setLoading(false)
     }
   }
 
@@ -111,6 +124,49 @@ export default function SignupPage() {
   const onFocus = (e: React.FocusEvent<HTMLInputElement>) => { e.target.style.borderColor = "#3b82f6" }
   const onBlur  = (e: React.FocusEvent<HTMLInputElement>) => { e.target.style.borderColor = "#e2e8f0" }
 
+  if (sent) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+        background: "linear-gradient(135deg,#eff6ff 0%,#e0e7ff 100%)", padding: 16 }}>
+        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          style={{ background: "#fff", borderRadius: 20, padding: "56px 48px", maxWidth: 480, width: "100%",
+            boxShadow: "0 24px 80px rgba(37,99,235,0.12)", textAlign: "center" }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#dbeafe",
+            display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2"
+              strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m2 7 8.5 6a2 2 0 0 0 3 0L22 7"/>
+            </svg>
+          </div>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", margin: "0 0 12px" }}>
+            Check your email
+          </h1>
+          <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.6, margin: "0 0 8px" }}>
+            We sent a verification link to
+          </p>
+          <p style={{ color: "#1e293b", fontWeight: 600, fontSize: 15, margin: "0 0 32px",
+            background: "#f1f5f9", borderRadius: 8, padding: "8px 16px", display: "inline-block" }}>
+            {email}
+          </p>
+          <p style={{ color: "#94a3b8", fontSize: 13, margin: "0 0 28px", lineHeight: 1.5 }}>
+            Click the link in the email to verify your account. You will be taken directly to set up your profile.
+          </p>
+          <Link href="/login"
+            style={{ display: "block", padding: "12px", background: "#3b82f6", color: "#fff",
+              borderRadius: 10, fontSize: 14, fontWeight: 700, textDecoration: "none",
+              boxShadow: "0 4px 12px rgba(59,130,246,0.3)" }}>
+            Go to Sign In
+          </Link>
+          <p style={{ marginTop: 16, fontSize: 12, color: "#cbd5e1" }}>
+            Didn&apos;t receive it? Check your spam folder.
+          </p>
+        </motion.div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ minHeight: "100vh", width: "100%", display: "flex", alignItems: "center",
       justifyContent: "center", background: "linear-gradient(135deg,#eff6ff 0%,#e0e7ff 100%)", padding: 16 }}>
@@ -120,8 +176,7 @@ export default function SignupPage() {
           background: "#fff", boxShadow: "0 24px 80px rgba(37,99,235,0.12),0 4px 16px rgba(0,0,0,0.06)",
           overflow: "hidden" }}>
 
-        {/* Left map panel */}
-        <div className="md-panel" style={{ display: "none", width: "50%", minHeight: 640,
+        <div className="md-panel" style={{ display: "none", width: "50%", minHeight: 600,
           position: "relative", overflow: "hidden", borderRight: "1px solid #e0e7ff" }}>
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,#eff6ff,#dbeafe)" }}>
             <DotMap />
@@ -147,18 +202,16 @@ export default function SignupPage() {
               transition={{ delay: 0.7 }}
               style={{ fontSize: 13, color: "#475569", textAlign: "center",
                 maxWidth: 240, lineHeight: 1.5, margin: 0 }}>
-              Join thousands of students landing research opportunities with AI-powered professor outreach.
+              Join thousands of students finding research opportunities and internships with AI-powered outreach.
             </motion.p>
           </div>
         </div>
 
-        {/* Right form */}
-        <div style={{ flex: 1, padding: "40px 40px", display: "flex",
+        <div style={{ flex: 1, padding: "44px 40px", display: "flex",
           flexDirection: "column", justifyContent: "center", background: "#fff" }}>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}>
 
-            {/* Brand */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
               <div style={{ width: 36, height: 36, borderRadius: 10,
                 background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
@@ -222,11 +275,10 @@ export default function SignupPage() {
               <motion.button type="submit" disabled={loading}
                 whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
                 onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
-                style={{ position: "relative", overflow: "hidden", marginTop: 4,
-                  width: "100%", padding: "11px 20px",
-                  background: "linear-gradient(to right,#3b82f6,#4f46e5)",
-                  color: "#fff", border: "none", borderRadius: 8,
-                  fontSize: 14, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer",
+                style={{ position: "relative", overflow: "hidden", width: "100%",
+                  padding: "11px 20px", background: "linear-gradient(to right,#3b82f6,#4f46e5)",
+                  color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 700,
+                  cursor: loading ? "not-allowed" : "pointer",
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   boxShadow: hovered ? "0 8px 24px rgba(59,130,246,0.35)" : "0 2px 8px rgba(59,130,246,0.2)",
                   transition: "box-shadow 0.2s" }}>
@@ -255,9 +307,9 @@ export default function SignupPage() {
 
             <Link href="/login"
               style={{ display: "block", textAlign: "center", padding: "10px",
-                border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 14,
-                fontWeight: 600, color: "#374151", textDecoration: "none",
-                background: "#f8fafc", transition: "border-color 0.15s,background 0.15s" }}
+                border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontWeight: 600,
+                color: "#374151", textDecoration: "none", background: "#f8fafc",
+                transition: "border-color 0.15s,background 0.15s" }}
               onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#3b82f6";
                 (e.currentTarget as HTMLAnchorElement).style.background="#eff6ff" }}
               onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#e2e8f0";
@@ -268,7 +320,7 @@ export default function SignupPage() {
         </div>
       </motion.div>
 
-      <style>{`@media(min-width:768px){.md-panel{display:block!important}}`}</style>
+      <style>{"@media(min-width:768px){.md-panel{display:block!important}}"}</style>
     </div>
   )
 }

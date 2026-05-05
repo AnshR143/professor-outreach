@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import type { InternshipContact } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
 import FindInternshipContactsModal from "@/components/internships/FindInternshipContactsModal"
+import MapDiscoverModal from "./MapDiscoverModal"
 
 const EMAIL_STATUS_CYCLE = ["not_emailed", "emailed", "rejected", "accepted"] as const
 type EmailStatus = typeof EMAIL_STATUS_CYCLE[number]
@@ -40,6 +41,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
   const [search, setSearch] = useState("")
   const [showAdd, setShowAdd] = useState(false)
   const [showFind, setShowFind] = useState(false)
+  const [showMap, setShowMap] = useState(false)
   const [form, setForm] = useState<AddForm>(EMPTY_FORM)
   const [adding, setAdding] = useState(false)
   const [resetting, setResetting] = useState(false)
@@ -152,24 +154,27 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
   }
 
   async function deleteContact(e: React.MouseEvent, id: string) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault(); e.stopPropagation()
     await supabase.from("internship_contacts").delete().eq("id", id)
     setContacts(prev => prev.filter(c => c.id !== id))
   }
 
-  async function handleFindClose() {
-    setShowFind(false)
-    // Re-fetch directly from Supabase so new contacts appear immediately
+  async function refreshContacts() {
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      const { data } = await supabase
-        .from("internship_contacts")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
+      const { data } = await supabase.from("internship_contacts").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
       if (data) setContacts(data as InternshipContact[])
     }
+  }
+
+  async function handleFindClose() {
+    setShowFind(false)
+    await refreshContacts()
+  }
+
+  async function handleMapClose() {
+    setShowMap(false)
+    await refreshContacts()
   }
 
   const filtered = contacts.filter(c => {
@@ -184,7 +189,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
-      {/* Header */}
+      {/* ── Header ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Internship Contacts</h1>
@@ -194,12 +199,17 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <button onClick={resetAll} disabled={resetting || contacts.length === 0}
-            style={{ padding: "5px 10px", background: "transparent", color: resetting ? "#94a3b8" : "#94a3b8", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 500, cursor: resetting || contacts.length === 0 ? "not-allowed" : "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>
+            style={{ padding: "5px 10px", background: "transparent", color: "#94a3b8", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 500, cursor: resetting || contacts.length === 0 ? "not-allowed" : "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>
             {resetting ? "Resetting..." : "Reset All"}
           </button>
           <button onClick={() => router.refresh()}
             style={{ padding: "8px 10px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", color: "#64748b" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+          <button onClick={() => setShowMap(true)}
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#0f172a", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Map Discovery
           </button>
           <button onClick={() => setShowFind(true)}
             style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
@@ -240,10 +250,14 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               {contacts.length === 0 ? "No internship contacts yet" : "No results for \"" + search + "\""}
             </div>
             <div style={{ fontSize: 14, color: "#94a3b8", marginBottom: 24 }}>
-              {contacts.length === 0 ? "Use Find Contacts to discover real professionals, or add one manually." : "Try a different search term."}
+              {contacts.length === 0 ? "Use Map Discovery or Find Contacts to discover real opportunities." : "Try a different search term."}
             </div>
             {contacts.length === 0 && (
-              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+                <button onClick={() => setShowMap(true)}
+                  style={{ padding: "10px 24px", background: "#0f172a", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                  Map Discovery
+                </button>
                 <button onClick={() => setShowFind(true)}
                   style={{ padding: "10px 24px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
                   Find Contacts
@@ -271,44 +285,42 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                     onMouseEnter={e => { e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.color = "#dc2626" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#94a3b8" }}
                   >×</button>
-                <div
-                  onClick={e => openEmailModal(e, c)}
-                  style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
-                  onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#6366f1" }}
-                  onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
-                >
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.company || "Unknown Company"}</div>
-                      <Link href={"/dashboard/internships/" + c.id} onClick={e => e.stopPropagation()}
-                        style={{ fontSize: 10, color: "#94a3b8", textDecoration: "none", padding: "2px 6px", borderRadius: 4, border: "1px solid #e2e8f0", whiteSpace: "nowrap", flexShrink: 0, marginLeft: 6 }}>
-                        details
-                      </Link>
+                  <div
+                    onClick={e => openEmailModal(e, c)}
+                    style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#6366f1" }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
+                  >
+                    <div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.company || "Unknown Company"}</div>
+                        <Link href={"/dashboard/internships/" + c.id} onClick={e => e.stopPropagation()}
+                          style={{ fontSize: 10, color: "#94a3b8", textDecoration: "none", padding: "2px 6px", borderRadius: 4, border: "1px solid #e2e8f0", whiteSpace: "nowrap", flexShrink: 0, marginLeft: 6 }}>
+                          details
+                        </Link>
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#6366f1", marginTop: 2 }}>{c.role}</div>
+                      {c.contact_name && <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{c.contact_name}</div>}
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#6366f1", marginTop: 2 }}>{c.role}</div>
-                    {c.contact_name && <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{c.contact_name}</div>}
+                    {c.bio && (
+                      <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5, background: "#f8fafc", borderRadius: 8, padding: "8px 10px", borderLeft: "3px solid #e2e8f0" }}>
+                        {c.bio.slice(0, 100)}{c.bio.length > 100 ? "..." : ""}
+                      </div>
+                    )}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 4, borderTop: "1px solid #f1f5f9", marginTop: "auto" }}>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                        <span style={{ fontSize: 11, color: "#6366f1", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                          Generate Email
+                        </span>
+                        {c.email && <span style={{ fontSize: 10, color: "#94a3b8" }}>· has email</span>}
+                      </div>
+                      <button onClick={e => cycleEmailStatus(e, c)}
+                        style={{ display: "flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 10, border: "1.5px solid " + cfg.border, background: cfg.bg, color: cfg.text, fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                        {cfg.label}
+                      </button>
+                    </div>
                   </div>
-                  {c.bio && (
-                    <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5, background: "#f8fafc", borderRadius: 8, padding: "8px 10px", borderLeft: "3px solid #e2e8f0" }}>
-                      {c.bio.slice(0, 100)}{c.bio.length > 100 ? "..." : ""}
-                    </div>
-                  )}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 4, borderTop: "1px solid #f1f5f9", marginTop: "auto" }}>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      <span style={{ fontSize: 11, color: "#6366f1", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        Generate Email
-                      </span>
-                      {c.email && (
-                        <span style={{ fontSize: 10, color: "#94a3b8" }}>· has email</span>
-                      )}
-                    </div>
-                    <button onClick={e => cycleEmailStatus(e, c)}
-                      style={{ display: "flex", alignItems: "center", gap: 5, padding: "3px 9px", borderRadius: 10, border: "1.5px solid " + cfg.border, background: cfg.bg, color: cfg.text, fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
-                      {cfg.label}
-                    </button>
-                  </div>
-                </div>
                 </div>
               )
             })}
@@ -316,7 +328,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
         )}
       </div>
 
-      {/* Add Contact Modal */}
+      {/* ── Add Contact Modal ── */}
       {showAdd && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
           <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
@@ -356,7 +368,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                 </div>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 5 }}>Notes / About Role</label>
-                  <textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Any notes about this company or role..." rows={3} style={{ ...inp(), resize: "vertical" as any }} />
+                  <textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Any notes about this company or role..." rows={3} style={{ ...inp(), resize: "vertical" as const }} />
                 </div>
                 <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 4 }}>
                   <button type="button" onClick={() => { setShowAdd(false); setForm(EMPTY_FORM) }}
@@ -374,13 +386,12 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
         </div>
       )}
 
-      {/* Email Generation Modal */}
+      {/* ── Email Generation Modal ── */}
       {emailContact && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}
           onClick={() => setEmailContact(null)}>
           <div style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: 600, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 64px rgba(0,0,0,0.22)" }}
             onClick={e => e.stopPropagation()}>
-            {/* Modal header */}
             <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
                 <div style={{ fontSize: 17, fontWeight: 700, color: "#0f172a" }}>{emailContact.contact_name || emailContact.company}</div>
@@ -390,7 +401,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             </div>
 
             <div style={{ padding: "16px 24px 24px" }}>
-              {/* Tone row */}
               <div style={{ display: "flex", gap: 8, marginBottom: 16, alignItems: "center" }}>
                 <span style={{ fontSize: 12, fontWeight: 600, color: "#64748b", marginRight: 2 }}>Tone</span>
                 {(["formal", "casual", "enthusiastic"] as Tone[]).map(t => {
@@ -413,7 +423,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                 </div>
               )}
 
-              {/* Subject — always visible */}
               <div style={{ marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
                   <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Subject</label>
@@ -424,7 +433,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                   style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: genSubject ? "#fff" : "#f8fafc", outline: "none", boxSizing: "border-box", fontWeight: 600 }} />
               </div>
 
-              {/* Body — always visible */}
               <div style={{ marginBottom: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
                   <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Body</label>
@@ -432,10 +440,9 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                 </div>
                 <textarea value={genBody} onChange={e => setGenBody(e.target.value.slice(0, 1000))} rows={10}
                   placeholder="Email body will appear here after generation..."
-                  style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: genBody ? "#fff" : "#f8fafc", outline: "none", boxSizing: "border-box", resize: "vertical" as any, lineHeight: 1.6, fontFamily: "inherit" }} />
+                  style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: genBody ? "#fff" : "#f8fafc", outline: "none", boxSizing: "border-box", resize: "vertical" as const, lineHeight: 1.6, fontFamily: "inherit" }} />
               </div>
 
-              {/* Action buttons */}
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button onClick={generateEmail} disabled={generating}
                   style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", background: generating ? "#c7d2fe" : "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer" }}>
@@ -468,10 +475,40 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
         </div>
       )}
 
+      {/* ── Find Contacts Modal ── */}
       {showFind && (
-        <FindInternshipContactsModal
-          onClose={handleFindClose}
-        />
+        <FindInternshipContactsModal onClose={handleFindClose} />
+      )}
+
+      {/* ── Map Discovery Modal ── */}
+      {showMap && (
+        <MapDiscoverModal onClose={handleMapClose} />
+      )}
+
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
+  )
+}
+                  {savingDraft ? "Saving..." : "Save Draft"}
+                </button>
+                <Link href={"/dashboard/internships/" + emailContact.id}
+                  style={{ marginLeft: "auto", padding: "9px 14px", background: "#fff", color: "#6366f1", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>
+                  Full Details →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Find Contacts Modal ── */}
+      {showFind && (
+        <FindInternshipContactsModal onClose={handleFindClose} />
+      )}
+
+      {/* ── Map Discovery Modal ── */}
+      {showMap && (
+        <MapDiscoverModal onClose={handleMapClose} />
       )}
 
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>

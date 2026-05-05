@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 
   if (!groqKey) {
     return NextResponse.json(
-      { error: "No Groq API key found. Add your Groq API key in Settings." },
+      { error: "No API key found. Add your API key in Settings." },
       { status: 500 }
     )
   }

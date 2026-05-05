@@ -95,6 +95,23 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [hovered, setHovered] = useState(false)
+  const [verified, setVerified] = useState(false)
+
+  useEffect(() => {
+    // Pre-fill email from signup flow (stored in sessionStorage)
+    try {
+      const pending = sessionStorage.getItem("pendingEmail")
+      if (pending) {
+        setEmail(pending)
+        sessionStorage.removeItem("pendingEmail")
+      }
+    } catch { /* sessionStorage unavailable */ }
+    // Show verified banner if redirected from auth callback or verification link
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      if (params.get("verified") === "1") setVerified(true)
+    }
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -181,6 +198,13 @@ export default function LoginPage() {
               Sign in to your account
             </p>
 
+            {verified && (
+              <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8,
+                padding: "10px 14px", color: "#16a34a", fontSize: 13, marginBottom: 20 }}>
+                ✓ Email verified! Sign in to continue.
+              </div>
+            )}
+
             {error && (
               <div style={{ background: "#fee2e2", border: "1px solid #fecaca", borderRadius: 8,
                 padding: "10px 14px", color: "#dc2626", fontSize: 13, marginBottom: 20 }}>
@@ -257,6 +281,25 @@ export default function LoginPage() {
             </div>
 
             <Link href="/signup"
+              style={{ display: "block", textAlign: "center", padding: "10px",
+                border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontWeight: 600,
+                color: "#374151", textDecoration: "none", background: "#f8fafc",
+                transition: "border-color 0.15s,background 0.15s" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#3b82f6";
+                (e.currentTarget as HTMLAnchorElement).style.background="#eff6ff" }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#e2e8f0";
+                (e.currentTarget as HTMLAnchorElement).style.background="#f8fafc" }}>
+              Create an account
+            </Link>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      <style>{`@media(min-width:768px){.md-panel{display:block!important}}`}</style>
+    </div>
+  )
+}
+ink href="/signup"
               style={{ display: "block", textAlign: "center", padding: "10px",
                 border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontWeight: 600,
                 color: "#374151", textDecoration: "none", background: "#f8fafc",

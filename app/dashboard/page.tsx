@@ -10,7 +10,8 @@ export default async function DashboardPage() {
   const { data: profile } = await supabase
     .from("profiles").select("*").eq("user_id", user.id).single()
 
-  if (profile && !profile.onboarding_complete) redirect("/onboarding")
+  // null profile (insert may have failed) OR incomplete onboarding → send to onboarding
+  if (!profile || !profile.onboarding_complete) redirect("/onboarding")
 
   const { data: researchers } = await supabase
     .from("researchers").select("id, name, university, status, match_score, research_areas").eq("user_id", user.id)
@@ -27,6 +28,12 @@ export default async function DashboardPage() {
     <DashboardClient
       profile={profile}
       researchers={researchers || []}
+      activities={activities || []}
+      emails={emails || []}
+    />
+  )
+}
+archers || []}
       activities={activities || []}
       emails={emails || []}
     />
