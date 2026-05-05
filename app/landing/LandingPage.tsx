@@ -6,9 +6,14 @@ import Link from "next/link"
 import Lenis from "@studio-freight/lenis"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 
-/* ─────────────────────────────────────────────────────────────
-   Data
-───────────────────────────────────────────────────────────── */
+/* ─── Palette ────────────────────────────────────────────────
+   #98bad5  medium blue-gray   → primary accent
+   #b2cbde  light steel blue   → secondary / hover
+   #c6d3e3  soft blue-gray     → light backgrounds
+   #d8e1e8  very light         → lightest bg / pill bg
+   #304674  dark navy          → borders, shadows, dark text
+──────────────────────────────────────────────────────────── */
+
 const FEATURES = [
   { title: "Smart Contact Matching",         desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
   { title: "Personalized Email Drafts",      desc: "AI crafts tailored cold emails based on each recipient's work, interests, and your background — no generic templates." },
@@ -19,9 +24,9 @@ const FEATURES = [
 ]
 
 const HOW_STEPS = [
-  { step: "01", title: "Upload your resume",         desc: "Paste or upload your CV. The parser extracts keywords, skills, and experience automatically." },
-  { step: "02", title: "Find your targets",          desc: "Search for professors, researchers, or company contacts by field, location, or institution. Match scores update live." },
-  { step: "03", title: "Generate & send emails",     desc: "Click Generate — AI crafts a tailored cold email for each contact. Open Gmail pre-filled and hit send." },
+  { step: "01", title: "Upload your resume",     desc: "Paste or upload your CV. The parser extracts keywords, skills, and experience automatically." },
+  { step: "02", title: "Find your targets",      desc: "Search for professors, researchers, or company contacts by field, location, or institution. Match scores update live." },
+  { step: "03", title: "Generate & send emails", desc: "Click Generate — AI crafts a tailored cold email for each contact. Open Gmail pre-filled and hit send." },
 ]
 
 const PRICING = [
@@ -31,61 +36,42 @@ const PRICING = [
 
 const UNIS = ["MIT", "Stanford", "Harvard", "Oxford", "Cambridge", "ETH Zurich", "Berkeley", "Princeton", "Caltech", "UChicago", "Columbia", "Yale"]
 
-/* ─────────────────────────────────────────────────────────────
-   BlurWords
-───────────────────────────────────────────────────────────── */
-function BlurWords({ text }: { text: string }) {
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25em", justifyContent: "center" }}>
-      {text.split(" ").map((word, i) => (
-        <motion.span
-          key={i}
-          initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
-          whileInView={{ filter: "blur(0px)", opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: i * 0.05 }}
-          style={{ display: "inline-block" }}>
-          {word}
-        </motion.span>
-      ))}
-    </div>
-  )
-}
-
 /* ═══════════════════════════════════════════════════════════
    CAROUSEL SLIDES
 ═══════════════════════════════════════════════════════════ */
 function FeaturesSlide() {
   return (
-    <div style={{ padding: "18px 22px 14px" }}>
+    <div style={{ padding: "18px 24px 16px" }}>
       <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
-        background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
-        borderRadius: 999, padding: "3px 10px", marginBottom: 8 }}>
-        <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#3b82f6" }} />
-        <span style={{ fontSize: 10, fontWeight: 700, color: "#1e40af", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why OutreachAI</span>
+        background: "#d8e1e8", border: "2px solid #304674", borderRadius: 999,
+        padding: "3px 12px", marginBottom: 10, boxShadow: "2px 2px 0px #304674" }}>
+        <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#98bad5" }} />
+        <span style={{ fontSize: 10, fontWeight: 800, color: "#304674", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why OutreachAI</span>
       </div>
-      <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 800, color: "#0f172a",
+      <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 800, color: "#304674",
         margin: "0 0 4px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
         Everything you need for cold outreach{" "}
-        <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
+        <span style={{ background: "linear-gradient(to right,#98bad5,#304674)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
           that actually works
         </span>
       </h2>
-      <p style={{ fontSize: 11, color: "#334155", margin: "0 0 12px", lineHeight: 1.5, maxWidth: 520 }}>
+      <p style={{ fontSize: 11, color: "#4a5568", margin: "0 0 14px", lineHeight: 1.5, maxWidth: 520 }}>
         Built for students and early-career professionals who want a systematic, AI-powered approach to reaching the right people.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
         {FEATURES.map((f, i) => (
           <motion.div key={f.title}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: "rgba(255,255,255,0.85)", border: "1px solid rgba(59,130,246,0.15)",
+              background: "#fff", border: "2px solid #304674",
               borderRadius: 12, padding: "10px 12px",
+              boxShadow: "3px 3px 0px #304674",
             }}>
-            <h3 style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", margin: "0 0 3px" }}>{f.title}</h3>
-            <p style={{ fontSize: 10, color: "#475569", lineHeight: 1.45, margin: 0 }}>{f.desc}</p>
+            <h3 style={{ fontSize: 11, fontWeight: 800, color: "#304674", margin: "0 0 3px" }}>{f.title}</h3>
+            <p style={{ fontSize: 10, color: "#4a5568", lineHeight: 1.45, margin: 0 }}>{f.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -95,17 +81,17 @@ function FeaturesSlide() {
 
 function HowItWorksSlide() {
   return (
-    <div style={{ padding: "18px 22px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, alignItems: "center" }}>
+    <div style={{ padding: "18px 24px 16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22, alignItems: "center" }}>
       <div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
-          background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
-          borderRadius: 999, padding: "3px 10px", marginBottom: 8 }}>
-          <span style={{ fontSize: 10, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.1em" }}>Process</span>
+          background: "#d8e1e8", border: "2px solid #304674", borderRadius: 999,
+          padding: "3px 12px", marginBottom: 10, boxShadow: "2px 2px 0px #304674" }}>
+          <span style={{ fontSize: 10, fontWeight: 800, color: "#304674", textTransform: "uppercase", letterSpacing: "0.1em" }}>Process</span>
         </div>
         <h2 style={{ fontSize: "clamp(18px,2.4vw,28px)", fontWeight: 800,
-          color: "#0f172a", margin: "0 0 14px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
+          color: "#304674", margin: "0 0 14px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
           From zero to{" "}
-          <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
+          <span style={{ background: "linear-gradient(to right,#98bad5,#304674)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             first reply
           </span>
@@ -118,17 +104,16 @@ function HowItWorksSlide() {
             style={{ display: "flex", gap: 10, marginBottom: i < 2 ? 12 : 0 }}>
             <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ width: 32, height: 32, borderRadius: 10,
-                background: "linear-gradient(135deg,rgba(59,130,246,0.1),rgba(129,140,248,0.1))",
-                border: "1px solid rgba(59,130,246,0.22)",
+                background: "#d8e1e8", border: "2px solid #304674",
+                boxShadow: "2px 2px 0px #304674",
                 display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 11, fontWeight: 800, color: "#2563eb" }}>{s.step}</span>
+                <span style={{ fontSize: 11, fontWeight: 900, color: "#304674" }}>{s.step}</span>
               </div>
-              {i < 2 && <div style={{ width: 2, height: 12,
-                background: "linear-gradient(to bottom,rgba(59,130,246,0.25),transparent)", margin: "4px 0" }} />}
+              {i < 2 && <div style={{ width: 2, height: 12, background: "#304674", margin: "4px 0", opacity: 0.25 }} />}
             </div>
             <div style={{ paddingTop: 6 }}>
-              <h3 style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", margin: "0 0 2px" }}>{s.title}</h3>
-              <p style={{ fontSize: 11, color: "#475569", lineHeight: 1.45, margin: 0 }}>{s.desc}</p>
+              <h3 style={{ fontSize: 12, fontWeight: 700, color: "#304674", margin: "0 0 2px" }}>{s.title}</h3>
+              <p style={{ fontSize: 11, color: "#4a5568", lineHeight: 1.45, margin: 0 }}>{s.desc}</p>
             </div>
           </motion.div>
         ))}
@@ -138,23 +123,24 @@ function HowItWorksSlide() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          borderRadius: 16,
-          background: "linear-gradient(135deg,rgba(59,130,246,0.08) 0%,rgba(79,70,229,0.12) 100%)",
-          border: "1px solid rgba(59,130,246,0.18)", padding: 16,
+          borderRadius: 16, background: "#c6d3e3",
+          border: "2px solid #304674", padding: 14,
           display: "flex", flexDirection: "column", gap: 10,
+          boxShadow: "4px 4px 0px #304674",
         }}>
         {[
-          { label: "Contacts discovered", value: "18 matches found",       dot: "#3b82f6" },
-          { label: "Email drafted",       value: "Personalised in 2s",     dot: "#4f46e5" },
-          { label: "Outreach status",     value: "4 replied · 3 pending",  dot: "#10b981" },
+          { label: "Contacts discovered", value: "18 matches found",      dot: "#98bad5" },
+          { label: "Email drafted",       value: "Personalised in 2s",    dot: "#304674" },
+          { label: "Outreach status",     value: "4 replied · 3 pending", dot: "#10b981" },
         ].map((item) => (
-          <div key={item.label} style={{ background: "rgba(255,255,255,0.72)", borderRadius: 10, padding: "10px 14px",
-            border: "1px solid rgba(59,130,246,0.1)" }}>
+          <div key={item.label} style={{ background: "#fff", borderRadius: 10, padding: "9px 13px",
+            border: "2px solid #304674", boxShadow: "2px 2px 0px #304674" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.dot, flexShrink: 0 }} />
-              <span style={{ fontSize: 10, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em" }}>{item.label}</span>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: item.dot,
+                border: "1.5px solid #304674", flexShrink: 0 }} />
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#4a5568", textTransform: "uppercase", letterSpacing: "0.08em" }}>{item.label}</span>
             </div>
-            <p style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: 0 }}>{item.value}</p>
+            <p style={{ fontSize: 13, fontWeight: 800, color: "#304674", margin: 0 }}>{item.value}</p>
           </div>
         ))}
       </motion.div>
@@ -164,54 +150,53 @@ function HowItWorksSlide() {
 
 function PricingSlide() {
   return (
-    <div style={{ padding: "22px 28px 20px" }}>
-      <div style={{ textAlign: "center", marginBottom: 16 }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
-          background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
-          borderRadius: 999, padding: "4px 12px", marginBottom: 8 }}>
-          <span style={{ fontSize: 10, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.1em" }}>Pricing</span>
+    <div style={{ padding: "18px 24px 16px" }}>
+      <div style={{ textAlign: "center", marginBottom: 14 }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
+          background: "#d8e1e8", border: "2px solid #304674", borderRadius: 999,
+          padding: "3px 12px", marginBottom: 8, boxShadow: "2px 2px 0px #304674" }}>
+          <span style={{ fontSize: 10, fontWeight: 800, color: "#304674", textTransform: "uppercase", letterSpacing: "0.1em" }}>Pricing</span>
         </div>
-        <h2 style={{ fontSize: "clamp(18px,2.4vw,28px)", fontWeight: 800, color: "#0f172a",
-          margin: "0 0 4px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
+        <h2 style={{ fontSize: "clamp(18px,2.4vw,28px)", fontWeight: 800, color: "#304674",
+          margin: "0 0 3px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
           Simple, transparent{" "}
-          <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
+          <span style={{ background: "linear-gradient(to right,#98bad5,#304674)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>pricing</span>
         </h2>
-        <p style={{ fontSize: 12, color: "#475569", margin: 0 }}>Start free. No credit card required.</p>
+        <p style={{ fontSize: 12, color: "#4a5568", margin: 0 }}>Start free. No credit card required.</p>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 12, maxWidth: 580, margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 14, maxWidth: 580, margin: "0 auto" }}>
         {PRICING.map((p, i) => (
           <motion.div key={p.plan}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              borderRadius: 16, padding: "16px 18px",
-              background: p.primary
-                ? "linear-gradient(135deg,rgba(59,130,246,0.12),rgba(129,140,248,0.1))"
-                : "rgba(248,250,252,1)",
-              border: p.primary ? "1.5px solid rgba(59,130,246,0.35)" : "1.5px solid rgba(59,130,246,0.12)",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+              borderRadius: 16, padding: "14px 16px",
+              background: p.primary ? "#d8e1e8" : "#fff",
+              border: "2.5px solid #304674",
+              boxShadow: p.primary ? "4px 4px 0px #304674" : "3px 3px 0px #304674",
             }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: p.primary ? "#2563eb" : "#64748b",
-              textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>{p.plan}</div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginBottom: 3 }}>{p.price}</div>
-            <p style={{ fontSize: 11, color: "#475569", lineHeight: 1.4, margin: "0 0 10px" }}>{p.desc}</p>
-            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 12px", display: "flex", flexDirection: "column", gap: 5 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: "#304674",
+              textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 3 }}>{p.plan}</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: "#304674", marginBottom: 3 }}>{p.price}</div>
+            <p style={{ fontSize: 10.5, color: "#4a5568", lineHeight: 1.4, margin: "0 0 8px" }}>{p.desc}</p>
+            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 10px", display: "flex", flexDirection: "column", gap: 5 }}>
               {p.features.map(f => (
-                <li key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#475569" }}>
-                  <CheckCircle style={{ width: 12, height: 12, color: "#3b82f6", flexShrink: 0 }} />
+                <li key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10.5, color: "#4a5568" }}>
+                  <CheckCircle style={{ width: 12, height: 12, color: "#98bad5", flexShrink: 0 }} />
                   {f}
                 </li>
               ))}
             </ul>
             {p.cta && (
               <Link href={p.href} style={{
-                display: "block", textAlign: "center", padding: "8px 16px", borderRadius: 8,
-                fontSize: 12, fontWeight: 700, textDecoration: "none",
-                background: p.primary ? "linear-gradient(to right,#3b82f6,#4f46e5)" : "transparent",
-                color: p.primary ? "#fff" : "#94a3b8",
-                border: p.primary ? "none" : "1px solid rgba(59,130,246,0.2)",
+                display: "block", textAlign: "center", padding: "7px 14px", borderRadius: 8,
+                fontSize: 12, fontWeight: 800, textDecoration: "none",
+                background: p.primary ? "linear-gradient(to right,#98bad5,#304674)" : "#fff",
+                color: p.primary ? "#fff" : "#304674",
+                border: "2px solid #304674",
+                boxShadow: "2px 2px 0px #304674",
               }}>
                 {p.cta}
               </Link>
@@ -236,40 +221,36 @@ function SectionCarousel() {
   const [current, setCurrent] = useState(0)
   const total = SLIDES.length
 
-  const handleNext = useCallback(() => {
-    setCurrent(prev => (prev + 1) % total)
-  }, [total])
-
-  const handlePrev = useCallback(() => {
-    setCurrent(prev => (prev - 1 + total) % total)
-  }, [total])
+  const handleNext = useCallback(() => { setCurrent(prev => (prev + 1) % total) }, [total])
+  const handlePrev = useCallback(() => { setCurrent(prev => (prev - 1 + total) % total) }, [total])
 
   return (
     <div id="carousel" style={{
       position: "relative", minHeight: "100vh", overflow: "hidden",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       padding: "60px 0 60px",
-      background: "linear-gradient(180deg, #f0f7ff 0%, #eef2ff 60%, #f8faff 100%)",
+      background: "linear-gradient(180deg, #d8e1e8 0%, #c6d3e3 60%, #d8e1e8 100%)",
     }}>
       {/* Ambient glow blobs */}
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
         <div style={{ position: "absolute", top: "-15%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
-          background: "radial-gradient(circle,rgba(59,130,246,0.18) 0%,transparent 70%)" }} />
+          background: "radial-gradient(circle,rgba(152,186,213,0.35) 0%,transparent 70%)" }} />
         <div style={{ position: "absolute", bottom: "-10%", right: "-10%", width: 500, height: 500, borderRadius: "50%",
-          background: "radial-gradient(circle,rgba(79,70,229,0.14) 0%,transparent 70%)" }} />
+          background: "radial-gradient(circle,rgba(48,70,116,0.18) 0%,transparent 70%)" }} />
       </div>
 
       {/* Tab pills */}
-      <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 8, marginBottom: 32 }}>
+      <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 10, marginBottom: 32 }}>
         {SLIDES.map((slide, i) => (
           <button key={slide.id} onClick={() => setCurrent(i)} style={{
-            border: i === current ? "none" : "1px solid rgba(59,130,246,0.2)",
-            cursor: "pointer", padding: "7px 18px", borderRadius: 999, fontSize: 12, fontWeight: 700,
+            border: "2.5px solid #304674",
+            cursor: "pointer", padding: "7px 20px", borderRadius: 999, fontSize: 12, fontWeight: 800,
             letterSpacing: "0.04em",
-            background: i === current ? "linear-gradient(to right,#3b82f6,#4f46e5)" : "rgba(255,255,255,0.7)",
-            color: i === current ? "#fff" : "#64748b",
-            transition: "all 0.3s ease", backdropFilter: "blur(8px)",
-            boxShadow: i === current ? "0 4px 16px rgba(59,130,246,0.3)" : "none",
+            background: i === current ? "linear-gradient(to right,#98bad5,#304674)" : "#fff",
+            color: i === current ? "#fff" : "#304674",
+            transition: "all 0.25s ease",
+            boxShadow: i === current ? "3px 3px 0px #304674" : "2px 2px 0px #304674",
+            transform: i === current ? "translate(-1px,-1px)" : "none",
           }}>
             {slide.label}
           </button>
@@ -294,10 +275,10 @@ function SectionCarousel() {
               width: "min(690px, 72vw)", height: "448px",
               overflow: "hidden", borderRadius: 24,
               background: "#ffffff",
-              border: "2.5px solid #0f172a",
+              border: "2.5px solid #304674",
               boxShadow: isCenter
-                ? "4px 4px 0px #1e3a8a, 0 16px 48px rgba(59,130,246,0.15)"
-                : "2px 2px 0px #1e3a8a",
+                ? "4px 4px 0px #304674, 0 16px 48px rgba(48,70,116,0.18)"
+                : "2px 2px 0px #304674",
               transform: `
                 translateX(${offset * 88}%)
                 rotateY(${offset * -14}deg)
@@ -331,96 +312,41 @@ function SectionCarousel() {
       <button onClick={handlePrev} style={{
         position: "absolute", left: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
         zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-        background: "rgba(255,255,255,0.88)", border: "1px solid rgba(59,130,246,0.18)",
-        backdropFilter: "blur(12px)", cursor: "pointer",
+        background: "#fff", border: "2.5px solid #304674", cursor: "pointer",
         display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.08)", transition: "transform 0.15s, box-shadow 0.15s",
+        boxShadow: "3px 3px 0px #304674", transition: "box-shadow 0.15s, transform 0.15s",
       }}
-        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1.1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(59,130,246,0.2)" }}
-        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)" }}>
-        <ChevronLeft style={{ width: 20, height: 20, color: "#2563eb" }} />
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "1px 1px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) translate(2px,2px)" }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "3px 3px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%)" }}>
+        <ChevronLeft style={{ width: 20, height: 20, color: "#304674" }} />
       </button>
 
       {/* Next arrow */}
       <button onClick={handleNext} style={{
         position: "absolute", right: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
         zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-        background: "rgba(255,255,255,0.88)", border: "1px solid rgba(59,130,246,0.18)",
-        backdropFilter: "blur(12px)", cursor: "pointer",
+        background: "#fff", border: "2.5px solid #304674", cursor: "pointer",
         display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.08)", transition: "transform 0.15s, box-shadow 0.15s",
+        boxShadow: "3px 3px 0px #304674", transition: "box-shadow 0.15s, transform 0.15s",
       }}
-        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1.1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(59,130,246,0.2)" }}
-        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)" }}>
-        <ChevronRight style={{ width: 20, height: 20, color: "#2563eb" }} />
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "1px 1px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) translate(2px,2px)" }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "3px 3px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%)" }}>
+        <ChevronRight style={{ width: 20, height: 20, color: "#304674" }} />
       </button>
 
       {/* Dot indicators */}
       <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 8, marginTop: 28 }}>
         {SLIDES.map((_, i) => (
           <button key={i} onClick={() => setCurrent(i)} style={{
-            border: "none", cursor: "pointer", padding: 0,
-            width: i === current ? 24 : 8, height: 8, borderRadius: 999,
-            background: i === current
-              ? "linear-gradient(to right,#3b82f6,#4f46e5)"
-              : "rgba(59,130,246,0.25)",
-            transition: "all 0.35s ease",
+            border: "2px solid #304674", cursor: "pointer", padding: 0,
+            width: i === current ? 28 : 10, height: 10, borderRadius: 999,
+            background: i === current ? "linear-gradient(to right,#98bad5,#304674)" : "#fff",
+            boxShadow: "2px 2px 0px #304674",
+            transition: "all 0.3s ease",
           }} />
         ))}
       </div>
     </div>
-  )
-}
-
-function FloatingCharacter() {
-  return (
-    <motion.div
-      animate={{ y: [0, -12, 0] }}
-      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      style={{ position: "relative", width: "100%", zIndex: 30 }}
-    >
-      <div style={{ position: "relative" }}>
-        {/* Husky Image (Multiply blend to hide white background) */}
-        <img 
-          src="/husky.png.png" 
-          alt="Husky Guide" 
-          style={{ 
-            width: "100%", height: "auto", 
-            mixBlendMode: "multiply",
-            filter: "contrast(1.05) saturate(1.02)" 
-          }} 
-        />
-        
-        {/* Whiteboard Overlay Info - Tighter fit for the whiteboard */}
-        <div style={{ 
-          position: "absolute", top: "54%", left: "50%", transform: "translate(-50%, -50%)",
-          width: "74%", padding: "15px 10px",
-          background: "#fff", borderRadius: 12,
-          textAlign: "center", color: "#1e293b", fontFamily: "'Inter', sans-serif",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.02)"
-        }}>
-          <h2 style={{ fontSize: 13, fontWeight: 900, color: "#0f172a", marginBottom: 1, lineHeight: 1 }}>
-            Stop guessing.
-          </h2>
-          <h2 style={{ fontSize: 13, fontWeight: 900, color: "#3b82f6", marginBottom: 8, lineHeight: 1 }}>
-            Start connecting.
-          </h2>
-          <p style={{ fontSize: 8.5, fontWeight: 600, color: "#64748b", lineHeight: 1.3, marginBottom: 10, maxWidth: "90%", marginInline: "auto" }}>
-            Landing high-impact positions using <span style={{ color: "#3b82f6" }}>AI-powered</span> precision matching.
-          </p>
-          <Link href="/signup" style={{ 
-            display: "inline-flex", alignItems: "center", gap: 5,
-            background: "linear-gradient(to right, #3b82f6, #4f46e5)", color: "#fff", 
-            padding: "6px 12px", borderRadius: 6,
-            fontSize: 9, fontWeight: 800, textDecoration: "none", pointerEvents: "auto",
-            boxShadow: "0 4px 10px rgba(59, 130, 246, 0.2)", textTransform: "uppercase", letterSpacing: "0.02em"
-          }}>
-            Create Your Account
-            <ArrowRight size={10} />
-          </Link>
-        </div>
-      </div>
-    </motion.div>
   )
 }
 
@@ -441,28 +367,23 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div ref={containerRef} style={{ background: "#fff", color: "#0f172a", overflow: "hidden" }}>
+    <div ref={containerRef} style={{ background: "#fff", color: "#304674", overflow: "hidden" }}>
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-track { animation: marquee 35s linear infinite; }
       `}</style>
 
-      {/* ═══════════════════════════════════════
-          SECTION 1 — Video Hero with Highlight
-      ═══════════════════════════════════════ */}
+      {/* SECTION 1 — Video Hero */}
       <div style={{ height: "100vh", width: "100%", padding: 10 }}>
         <div style={{ position: "relative", height: "100%", width: "100%", overflow: "hidden", borderRadius: 28 }}>
-
           <video autoPlay loop muted playsInline
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
-
 
           <HeroHighlight
             containerClassName="absolute inset-0 bg-transparent dark:bg-transparent"
             className="w-full h-full flex flex-col items-start justify-end p-12 md:p-20"
           >
-            {/* Top Right Sign In */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -492,7 +413,8 @@ export default function LandingPage() {
                   Precision matching, AI drafts, and automated follow-ups.
                 </p>
                 <div className="flex justify-start">
-                  <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl text-sm">
+                  <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 text-sm"
+                    style={{ border: "2.5px solid #304674", boxShadow: "3px 3px 0px #304674", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8 }}>
                     Get started free
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -516,14 +438,10 @@ export default function LandingPage() {
         </div>
       </motion.div>
 
-      {/* ═══════════════════════════════════════
-          SECTION 2 — 3D Section Carousel
-      ═══════════════════════════════════════ */}
+      {/* SECTION 2 — 3D Carousel */}
       <SectionCarousel />
 
-      {/* ═══════════════════════════════════════
-          SECTION 3 — CTA with Wolf
-      ═══════════════════════════════════════ */}
+      {/* SECTION 3 — CTA with Wolf */}
       <div style={{
         position: "relative", overflow: "hidden",
         background: "#0a0f1e",
@@ -531,14 +449,11 @@ export default function LandingPage() {
         display: "flex", alignItems: "center", justifyContent: "center", gap: "6vw",
         flexWrap: "wrap",
       }}>
-        {/* Cloud video background */}
         <video
           autoPlay muted loop playsInline
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55, zIndex: 0 }}
           src="/hero-bg.mp4"
         />
-        {/* Very light overlay — clouds clearly visible */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "rgba(10,15,30,0.08)" }} />
 
         {/* Wolf with whiteboard */}
         <motion.div
@@ -547,24 +462,22 @@ export default function LandingPage() {
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
           <img src="/husky.png.png" alt="OutreachAI Guide" style={{ width: "100%", height: "auto", display: "block" }} />
-          {/* No background — text sits directly on the white board area of the image */}
           <div style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
-            width: "68%",
-            textAlign: "center", pointerEvents: "auto",
+            width: "68%", textAlign: "center", pointerEvents: "auto",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
           }}>
-            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#0f172a", lineHeight: 1.1, margin: 0 }}>Stop guessing.</p>
-            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, margin: 0 }}>Start connecting.</p>
-            <p style={{ fontSize: "clamp(6.5px, 0.63vw, 8.6px)", color: "#475569", lineHeight: 1.3, margin: 0, maxWidth: "88%", fontWeight: 500 }}>
+            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#304674", lineHeight: 1.1, margin: 0 }}>Stop guessing.</p>
+            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#98bad5", lineHeight: 1.1, margin: 0 }}>Start connecting.</p>
+            <p style={{ fontSize: "clamp(6.5px, 0.63vw, 8.6px)", color: "#4a5568", lineHeight: 1.3, margin: 0, maxWidth: "88%", fontWeight: 500 }}>
               AI-powered matching for high-impact positions.
             </p>
             <Link href="/signup" style={{
               display: "inline-flex", alignItems: "center", gap: 3,
-              background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
+              background: "linear-gradient(to right,#98bad5,#304674)", color: "#fff",
               padding: "4px 9px", borderRadius: 4, marginTop: 2,
               fontSize: "clamp(5.9px, 0.63vw, 8.1px)", fontWeight: 800, textDecoration: "none",
-              textTransform: "uppercase", letterSpacing: "0.02em", boxShadow: "0 3px 10px rgba(59,130,246,0.35)",
+              textTransform: "uppercase", letterSpacing: "0.02em",
             }}>
               Create Account <ArrowRight size={7} />
             </Link>
@@ -579,27 +492,28 @@ export default function LandingPage() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           style={{ flex: 1, minWidth: 280, maxWidth: 540, zIndex: 1 }}
         >
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(186,230,253,0.7)", marginBottom: 16, display: "block" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(178,203,222,0.9)", marginBottom: 16, display: "block" }}>
             AI-Powered Cold Outreach
           </span>
           <h2 style={{
             fontSize: "clamp(42px, 7vw, 88px)", fontWeight: 900, color: "#f0f6ff",
             letterSpacing: "-0.04em", lineHeight: 0.92, margin: "0 0 20px",
-            textShadow: "0 2px 40px rgba(59,130,246,0.3)",
+            textShadow: "0 2px 40px rgba(152,186,213,0.4)",
           }}>
             Reach<br />
-            <span style={{ background: "linear-gradient(135deg, #93c5fd 0%, #818cf8 50%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <span style={{ background: "linear-gradient(135deg, #b2cbde 0%, #98bad5 50%, #c6d3e3 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               further.
             </span>
           </h2>
-          <p style={{ fontSize: "clamp(14px,1.2vw,18px)", color: "rgba(226,232,240,0.72)", fontWeight: 400, maxWidth: 400, lineHeight: 1.55, margin: "0 0 28px" }}>
+          <p style={{ fontSize: "clamp(14px,1.2vw,18px)", color: "rgba(216,225,232,0.85)", fontWeight: 400, maxWidth: 400, lineHeight: 1.55, margin: "0 0 28px" }}>
             From first contact to first reply — automated, personalized, and precise.
           </p>
           <Link href="/signup" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
-            padding: "13px 28px", borderRadius: 12, fontSize: 15, fontWeight: 700,
-            textDecoration: "none", boxShadow: "0 8px 28px rgba(59,130,246,0.4)",
+            background: "linear-gradient(to right,#98bad5,#304674)", color: "#fff",
+            padding: "13px 28px", borderRadius: 12, fontSize: 15, fontWeight: 800,
+            textDecoration: "none",
+            border: "2.5px solid #304674", boxShadow: "4px 4px 0px #304674",
           }}>
             Get started free <ArrowRight size={16} />
           </Link>
@@ -607,25 +521,26 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid rgba(59,130,246,0.1)",
+      <div style={{ background: "#d8e1e8", borderTop: "2px solid #b2cbde",
         padding: "28px 40px", display: "flex", alignItems: "center",
         justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8,
-            background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
-            display: "flex", alignItems: "center", justifyContent: "center" }}>
+            background: "linear-gradient(135deg,#98bad5,#304674)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            border: "2px solid #304674" }}>
             <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
           </div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#64748b" }}>OutreachAI</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#304674" }}>OutreachAI</span>
         </div>
-        <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+        <p style={{ fontSize: 13, color: "#4a5568", margin: 0 }}>
           Built for students. Powered by AI. © 2025 OutreachAI.
         </p>
         <div style={{ display: "flex", gap: 20 }}>
           {["Privacy", "Terms", "Contact"].map(l => (
-            <a key={l} href="#" style={{ fontSize: 13, color: "#64748b", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#0f172a"}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "#64748b"}>
+            <a key={l} href="#" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#304674"}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "#4a5568"}>
               {l}
             </a>
           ))}
