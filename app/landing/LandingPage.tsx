@@ -526,16 +526,19 @@ export default function LandingPage() {
       ═══════════════════════════════════════ */}
       <div style={{
         position: "relative", overflow: "hidden",
-        background: "linear-gradient(135deg, #060d1f 0%, #0d1533 100%)",
+        background: "#0a0f1e",
         padding: "80px 40px",
         display: "flex", alignItems: "center", justifyContent: "center", gap: "6vw",
         flexWrap: "wrap",
       }}>
-        {/* Ambient glow */}
-        <div style={{ pointerEvents: "none", position: "absolute", inset: 0 }}>
-          <div style={{ position: "absolute", top: "-20%", left: "-5%", width: 500, height: 500, borderRadius: "50%", filter: "blur(100px)", background: "radial-gradient(circle,rgba(59,130,246,0.18) 0%,transparent 70%)" }} />
-          <div style={{ position: "absolute", bottom: "-20%", right: "-5%", width: 400, height: 400, borderRadius: "50%", filter: "blur(100px)", background: "radial-gradient(circle,rgba(79,70,229,0.2) 0%,transparent 70%)" }} />
-        </div>
+        {/* Cloud video background */}
+        <video
+          autoPlay muted loop playsInline
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55, zIndex: 0 }}
+          src="/hero-bg.mp4"
+        />
+        {/* Dark overlay so text stays readable */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(to bottom, rgba(10,15,30,0.45) 0%, rgba(10,15,30,0.6) 100%)" }} />
 
         {/* Wolf with whiteboard */}
         <motion.div
@@ -544,23 +547,23 @@ export default function LandingPage() {
           style={{ width: "min(460px, 42vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
           <img src="/husky.png.png" alt="OutreachAI Guide" style={{ width: "100%", height: "auto", display: "block" }} />
+          {/* No background — text sits directly on the white board area of the image */}
           <div style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
-            width: "68%", background: "#ffffff", borderRadius: 8,
-            padding: "10px 8px 12px",
+            width: "68%",
             textAlign: "center", pointerEvents: "auto",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
           }}>
-            <p style={{ fontSize: "clamp(8px, 1.1vw, 14px)", fontWeight: 900, color: "#0f172a", lineHeight: 1.1, margin: 0 }}>Stop guessing.</p>
-            <p style={{ fontSize: "clamp(8px, 1.1vw, 14px)", fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, margin: 0 }}>Start connecting.</p>
-            <p style={{ fontSize: "clamp(6px, 0.58vw, 8px)", color: "#475569", lineHeight: 1.3, margin: 0, maxWidth: "88%", fontWeight: 500 }}>
+            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#0f172a", lineHeight: 1.1, margin: 0 }}>Stop guessing.</p>
+            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, margin: 0 }}>Start connecting.</p>
+            <p style={{ fontSize: "clamp(6.5px, 0.63vw, 8.6px)", color: "#475569", lineHeight: 1.3, margin: 0, maxWidth: "88%", fontWeight: 500 }}>
               AI-powered matching for high-impact positions.
             </p>
             <Link href="/signup" style={{
               display: "inline-flex", alignItems: "center", gap: 3,
               background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
               padding: "4px 9px", borderRadius: 4, marginTop: 2,
-              fontSize: "clamp(5.5px, 0.58vw, 7.5px)", fontWeight: 800, textDecoration: "none",
+              fontSize: "clamp(5.9px, 0.63vw, 8.1px)", fontWeight: 800, textDecoration: "none",
               textTransform: "uppercase", letterSpacing: "0.02em", boxShadow: "0 3px 10px rgba(59,130,246,0.35)",
             }}>
               Create Account <ArrowRight size={7} />
