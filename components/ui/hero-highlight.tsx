@@ -70,9 +70,14 @@ export const Highlight = ({
         backgroundRepeat: "no-repeat",
         backgroundPosition: "left center",
         display: "inline",
+        border: "2.5px solid #304674",
+        boxShadow: "4px 4px 0px #304674",
+        borderRadius: 10,
+        paddingLeft: 8,
+        paddingRight: 8,
       }}
       className={cn(
-        `relative inline-block pb-1 px-1 rounded-lg`,
+        `relative inline-block pb-1`,
         className
       )}
     >

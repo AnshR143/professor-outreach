@@ -401,7 +401,7 @@ export default function LandingPage() {
               className="text-left"
             >
               <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4">
-                Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
+                Reach <Highlight className="text-[#1a2e52]">further.</Highlight>
               </h1>
               <div className="max-w-lg space-y-4">
                 <p className="text-sm md:text-base text-[#E1E0CC]/80 leading-relaxed font-medium">
