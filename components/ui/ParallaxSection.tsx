@@ -125,41 +125,83 @@ export function ParallaxSection() {
           }} />
         </motion.div>
 
-        {/* ── LAYER 4: Headline text (medium-fast, fades as you scroll) ── */}
+        {/* ── LAYER 4: Headline text + Husky (medium-fast, fades as you scroll) ── */}
         <motion.div style={{
-          position: "absolute", top: "22%", left: 0, right: 0,
-          display: "flex", flexDirection: "column", alignItems: "center",
+          position: "absolute", bottom: "15%", left: "5%", right: "5%",
+          display: "flex", alignItems: "flex-end", justifyContent: "center", gap: "4vw",
           y: textY, opacity: textOpacity, scale: textScale,
-          zIndex: 3, pointerEvents: "none",
+          zIndex: 3,
         }}>
-          <span style={{
-            fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase",
-            color: "rgba(186,230,253,0.7)", marginBottom: 20,
-          }}>
-            AI-Powered Cold Outreach
-          </span>
-          <h2 style={{
-            fontSize: "clamp(52px, 9vw, 110px)",
-            fontWeight: 900, color: "#f0f6ff",
-            letterSpacing: "-0.04em", lineHeight: 0.92,
-            textAlign: "center", margin: 0,
-            textShadow: "0 2px 40px rgba(59,130,246,0.3)",
-          }}>
-            Reach<br />
-            <span style={{
-              background: "linear-gradient(135deg, #93c5fd 0%, #818cf8 50%, #c4b5fd 100%)",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          {/* Husky Guide - positioned to the left of the text */}
+          <motion.div 
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            style={{ width: "min(380px, 35vw)", position: "relative", pointerEvents: "none" }}
+          >
+            <img
+              src="/husky.png.png"
+              alt="OutreachAI Guide"
+              style={{ width: "100%", height: "auto", mixBlendMode: "multiply" }}
+            />
+            {/* Whiteboard overlay - precisely fitted to the image's board area */}
+            <div style={{
+              position: "absolute", top: "64%", left: "50%", transform: "translate(-50%, -50%)",
+              width: "72%", background: "#fff", borderRadius: 10, padding: "12px 8px",
+              textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.02)", pointerEvents: "auto"
             }}>
-              further.
+              <h4 style={{ fontSize: "clamp(10px, 1.4vw, 16px)", fontWeight: 900, color: "#0f172a", marginBottom: 2, lineHeight: 1 }}>
+                Stop guessing.
+              </h4>
+              <h4 style={{ fontSize: "clamp(10px, 1.4vw, 16px)", fontWeight: 900, color: "#3b82f6", marginBottom: 6, lineHeight: 1 }}>
+                Start connecting.
+              </h4>
+              <p style={{ fontSize: "clamp(7px, 0.8vw, 9px)", color: "#475569", lineHeight: 1.3, marginBottom: 8, maxWidth: "90%", marginInline: "auto" }}>
+                Landing high-impact positions using AI-powered precision matching.
+              </p>
+              <Link href="/signup" style={{
+                display: "inline-flex", alignItems: "center", gap: 4,
+                background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
+                padding: "6px 12px", borderRadius: 6,
+                fontSize: "clamp(7px, 0.7vw, 9px)", fontWeight: 800, textDecoration: "none",
+                textTransform: "uppercase", letterSpacing: "0.02em", boxShadow: "0 4px 12px rgba(59,130,246,0.3)"
+              }}>
+                Create Account
+                <ArrowRight size={10} />
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* Text Content */}
+          <div style={{ flex: 1, maxWidth: 600, paddingBottom: "2vh" }}>
+            <span style={{
+              fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase",
+              color: "rgba(186,230,253,0.7)", marginBottom: 16, display: "block"
+            }}>
+              AI-Powered Cold Outreach
             </span>
-          </h2>
-          <p style={{
-            marginTop: 28, fontSize: "clamp(15px,1.5vw,20px)",
-            color: "rgba(226,232,240,0.72)", fontWeight: 400,
-            maxWidth: 460, textAlign: "center", lineHeight: 1.55,
-          }}>
-            From first contact to first reply — automated, personalized, and precise.
-          </p>
+            <h2 style={{
+              fontSize: "clamp(42px, 7vw, 90px)",
+              fontWeight: 900, color: "#f0f6ff",
+              letterSpacing: "-0.04em", lineHeight: 0.92,
+              textAlign: "left", margin: 0,
+              textShadow: "0 2px 40px rgba(59,130,246,0.3)",
+            }}>
+              Reach<br />
+              <span style={{
+                background: "linear-gradient(135deg, #93c5fd 0%, #818cf8 50%, #c4b5fd 100%)",
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+              }}>
+                further.
+              </span>
+            </h2>
+            <p style={{
+              marginTop: 20, fontSize: "clamp(14px,1.2vw,18px)",
+              color: "rgba(226,232,240,0.72)", fontWeight: 400,
+              maxWidth: 400, textAlign: "left", lineHeight: 1.5,
+            }}>
+              From first contact to first reply — automated, personalized, and precise.
+            </p>
+          </div>
         </motion.div>
 
         {/* ── LAYER 5: Ground fog at very bottom — ties foreground to scene ── */}
