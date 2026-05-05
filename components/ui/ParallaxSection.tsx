@@ -156,20 +156,9 @@ export function ParallaxSection() {
               <p style={{ fontSize: "clamp(9px, 1.2vw, 15px)", fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, margin: 0 }}>
                 Start connecting.
               </p>
-              <p style={{ fontSize: "clamp(6.5px, 0.65vw, 8.5px)", color: "#475569", lineHeight: 1.35, margin: 0, maxWidth: "92%", fontWeight: 500 }}>
-                Land high-impact positions using AI-powered precision matching.
+              <p style={{ fontSize: "clamp(7px, 0.8vw, 9px)", color: "#475569", lineHeight: 1.3, marginBottom: 0, maxWidth: "90%", marginInline: "auto" }}>
+                Landing high-impact positions using AI-powered precision matching.
               </p>
-              <Link href="/signup" style={{
-                display: "inline-flex", alignItems: "center", gap: 3,
-                background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
-                padding: "5px 10px", borderRadius: 5,
-                fontSize: "clamp(6px, 0.62vw, 8px)", fontWeight: 800, textDecoration: "none",
-                textTransform: "uppercase", letterSpacing: "0.02em", boxShadow: "0 3px 10px rgba(59,130,246,0.35)",
-                marginTop: 2,
-              }}>
-                Create Account
-                <ArrowRight size={8} />
-              </Link>
             </div>
           </motion.div>
 
