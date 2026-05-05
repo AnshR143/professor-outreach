@@ -384,6 +384,59 @@ function SectionCarousel() {
   )
 }
 
+function FloatingCharacter() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8, x: 50 }}
+      animate={{ 
+        opacity: 1, scale: 1, x: 0,
+        y: [0, -15, 0] 
+      }}
+      transition={{ 
+        duration: 4, 
+        repeat: Infinity, 
+        ease: "easeInOut",
+        opacity: { duration: 0.8 },
+        scale: { duration: 0.8 },
+        x: { duration: 0.8 }
+      }}
+      style={{ 
+        position: "absolute", right: "10%", top: "25%", zIndex: 20,
+        width: 400, pointerEvents: "none"
+      }}
+    >
+      <div style={{ position: "relative" }}>
+        {/* Husky Image */}
+        <img 
+          src="/husky.png" 
+          alt="Husky Guide" 
+          style={{ width: "100%", height: "auto", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))" }} 
+        />
+        
+        {/* Whiteboard Overlay Info */}
+        <div style={{ 
+          position: "absolute", top: "58%", left: "50%", transform: "translate(-50%, -50%) rotate(-2deg)",
+          width: "55%", textAlign: "center", color: "#1e293b", fontFamily: "'Inter', sans-serif"
+        }}>
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            style={{ fontSize: 14, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}
+          >
+            Live Analysis
+          </motion.div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, marginBottom: 8 }}>
+            98% Match
+          </div>
+          <div style={{ fontSize: 12, fontWeight: 600, opacity: 0.7 }}>
+            Stanford University <br /> Computer Science
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 /* ═══════════════════════════════════════════════════════════
    LANDING PAGE
 ═══════════════════════════════════════════════════════════ */
@@ -416,6 +469,9 @@ export default function LandingPage() {
           <video autoPlay loop muted playsInline
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
+
+          {/* Floating Character Component */}
+          <FloatingCharacter />
 
           <HeroHighlight
             containerClassName="absolute inset-0 bg-transparent dark:bg-transparent"
