@@ -17,14 +17,38 @@ const TECH_ROLES = [
   "Data Analyst", "Quant Analyst",
 ]
 
-const POPULAR_FIELDS = [
-  "Machine Learning", "Data Science", "Software Engineering",
-  "Web Development", "Mobile Development", "DevOps / Cloud",
-  "Computer Vision", "Natural Language Processing",
-  "Cybersecurity", "Systems Engineering",
-  "Quantitative Finance", "Robotics",
-  "Bioinformatics", "Research Engineering",
+const ALL_FIELDS = [
+  "Artificial Intelligence","Machine Learning","Deep Learning","Computer Vision",
+  "Natural Language Processing","Data Science","Data Engineering","Data Analytics",
+  "Software Engineering","Web Development","Frontend Development","Backend Development",
+  "Full Stack Development","Mobile Development","iOS Development","Android Development",
+  "DevOps","Cloud Computing","Cybersecurity","Information Security","Blockchain",
+  "Robotics","Embedded Systems","Systems Engineering","Computer Science",
+  "Electrical Engineering","Mechanical Engineering","Civil Engineering",
+  "Chemical Engineering","Aerospace Engineering","Biomedical Engineering",
+  "Environmental Engineering","Materials Science","Physics","Mathematics",
+  "Statistics","Applied Mathematics","Quantitative Finance","Financial Engineering",
+  "Economics","Finance","Accounting","Marketing","Business Analytics",
+  "Operations Research","Supply Chain","Product Management","UX Design",
+  "Graphic Design","Architecture","Biology","Biochemistry","Bioinformatics",
+  "Neuroscience","Chemistry","Pharmacology","Pre-Medicine","Public Health",
+  "Psychology","Cognitive Science","Linguistics","Political Science",
+  "International Relations","Law","Communications","Journalism","Media Studies",
+  "Film Studies","Music","Art History","Fine Arts","Philosophy","History",
+  "Sociology","Anthropology","Education","Environmental Science","Climate Science",
+  "Astronomy","Astrophysics","Research Engineering","Human-Computer Interaction",
+  "Information Systems","Game Development","AR / VR","Quantum Computing",
 ]
+
+function fuzzyMatchFields(query: string): string[] {
+  if (!query.trim()) return []
+  const q = query.toLowerCase()
+  return ALL_FIELDS.filter(f => {
+    const fl = f.toLowerCase()
+    if (fl.includes(q)) return true
+    return fl.split(/[\s/\-&,]+/).some(word => word.startsWith(q))
+  }).slice(0, 8)
+}
 
 const POPULAR_COMPANIES = [
   "Google", "Meta", "Apple", "Microsoft", "Amazon",
@@ -45,7 +69,8 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
   const [company, setCompany] = useState("")
   const [companyRole, setCompanyRole] = useState("")
   const [field, setField] = useState("")
-  const [fieldRole, setFieldRole] = useState("")
+  const [fieldSuggestions, setFieldSuggestions] = useState<string[]>([])
+  const [showFieldDrop, setShowFieldDrop] = useState(false)
 
   const [specName, setSpecName] = useState("")
   const [specCompany, setSpecCompany] = useState("")
@@ -64,7 +89,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
 
   async function handleFind() {
     if (mode === "company" && !company.trim()) { setError("Enter a company name."); return }
-    if (mode === "field" && !field.trim() && !fieldRole.trim()) { setError("Enter a field or role."); return }
+    if (mode === "field" && !field.trim()) { setError("Enter a field or major."); return }
     setError(""); setStep("loading"); setSuggestion("")
     setProgress({ found: 0, total: count, current: "Starting search..." })
 
@@ -76,7 +101,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
           mode,
           company: mode === "company" ? company : "",
           field: mode === "field" ? field : "",
-          role: mode === "company" ? companyRole : fieldRole,
+          role: mode === "company" ? companyRole : "",
           count,
         }),
       })
@@ -206,18 +231,32 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                   <div style={{ background: "#f0fdf4", borderRadius: 8, padding: "9px 12px", fontSize: 12, color: "#15803d", border: "1px solid #bbf7d0" }}>
                     Finds professionals who actively write and share work in this field.
                   </div>
-                  <div>
+                  <div style={{ position: "relative" }}>
                     <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Field / Major *</label>
-                    <input value={field} onChange={e => setField(e.target.value)} placeholder="e.g. Machine Learning, Data Science, Robotics" style={inp()} />
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 8 }}>
-                      {POPULAR_FIELDS.map(f => chip(f, field, setField))}
-                    </div>
-                  </div>
-                  <div>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>
-                      Role Title <span style={{ fontWeight: 400, color: "#94a3b8" }}>(optional)</span>
-                    </label>
-                    <input value={fieldRole} onChange={e => setFieldRole(e.target.value)} placeholder="e.g. Research Engineer, ML Engineer" style={inp()} />
+                    <input
+                      value={field}
+                      onChange={e => {
+                        setField(e.target.value)
+                        setFieldSuggestions(fuzzyMatchFields(e.target.value))
+                        setShowFieldDrop(true)
+                      }}
+                      onFocus={() => { setFieldSuggestions(fuzzyMatchFields(field)); setShowFieldDrop(true) }}
+                      onBlur={() => setTimeout(() => setShowFieldDrop(false), 150)}
+                      placeholder="Type anything — e.g. art → Artificial Intelligence"
+                      style={inp()}
+                      autoComplete="off"
+                    />
+                    {showFieldDrop && fieldSuggestions.length > 0 && (
+                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 50, background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", marginTop: 2, overflow: "hidden" }}>
+                        {fieldSuggestions.map(s => (
+                          <button key={s} onMouseDown={() => { setField(s); setShowFieldDrop(false) }}
+                            style={{ width: "100%", padding: "9px 14px", textAlign: "left", background: "transparent", border: "none", borderBottom: "1px solid #f1f5f9", fontSize: 13, color: "#0f172a", cursor: "pointer" }}
+                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "#f8fafc"}
+                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
+                          >{s}</button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -299,10 +338,10 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                   <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
                     <button onClick={onClose} style={{ flex: 1, padding: "10px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, cursor: "pointer", color: "#475569" }}>Cancel</button>
                     <button onClick={handleFind}
-                      disabled={(mode === "company" && !company.trim()) || (mode === "field" && !field.trim() && !fieldRole.trim())}
+                      disabled={(mode === "company" && !company.trim()) || (mode === "field" && !field.trim())}
                       style={{ flex: 2, padding: "10px 20px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer",
                         display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                        opacity: ((mode === "company" && !company.trim()) || (mode === "field" && !field.trim() && !fieldRole.trim())) ? 0.5 : 1 }}>
+                        opacity: ((mode === "company" && !company.trim()) || (mode === "field" && !field.trim())) ? 0.5 : 1 }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                       Find Contacts
                     </button>

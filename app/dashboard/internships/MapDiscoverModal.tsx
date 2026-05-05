@@ -7,8 +7,9 @@ import { createClient } from "@/lib/supabase/client"
 
 interface RawBiz {
   id: number
-  lat: number
-  lon: number
+  lat?: number               // present for node elements
+  lon?: number               // present for node elements
+  center?: { lat: number; lon: number }  // present for way/relation elements
   tags: Record<string, string>
 }
 
@@ -223,8 +224,11 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
   async function queryOverpass(lat: number, lon: number, radiusM: number): Promise<RawBiz[]> {
     const r = Math.min(radiusM, 10000)
-    // Simpler query = faster response
-    const query = `[out:json][timeout:12];(node["office"]["name"](around:${r},${lat},${lon});node["shop"]["name"](around:${r},${lat},${lon});node["craft"]["name"](around:${r},${lat},${lon});node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library)$"]["name"](around:${r},${lat},${lon}););out 60;`
+    // Include both node AND way — US cities map most businesses as ways (building polygons)
+    // "out center" returns centroid coords for ways so we can place markers
+    const q = (tag: string) =>
+      `node["${tag}"]["name"](around:${r},${lat},${lon});way["${tag}"]["name"](around:${r},${lat},${lon});`
+    const query = `[out:json][timeout:15];(${q("office")}${q("shop")}${q("craft")}${q("company")}node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace)$"]["name"](around:${r},${lat},${lon});way["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace)$"]["name"](around:${r},${lat},${lon}););out center 100;`
 
     const ENDPOINTS = [
       "https://overpass-api.de/api/interpreter",
@@ -246,7 +250,10 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         clearTimeout(t)
         if (!res.ok) throw new Error("non-ok")
         const data = await res.json()
-        const els = (data.elements || []).filter((e: any) => e.tags?.name) as RawBiz[]
+        // Keep elements that have a name AND usable coordinates (node has lat/lon, way has center)
+        const els = (data.elements || []).filter(
+          (e: any) => e.tags?.name && (e.lat != null || e.center?.lat != null)
+        ) as RawBiz[]
         if (els.length === 0) throw new Error("empty")
         return els
       } catch {
@@ -329,8 +336,8 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         .map((el, i) => ({
           id: String(el.id),
           name: el.tags.name,
-          lat: el.lat,
-          lon: el.lon,
+          lat: el.lat ?? el.center!.lat,
+          lon: el.lon ?? el.center!.lon,
           type: osmTagToType(el.tags),
           address: buildAddress(el.tags),
           website: el.tags.website || el.tags["contact:website"] || null,
