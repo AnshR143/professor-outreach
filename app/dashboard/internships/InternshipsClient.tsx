@@ -115,8 +115,14 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
   function openGmail() {
     if (!emailContact) return
     const to = emailContact.email || ""
-    const url = "https://mail.google.com/mail/?view=cm&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(genSubject) + "&body=" + encodeURIComponent(genBody)
-    window.open(url, "_blank")
+    // fs=1 keeps the compose window open (full-screen mode); without it Gmail auto-closes
+    // Truncate body to 1800 chars to stay within safe URL length limits
+    const body = genBody.length > 1800 ? genBody.slice(0, 1800) + "…" : genBody
+    const url = "https://mail.google.com/mail/?view=cm&fs=1&to=" +
+      encodeURIComponent(to) +
+      "&su=" + encodeURIComponent(genSubject) +
+      "&body=" + encodeURIComponent(body)
+    window.open(url, "_blank", "noopener,noreferrer")
   }
 
   async function handleAdd(e: React.FormEvent) {

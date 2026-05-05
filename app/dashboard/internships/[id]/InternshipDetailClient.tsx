@@ -98,9 +98,10 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
   }
 
   function openGmail() {
-    const url = "https://mail.google.com/mail/?view=cm&to=" + encodeURIComponent(contact.email || "") +
-      "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body)
-    window.open(url, "_blank")
+    const safeBody = body.length > 1800 ? body.slice(0, 1800) + "…" : body
+    const url = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(contact.email || "") +
+      "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(safeBody)
+    window.open(url, "_blank", "noopener,noreferrer")
   }
 
   async function saveNotes() {
