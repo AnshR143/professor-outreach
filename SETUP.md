@@ -62,6 +62,13 @@ Click the orange "Find Researchers" button → select your fields → hit Find!
 3. Create an API Key in **Credentials**.
 4. Add to `.env.local` as `GOOGLE_MAPS_API_KEY=your-key-here`.
 
+## 10. Set Up Geoapify (Free Alternative)
+
+1. Go to [Geoapify MyProjects](https://myprojects.geoapify.com/)
+2. Create a new project and copy your **API Key**.
+3. Add to `.env.local` as `GEOAPIFY_API_KEY=your-key-here`.
+4. This enables a robust search that is much more cost-efficient than Google.
+
 ---
 
 ## 🚀 New Feature: Internship Discovery Pipeline

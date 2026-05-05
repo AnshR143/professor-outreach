@@ -177,9 +177,10 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   const [adding, setAdding]       = useState<Set<string>>(new Set())
   const [added, setAdded]         = useState<Set<string>>(new Set())
 
-  // Google vs OSM toggle
-  const [provider, setProvider]   = useState<"osm" | "google">("osm")
+  // Google vs OSM vs Geoapify toggle
+  const [provider, setProvider]   = useState<"osm" | "google" | "geoapify">("osm")
   const [googleEnabled, setGoogleEnabled] = useState(false)
+  const [geoapifyEnabled, setGeoapifyEnabled] = useState(false)
 
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -190,7 +191,11 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
       .then(data => {
         if (data.googleMapsEnabled) {
           setGoogleEnabled(true)
-          setProvider("google") // Default to Google if available
+          setProvider("google")
+        }
+        if (data.geoapifyEnabled) {
+          setGeoapifyEnabled(true)
+          if (!data.googleMapsEnabled) setProvider("geoapify")
         }
       })
       .catch(() => {})
@@ -245,7 +250,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     // "out center" returns centroid coords for ways so we can place markers
     const q = (tag: string) =>
       `node["${tag}"]["name"](around:${r},${lat},${lon});way["${tag}"]["name"](around:${r},${lat},${lon});`
-    const query = `[out:json][timeout:15];(${q("office")}${q("shop")}${q("craft")}${q("company")}node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace)$"]["name"](around:${r},${lat},${lon});way["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace)$"]["name"](around:${r},${lat},${lon}););out center 100;`
+    const query = `[out:json][timeout:15];(${q("office")}${q("shop")}${q("craft")}${q("company")}${q("industrial")}${q("business")}node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace|bank|post_office)$"]["name"](around:${r},${lat},${lon});way["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace|bank|post_office)$"]["name"](around:${r},${lat},${lon}););out center 100;`
 
     const ENDPOINTS = [
       "https://overpass-api.de/api/interpreter",
@@ -298,22 +303,59 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     setSelected(null)
 
     try {
+      // 1. Geocode (needed for both providers to set map center)
+      const coords = await geocodeLocation(location.trim())
+      if (!coords) {
+        setError(`Could not find "${location}". Try a city name like "Chicago, IL".`)
+        setLoading(false)
+        return
+      }
+      setCenter([coords.lon, coords.lat])
+
       if (provider === "google") {
-        setStep("Searching Google Places…")
-        const res = await fetch("/api/pipeline/run", {
+        setStep("Running Google enrichment pipeline…")
+        const pipelineRes = await fetch("/api/pipeline/run", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            lat: 0, // Will be geocoded if not provided, but we should geocode first or let server do it
-            lng: 0,
+            lat: coords.lat,
+            lng: coords.lon,
             radius,
-            keyword: industry === "Any" ? "companies" : industry,
+            keyword: industry === "Any" ? "software company" : industry, // "software company" is a better default than "companies"
             maxResults: 20
           })
         })
 
-        // Wait, the pipeline/run route expects lat/lng.
-        // I should geocode first as I already do for OSM.
+        if (!pipelineRes.ok) {
+          const errData = await pipelineRes.json().catch(() => ({}))
+          throw new Error(errData.error || "Pipeline failed")
+        }
+        
+        const data = await pipelineRes.json()
+        const results: DiscoveredBusiness[] = (data.results || []).map((p: any) => ({
+          id: p.place_id,
+          name: p.name,
+          lat: p.lat,
+          lon: p.lng,
+          type: p.types?.[0]?.replace(/_/g, " ") || "business",
+          address: p.address,
+          website: p.website,
+          phone: p.phone,
+          internScore: Math.round((p.leadScore?.score || 50) / 10),
+          scoreReason: p.leadScore?.reasons?.[0] || "Google Verified Business",
+          industry: industry,
+          emails: p.scrape?.emails || [],
+          sentiment: p.analysis?.sentiment,
+          opportunity: p.analysis?.opportunity
+        }))
+
+        setBusinesses(results)
+        if (results.length === 0) {
+          setError("No businesses found via Google. Try a different keyword or larger radius.")
+        }
+      } else if (provider === "geoapify") {
+        setStep("Searching Geoapify Places…")
+        
         const coords = await geocodeLocation(location.trim())
         if (!coords) {
           setError(`Could not find "${location}".`)
@@ -322,41 +364,36 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         }
         setCenter([coords.lon, coords.lat])
 
-        setStep("Running enrichment pipeline…")
-        const pipelineRes = await fetch("/api/pipeline/run", {
+        const res = await fetch("/api/maps/geoapify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             lat: coords.lat,
-            lng: coords.lon,
+            lon: coords.lon,
             radius,
-            keyword: industry === "Any" ? "companies" : industry,
-            maxResults: 20
+            keyword: industry === "Any" ? "commercial" : industry
           })
         })
 
-        if (!pipelineRes.ok) throw new Error("Pipeline failed")
-        const data = await pipelineRes.json()
+        if (!res.ok) throw new Error("Geoapify search failed")
+        const data = await res.json()
 
-        const results: DiscoveredBusiness[] = (data.results || []).map((p: any) => ({
-          id: p.place_id,
-          name: p.name,
-          lat: p.lat,
-          lon: p.lng,
-          type: p.types?.[0] || "business",
-          address: p.address,
-          website: p.website,
-          phone: p.phone,
-          internScore: Math.round((p.leadScore?.score || 50) / 10),
-          scoreReason: p.leadScore?.reasons?.[0] || "Google Verified Business",
-          industry: industry,
-          // Extra data for Google results
-          emails: p.scrape?.emails || [],
-          sentiment: p.analysis?.sentiment,
-          opportunity: p.analysis?.opportunity
+        const results: DiscoveredBusiness[] = (data.features || []).map((f: any) => ({
+          id: f.properties.place_id,
+          name: f.properties.name || f.properties.company || "Business",
+          lat: f.properties.lat,
+          lon: f.properties.lon,
+          type: f.properties.categories?.[0]?.replace(/\./g, " ") || "business",
+          address: f.properties.address_line2,
+          website: f.properties.website || null,
+          phone: f.properties.contact?.phone || null,
+          internScore: 7,
+          scoreReason: "Verified local business",
+          industry: industry
         }))
 
         setBusinesses(results)
+        if (results.length === 0) setError("No businesses found via Geoapify.")
       } else {
         // 1. Geocode
         const coords = await geocodeLocation(location.trim())
@@ -568,6 +605,18 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                     boxShadow: provider === "osm" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
                   }}
                 >OSM</button>
+                {geoapifyEnabled && (
+                  <button
+                    type="button"
+                    onClick={() => setProvider("geoapify")}
+                    style={{
+                      padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
+                      cursor: "pointer", background: provider === "geoapify" ? "#fff" : "transparent",
+                      color: provider === "geoapify" ? "#6366f1" : "#64748b",
+                      boxShadow: provider === "geoapify" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
+                    }}
+                  >Geoapify</button>
+                )}
               </div>
             </div>
           )}
