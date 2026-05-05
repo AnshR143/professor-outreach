@@ -390,7 +390,7 @@ function FloatingCharacter() {
       initial={{ opacity: 0, scale: 0.8, x: 50 }}
       animate={{ 
         opacity: 1, scale: 1, x: 0,
-        y: [0, -15, 0] 
+        y: [0, -10, 0] 
       }}
       transition={{ 
         duration: 4, 
@@ -401,36 +401,35 @@ function FloatingCharacter() {
         x: { duration: 0.8 }
       }}
       style={{ 
-        position: "absolute", right: "10%", top: "25%", zIndex: 20,
-        width: 400, pointerEvents: "none"
+        position: "absolute", right: "8%", top: "35%", zIndex: 20,
+        width: 380, pointerEvents: "none"
       }}
     >
       <div style={{ position: "relative" }}>
-        {/* Husky Image */}
+        {/* Husky Image (Peeking version) */}
         <img 
           src="/husky.png" 
           alt="Husky Guide" 
-          style={{ width: "100%", height: "auto", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))" }} 
+          style={{ width: "100%", height: "auto", filter: "drop-shadow(0 15px 35px rgba(0,0,0,0.12))" }} 
         />
         
         {/* Whiteboard Overlay Info */}
         <div style={{ 
-          position: "absolute", top: "58%", left: "50%", transform: "translate(-50%, -50%) rotate(-2deg)",
-          width: "55%", textAlign: "center", color: "#1e293b", fontFamily: "'Inter', sans-serif"
+          position: "absolute", top: "54%", left: "50%", transform: "translate(-50%, -50%)",
+          width: "75%", textAlign: "center", color: "#1e293b", fontFamily: "'Inter', sans-serif"
         }}>
-          <motion.div
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            style={{ fontSize: 14, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}
-          >
-            Live Analysis
-          </motion.div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, marginBottom: 8 }}>
-            98% Match
-          </div>
-          <div style={{ fontSize: 12, fontWeight: 600, opacity: 0.7 }}>
-            Stanford University <br /> Computer Science
-          </div>
+          <h3 style={{ fontSize: 22, fontWeight: 900, color: "#0f172a", marginBottom: 12, lineHeight: 1.1 }}>
+            Ready to jump in?
+          </h3>
+          <Link href="/signup" style={{ 
+            display: "inline-flex", alignItems: "center", gap: 8,
+            background: "#3b82f6", color: "#fff", padding: "10px 20px", borderRadius: 12,
+            fontSize: 14, fontWeight: 700, textDecoration: "none", pointerEvents: "auto",
+            boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)"
+          }}>
+            Get started for free
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </div>
     </motion.div>
