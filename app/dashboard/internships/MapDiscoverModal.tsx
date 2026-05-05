@@ -1,8 +1,22 @@
 "use client"
+import "maplibre-gl/dist/maplibre-gl.css"
 import { useState, useCallback, useRef } from "react"
 import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls } from "@/components/ui/map"
 import { createClient } from "@/lib/supabase/client"
-import type { DiscoveredBusiness } from "@/app/api/internships/discover-map/route"
+// Inline type — avoids importing from an API route file (causes webpack bundling issues)
+export interface DiscoveredBusiness {
+  id: string
+  name: string
+  lat: number
+  lon: number
+  type: string
+  address: string
+  website: string | null
+  phone: string | null
+  internScore: number
+  scoreReason: string
+  industry: string
+}
 
 // ─── Score colour helper ──────────────────────────────────────────────────────
 
