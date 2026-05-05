@@ -9,12 +9,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing GEOAPIFY_API_KEY" }, { status: 500 })
     }
 
-    // Geoapify Places API uses categories. 
-    // We'll map keywords to categories or use text search.
-    // Category 'commercial' is good for companies.
-    const categories = keyword === "commercial" ? "commercial" : "commercial.office"
+    // Map user industries to Geoapify categories
+    const industryMap: Record<string, string> = {
+      "Software / Tech": "commercial.office",
+      "Marketing / Creative": "commercial.office",
+      "Finance / Accounting": "commercial.financial,commercial.office",
+      "Healthcare / Medical": "healthcare",
+      "Education / Research": "education",
+      "Non-Profit / NGO": "commercial.office",
+      "Any": "commercial,office,production,industrial"
+    }
+
+    const categories = industryMap[keyword] || "commercial,office"
     
-    const url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${lon},${lat},${radius}&limit=20&apiKey=${apiKey}`
+    // We can also use 'name' if the keyword is not a direct category match
+    const nameParam = (keyword && !industryMap[keyword]) ? `&name=${encodeURIComponent(keyword)}` : ""
+    
+    const url = `https://api.geoapify.com/v2/places?categories=${categories}${nameParam}&filter=circle:${lon},${lat},${radius}&limit=40&apiKey=${apiKey}`
     
     const res = await fetch(url)
     if (!res.ok) {
