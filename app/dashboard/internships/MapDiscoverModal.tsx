@@ -166,6 +166,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
   // Results
   const [loading, setLoading]     = useState(false)
+  const [step, setStep]           = useState("")
   const [error, setError]         = useState("")
   const [businesses, setBusinesses] = useState<DiscoveredBusiness[]>([])
   const [center, setCenter]       = useState<[number, number] | null>(null)
@@ -205,48 +206,60 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
   async function geocodeLocation(loc: string): Promise<{ lat: number; lon: number } | null> {
     try {
+      const ctrl = new AbortController()
+      const t = setTimeout(() => ctrl.abort(), 8000)
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(loc)}&format=json&limit=1`,
-        { headers: { "User-Agent": "OutreachAI/1.0 (internship map)" } }
+        { headers: { "User-Agent": "OutreachAI/1.0" }, signal: ctrl.signal }
       )
+      clearTimeout(t)
       const data = await res.json()
       if (!data.length) return null
       return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) }
     } catch { return null }
   }
 
-  // ── Client-side Overpass query ───────────────────────────────────────────────
+  // ── Client-side Overpass (tries endpoints in parallel, takes first win) ───────
 
   async function queryOverpass(lat: number, lon: number, radiusM: number): Promise<RawBiz[]> {
     const r = Math.min(radiusM, 10000)
-    const query = `[out:json][timeout:20];
-(
-  node["office"]["name"](around:${r},${lat},${lon});
-  node["shop"]["name"](around:${r},${lat},${lon});
-  node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library)$"]["name"](around:${r},${lat},${lon});
-  node["craft"]["name"](around:${r},${lat},${lon});
-);
-out body 80;`
+    // Simpler query = faster response
+    const query = `[out:json][timeout:12];(node["office"]["name"](around:${r},${lat},${lon});node["shop"]["name"](around:${r},${lat},${lon});node["craft"]["name"](around:${r},${lat},${lon});node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library)$"]["name"](around:${r},${lat},${lon}););out 60;`
 
     const ENDPOINTS = [
       "https://overpass-api.de/api/interpreter",
       "https://overpass.kumi.systems/api/interpreter",
       "https://overpass.openstreetmap.ru/api/interpreter",
     ]
-    for (const url of ENDPOINTS) {
+
+    // Try all endpoints in parallel, return first successful non-empty result
+    const tryEndpoint = async (url: string): Promise<RawBiz[]> => {
+      const ctrl = new AbortController()
+      const t = setTimeout(() => ctrl.abort(), 15000)
       try {
         const res = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: `data=${encodeURIComponent(query)}`,
+          signal: ctrl.signal,
         })
-        if (!res.ok) continue
+        clearTimeout(t)
+        if (!res.ok) throw new Error("non-ok")
         const data = await res.json()
-        const els = (data.elements || []).filter((e: any) => e.tags?.name)
-        if (els.length > 0 || url === ENDPOINTS[ENDPOINTS.length - 1]) return els
-      } catch { continue }
+        const els = (data.elements || []).filter((e: any) => e.tags?.name) as RawBiz[]
+        if (els.length === 0) throw new Error("empty")
+        return els
+      } catch {
+        clearTimeout(t)
+        throw new Error("failed")
+      }
     }
-    return []
+
+    try {
+      return await Promise.any(ENDPOINTS.map(tryEndpoint))
+    } catch {
+      return []
+    }
   }
 
   // ── Search ──────────────────────────────────────────────────────────────────
@@ -255,20 +268,22 @@ out body 80;`
     e.preventDefault()
     if (!location.trim()) return
     setLoading(true)
+    setStep("Locating city…")
     setError("")
     setBusinesses([])
     setSelected(null)
 
     try {
-      // 1. Geocode in browser (no server timeout)
+      // 1. Geocode
       const coords = await geocodeLocation(location.trim())
       if (!coords) {
-        setError(`Could not find location: "${location}". Try a city name like "Chicago, IL".`)
+        setError(`Could not find "${location}". Try a city name like "Chicago, IL".`)
         return
       }
       setCenter([coords.lon, coords.lat])
+      setStep("Fetching nearby businesses…")
 
-      // 2. Query Overpass in browser (no server timeout)
+      // 2. Overpass (browser-side, parallel endpoints)
       const elements = await queryOverpass(coords.lat, coords.lon, radius)
       if (elements.length === 0) {
         setError("No businesses found in this area. Try a larger radius or different city.")
@@ -292,6 +307,7 @@ out body 80;`
       }))
 
       // 4. Ask server only for AI scoring (fast, no external calls)
+      setStep("Scoring businesses with AI…")
       let scores: { score: number; reason: string; industry: string }[] =
         forScoring.map(() => ({ score: 5, reason: "Local business", industry }))
       try {
@@ -332,6 +348,7 @@ out body 80;`
       setError("Something went wrong. Please check your connection and try again.")
     } finally {
       setLoading(false)
+      setStep("")
     }
   }
 
@@ -469,7 +486,8 @@ out body 80;`
             {loading && (
               <div style={{ padding: 32, textAlign: "center" }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" style={{ animation: "spin 1s linear infinite", marginBottom: 12 }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
-                <div style={{ fontSize: 13, color: "#64748b" }}>Finding businesses & scoring with AI...</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#6366f1", marginBottom: 4 }}>{step}</div>
+                <div style={{ fontSize: 12, color: "#94a3b8" }}>This may take up to 15 seconds</div>
               </div>
             )}
 
