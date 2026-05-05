@@ -389,7 +389,7 @@ export default function LandingPage() {
           {/* Aceternity HeroHighlight as an overlay for the mouse-tracking dots */}
           <HeroHighlight 
             containerClassName="absolute inset-0 bg-transparent dark:bg-transparent" 
-            className="w-full h-full flex flex-col items-center justify-center"
+            className="w-full h-full flex flex-col items-start justify-end p-12 md:p-20"
           >
             {/* Original Sign In pill - restored position */}
             <motion.div
@@ -408,22 +408,22 @@ export default function LandingPage() {
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: [20, -5, 0] }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
-              className="text-center px-4"
+              className="text-left"
             >
-              <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold text-[#E1E0CC] tracking-tighter leading-none mb-8">
+              <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-6">
                 Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
               </h1>
-              <div className="max-w-2xl mx-auto space-y-6">
-                <p className="text-lg md:text-xl text-[#E1E0CC]/80 leading-relaxed">
+              <div className="max-w-xl space-y-6">
+                <p className="text-base md:text-lg text-[#E1E0CC]/80 leading-relaxed font-medium">
                   The intelligent outreach platform for landing research positions and internships. 
                   Precision matching, AI drafts, and automated follow-ups.
                 </p>
-                <div className="flex justify-center">
-                  <Link href="/signup" className="group px-8 py-4 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl">
+                <div className="flex justify-start">
+                  <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl text-sm">
                     Get started free
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </div>
