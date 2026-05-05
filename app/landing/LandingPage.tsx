@@ -447,7 +447,7 @@ export default function LandingPage() {
       }}>
         <video
           autoPlay muted loop playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.82, zIndex: 0 }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.68, zIndex: 0 }}
           src="/hero-bg.mp4"
         />
 
@@ -460,23 +460,14 @@ export default function LandingPage() {
           <img src="/husky.png.png" alt="OutreachAI Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           <div style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
-            width: "68%", textAlign: "center", pointerEvents: "auto",
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
+            width: "68%", textAlign: "center", pointerEvents: "none",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
           }}>
-            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#304674", lineHeight: 1.1, margin: 0 }}>Stop guessing.</p>
-            <p style={{ fontSize: "clamp(8.6px, 1.19vw, 15.1px)", fontWeight: 900, color: "#98bad5", lineHeight: 1.1, margin: 0 }}>Start connecting.</p>
-            <p style={{ fontSize: "clamp(6.5px, 0.63vw, 8.6px)", color: "#4a5568", lineHeight: 1.3, margin: 0, maxWidth: "88%", fontWeight: 500 }}>
+            <p style={{ fontSize: "clamp(10px, 1.4vw, 17px)", fontWeight: 900, color: "#304674", lineHeight: 1.1, margin: 0 }}>Stop guessing.</p>
+            <p style={{ fontSize: "clamp(10px, 1.4vw, 17px)", fontWeight: 900, color: "#304674", lineHeight: 1.1, margin: 0 }}>Start connecting.</p>
+            <p style={{ fontSize: "clamp(7.5px, 0.85vw, 11px)", color: "#4a5568", lineHeight: 1.35, margin: "2px 0 0", maxWidth: "90%", fontWeight: 600 }}>
               AI-powered matching for high-impact positions.
             </p>
-            <Link href="/signup" style={{
-              display: "inline-flex", alignItems: "center", gap: 3,
-              background: "linear-gradient(to right,#98bad5,#304674)", color: "#fff",
-              padding: "4px 9px", borderRadius: 4, marginTop: 2,
-              fontSize: "clamp(5.9px, 0.63vw, 8.1px)", fontWeight: 800, textDecoration: "none",
-              textTransform: "uppercase", letterSpacing: "0.02em",
-            }}>
-              Create Account <ArrowRight size={7} />
-            </Link>
           </div>
         </motion.div>
 
@@ -497,7 +488,7 @@ export default function LandingPage() {
             textShadow: "0 2px 40px rgba(152,186,213,0.4)",
           }}>
             Reach<br />
-            <span style={{ background: "linear-gradient(135deg, #a78bfa 0%, #6366f1 50%, #818cf8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <span style={{ color: "#98bad5" }}>
               further.
             </span>
           </h2>

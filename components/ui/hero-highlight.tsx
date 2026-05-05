@@ -66,12 +66,13 @@ export const Highlight = ({
         delay: 0.5,
       }}
       style={{
+        backgroundImage: "linear-gradient(to right, #b2cbde, #98bad5)",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "left center",
         display: "inline",
       }}
       className={cn(
-        `relative inline-block pb-1 px-1 rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500`,
+        `relative inline-block pb-1 px-1 rounded-lg`,
         className
       )}
     >
