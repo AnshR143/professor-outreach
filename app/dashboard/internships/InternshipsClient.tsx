@@ -4,8 +4,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { InternshipContact } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
+import dynamic from "next/dynamic"
 import FindInternshipContactsModal from "@/components/internships/FindInternshipContactsModal"
-import MapDiscoverModal from "./MapDiscoverModal"
+const MapDiscoverModal = dynamic(() => import("./MapDiscoverModal"), { ssr: false })
 
 const EMAIL_STATUS_CYCLE = ["not_emailed", "emailed", "rejected", "accepted"] as const
 type EmailStatus = typeof EMAIL_STATUS_CYCLE[number]
@@ -485,33 +486,4 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
         <MapDiscoverModal onClose={handleMapClose} />
       )}
 
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-    </div>
-  )
-}
-                  {savingDraft ? "Saving..." : "Save Draft"}
-                </button>
-                <Link href={"/dashboard/internships/" + emailContact.id}
-                  style={{ marginLeft: "auto", padding: "9px 14px", background: "#fff", color: "#6366f1", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>
-                  Full Details →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Find Contacts Modal ── */}
-      {showFind && (
-        <FindInternshipContactsModal onClose={handleFindClose} />
-      )}
-
-      {/* ── Map Discovery Modal ── */}
-      {showMap && (
-        <MapDiscoverModal onClose={handleMapClose} />
-      )}
-
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-    </div>
-  )
-}
+      <style>{`@keyframes spin { from { transform: rotate(0d
