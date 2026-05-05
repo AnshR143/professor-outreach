@@ -1,7 +1,6 @@
 "use client"
 import { motion, useInView, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
-import { ArrowRight, Brain, Mail, BarChart3, Zap, Shield, CheckCircle,
-         Hexagon, Triangle, Command, Ghost, Gem, Cpu, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react"
 import { useRef, useEffect, useState, useCallback } from "react"
 import Link from "next/link"
 import Lenis from "@studio-freight/lenis"
@@ -11,22 +10,22 @@ import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
    Data
 ───────────────────────────────────────────────────────────── */
 const FEATURES = [
-  { icon: Brain,       title: "AI Match Scoring",     desc: "Your resume and fields are cross-referenced against thousands of professors to surface the best fits." },
-  { icon: Mail,        title: "Cold Email Generator",  desc: "Groq-powered emails tailored to each professor's research papers, tone, and your academic background." },
-  { icon: BarChart3,   title: "Outreach Analytics",   desc: "Track response rates, email statuses, and follow-up timing across your entire researcher pipeline." },
-  { icon: Zap,         title: "Instant Discovery",    desc: "A curated database of 500+ professors across top universities, filtered by field and institution." },
-  { icon: Shield,      title: "Resume Parsing",       desc: "Upload your PDF resume once. Every match and email automatically leverages your extracted keywords." },
-  { icon: CheckCircle, title: "Follow-up Engine",     desc: "Generate perfectly-timed follow-up emails that reference your original message without being pushy." },
+  { title: "Smart Contact Matching",         desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
+  { title: "Personalized Email Drafts",      desc: "AI crafts tailored cold emails based on each recipient's work, interests, and your background — no generic templates." },
+  { title: "Outreach Analytics",             desc: "Track open rates, reply statuses, and follow-up timing across your entire cold outreach pipeline in one place." },
+  { title: "Contact Discovery",              desc: "Find researchers, professors, and internship contacts across academia and industry, all filtered by field and location." },
+  { title: "Resume-Powered Personalization", desc: "Upload your CV once. Every email draft automatically pulls your skills, projects, and experience to match each contact." },
+  { title: "Follow-up Engine",               desc: "Generate perfectly-timed follow-up emails that reference your original message and keep conversations moving forward." },
 ]
 
 const HOW_STEPS = [
-  { step: "01", title: "Upload your resume",        desc: "Paste or upload your CV. Our parser extracts keywords, skills, and research areas automatically." },
-  { step: "02", title: "Set your fields & filters", desc: "Pick research areas and optionally filter by university tier or name. Match scores update live." },
-  { step: "03", title: "Generate & send emails",    desc: "Click Generate — your Groq AI key crafts a tailored cold email. Open Gmail pre-filled and hit send." },
+  { step: "01", title: "Upload your resume",         desc: "Paste or upload your CV. The parser extracts keywords, skills, and experience automatically." },
+  { step: "02", title: "Find your targets",          desc: "Search for professors, researchers, or company contacts by field, location, or institution. Match scores update live." },
+  { step: "03", title: "Generate & send emails",     desc: "Click Generate — AI crafts a tailored cold email for each contact. Open Gmail pre-filled and hit send." },
 ]
 
 const PRICING = [
-  { plan: "Free", price: "$0", desc: "Everything you need to start reaching professors.", features: ["Unlimited researchers", "AI email generation", "Resume parsing", "Match scoring", "Follow-up engine"], cta: "Get started", href: "/signup", primary: true },
+  { plan: "Free", price: "$0", desc: "Everything you need to start your cold outreach.", features: ["Unlimited contacts", "AI email generation", "Resume parsing", "Match scoring", "Follow-up engine"], cta: "Get started", href: "/signup", primary: true },
   { plan: "Pro (coming soon)", price: "$12/mo", desc: "Advanced analytics and bulk outreach for serious applicants.", features: ["Everything in Free", "Bulk email campaigns", "Advanced analytics", "Priority support", "Custom templates"], cta: null, href: "#", primary: false },
 ]
 
@@ -66,14 +65,14 @@ function FeaturesSlide() {
       </div>
       <h2 style={{ fontSize: "clamp(22px,3vw,36px)", fontWeight: 800, color: "#0f172a",
         margin: "0 0 8px", lineHeight: 1.2, letterSpacing: "-0.03em" }}>
-        Every tool you need to land{" "}
+        Everything you need for cold outreach{" "}
         <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-          research opportunities
+          that actually works
         </span>
       </h2>
       <p style={{ fontSize: 14, color: "#334155", margin: "0 0 24px", lineHeight: 1.6, maxWidth: 520 }}>
-        Built for undergrads, Masters, and PhD students who want a systematic, AI-powered approach to cold outreach.
+        Built for students and early-career professionals who want a systematic, AI-powered approach to reaching the right people.
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
         {FEATURES.map((f, i) => (
@@ -85,12 +84,6 @@ function FeaturesSlide() {
               background: "rgba(255,255,255,0.85)", border: "1px solid rgba(59,130,246,0.15)",
               borderRadius: 16, padding: "18px 18px", backdropFilter: "blur(10px)",
             }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10,
-              background: "linear-gradient(135deg,rgba(59,130,246,0.1),rgba(129,140,248,0.1))",
-              border: "1px solid rgba(59,130,246,0.2)",
-              display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
-              <f.icon style={{ width: 18, height: 18, color: "#2563eb" }} />
-            </div>
             <h3 style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>{f.title}</h3>
             <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.5, margin: 0 }}>{f.desc}</p>
           </motion.div>
@@ -114,7 +107,7 @@ function HowItWorksSlide() {
           From zero to{" "}
           <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            professor reply
+            first reply
           </span>
         </h2>
         {HOW_STEPS.map((s, i) => (
@@ -151,9 +144,9 @@ function HowItWorksSlide() {
           display: "flex", flexDirection: "column", gap: 16, backdropFilter: "blur(10px)",
         }}>
         {[
-          { label: "Researchers found",  value: "12 professors matched", dot: "#3b82f6" },
-          { label: "Email generated",    value: "Personalised in 2s",    dot: "#4f46e5" },
-          { label: "Outreach status",    value: "3 replied · 2 pending", dot: "#10b981" },
+          { label: "Contacts discovered", value: "18 matches found",       dot: "#3b82f6" },
+          { label: "Email drafted",       value: "Personalised in 2s",    dot: "#4f46e5" },
+          { label: "Outreach status",     value: "4 replied · 3 pending", dot: "#10b981" },
         ].map((item) => (
           <div key={item.label} style={{ background: "rgba(255,255,255,0.72)", borderRadius: 14, padding: "14px 18px",
             border: "1px solid rgba(59,130,246,0.1)", backdropFilter: "blur(8px)" }}>
@@ -251,11 +244,6 @@ function SectionCarousel() {
     setCurrent(prev => (prev - 1 + total) % total)
   }, [total])
 
-  useEffect(() => {
-    const timer = setInterval(handleNext, 7000)
-    return () => clearInterval(timer)
-  }, [handleNext])
-
   return (
     <div id="carousel" style={{
       position: "relative", minHeight: "100vh", overflow: "hidden",
@@ -290,7 +278,7 @@ function SectionCarousel() {
 
       {/* 3D Carousel track */}
       <div style={{
-        position: "relative", width: "100%", height: "480px",
+        position: "relative", width: "100%", height: "580px",
         display: "flex", alignItems: "center", justifyContent: "center",
         perspective: "1200px", zIndex: 10,
       }}>
@@ -303,7 +291,7 @@ function SectionCarousel() {
           return (
             <div key={slide.id} style={{
               position: "absolute",
-              width: "min(860px, 88vw)", height: "460px",
+              width: "min(860px, 88vw)", height: "560px",
               overflow: "hidden", borderRadius: 28,
               background: "rgba(255,255,255,0.88)", backdropFilter: "blur(20px)",
               border: "1px solid rgba(59,130,246,0.14)",
