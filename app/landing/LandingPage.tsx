@@ -5,7 +5,6 @@ import { useRef, useEffect, useState, useCallback } from "react"
 import Link from "next/link"
 import Lenis from "@studio-freight/lenis"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
-import { ParallaxSection } from "@/components/ui/ParallaxSection"
 
 /* ─────────────────────────────────────────────────────────────
    Data
@@ -484,11 +483,11 @@ export default function LandingPage() {
               transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
               className="text-left"
             >
-              <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-6">
+              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4">
                 Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
               </h1>
-              <div className="max-w-xl space-y-6">
-                <p className="text-base md:text-lg text-[#E1E0CC]/80 leading-relaxed font-medium">
+              <div className="max-w-lg space-y-4">
+                <p className="text-sm md:text-base text-[#E1E0CC]/80 leading-relaxed font-medium">
                   The intelligent outreach platform for landing research positions and internships.
                   Precision matching, AI drafts, and automated follow-ups.
                 </p>
@@ -523,9 +522,86 @@ export default function LandingPage() {
       <SectionCarousel />
 
       {/* ═══════════════════════════════════════
-          SECTION 3 — Parallax CTA
+          SECTION 3 — CTA with Wolf
       ═══════════════════════════════════════ */}
-      <ParallaxSection />
+      <div style={{
+        position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, #060d1f 0%, #0d1533 100%)",
+        padding: "80px 40px",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: "6vw",
+        flexWrap: "wrap",
+      }}>
+        {/* Ambient glow */}
+        <div style={{ pointerEvents: "none", position: "absolute", inset: 0 }}>
+          <div style={{ position: "absolute", top: "-20%", left: "-5%", width: 500, height: 500, borderRadius: "50%", filter: "blur(100px)", background: "radial-gradient(circle,rgba(59,130,246,0.18) 0%,transparent 70%)" }} />
+          <div style={{ position: "absolute", bottom: "-20%", right: "-5%", width: 400, height: 400, borderRadius: "50%", filter: "blur(100px)", background: "radial-gradient(circle,rgba(79,70,229,0.2) 0%,transparent 70%)" }} />
+        </div>
+
+        {/* Wolf with whiteboard */}
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          style={{ width: "min(460px, 42vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
+        >
+          <img src="/husky.png.png" alt="OutreachAI Guide" style={{ width: "100%", height: "auto", display: "block" }} />
+          <div style={{
+            position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
+            width: "68%", background: "#ffffff", borderRadius: 8,
+            padding: "10px 8px 12px",
+            textAlign: "center", pointerEvents: "auto",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
+          }}>
+            <p style={{ fontSize: "clamp(8px, 1.1vw, 14px)", fontWeight: 900, color: "#0f172a", lineHeight: 1.1, margin: 0 }}>Stop guessing.</p>
+            <p style={{ fontSize: "clamp(8px, 1.1vw, 14px)", fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, margin: 0 }}>Start connecting.</p>
+            <p style={{ fontSize: "clamp(6px, 0.58vw, 8px)", color: "#475569", lineHeight: 1.3, margin: 0, maxWidth: "88%", fontWeight: 500 }}>
+              AI-powered matching for high-impact positions.
+            </p>
+            <Link href="/signup" style={{
+              display: "inline-flex", alignItems: "center", gap: 3,
+              background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
+              padding: "4px 9px", borderRadius: 4, marginTop: 2,
+              fontSize: "clamp(5.5px, 0.58vw, 7.5px)", fontWeight: 800, textDecoration: "none",
+              textTransform: "uppercase", letterSpacing: "0.02em", boxShadow: "0 3px 10px rgba(59,130,246,0.35)",
+            }}>
+              Create Account <ArrowRight size={7} />
+            </Link>
+          </div>
+        </motion.div>
+
+        {/* Headline text */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          style={{ flex: 1, minWidth: 280, maxWidth: 540, zIndex: 1 }}
+        >
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(186,230,253,0.7)", marginBottom: 16, display: "block" }}>
+            AI-Powered Cold Outreach
+          </span>
+          <h2 style={{
+            fontSize: "clamp(42px, 7vw, 88px)", fontWeight: 900, color: "#f0f6ff",
+            letterSpacing: "-0.04em", lineHeight: 0.92, margin: "0 0 20px",
+            textShadow: "0 2px 40px rgba(59,130,246,0.3)",
+          }}>
+            Reach<br />
+            <span style={{ background: "linear-gradient(135deg, #93c5fd 0%, #818cf8 50%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              further.
+            </span>
+          </h2>
+          <p style={{ fontSize: "clamp(14px,1.2vw,18px)", color: "rgba(226,232,240,0.72)", fontWeight: 400, maxWidth: 400, lineHeight: 1.55, margin: "0 0 28px" }}>
+            From first contact to first reply — automated, personalized, and precise.
+          </p>
+          <Link href="/signup" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
+            padding: "13px 28px", borderRadius: 12, fontSize: 15, fontWeight: 700,
+            textDecoration: "none", boxShadow: "0 8px 28px rgba(59,130,246,0.4)",
+          }}>
+            Get started free <ArrowRight size={16} />
+          </Link>
+        </motion.div>
+      </div>
 
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid rgba(59,130,246,0.1)",
