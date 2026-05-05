@@ -4,15 +4,16 @@ import { ArrowRight, ChevronLeft, ChevronRight, Menu, X } from "lucide-react"
 import { useRef, useEffect, useState, useCallback } from "react"
 import Link from "next/link"
 import Lenis from "@studio-freight/lenis"
+import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 
 const FEATURES = [
-  { title: "Match Scoring",     desc: "Precision cross-referencing against global professor and corporate contact databases." },
-  { title: "Draft Generation",  desc: "Context-aware emails tailored to specific research papers or corporate roles." },
-  { title: "Lead Intelligence", desc: "Real-time discovery across 500+ universities and top-tier global companies." },
-  { title: "Timeline Engine",   desc: "Algorithmic follow-ups designed to maintain engagement without friction." },
+  { title: "Match Scoring",     desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
+  { title: "Draft Generation",  desc: "Personalized outreach drafts are created for every target, incorporating their research interests and your background." },
+  { title: "Institutional Discovery", desc: "Browse a global database of researchers and internships across 500+ top-tier universities and companies." },
+  { title: "Automated Tracking", desc: "Manage your outreach pipeline with intelligent follow-up reminders and response tracking." },
 ]
 
-const UNIS = ["MIT", "Stanford", "Harvard", "Oxford", "Cambridge", "ETH Zurich", "Berkeley", "Princeton"]
+const UNIS = ["MIT", "Stanford", "Harvard", "Oxford", "Cambridge", "ETH Zurich", "Berkeley", "Princeton", "Caltech", "UChicago", "Columbia", "Yale"]
 
 function Nav() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -27,20 +28,23 @@ function Nav() {
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
       padding: isScrolled ? "12px 40px" : "24px 40px",
       transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-      background: isScrolled ? "rgba(240, 249, 255, 0.85)" : "transparent",
+      background: isScrolled ? "rgba(255, 255, 255, 0.8)" : "transparent",
       backdropFilter: isScrolled ? "blur(12px)" : "none",
-      borderBottom: isScrolled ? "1px solid rgba(2, 132, 199, 0.1)" : "none"
+      borderBottom: isScrolled ? "1px solid rgba(59, 130, 246, 0.1)" : "none"
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: 1400, margin: "0 auto" }}>
-        <Link href="/" style={{ fontSize: 22, fontWeight: 700, color: "#0C4A6E", textDecoration: "none", fontFamily: "'Instrument Serif', serif", letterSpacing: "-0.02em" }}>
-          OutreachAI
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #3b82f6, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <ArrowRight style={{ width: 16, height: 16, color: "#fff" }} />
+          </div>
+          <span style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.02em" }}>OutreachAI</span>
+        </div>
         <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-          <Link href="/login" style={{ fontSize: 13, fontWeight: 600, color: "#0C4A6E", textDecoration: "none", opacity: 0.7 }}>Login</Link>
+          <Link href="/login" style={{ fontSize: 14, fontWeight: 600, color: "#475569", textDecoration: "none" }}>Login</Link>
           <Link href="/signup" style={{ 
-            fontSize: 13, fontWeight: 700, color: "#fff", textDecoration: "none", 
-            background: "#0284C7", padding: "8px 20px", borderRadius: 4, transition: "opacity 0.2s"
-          }} onMouseEnter={e => e.currentTarget.style.opacity = "0.9"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+            fontSize: 14, fontWeight: 700, color: "#fff", textDecoration: "none", 
+            background: "#3b82f6", padding: "10px 24px", borderRadius: 12, boxShadow: "0 4px 14px 0 rgba(59, 130, 246, 0.39)"
+          }}>
             Get Started
           </Link>
         </div>
@@ -49,125 +53,68 @@ function Nav() {
   )
 }
 
-function FeaturesSlide() {
-  return (
-    <div style={{ padding: "40px" }}>
-      <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0284C7", marginBottom: 12, display: "block" }}>Innovation</span>
-      <h2 style={{ fontSize: 42, fontFamily: "'Instrument Serif', serif", lineHeight: 1.1, color: "#0C4A6E", margin: "0 0 24px" }}>
-        Tools for the <br /> <span style={{ fontStyle: "italic" }}>modern researcher.</span>
-      </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
-        {FEATURES.map((f, i) => (
-          <div key={f.title} style={{ padding: "20px", background: "rgba(2, 132, 199, 0.03)", border: "1px solid rgba(2, 132, 199, 0.1)", borderRadius: 4 }}>
-            <h3 style={{ fontSize: 18, fontFamily: "'Instrument Serif', serif", color: "#0C4A6E", margin: "0 0 8px" }}>{f.title}</h3>
-            <p style={{ fontSize: 14, opacity: 0.7, lineHeight: 1.5, margin: 0 }}>{f.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function HowItWorksSlide() {
-  return (
-    <div style={{ padding: "40px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
-      <div>
-        <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0284C7", marginBottom: 12, display: "block" }}>Workflow</span>
-        <h2 style={{ fontSize: 42, fontFamily: "'Instrument Serif', serif", lineHeight: 1.1, color: "#0C4A6E", margin: "0 0 24px" }}>
-          From zero to <br /> <span style={{ fontStyle: "italic" }}>meaningful impact.</span>
-        </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          {[
-            { step: "01", title: "Intel Ingestion", desc: "Our engine parses your CV to build a semantic profile." },
-            { step: "02", title: "Target Mapping", desc: "We map your profile against global institutional databases." },
-            { step: "03", title: "Narrative Craft", desc: "AI generates bespoke drafts based on deep context matching." }
-          ].map((s) => (
-            <div key={s.step} style={{ display: "flex", gap: 20 }}>
-              <span style={{ fontSize: 14, fontWeight: 800, color: "#0284C7", fontFamily: "'Instrument Serif', serif" }}>{s.step}</span>
-              <div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 4px" }}>{s.title}</h3>
-                <p style={{ fontSize: 13, opacity: 0.6, margin: 0 }}>{s.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div style={{ background: "rgba(2, 132, 199, 0.05)", borderRadius: 12, padding: 32, border: "1px solid rgba(2, 132, 199, 0.1)" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {[1, 2, 3].map(i => (
-            <div key={i} style={{ height: 60, background: "#fff", borderRadius: 4, display: "flex", alignItems: "center", padding: "0 16px", border: "1px solid rgba(2, 132, 199, 0.08)" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#0284C7", marginRight: 12 }} />
-              <div style={{ height: 8, width: 120, background: "rgba(2, 132, 199, 0.1)", borderRadius: 4 }} />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const SLIDES = [
-  { id: "features", label: "Capabilities", content: <FeaturesSlide /> },
-  { id: "how", label: "The Process", content: <HowItWorksSlide /> },
-]
-
 function SectionCarousel() {
   const [current, setCurrent] = useState(0)
-  const total = SLIDES.length
-  const handleNext = useCallback(() => setCurrent(prev => (prev + 1) % total), [total])
-  const handlePrev = useCallback(() => setCurrent(prev => (prev - 1 + total) % total), [total])
+  const [direction, setDirection] = useState(0)
+  const total = FEATURES.length
+
+  const handleNext = useCallback(() => {
+    setDirection(1)
+    setCurrent((prev) => (prev + 1) % total)
+  }, [total])
+
+  const handlePrev = useCallback(() => {
+    setDirection(-1)
+    setCurrent((prev) => (prev - 1 + total) % total)
+  }, [total])
 
   return (
-    <div style={{ 
-      padding: "160px 0", background: "rgba(2, 132, 199, 0.02)", 
-      display: "flex", flexDirection: "column", alignItems: "center", gap: 60 
-    }}>
-      <div style={{ display: "flex", gap: 8 }}>
-        {SLIDES.map((s, i) => (
-          <button key={s.id} onClick={() => setCurrent(i)} style={{
-            padding: "8px 24px", borderRadius: 4, fontSize: 12, fontWeight: 700,
-            background: i === current ? "#0284C7" : "transparent",
-            color: i === current ? "#fff" : "#0C4A6E",
-            border: i === current ? "none" : "1px solid rgba(2, 132, 199, 0.2)",
-            cursor: "pointer", transition: "all 0.3s"
-          }}>
-            {s.label}
-          </button>
+    <div style={{ position: "relative", width: "100%", height: 500, display: "flex", justifyContent: "center", alignItems: "center", overflow: "hidden" }}>
+      <AnimatePresence initial={false} custom={direction}>
+        {FEATURES.map((f, i) => i === current && (
+          <motion.div
+            key={i}
+            custom={direction}
+            initial={{ opacity: 0, x: direction > 0 ? 300 : -300, rotateY: direction > 0 ? 45 : -45, scale: 0.8 }}
+            animate={{ opacity: 1, x: 0, rotateY: 0, scale: 1 }}
+            exit={{ opacity: 0, x: direction > 0 ? -300 : 300, rotateY: direction > 0 ? -45 : 45, scale: 0.8 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            style={{ 
+              position: "absolute", width: "min(600px, 90vw)", padding: "60px 40px",
+              background: "#fff", borderRadius: 32, border: "1px solid rgba(59, 130, 246, 0.1)",
+              boxShadow: "0 20px 50px rgba(59, 130, 246, 0.08)", textAlign: "center"
+            }}>
+            <h3 style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginBottom: 20 }}>{f.title}</h3>
+            <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+          </motion.div>
         ))}
+      </AnimatePresence>
+      
+      <div style={{ position: "absolute", bottom: 40, display: "flex", gap: 20, zIndex: 10 }}>
+        <button onClick={handlePrev} style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #e2e8f0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <ChevronLeft style={{ width: 20, height: 20, color: "#64748b" }} />
+        </button>
+        <button onClick={handleNext} style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #e2e8f0", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          <ChevronRight style={{ width: 20, height: 20, color: "#64748b" }} />
+        </button>
       </div>
+    </div>
+  )
+}
 
-      <div style={{ position: "relative", width: "100%", height: 600, display: "flex", justifyContent: "center", alignItems: "center" }}>
-        {SLIDES.map((slide, index) => {
-          let offset = index - current
-          const isCenter = offset === 0
-          return (
-            <motion.div
-              key={slide.id}
-              style={{
-                position: "absolute", width: "min(1000px, 90vw)", height: 500,
-                background: "#fff", borderRadius: 8, border: "1px solid rgba(2, 132, 199, 0.1)",
-                boxShadow: "0 20px 40px rgba(2, 132, 199, 0.05)",
-                display: isCenter ? "block" : "none"
-              }}
-              animate={{
-                x: offset * 100,
-                scale: isCenter ? 1 : 0.9,
-                opacity: isCenter ? 1 : 0,
-              }}
-              transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            >
-              {slide.content}
-            </motion.div>
-          )
-        })}
-        
-        <button onClick={handlePrev} style={{ position: "absolute", left: 40, background: "none", border: "none", cursor: "pointer", color: "#0C4A6E" }}>
-          <ChevronLeft size={32} />
-        </button>
-        <button onClick={handleNext} style={{ position: "absolute", right: 40, background: "none", border: "none", cursor: "pointer", color: "#0C4A6E" }}>
-          <ChevronRight size={32} />
-        </button>
-      </div>
+function BlurWords({ text }: { text: string }) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25em", justifyContent: "center" }}>
+      {text.split(" ").map((word, i) => (
+        <motion.span
+          key={i}
+          initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
+          whileInView={{ filter: "blur(0px)", opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: i * 0.05 }}
+          style={{ display: "inline-block" }}>
+          {word}
+        </motion.span>
+      ))}
     </div>
   )
 }
@@ -176,8 +123,12 @@ export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
   
-  const y = useTransform(scrollYProgress, [0, 1], [0, -300])
-  const smoothY = useSpring(y, { stiffness: 100, damping: 30, restDelta: 0.001 })
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200])
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -400])
+  const scale = useTransform(scrollYProgress, [0.8, 1], [1, 0.9])
+  
+  const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 })
+  const smoothY2 = useSpring(y2, { stiffness: 100, damping: 30 })
 
   useEffect(() => {
     const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) })
@@ -187,150 +138,155 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div ref={containerRef} style={{ 
-      background: "#F0F9FF", color: "#0C4A6E", minHeight: "100vh", 
-      fontFamily: "'Plus Jakarta Sans', sans-serif" 
-    }}>
+    <div ref={containerRef} style={{ background: "#fff", color: "#0f172a", overflow: "hidden" }}>
       <Nav />
 
-      {/* Hero Section */}
-      <section style={{ 
-        height: "100vh", position: "relative", display: "flex", alignItems: "flex-end", 
-        padding: "0 80px 100px", overflow: "hidden" 
-      }}>
-        {/* Background Video (Restored - NO OVERLAY) */}
-        <video autoPlay loop muted playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
-        
-        {/* Subtle Bottom-only Gradient for legibility */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60%", background: "linear-gradient(to top, rgba(240, 249, 255, 1) 0%, rgba(240, 249, 255, 0) 100%)", zIndex: 1 }} />
-
-        <div style={{ position: "relative", zIndex: 10, maxWidth: 1000 }}>
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            style={{ 
-              fontSize: "clamp(48px, 10vw, 160px)", lineHeight: 0.9, 
-              fontFamily: "'Instrument Serif', serif", margin: "0 0 24px", letterSpacing: "-0.04em" 
-            }}>
-            Reach <span style={{ fontStyle: "italic", color: "#0284C7" }}>further.</span>
-          </motion.h1>
+      {/* ═══════════════════════════════════════
+          SECTION 1 — Video Hero with Highlight
+      ═══════════════════════════════════════ */}
+      <div style={{ height: "100vh", width: "100%", padding: 10 }}>
+        <div style={{ position: "relative", height: "100%", width: "100%", overflow: "hidden", borderRadius: 28 }}>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 80, alignItems: "flex-end" }}>
-            <p style={{ fontSize: 18, lineHeight: 1.5, margin: 0, opacity: 0.8, maxWidth: 500 }}>
-              The intelligence layer for academic and corporate outreach. Precision matching, context-aware drafting, and institutional discovery.
-            </p>
-            <div>
-              <Link href="/signup" style={{ 
-                display: "inline-flex", alignItems: "center", gap: 12, 
-                fontSize: 15, fontWeight: 700, color: "#0284C7", textDecoration: "none",
-                padding: "16px 32px", border: "1px solid #0284C7", borderRadius: 4,
-                transition: "all 0.3s ease"
-              }} onMouseEnter={e => { e.currentTarget.style.background = "#0284C7"; e.currentTarget.style.color = "#fff" }} 
-                 onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#0284C7" }}>
-                Begin Discovery <ArrowRight size={18} />
+          {/* Original Video Background */}
+          <video autoPlay loop muted playsInline
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
+
+          {/* Aceternity HeroHighlight as an overlay for the mouse-tracking dots */}
+          <HeroHighlight 
+            containerClassName="absolute inset-0 bg-transparent dark:bg-transparent" 
+            className="w-full h-full flex flex-col items-start justify-end p-12 md:p-20"
+          >
+            {/* Original Sign In pill - restored position */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              style={{ position: "absolute", top: 20, right: 28, zIndex: 50 }}>
+              <Link href="/login"
+                style={{ display: "inline-flex", alignItems: "center",
+                  background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.28)",
+                  backdropFilter: "blur(12px)", borderRadius: 999, padding: "8px 22px", 
+                  fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
+                Sign In
               </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+            </motion.div>
 
-      {/* Marquee (Editorial style) */}
-      <section style={{ padding: "60px 0", borderBottom: "1px solid rgba(2, 132, 199, 0.1)" }}>
-        <div style={{ overflow: "hidden", display: "flex", gap: 100 }}>
-          <motion.div 
-            animate={{ x: [0, -1000] }}
-            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-            style={{ display: "flex", gap: 100, whiteSpace: "nowrap", alignItems: "center" }}>
-            {[...UNIS, ...UNIS].map((u, i) => (
-              <span key={i} style={{ 
-                fontSize: 12, fontWeight: 700, letterSpacing: "0.2em", 
-                textTransform: "uppercase", opacity: 0.4 
-              }}>{u}</span>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      <SectionCarousel />
-
-      {/* Narrative Section with Custom Image */}
-      <section style={{ padding: "80px", background: "#0C4A6E", color: "#F0F9FF" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 100, alignItems: "center" }}>
-          <div style={{ position: "relative", height: 600, overflow: "hidden", borderRadius: 4 }}>
-            <img 
-              src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&q=80&w=2070" 
-              alt="Research abstract" 
-              style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.8 }} 
-            />
-          </div>
-          <div>
-            <h2 style={{ fontSize: 48, fontFamily: "'Instrument Serif', serif", margin: "0 0 24px", lineHeight: 1.1 }}>
-              Discovery is not a <br /> numbers game.
-            </h2>
-            <p style={{ fontSize: 18, lineHeight: 1.6, opacity: 0.7, margin: "0 0 40px" }}>
-              Our engine understands the nuances of research interests and corporate requirements. We surface the matches that actually matter, then help you craft the narrative that wins.
-            </p>
-            <Link href="/signup" style={{ 
-              fontSize: 14, fontWeight: 700, color: "#F0F9FF", textDecoration: "none", 
-              borderBottom: "2px solid #0284C7", paddingBottom: 4 
-            }}>
-              Join the cohort
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Cloud Final Section (Restored & Styled - More Visible) */}
-      <section style={{ position: "relative", height: "80vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-        <video autoPlay muted loop playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
-          src="/hero-bg.mp4" />
-        
-        {/* Much more transparent overlay to show off the clouds */}
-        <div style={{ position: "absolute", inset: 0, background: "rgba(240, 249, 255, 0.45)", zIndex: 1 }} />
-
-        <div style={{ position: "relative", zIndex: 10, textAlign: "center", maxWidth: 600 }}>
-          <h2 style={{ fontSize: 64, fontFamily: "'Instrument Serif', serif", margin: "0 0 32px", letterSpacing: "-0.03em" }}>
-            The future of <br /> outreach is personal.
-          </h2>
-          <Link href="/signup" style={{ 
-            display: "inline-flex", background: "#0C4A6E", color: "#F0F9FF", 
-            padding: "20px 48px", borderRadius: 4, fontWeight: 700, textDecoration: "none",
-            transition: "transform 0.2s"
-          }} onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"} onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
-            Start for Free
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer style={{ padding: "80px", borderTop: "1px solid rgba(2, 132, 199, 0.1)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", maxWidth: 1400, margin: "0 auto" }}>
-          <div>
-            <h3 style={{ fontSize: 24, fontFamily: "'Instrument Serif', serif", margin: "0 0 12px" }}>OutreachAI</h3>
-            <p style={{ fontSize: 13, opacity: 0.5 }}>© 2025 OutreachAI. Built for researchers and interns.</p>
-          </div>
-          <div style={{ display: "flex", gap: 64 }}>
-            {["Platform", "Resources", "Legal"].map(col => (
-              <div key={col}>
-                <h4 style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>{col}</h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {[1, 2, 3].map(i => (
-                    <a key={i} href="#" style={{ fontSize: 13, color: "#0C4A6E", textDecoration: "none", opacity: 0.6 }}>Link {i}</a>
-                  ))}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
+              className="text-left"
+            >
+              <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-6">
+                Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
+              </h1>
+              <div className="max-w-xl space-y-6">
+                <p className="text-base md:text-lg text-[#E1E0CC]/80 leading-relaxed font-medium">
+                  The intelligent outreach platform for landing research positions and internships. 
+                  Precision matching, AI drafts, and automated follow-ups.
+                </p>
+                <div className="flex justify-start">
+                  <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl text-sm">
+                    Get started free
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
               </div>
+            </motion.div>
+          </HeroHighlight>
+        </div>
+      </div>
+
+      {/* University marquee with Parallax */}
+      <motion.div style={{ y: smoothY1 }} className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
+        <style>{`
+          @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+          .marquee-track { animation: marquee 35s linear infinite; }
+        `}</style>
+        <div className="flex overflow-hidden whitespace-nowrap">
+          <div className="marquee-track flex items-center gap-16 px-8">
+            {[...UNIS, ...UNIS].map((uni, i) => (
+              <span key={i} className="text-sm font-bold tracking-widest text-neutral-400 uppercase">
+                {uni}
+              </span>
             ))}
           </div>
         </div>
-      </footer>
+      </motion.div>
+
+      {/* Feature Carousel */}
+      <div className="py-32 px-4 bg-white relative z-10">
+        <div className="max-w-4xl mx-auto text-center mb-16">
+          <span className="text-blue-600 font-bold tracking-widest uppercase text-xs">Capabilities</span>
+          <h2 className="text-4xl md:text-6xl font-black text-neutral-900 mt-4 tracking-tight">
+            Designed for impact.
+          </h2>
+        </div>
+        <SectionCarousel />
+      </div>
+
+      {/* ═══════════════════════════════════════
+          SECTION 5 — Final CTA (with cloud video bg)
+      ═══════════════════════════════════════ */}
+      <div style={{ position: "relative", overflow: "hidden", padding: "120px 40px 100px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Cloud video background */}
+        <video autoPlay muted loop playsInline
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%",
+            objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }}
+          src="/hero-bg.mp4" />
+        
+        {/* Overlay for readability */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1,
+          background: "linear-gradient(to bottom, rgba(186,230,253,0.55) 0%, rgba(219,241,255,0.45) 40%, rgba(240,249,255,0.6) 100%)" }} />
+
+        <div style={{ position: "relative", zIndex: 10, maxWidth: 800, width: "100%", textAlign: "center" }}>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-white/60 border border-white/40 rounded-[3rem] p-12 md:p-24 shadow-2xl backdrop-blur-xl"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold text-neutral-900 mb-8 tracking-tight leading-tight">
+              Stop guessing. <br /> Start <span className="text-indigo-600">connecting.</span>
+            </h2>
+            <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto font-medium">
+              Join thousands of students landing high-impact positions using OutreachAI's precision matching.
+            </p>
+            <Link href="/signup" className="inline-flex items-center gap-3 bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition shadow-xl shadow-indigo-200">
+              Create Your Account
+              <ArrowRight className="w-6 h-6" />
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ background: "#f8fafc", borderTop: "1px solid rgba(59,130,246,0.1)",
+        padding: "28px 40px", display: "flex", alignItems: "center",
+        justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 8,
+            background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
+            display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
+          </div>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#64748b" }}>OutreachAI</span>
+        </div>
+        <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          Built for students. Powered by AI. © 2025 OutreachAI.
+        </p>
+        <div style={{ display: "flex", gap: 20 }}>
+          {["Privacy", "Terms", "Contact"].map(l => (
+            <a key={l} href="#" style={{ fontSize: 13, color: "#64748b", textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#0f172a"}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "#64748b"}>
+              {l}
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
