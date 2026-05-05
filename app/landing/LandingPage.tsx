@@ -49,6 +49,129 @@ function Nav() {
   )
 }
 
+function FeaturesSlide() {
+  return (
+    <div style={{ padding: "40px" }}>
+      <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0284C7", marginBottom: 12, display: "block" }}>Innovation</span>
+      <h2 style={{ fontSize: 42, fontFamily: "'Instrument Serif', serif", lineHeight: 1.1, color: "#0C4A6E", margin: "0 0 24px" }}>
+        Tools for the <br /> <span style={{ fontStyle: "italic" }}>modern researcher.</span>
+      </h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
+        {FEATURES.map((f, i) => (
+          <div key={f.title} style={{ padding: "20px", background: "rgba(2, 132, 199, 0.03)", border: "1px solid rgba(2, 132, 199, 0.1)", borderRadius: 4 }}>
+            <h3 style={{ fontSize: 18, fontFamily: "'Instrument Serif', serif", color: "#0C4A6E", margin: "0 0 8px" }}>{f.title}</h3>
+            <p style={{ fontSize: 14, opacity: 0.7, lineHeight: 1.5, margin: 0 }}>{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function HowItWorksSlide() {
+  return (
+    <div style={{ padding: "40px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
+      <div>
+        <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0284C7", marginBottom: 12, display: "block" }}>Workflow</span>
+        <h2 style={{ fontSize: 42, fontFamily: "'Instrument Serif', serif", lineHeight: 1.1, color: "#0C4A6E", margin: "0 0 24px" }}>
+          From zero to <br /> <span style={{ fontStyle: "italic" }}>meaningful impact.</span>
+        </h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {[
+            { step: "01", title: "Intel Ingestion", desc: "Our engine parses your CV to build a semantic profile." },
+            { step: "02", title: "Target Mapping", desc: "We map your profile against global institutional databases." },
+            { step: "03", title: "Narrative Craft", desc: "AI generates bespoke drafts based on deep context matching." }
+          ].map((s) => (
+            <div key={s.step} style={{ display: "flex", gap: 20 }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: "#0284C7", fontFamily: "'Instrument Serif', serif" }}>{s.step}</span>
+              <div>
+                <h3 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 4px" }}>{s.title}</h3>
+                <p style={{ fontSize: 13, opacity: 0.6, margin: 0 }}>{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ background: "rgba(2, 132, 199, 0.05)", borderRadius: 12, padding: 32, border: "1px solid rgba(2, 132, 199, 0.1)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {[1, 2, 3].map(i => (
+            <div key={i} style={{ height: 60, background: "#fff", borderRadius: 4, display: "flex", alignItems: "center", padding: "0 16px", border: "1px solid rgba(2, 132, 199, 0.08)" }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#0284C7", marginRight: 12 }} />
+              <div style={{ height: 8, width: 120, background: "rgba(2, 132, 199, 0.1)", borderRadius: 4 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const SLIDES = [
+  { id: "features", label: "Capabilities", content: <FeaturesSlide /> },
+  { id: "how", label: "The Process", content: <HowItWorksSlide /> },
+]
+
+function SectionCarousel() {
+  const [current, setCurrent] = useState(0)
+  const total = SLIDES.length
+  const handleNext = useCallback(() => setCurrent(prev => (prev + 1) % total), [total])
+  const handlePrev = useCallback(() => setCurrent(prev => (prev - 1 + total) % total), [total])
+
+  return (
+    <div style={{ 
+      padding: "160px 0", background: "rgba(2, 132, 199, 0.02)", 
+      display: "flex", flexDirection: "column", alignItems: "center", gap: 60 
+    }}>
+      <div style={{ display: "flex", gap: 8 }}>
+        {SLIDES.map((s, i) => (
+          <button key={s.id} onClick={() => setCurrent(i)} style={{
+            padding: "8px 24px", borderRadius: 4, fontSize: 12, fontWeight: 700,
+            background: i === current ? "#0284C7" : "transparent",
+            color: i === current ? "#fff" : "#0C4A6E",
+            border: i === current ? "none" : "1px solid rgba(2, 132, 199, 0.2)",
+            cursor: "pointer", transition: "all 0.3s"
+          }}>
+            {s.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ position: "relative", width: "100%", height: 600, display: "flex", justifyContent: "center", alignItems: "center" }}>
+        {SLIDES.map((slide, index) => {
+          let offset = index - current
+          const isCenter = offset === 0
+          return (
+            <motion.div
+              key={slide.id}
+              style={{
+                position: "absolute", width: "min(1000px, 90vw)", height: 500,
+                background: "#fff", borderRadius: 8, border: "1px solid rgba(2, 132, 199, 0.1)",
+                boxShadow: "0 20px 40px rgba(2, 132, 199, 0.05)",
+                display: isCenter ? "block" : "none"
+              }}
+              animate={{
+                x: offset * 100,
+                scale: isCenter ? 1 : 0.9,
+                opacity: isCenter ? 1 : 0,
+              }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            >
+              {slide.content}
+            </motion.div>
+          )
+        })}
+        
+        <button onClick={handlePrev} style={{ position: "absolute", left: 40, background: "none", border: "none", cursor: "pointer", color: "#0C4A6E" }}>
+          <ChevronLeft size={32} />
+        </button>
+        <button onClick={handleNext} style={{ position: "absolute", right: 40, background: "none", border: "none", cursor: "pointer", color: "#0C4A6E" }}>
+          <ChevronRight size={32} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
@@ -75,13 +198,13 @@ export default function LandingPage() {
         height: "100vh", position: "relative", display: "flex", alignItems: "flex-end", 
         padding: "0 80px 100px", overflow: "hidden" 
       }}>
-        {/* Background Video (Restored) */}
+        {/* Background Video (Restored - NO OVERLAY) */}
         <video autoPlay loop muted playsInline
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
         
-        {/* Light Blue Overlay - More transparent for visibility */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(240, 249, 255, 0.7) 0%, rgba(240, 249, 255, 0.2) 40%, transparent 100%)", zIndex: 1 }} />
+        {/* Subtle Bottom-only Gradient for legibility */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "60%", background: "linear-gradient(to top, rgba(240, 249, 255, 1) 0%, rgba(240, 249, 255, 0) 100%)", zIndex: 1 }} />
 
         <div style={{ position: "relative", zIndex: 10, maxWidth: 1000 }}>
           <motion.h1 
@@ -135,34 +258,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section (Non-grid, editorial) */}
-      <section style={{ padding: "160px 80px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 120 }}>
-          <div>
-            <span style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", color: "#0284C7", marginBottom: 16, display: "block" }}>Platform</span>
-            <h2 style={{ fontSize: 64, fontFamily: "'Instrument Serif', serif", lineHeight: 1, letterSpacing: "-0.03em", margin: "0 0 32px" }}>
-              High-fidelity <br /> connections at <br /> scale.
-            </h2>
-            <p style={{ fontSize: 16, lineHeight: 1.6, opacity: 0.6, maxWidth: 400 }}>
-              We've automated the friction out of professional discovery. No more manual searching or generic templating. Just precision.
-            </p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 60, paddingTop: 40 }}>
-            {FEATURES.map((f, i) => (
-              <motion.div 
-                key={f.title}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                viewport={{ once: true }}
-                style={{ borderBottom: "1px solid rgba(2, 132, 199, 0.1)", paddingBottom: 32 }}>
-                <h3 style={{ fontSize: 24, fontFamily: "'Instrument Serif', serif", margin: "0 0 12px" }}>{f.title}</h3>
-                <p style={{ fontSize: 15, opacity: 0.6, margin: 0, maxWidth: 450 }}>{f.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <SectionCarousel />
 
       {/* Narrative Section with Custom Image */}
       <section style={{ padding: "80px", background: "#0C4A6E", color: "#F0F9FF" }}>
