@@ -375,35 +375,62 @@ export default function LandingPage() {
         .marquee-track { animation: marquee 35s linear infinite; }
       `}</style>
 
-      {/* Hero Section with Aceternity Highlight */}
-      <HeroHighlight containerClassName="h-screen">
-        <div style={{ position: "absolute", top: 20, right: 28, zIndex: 50 }}>
-          <Link href="/login" className="px-6 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 font-bold hover:bg-neutral-100 transition duration-200">
-            Sign In
-          </Link>
-        </div>
+      {/* ═══════════════════════════════════════
+          SECTION 1 — Video Hero with Highlight
+      ═══════════════════════════════════════ */}
+      <div style={{ height: "100vh", width: "100%", padding: 10 }}>
+        <div style={{ position: "relative", height: "100%", width: "100%", overflow: "hidden", borderRadius: 28 }}>
+          
+          {/* Original Video Background */}
+          <video autoPlay loop muted playsInline
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: [20, -5, 0] }}
-          transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
-          className="text-center"
-        >
-          <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold text-neutral-900 dark:text-white tracking-tighter leading-none mb-6">
-            Reach <Highlight className="text-neutral-900 dark:text-white">further.</Highlight>
-          </h1>
-          <p className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto mb-10 leading-relaxed px-4">
-            The intelligent outreach platform for landing research positions and internships. 
-            Cross-referenced matching, AI drafts, and automated follow-ups.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/signup" className="group px-8 py-4 bg-black text-white rounded-xl font-bold flex items-center gap-2 hover:bg-neutral-800 transition duration-200 shadow-2xl">
-              Start Outreach Free
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-        </motion.div>
-      </HeroHighlight>
+          {/* Aceternity HeroHighlight as an overlay for the mouse-tracking dots */}
+          <HeroHighlight 
+            containerClassName="absolute inset-0 bg-transparent dark:bg-transparent" 
+            className="w-full h-full flex flex-col items-center justify-center"
+          >
+            {/* Original Sign In pill - restored position */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              style={{ position: "absolute", top: 20, right: 28, zIndex: 50 }}>
+              <Link href="/login"
+                style={{ display: "inline-flex", alignItems: "center",
+                  background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.28)",
+                  backdropFilter: "blur(12px)", borderRadius: 999, padding: "8px 22px", 
+                  fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
+                Sign In
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: [20, -5, 0] }}
+              transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
+              className="text-center px-4"
+            >
+              <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold text-[#E1E0CC] tracking-tighter leading-none mb-8">
+                Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
+              </h1>
+              <div className="max-w-2xl mx-auto space-y-6">
+                <p className="text-lg md:text-xl text-[#E1E0CC]/80 leading-relaxed">
+                  The intelligent outreach platform for landing research positions and internships. 
+                  Precision matching, AI drafts, and automated follow-ups.
+                </p>
+                <div className="flex justify-center">
+                  <Link href="/signup" className="group px-8 py-4 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl">
+                    Get started free
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </HeroHighlight>
+        </div>
+      </div>
 
       {/* University marquee with Parallax */}
       <motion.div style={{ y: smoothY1 }} className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
@@ -424,21 +451,32 @@ export default function LandingPage() {
         <SectionCarousel />
       </div>
 
-      {/* Final CTA with Parallax background */}
-      <div className="relative py-32 px-4 overflow-hidden">
-        <motion.div style={{ scale }} className="absolute inset-0 bg-neutral-50 -z-10" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+      {/* ═══════════════════════════════════════
+          SECTION 5 — Final CTA (with cloud video bg)
+      ═══════════════════════════════════════ */}
+      <div style={{ position: "relative", overflow: "hidden", padding: "120px 40px 100px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Cloud video background */}
+        <video autoPlay muted loop playsInline
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%",
+            objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }}
+          src="/hero-bg.mp4" />
+        
+        {/* Overlay for readability */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1,
+          background: "linear-gradient(to bottom, rgba(186,230,253,0.55) 0%, rgba(219,241,255,0.45) 40%, rgba(240,249,255,0.6) 100%)" }} />
+
+        <div style={{ position: "relative", zIndex: 10, maxWidth: 800, width: "100%", textAlign: "center" }}>
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-white border border-neutral-100 rounded-[3rem] p-12 md:p-24 shadow-2xl shadow-indigo-500/10"
+            className="bg-white/60 border border-white/40 rounded-[3rem] p-12 md:p-24 shadow-2xl backdrop-blur-xl"
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-neutral-900 mb-8 tracking-tight">
+            <h2 className="text-4xl md:text-6xl font-bold text-neutral-900 mb-8 tracking-tight leading-tight">
               Stop guessing. <br /> Start <span className="text-indigo-600">connecting.</span>
             </h2>
-            <p className="text-lg text-neutral-500 mb-12 max-w-2xl mx-auto">
+            <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto font-medium">
               Join thousands of students landing high-impact positions using OutreachAI's precision matching.
             </p>
             <Link href="/signup" className="inline-flex items-center gap-3 bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition shadow-xl shadow-indigo-200">
