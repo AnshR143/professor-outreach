@@ -374,58 +374,57 @@ function SectionCarousel() {
 
 function FloatingCharacter() {
   return (
+    // Outer: entrance animation (fires once when scrolled into view)
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      animate={{ 
-        y: [0, -15, 0] 
-      }}
-      transition={{ 
-        duration: 4, 
-        repeat: Infinity, 
-        ease: "easeInOut"
-      }}
-      style={{ 
-        position: "relative", width: "100%", zIndex: 30
-      }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      style={{ position: "relative", width: "100%", zIndex: 30 }}
     >
-      <div style={{ position: "relative" }}>
-        {/* Husky Image (Multiply blend to hide white background) */}
-        <img 
-          src="/husky.png.png" 
-          alt="Husky Guide" 
-          style={{ 
-            width: "100%", height: "auto", 
+      {/* Inner: continuous levitation — separate from entrance so they don't conflict */}
+      <motion.div
+        animate={{ y: [0, -16, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", repeatType: "loop" }}
+        style={{ position: "relative" }}
+      >
+        <img
+          src="/husky.png.png"
+          alt="Husky Guide"
+          style={{
+            width: "100%", height: "auto",
             mixBlendMode: "multiply",
-            filter: "contrast(1.05)" 
-          }} 
+            filter: "contrast(1.08) saturate(1.05)",
+          }}
         />
-        
-        {/* Whiteboard Overlay Info - Re-styled for the CTA */}
-        <div style={{ 
-          position: "absolute", top: "54%", left: "50%", transform: "translate(-50%, -50%)",
-          width: "75%", textAlign: "center", color: "#1e293b", fontFamily: "'Inter', sans-serif"
+
+        {/* Whiteboard overlay — CTA content positioned over the board area */}
+        <div style={{
+          position: "absolute", top: "52%", left: "50%", transform: "translate(-50%, -50%)",
+          width: "70%", textAlign: "center", fontFamily: "'Inter', sans-serif",
         }}>
-          <h2 style={{ fontSize: 24, fontWeight: 900, color: "#0f172a", marginBottom: 4, lineHeight: 1 }}>
+          <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 900, color: "#0f172a", marginBottom: 4, lineHeight: 1.1 }}>
             Stop guessing.
           </h2>
-          <h2 style={{ fontSize: 24, fontWeight: 900, color: "#3b82f6", marginBottom: 12, lineHeight: 1 }}>
+          <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 900, color: "#3b82f6", marginBottom: 14, lineHeight: 1.1 }}>
             Start connecting.
           </h2>
-          <p style={{ fontSize: 11, fontWeight: 600, color: "#64748b", lineHeight: 1.3, marginBottom: 16, maxWidth: "90%", marginInline: "auto" }}>
-            Join thousands of students landing high-impact positions using precision matching.
+          <p style={{ fontSize: "clamp(10px,1.1vw,13px)", fontWeight: 500, color: "#475569", lineHeight: 1.5, marginBottom: 18, maxWidth: "88%", marginInline: "auto" }}>
+            Join thousands of students landing high-impact positions using AI-powered precision matching.
           </p>
-          <Link href="/signup" style={{ 
+          <Link href="/signup" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: "#3b82f6", color: "#fff", padding: "10px 18px", borderRadius: 10,
-            fontSize: 12, fontWeight: 800, textDecoration: "none", pointerEvents: "auto",
-            boxShadow: "0 4px 12px rgba(59, 130, 246, 0.3)", textTransform: "uppercase", letterSpacing: "0.02em"
+            background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
+            padding: "10px 20px", borderRadius: 10,
+            fontSize: "clamp(10px,1vw,13px)", fontWeight: 800, textDecoration: "none",
+            boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
+            letterSpacing: "0.02em", textTransform: "uppercase",
           }}>
             Create Your Account
-            <ArrowRight size={14} />
+            <ArrowRight size={13} />
           </Link>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   )
 }
@@ -527,37 +526,19 @@ export default function LandingPage() {
       <SectionCarousel />
 
       {/* ═══════════════════════════════════════
-          SECTION 3 — Final CTA (cloud video bg)
+          SECTION 3 — Wolf CTA (cloud video bg)
       ═══════════════════════════════════════ */}
-      <div style={{ position: "relative", overflow: "hidden", padding: "120px 40px 100px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "relative", overflow: "hidden", padding: "80px 40px 80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <video autoPlay muted loop playsInline
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%",
             objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }}
           src="/hero-bg.mp4" />
         <div style={{ position: "absolute", inset: 0, zIndex: 1,
           background: "linear-gradient(to bottom, rgba(186,230,253,0.55) 0%, rgba(219,241,255,0.45) 40%, rgba(240,249,255,0.6) 100%)" }} />
-        
-        <div style={{ position: "relative", zIndex: 10, maxWidth: 1000, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* Re-positioned Husky in Final Section */}
-          <div style={{ position: "absolute", left: "-10%", top: "50%", transform: "translateY(-50%)", width: 450, zIndex: 20 }}>
-            <FloatingCharacter />
-          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="bg-white/60 border border-white/40 rounded-[3rem] p-12 md:p-24 shadow-2xl backdrop-blur-xl"
-            style={{ marginLeft: "20%" }}
-          >
-            <h2 className="text-4xl md:text-6xl font-bold text-neutral-900 mb-8 tracking-tight leading-tight">
-              The future of <br /> <span className="text-indigo-600">outreach.</span>
-            </h2>
-            <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto font-medium">
-              Precision discovery. Human drafting. Automated results.
-            </p>
-          </motion.div>
+        {/* Wolf centered with CTA inside the whiteboard */}
+        <div style={{ position: "relative", zIndex: 10, width: "min(560px, 90vw)" }}>
+          <FloatingCharacter />
         </div>
       </div>
 
