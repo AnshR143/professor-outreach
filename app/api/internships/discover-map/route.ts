@@ -177,21 +177,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Could not find location: "${location}"` }, { status: 400 })
     }
 
-    // 2. Query Overpass API for nearby businesses
-    const overpassUrl = "https://overpass-api.de/api/interpreter"
+    // 2. Query Overpass API for nearby businesses (try multiple endpoints)
+    const OVERPASS_ENDPOINTS = [
+      "https://overpass-api.de/api/interpreter",
+      "https://overpass.kumi.systems/api/interpreter",
+      "https://overpass.openstreetmap.ru/api/interpreter",
+    ]
     const query = buildOverpassQuery(coords.lat, coords.lon, Math.min(radius, 10000))
     let elements: OverpassElement[] = []
+    let overpassOk = false
 
-    try {
-      const ovRes = await fetch(overpassUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `data=${encodeURIComponent(query)}`,
-      })
-      const ovData: OverpassResponse = await ovRes.json()
-      elements = ovData.elements?.filter(el => el.tags?.name) || []
-    } catch {
-      return NextResponse.json({ error: "Could not query business data. Please try again." }, { status: 503 })
+    for (const overpassUrl of OVERPASS_ENDPOINTS) {
+      try {
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 18000)
+        const ovRes = await fetch(overpassUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `data=${encodeURIComponent(query)}`,
+          signal: controller.signal,
+        })
+        clearTimeout(timer)
+        if (!ovRes.ok) continue
+        const ovData: OverpassResponse = await ovRes.json()
+        elements = ovData.elements?.filter(el => el.tags?.name) || []
+        overpassOk = true
+        break
+      } catch {
+        continue
+      }
+    }
+    if (!overpassOk) {
+      return NextResponse.json({ error: "Could not query business data. The map data service is temporarily unavailable — please try again in a moment." }, { status: 503 })
     }
 
     if (elements.length === 0) {

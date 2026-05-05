@@ -1,7 +1,7 @@
 "use client"
 import "maplibre-gl/dist/maplibre-gl.css"
-import { useState, useCallback, useRef } from "react"
-import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls } from "@/components/ui/map"
+import { useState, useCallback, useRef, useEffect } from "react"
+import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls, useMap } from "@/components/ui/map"
 import { createClient } from "@/lib/supabase/client"
 // Inline type — avoids importing from an API route file (causes webpack bundling issues)
 export interface DiscoveredBusiness {
@@ -52,6 +52,58 @@ function MarkerDot({ score, selected }: { score: number; selected: boolean }) {
   )
 }
 
+// ─── US locations for autocomplete ───────────────────────────────────────────
+
+const US_LOCATIONS = [
+  // Major cities
+  "New York, NY","Los Angeles, CA","Chicago, IL","Houston, TX","Phoenix, AZ",
+  "Philadelphia, PA","San Antonio, TX","San Diego, CA","Dallas, TX","San Jose, CA",
+  "Austin, TX","Jacksonville, FL","Fort Worth, TX","Columbus, OH","San Francisco, CA",
+  "Charlotte, NC","Indianapolis, IN","Seattle, WA","Denver, CO","Nashville, TN",
+  "Oklahoma City, OK","El Paso, TX","Washington, DC","Boston, MA","Memphis, TN",
+  "Louisville, KY","Portland, OR","Las Vegas, NV","Milwaukee, WI","Albuquerque, NM",
+  "Tucson, AZ","Fresno, CA","Sacramento, CA","Kansas City, MO","Mesa, AZ",
+  "Atlanta, GA","Omaha, NE","Colorado Springs, CO","Raleigh, NC","Long Beach, CA",
+  "Virginia Beach, VA","Minneapolis, MN","Tampa, FL","New Orleans, LA","Arlington, TX",
+  "Bakersfield, CA","Honolulu, HI","Anaheim, CA","Aurora, CO","Santa Ana, CA",
+  "Corpus Christi, TX","Riverside, CA","St. Louis, MO","Pittsburgh, PA","Lexington, KY",
+  "Stockton, CA","Cincinnati, OH","Anchorage, AK","St. Paul, MN","Greensboro, NC",
+  "Toledo, OH","Newark, NJ","Plano, TX","Henderson, NV","Orlando, FL",
+  "Jersey City, NJ","Chandler, AZ","St. Petersburg, FL","Laredo, TX","Norfolk, VA",
+  "Madison, WI","Durham, NC","Lubbock, TX","Winston-Salem, NC","Garland, TX",
+  "Glendale, AZ","Hialeah, FL","Reno, NV","Baton Rouge, LA","Irvine, CA",
+  "Chesapeake, VA","Scottsdale, AZ","North Las Vegas, NV","Fremont, CA","Gilbert, AZ",
+  "San Bernardino, CA","Birmingham, AL","Rochester, NY","Richmond, VA","Spokane, WA",
+  "Des Moines, IA","Montgomery, AL","Modesto, CA","Fayetteville, NC","Tacoma, WA",
+  "Shreveport, LA","Akron, OH","Aurora, IL","Yonkers, NY","Glendale, CA",
+  "Huntington Beach, CA","Providence, RI","Garden Grove, CA","Oceanside, CA","Chattanooga, TN",
+  "Fort Lauderdale, FL","Rancho Cucamonga, CA","Santa Rosa, CA","Salt Lake City, UT","Tempe, AZ",
+  "Tallahassee, FL","Huntsville, AL","Worcester, MA","Knoxville, TN","Boise, ID",
+  "Little Rock, AR","Springfield, MO","Grand Rapids, MI","Columbus, GA","Augusta, GA",
+  "Mobile, AL","Oxnard, CA","Moreno Valley, CA","Glendale, WI","Rochester, MN",
+  "Fargo, ND","Sioux Falls, SD","Jackson, MS","Columbia, SC","Lincoln, NE",
+  // States
+  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
+  "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
+  "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
+  "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire",
+  "New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio",
+  "Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
+  "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
+  "Wisconsin","Wyoming",
+]
+
+// ─── FlyTo helper — must be inside Map context ────────────────────────────────
+
+function FlyToCenter({ center, zoom }: { center: [number, number]; zoom: number }) {
+  const { map, isLoaded } = useMap()
+  useEffect(() => {
+    if (!map || !isLoaded) return
+    map.flyTo({ center, zoom, essential: true, duration: 1200 })
+  }, [map, isLoaded, center[0], center[1], zoom]) // eslint-disable-line react-hooks/exhaustive-deps
+  return null
+}
+
 // ─── Industry options ─────────────────────────────────────────────────────────
 
 const INDUSTRIES = [
@@ -86,6 +138,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   const [industry, setIndustry]   = useState("Technology / Software")
   const [radius, setRadius]       = useState(3000)
   const [minScore, setMinScore]   = useState(6)
+  const [locating, setLocating]   = useState(false)
 
   // Results
   const [loading, setLoading]     = useState(false)
@@ -99,6 +152,30 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   const [added, setAdded]         = useState<Set<string>>(new Set())
 
   const listRef = useRef<HTMLDivElement>(null)
+
+  // Auto-detect location on mount
+  useEffect(() => {
+    if (!navigator.geolocation) return
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+            { headers: { "User-Agent": "OutreachAI/1.0 (internship map)" } }
+          )
+          const data = await res.json()
+          const city = data.address?.city || data.address?.town || data.address?.village || ""
+          const stateCode = data.address?.["ISO3166-2-lvl4"]?.split("-")[1] || data.address?.state || ""
+          if (city) setLocation(stateCode ? `${city}, ${stateCode}` : city)
+        } catch { /* ignore */ }
+        setLocating(false)
+      },
+      () => setLocating(false),
+      { timeout: 8000 }
+    )
+  }, [])
 
   // ── Search ──────────────────────────────────────────────────────────────────
 
@@ -196,10 +273,22 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         {/* ── Search bar ── */}
         <form onSubmit={handleSearch} style={{ display: "flex", gap: 10, padding: "12px 20px", borderBottom: "1px solid #f1f5f9", background: "#fafbfc", flexShrink: 0, flexWrap: "wrap", alignItems: "flex-end" }}>
           <div style={{ flex: "2 1 200px" }}>
-            <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Location</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>
+              Location {locating && <span style={{ fontWeight: 400, color: "#94a3b8" }}>· detecting…</span>}
+            </label>
             <div style={{ position: "relative" }}>
               <svg style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Chicago, IL or Boston, MA" style={{ ...inp, paddingLeft: 30 }} required />
+              <input
+                list="us-locations"
+                value={location}
+                onChange={e => setLocation(e.target.value)}
+                placeholder={locating ? "Detecting your location…" : "e.g. Chicago, IL or Boston, MA"}
+                style={{ ...inp, paddingLeft: 30 }}
+                required
+              />
+              <datalist id="us-locations">
+                {US_LOCATIONS.map(l => <option key={l} value={l} />)}
+              </datalist>
             </div>
           </div>
 
@@ -335,6 +424,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
               minZoom={2}
               maxZoom={18}
             >
+              {center && <FlyToCenter center={center} zoom={13} />}
               <MapControls showZoom showLocate />
 
               {businesses.map(biz => (
