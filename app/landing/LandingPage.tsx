@@ -478,36 +478,28 @@ export default function LandingPage() {
               </Link>
             </motion.div>
 
-            {/* Bottom Content Area: Husky + Text */}
-            <div className="flex flex-col md:flex-row items-end gap-8 md:gap-12 w-full">
-              {/* Floating Character - positioned to the left of the text */}
-              <div className="hidden md:block w-[300px] mb-[-20px] ml-[-40px]">
-                <FloatingCharacter />
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
-                className="text-left flex-1"
-              >
-                <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-6">
-                  Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
-                </h1>
-                <div className="max-w-xl space-y-6">
-                  <p className="text-base md:text-lg text-[#E1E0CC]/80 leading-relaxed font-medium">
-                    The intelligent outreach platform for landing research positions and internships.
-                    Precision matching, AI drafts, and automated follow-ups.
-                  </p>
-                  <div className="flex justify-start">
-                    <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl text-sm">
-                      Get started free
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
+              className="text-left"
+            >
+              <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-6">
+                Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
+              </h1>
+              <div className="max-w-xl space-y-6">
+                <p className="text-base md:text-lg text-[#E1E0CC]/80 leading-relaxed font-medium">
+                  The intelligent outreach platform for landing research positions and internships.
+                  Precision matching, AI drafts, and automated follow-ups.
+                </p>
+                <div className="flex justify-start">
+                  <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl text-sm">
+                    Get started free
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           </HeroHighlight>
         </div>
       </div>

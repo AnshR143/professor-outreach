@@ -133,40 +133,42 @@ export function ParallaxSection() {
           zIndex: 3,
         }}>
           {/* Husky Guide - positioned to the left of the text */}
-          <motion.div 
+          <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            style={{ width: "min(380px, 35vw)", position: "relative", pointerEvents: "none" }}
+            style={{ width: "min(460px, 42vw)", position: "relative", pointerEvents: "none" }}
           >
             <img
               src="/husky.png.png"
               alt="OutreachAI Guide"
-              style={{ width: "100%", height: "auto", mixBlendMode: "multiply" }}
+              style={{ width: "100%", height: "auto", display: "block" }}
             />
-            {/* Whiteboard overlay - precisely fitted to the image's board area */}
+            {/* Whiteboard overlay — fitted to the sign the husky holds (center ~62%, width ~74%) */}
             <div style={{
-              position: "absolute", top: "64%", left: "50%", transform: "translate(-50%, -50%)",
-              width: "72%", background: "#fff", borderRadius: 10, padding: "12px 8px",
-              textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.02)", pointerEvents: "auto"
+              position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
+              width: "70%",
+              textAlign: "center", pointerEvents: "auto",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
             }}>
-              <h4 style={{ fontSize: "clamp(10px, 1.4vw, 16px)", fontWeight: 900, color: "#0f172a", marginBottom: 2, lineHeight: 1 }}>
+              <p style={{ fontSize: "clamp(9px, 1.2vw, 15px)", fontWeight: 900, color: "#0f172a", lineHeight: 1.1, margin: 0 }}>
                 Stop guessing.
-              </h4>
-              <h4 style={{ fontSize: "clamp(10px, 1.4vw, 16px)", fontWeight: 900, color: "#3b82f6", marginBottom: 6, lineHeight: 1 }}>
+              </p>
+              <p style={{ fontSize: "clamp(9px, 1.2vw, 15px)", fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, margin: 0 }}>
                 Start connecting.
-              </h4>
-              <p style={{ fontSize: "clamp(7px, 0.8vw, 9px)", color: "#475569", lineHeight: 1.3, marginBottom: 8, maxWidth: "90%", marginInline: "auto" }}>
-                Landing high-impact positions using AI-powered precision matching.
+              </p>
+              <p style={{ fontSize: "clamp(6.5px, 0.65vw, 8.5px)", color: "#475569", lineHeight: 1.35, margin: 0, maxWidth: "92%", fontWeight: 500 }}>
+                Land high-impact positions using AI-powered precision matching.
               </p>
               <Link href="/signup" style={{
-                display: "inline-flex", alignItems: "center", gap: 4,
+                display: "inline-flex", alignItems: "center", gap: 3,
                 background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
-                padding: "6px 12px", borderRadius: 6,
-                fontSize: "clamp(7px, 0.7vw, 9px)", fontWeight: 800, textDecoration: "none",
-                textTransform: "uppercase", letterSpacing: "0.02em", boxShadow: "0 4px 12px rgba(59,130,246,0.3)"
+                padding: "5px 10px", borderRadius: 5,
+                fontSize: "clamp(6px, 0.62vw, 8px)", fontWeight: 800, textDecoration: "none",
+                textTransform: "uppercase", letterSpacing: "0.02em", boxShadow: "0 3px 10px rgba(59,130,246,0.35)",
+                marginTop: 2,
               }}>
                 Create Account
-                <ArrowRight size={10} />
+                <ArrowRight size={8} />
               </Link>
             </div>
           </motion.div>
