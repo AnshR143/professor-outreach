@@ -3,6 +3,30 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import { useState, useCallback, useRef, useEffect } from "react"
 import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls, useMap } from "@/components/ui/map"
 import { createClient } from "@/lib/supabase/client"
+// ─── OSM helpers (client-side Overpass parsing) ───────────────────────────────
+
+interface RawBiz {
+  id: number
+  lat: number
+  lon: number
+  tags: Record<string, string>
+}
+
+function osmTagToType(tags: Record<string, string>): string {
+  if (tags.office)  return tags.office
+  if (tags.shop)    return `${tags.shop} shop`
+  if (tags.amenity) return tags.amenity
+  if (tags.craft)   return tags.craft
+  return "business"
+}
+
+function buildAddress(tags: Record<string, string>): string {
+  const parts = [tags["addr:housenumber"], tags["addr:street"], tags["addr:city"], tags["addr:state"]].filter(Boolean)
+  return parts.length ? parts.join(" ") : tags["addr:full"] || ""
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 // Inline type — avoids importing from an API route file (causes webpack bundling issues)
 export interface DiscoveredBusiness {
   id: string
@@ -177,6 +201,54 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     )
   }, [])
 
+  // ── Client-side geocode via Nominatim ───────────────────────────────────────
+
+  async function geocodeLocation(loc: string): Promise<{ lat: number; lon: number } | null> {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(loc)}&format=json&limit=1`,
+        { headers: { "User-Agent": "OutreachAI/1.0 (internship map)" } }
+      )
+      const data = await res.json()
+      if (!data.length) return null
+      return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) }
+    } catch { return null }
+  }
+
+  // ── Client-side Overpass query ───────────────────────────────────────────────
+
+  async function queryOverpass(lat: number, lon: number, radiusM: number): Promise<RawBiz[]> {
+    const r = Math.min(radiusM, 10000)
+    const query = `[out:json][timeout:20];
+(
+  node["office"]["name"](around:${r},${lat},${lon});
+  node["shop"]["name"](around:${r},${lat},${lon});
+  node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library)$"]["name"](around:${r},${lat},${lon});
+  node["craft"]["name"](around:${r},${lat},${lon});
+);
+out body 80;`
+
+    const ENDPOINTS = [
+      "https://overpass-api.de/api/interpreter",
+      "https://overpass.kumi.systems/api/interpreter",
+      "https://overpass.openstreetmap.ru/api/interpreter",
+    ]
+    for (const url of ENDPOINTS) {
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `data=${encodeURIComponent(query)}`,
+        })
+        if (!res.ok) continue
+        const data = await res.json()
+        const els = (data.elements || []).filter((e: any) => e.tags?.name)
+        if (els.length > 0 || url === ENDPOINTS[ENDPOINTS.length - 1]) return els
+      } catch { continue }
+    }
+    return []
+  }
+
   // ── Search ──────────────────────────────────────────────────────────────────
 
   async function handleSearch(e: React.FormEvent) {
@@ -188,18 +260,76 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     setSelected(null)
 
     try {
-      const res = await fetch("/api/internships/discover-map", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ location: location.trim(), industry, radius, minScore }),
-      })
-      const data = await res.json()
-      if (!res.ok) { setError(data.error || "Search failed."); return }
-      setBusinesses(data.businesses || [])
-      setCenter(data.center || null)
-      if (data.message) setError(data.message)
+      // 1. Geocode in browser (no server timeout)
+      const coords = await geocodeLocation(location.trim())
+      if (!coords) {
+        setError(`Could not find location: "${location}". Try a city name like "Chicago, IL".`)
+        return
+      }
+      setCenter([coords.lon, coords.lat])
+
+      // 2. Query Overpass in browser (no server timeout)
+      const elements = await queryOverpass(coords.lat, coords.lon, radius)
+      if (elements.length === 0) {
+        setError("No businesses found in this area. Try a larger radius or different city.")
+        return
+      }
+
+      // 3. Deduplicate and shape for scoring
+      const seen = new Set<string>()
+      const unique: RawBiz[] = []
+      for (const el of elements) {
+        if (!seen.has(el.tags.name)) {
+          seen.add(el.tags.name)
+          unique.push(el)
+        }
+        if (unique.length >= 50) break
+      }
+      const forScoring = unique.map(el => ({
+        name: el.tags.name,
+        type: osmTagToType(el.tags),
+        address: buildAddress(el.tags),
+      }))
+
+      // 4. Ask server only for AI scoring (fast, no external calls)
+      let scores: { score: number; reason: string; industry: string }[] =
+        forScoring.map(() => ({ score: 5, reason: "Local business", industry }))
+      try {
+        const scoreRes = await fetch("/api/internships/score-businesses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ businesses: forScoring, industry }),
+        })
+        if (scoreRes.ok) {
+          const scoreData = await scoreRes.json()
+          if (Array.isArray(scoreData.scores) && scoreData.scores.length === forScoring.length) {
+            scores = scoreData.scores
+          }
+        }
+      } catch { /* use default scores */ }
+
+      // 5. Build final list
+      const results: DiscoveredBusiness[] = unique
+        .map((el, i) => ({
+          id: String(el.id),
+          name: el.tags.name,
+          lat: el.lat,
+          lon: el.lon,
+          type: osmTagToType(el.tags),
+          address: buildAddress(el.tags),
+          website: el.tags.website || el.tags["contact:website"] || null,
+          phone: el.tags.phone || el.tags["contact:phone"] || null,
+          internScore: scores[i]?.score ?? 5,
+          scoreReason: scores[i]?.reason ?? "Local business",
+          industry: scores[i]?.industry ?? industry,
+        }))
+        .filter(b => b.internScore >= minScore)
+        .sort((a, b) => b.internScore - a.internScore)
+
+      setBusinesses(results)
+      if (results.length === 0) setError("No businesses matched your minimum score. Try lowering the score filter.")
     } catch {
-      setError("Network error. Please try again.")
+      setError("Something went wrong. Please check your connection and try again.")
     } finally {
       setLoading(false)
     }
