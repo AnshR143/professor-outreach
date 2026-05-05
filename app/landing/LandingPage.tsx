@@ -396,7 +396,7 @@ function FloatingCharacter() {
       <div style={{ position: "relative" }}>
         {/* Husky Image (Peeking version) */}
         <img 
-          src="/husky.png" 
+          src="/husky.png.png" 
           alt="Husky Guide" 
           style={{ width: "100%", height: "auto", filter: "drop-shadow(0 15px 35px rgba(0,0,0,0.12))" }} 
         />
