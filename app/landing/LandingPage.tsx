@@ -56,36 +56,36 @@ function BlurWords({ text }: { text: string }) {
 ═══════════════════════════════════════════════════════════ */
 function FeaturesSlide() {
   return (
-    <div style={{ padding: "40px 40px 32px" }}>
-      <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
+    <div style={{ padding: "18px 22px 14px" }}>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
         background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
-        borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
-        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#3b82f6", boxShadow: "0 0 8px #3b82f6" }} />
-        <span style={{ fontSize: 11, fontWeight: 700, color: "#1e40af", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why OutreachAI</span>
+        borderRadius: 999, padding: "3px 10px", marginBottom: 8 }}>
+        <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#3b82f6" }} />
+        <span style={{ fontSize: 10, fontWeight: 700, color: "#1e40af", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why OutreachAI</span>
       </div>
-      <h2 style={{ fontSize: "clamp(22px,3vw,36px)", fontWeight: 800, color: "#0f172a",
-        margin: "0 0 8px", lineHeight: 1.2, letterSpacing: "-0.03em" }}>
+      <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 800, color: "#0f172a",
+        margin: "0 0 4px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
         Everything you need for cold outreach{" "}
         <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
           that actually works
         </span>
       </h2>
-      <p style={{ fontSize: 14, color: "#334155", margin: "0 0 24px", lineHeight: 1.6, maxWidth: 520 }}>
+      <p style={{ fontSize: 11, color: "#334155", margin: "0 0 12px", lineHeight: 1.5, maxWidth: 520 }}>
         Built for students and early-career professionals who want a systematic, AI-powered approach to reaching the right people.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
         {FEATURES.map((f, i) => (
           <motion.div key={f.title}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.4, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
             style={{
               background: "rgba(255,255,255,0.85)", border: "1px solid rgba(59,130,246,0.15)",
-              borderRadius: 16, padding: "18px 18px", backdropFilter: "blur(10px)",
+              borderRadius: 12, padding: "10px 12px",
             }}>
-            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>{f.title}</h3>
-            <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.5, margin: 0 }}>{f.desc}</p>
+            <h3 style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", margin: "0 0 3px" }}>{f.title}</h3>
+            <p style={{ fontSize: 10, color: "#475569", lineHeight: 1.45, margin: 0 }}>{f.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -95,15 +95,15 @@ function FeaturesSlide() {
 
 function HowItWorksSlide() {
   return (
-    <div style={{ padding: "40px 40px 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
+    <div style={{ padding: "18px 22px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, alignItems: "center" }}>
       <div>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
           background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
-          borderRadius: 999, padding: "5px 14px", marginBottom: 20 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.1em" }}>Process</span>
+          borderRadius: 999, padding: "3px 10px", marginBottom: 8 }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.1em" }}>Process</span>
         </div>
-        <h2 style={{ fontSize: "clamp(24px,3.5vw,42px)", fontWeight: 800,
-          color: "#0f172a", margin: "0 0 32px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
+        <h2 style={{ fontSize: "clamp(18px,2.4vw,28px)", fontWeight: 800,
+          color: "#0f172a", margin: "0 0 14px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
           From zero to{" "}
           <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
@@ -114,21 +114,21 @@ function HowItWorksSlide() {
           <motion.div key={s.step}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
-            style={{ display: "flex", gap: 16, marginBottom: i < 2 ? 28 : 0 }}>
+            transition={{ duration: 0.4, delay: 0.08 + i * 0.09, ease: [0.16, 1, 0.3, 1] }}
+            style={{ display: "flex", gap: 10, marginBottom: i < 2 ? 12 : 0 }}>
             <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 13,
+              <div style={{ width: 32, height: 32, borderRadius: 10,
                 background: "linear-gradient(135deg,rgba(59,130,246,0.1),rgba(129,140,248,0.1))",
                 border: "1px solid rgba(59,130,246,0.22)",
                 display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 13, fontWeight: 800, color: "#2563eb" }}>{s.step}</span>
+                <span style={{ fontSize: 11, fontWeight: 800, color: "#2563eb" }}>{s.step}</span>
               </div>
-              {i < 2 && <div style={{ width: 2, height: 28,
-                background: "linear-gradient(to bottom,rgba(59,130,246,0.25),transparent)", margin: "6px 0" }} />}
+              {i < 2 && <div style={{ width: 2, height: 12,
+                background: "linear-gradient(to bottom,rgba(59,130,246,0.25),transparent)", margin: "4px 0" }} />}
             </div>
-            <div style={{ paddingTop: 10 }}>
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: "0 0 5px" }}>{s.title}</h3>
-              <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.55, margin: 0 }}>{s.desc}</p>
+            <div style={{ paddingTop: 6 }}>
+              <h3 style={{ fontSize: 12, fontWeight: 700, color: "#0f172a", margin: "0 0 2px" }}>{s.title}</h3>
+              <p style={{ fontSize: 11, color: "#475569", lineHeight: 1.45, margin: 0 }}>{s.desc}</p>
             </div>
           </motion.div>
         ))}
@@ -136,25 +136,25 @@ function HowItWorksSlide() {
       <motion.div
         initial={{ opacity: 0, scale: 0.92 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          borderRadius: 24,
+          borderRadius: 16,
           background: "linear-gradient(135deg,rgba(59,130,246,0.08) 0%,rgba(79,70,229,0.12) 100%)",
-          border: "1px solid rgba(59,130,246,0.18)", padding: 28,
-          display: "flex", flexDirection: "column", gap: 16, backdropFilter: "blur(10px)",
+          border: "1px solid rgba(59,130,246,0.18)", padding: 16,
+          display: "flex", flexDirection: "column", gap: 10,
         }}>
         {[
           { label: "Contacts discovered", value: "18 matches found",       dot: "#3b82f6" },
-          { label: "Email drafted",       value: "Personalised in 2s",    dot: "#4f46e5" },
-          { label: "Outreach status",     value: "4 replied · 3 pending", dot: "#10b981" },
+          { label: "Email drafted",       value: "Personalised in 2s",     dot: "#4f46e5" },
+          { label: "Outreach status",     value: "4 replied · 3 pending",  dot: "#10b981" },
         ].map((item) => (
-          <div key={item.label} style={{ background: "rgba(255,255,255,0.72)", borderRadius: 14, padding: "14px 18px",
-            border: "1px solid rgba(59,130,246,0.1)", backdropFilter: "blur(8px)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-              <span style={{ width: 7, height: 7, borderRadius: "50%", background: item.dot, boxShadow: `0 0 6px ${item.dot}` }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em" }}>{item.label}</span>
+          <div key={item.label} style={{ background: "rgba(255,255,255,0.72)", borderRadius: 10, padding: "10px 14px",
+            border: "1px solid rgba(59,130,246,0.1)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.dot, flexShrink: 0 }} />
+              <span style={{ fontSize: 10, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em" }}>{item.label}</span>
             </div>
-            <p style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", margin: 0 }}>{item.value}</p>
+            <p style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: 0 }}>{item.value}</p>
           </div>
         ))}
       </motion.div>
@@ -537,8 +537,8 @@ export default function LandingPage() {
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55, zIndex: 0 }}
           src="/hero-bg.mp4"
         />
-        {/* Subtle overlay — keep clouds visible */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(to bottom, rgba(10,15,30,0.18) 0%, rgba(10,15,30,0.32) 100%)" }} />
+        {/* Very light overlay — clouds clearly visible */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "rgba(10,15,30,0.08)" }} />
 
         {/* Wolf with whiteboard */}
         <motion.div
