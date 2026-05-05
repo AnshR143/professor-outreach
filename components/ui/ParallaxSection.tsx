@@ -173,50 +173,52 @@ export function ParallaxSection() {
           <img
             src="/husky.png.png"
             alt="OutreachAI Guide"
-            style={{
-              width: "100%", height: "auto",
-              mixBlendMode: "multiply",
-              filter: "contrast(1.05) saturate(1.02)",
-            }}
+            style={{ width: "100%", height: "auto", display: "block" }}
           />
 
-          {/* Whiteboard overlay — CTA inside the board area */}
+          {/* White whiteboard backing + CTA content */}
           <div style={{
-            position: "absolute", top: "54%", left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "82%", textAlign: "center",
+            position: "absolute", top: "50%", left: "50%",
+            transform: "translate(-46%, -48%)",
+            width: "56%",
+            background: "#ffffff",
+            borderRadius: 8,
+            padding: "6% 8%",
+            textAlign: "center",
             pointerEvents: "auto",
+            boxShadow: "inset 0 1px 3px rgba(0,0,0,0.06)",
           }}>
             <h3 style={{
-              fontSize: "clamp(12px, 1.8vw, 20px)", fontWeight: 900,
-              color: "#0f172a", marginBottom: 2, lineHeight: 1.1,
+              fontSize: "clamp(13px, 1.9vw, 22px)", fontWeight: 900,
+              color: "#0f172a", marginBottom: 3, lineHeight: 1.15, margin: "0 0 3px",
             }}>
               Stop guessing.
             </h3>
             <h3 style={{
-              fontSize: "clamp(12px, 1.8vw, 20px)", fontWeight: 900,
-              color: "#3b82f6", marginBottom: 12, lineHeight: 1.1,
+              fontSize: "clamp(13px, 1.9vw, 22px)", fontWeight: 900,
+              color: "#3b82f6", lineHeight: 1.15, margin: "0 0 10px",
             }}>
               Start connecting.
             </h3>
             <p style={{
-              fontSize: "clamp(8px, 0.9vw, 11px)", color: "#475569",
-              lineHeight: 1.4, marginBottom: 16,
-              maxWidth: "92%", marginInline: "auto",
-              fontWeight: 500
+              fontSize: "clamp(9px, 1vw, 12px)", color: "#64748b",
+              lineHeight: 1.55, margin: "0 0 14px",
+              fontWeight: 500,
             }}>
-              Join thousands of students landing high-impact positions using <span style={{ color: "#3b82f6" }}>AI-powered</span> precision matching.
+              Join thousands of students landing high-impact positions using{" "}
+              <span style={{ color: "#3b82f6", fontWeight: 700 }}>AI-powered</span>{" "}
+              precision matching.
             </p>
             <Link href="/signup" style={{
               display: "inline-flex", alignItems: "center", gap: 6,
               background: "linear-gradient(to right,#3b82f6,#4f46e5)",
               color: "#fff", padding: "8px 16px", borderRadius: 8,
-              fontSize: "clamp(8px, 0.8vw, 11px)", fontWeight: 800,
-              textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.03em",
-              boxShadow: "0 4px 14px rgba(59,130,246,0.4)",
+              fontSize: "clamp(9px, 0.85vw, 11px)", fontWeight: 800,
+              textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.04em",
+              boxShadow: "0 4px 14px rgba(59,130,246,0.35)",
             }}>
               Create Your Account
-              <ArrowRight size={12} />
+              <ArrowRight size={11} />
             </Link>
           </div>
         </motion.div>
