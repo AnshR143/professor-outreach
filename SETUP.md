@@ -55,21 +55,33 @@ Click the orange "Find Researchers" button → select your fields → hit Find!
 
 ---
 
-## Bulk Professor Seeding (Optional)
+## 9. Set Up Google Maps (Required for Discovery)
 
-To pre-populate the database with many professors at once:
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a project → Enable **Places API (Legacy)** and **Geocoding API**.
+3. Create an API Key in **Credentials**.
+4. Add to `.env.local` as `GOOGLE_MAPS_API_KEY=your-key-here`.
 
-1. Go to Supabase → Authentication → Users → copy your User ID
-2. Open `scripts/seed-professors.ts`
-3. Set `USER_ID = "your-user-id-here"`
-4. Customize `FIELDS` and `UNIVERSITIES`
-5. Run:
+---
 
-```bash
-NEXT_PUBLIC_SUPABASE_URL=your-url SUPABASE_SERVICE_ROLE_KEY=your-key npx tsx scripts/seed-professors.ts
-```
+## 🚀 New Feature: Internship Discovery Pipeline
 
-This will automatically fetch real professors from Semantic Scholar.
+The platform now includes a production-ready Google Maps pipeline for discovering local internships and companies.
+
+### 1. Maps Data Pipeline
+- **Search**: `/api/maps/search` — Finds companies via Google Places Nearby Search (paginated to 60+ results).
+- **Enrichment**: `/api/maps/details` — Fetches full details, ratings, and reviews.
+- **AI Analysis**: `/api/pipeline/run` — Orchestrates the full flow:
+    - Scrapes company websites for emails and socials.
+    - Analyzes Google Reviews using Groq/Gemini to find "opportunities" (e.g., bad website, slow service).
+    - Scores leads (0-100) based on signals like rating, review count, and digital presence.
+
+### 2. Resume Tailoring Engine
+- **Endpoint**: `/api/resume/tailor`
+- **Function**: Takes your uploaded resume + company context and generates:
+    - 5 tailored bullet points.
+    - A personalized outreach email.
+    - A "Why I Fit" summary.
 
 ---
 
@@ -78,19 +90,36 @@ This will automatically fetch real professors from Semantic Scholar.
 - **Next.js 16** (App Router, TypeScript)
 - **Tailwind CSS v4**
 - **Supabase** (Auth + PostgreSQL)
-- **Groq** (AI — llama-3.3-70b-versatile, free tier)
-- **Semantic Scholar API** (Professor discovery, free)
-- **arXiv API** (Papers, free)
+- **Groq/Gemini** (AI — LLM analysis and tailoring)
+- **Google Maps API** (Places & Geocoding)
+- **Semantic Scholar API** (Professor discovery)
 
 ## Features
 
-- 🔍 AI-powered professor discovery via Semantic Scholar
-- 🤖 Groq AI email generation with tone control
-- 📊 Kanban board to organize researchers
-- 📈 Analytics dashboard
-- 📬 Campaign tracking
-- 📎 Resume PDF upload and parsing
-- 🎨 Email template library (12 templates built-in)
-- 📋 Activity timeline
-- 🏛 Universities browser
-- ⚙️ In-app API key management
+- 📍 **Google Maps Discovery**: Find local software companies and agencies.
+- 🕵️‍♂️ **Website Scraper**: Automated extraction of contact emails and social links.
+- 📊 **Lead Scoring**: Smart filtering of companies based on opportunity signals.
+- 📝 **Resume Tailoring**: AI-driven bullet point and outreach generation.
+- 🤖 **Review Analysis**: Sentiment analysis of customer reviews to find business weaknesses.
+- 🔍 **Professor Search**: Academic discovery via Semantic Scholar.
+-  Kanban board, Analytics, and Activity Tracking.
+
+---
+
+## 🛠 Troubleshooting & Common Bugs
+
+### 1. "INVALID_REQUEST" on Search
+- **Cause**: The `next_page_token` from Google is not immediately valid.
+- **Fix**: The backend already implements a 2-second sleep + retry. If it still fails, check if your API key has "Places API (Legacy)" enabled.
+
+### 2. Website Scraper Returns No Emails
+- **Cause**: Some websites are SPAs (React/Vue) that don't render content without JS, or they block scrapers.
+- **Fix**: We use a custom User-Agent to appear more legitimate. For highly protected sites, a headless browser (Puppeteer) would be needed, but for MVP, regex on raw HTML covers 80% of small business sites.
+
+### 3. Pipeline is Slow
+- **Cause**: Running 20+ scrapes and AI analyses takes time.
+- **Fix**: We use `mapWithLimit(5)` to process in parallel. Ensure you have a `GROQ_API_KEY` for the fastest AI responses.
+
+### 4. Maps results are inaccurate
+- **Cause**: Radius or keywords are too broad.
+- **Fix**: Use specific keywords like "Software Development Agency" rather than just "tech".

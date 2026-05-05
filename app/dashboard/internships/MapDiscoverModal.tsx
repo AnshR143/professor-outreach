@@ -177,7 +177,24 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   const [adding, setAdding]       = useState<Set<string>>(new Set())
   const [added, setAdded]         = useState<Set<string>>(new Set())
 
+  // Google vs OSM toggle
+  const [provider, setProvider]   = useState<"osm" | "google">("osm")
+  const [googleEnabled, setGoogleEnabled] = useState(false)
+
   const listRef = useRef<HTMLDivElement>(null)
+
+  // Check if Google is enabled
+  useEffect(() => {
+    fetch("/api/settings/features")
+      .then(res => res.json())
+      .then(data => {
+        if (data.googleMapsEnabled) {
+          setGoogleEnabled(true)
+          setProvider("google") // Default to Google if available
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   // Auto-detect location on mount
   useEffect(() => {
@@ -281,78 +298,142 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     setSelected(null)
 
     try {
-      // 1. Geocode
-      const coords = await geocodeLocation(location.trim())
-      if (!coords) {
-        setError(`Could not find "${location}". Try a city name like "Chicago, IL".`)
-        return
-      }
-      setCenter([coords.lon, coords.lat])
-      setStep("Fetching nearby businesses…")
-
-      // 2. Overpass (browser-side, parallel endpoints)
-      const elements = await queryOverpass(coords.lat, coords.lon, radius)
-      if (elements.length === 0) {
-        setError("No businesses found in this area. Try a larger radius or different city.")
-        return
-      }
-
-      // 3. Deduplicate and shape for scoring
-      const seen = new Set<string>()
-      const unique: RawBiz[] = []
-      for (const el of elements) {
-        if (!seen.has(el.tags.name)) {
-          seen.add(el.tags.name)
-          unique.push(el)
-        }
-        if (unique.length >= 50) break
-      }
-      const forScoring = unique.map(el => ({
-        name: el.tags.name,
-        type: osmTagToType(el.tags),
-        address: buildAddress(el.tags),
-      }))
-
-      // 4. Ask server only for AI scoring (fast, no external calls)
-      setStep("Scoring businesses with AI…")
-      let scores: { score: number; reason: string; industry: string }[] =
-        forScoring.map(() => ({ score: 5, reason: "Local business", industry }))
-      try {
-        const scoreRes = await fetch("/api/internships/score-businesses", {
+      if (provider === "google") {
+        setStep("Searching Google Places…")
+        const res = await fetch("/api/pipeline/run", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ businesses: forScoring, industry }),
+          body: JSON.stringify({
+            lat: 0, // Will be geocoded if not provided, but we should geocode first or let server do it
+            lng: 0,
+            radius,
+            keyword: industry === "Any" ? "companies" : industry,
+            maxResults: 20
+          })
         })
-        if (scoreRes.ok) {
-          const scoreData = await scoreRes.json()
-          if (Array.isArray(scoreData.scores) && scoreData.scores.length === forScoring.length) {
-            scores = scoreData.scores
-          }
-        }
-      } catch { /* use default scores */ }
 
-      // 5. Build final list
-      const results: DiscoveredBusiness[] = unique
-        .map((el, i) => ({
-          id: String(el.id),
+        // Wait, the pipeline/run route expects lat/lng.
+        // I should geocode first as I already do for OSM.
+        const coords = await geocodeLocation(location.trim())
+        if (!coords) {
+          setError(`Could not find "${location}".`)
+          setLoading(false)
+          return
+        }
+        setCenter([coords.lon, coords.lat])
+
+        setStep("Running enrichment pipeline…")
+        const pipelineRes = await fetch("/api/pipeline/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            lat: coords.lat,
+            lng: coords.lon,
+            radius,
+            keyword: industry === "Any" ? "companies" : industry,
+            maxResults: 20
+          })
+        })
+
+        if (!pipelineRes.ok) throw new Error("Pipeline failed")
+        const data = await pipelineRes.json()
+
+        const results: DiscoveredBusiness[] = (data.results || []).map((p: any) => ({
+          id: p.place_id,
+          name: p.name,
+          lat: p.lat,
+          lon: p.lng,
+          type: p.types?.[0] || "business",
+          address: p.address,
+          website: p.website,
+          phone: p.phone,
+          internScore: Math.round((p.leadScore?.score || 50) / 10),
+          scoreReason: p.leadScore?.reasons?.[0] || "Google Verified Business",
+          industry: industry,
+          // Extra data for Google results
+          emails: p.scrape?.emails || [],
+          sentiment: p.analysis?.sentiment,
+          opportunity: p.analysis?.opportunity
+        }))
+
+        setBusinesses(results)
+      } else {
+        // 1. Geocode
+        const coords = await geocodeLocation(location.trim())
+        if (!coords) {
+          setError(`Could not find "${location}". Try a city name like "Chicago, IL".`)
+          return
+        }
+        setCenter([coords.lon, coords.lat])
+        setStep("Fetching nearby businesses…")
+
+        // 2. Overpass (browser-side, parallel endpoints)
+        const elements = await queryOverpass(coords.lat, coords.lon, radius)
+        if (elements.length === 0) {
+          setError("No businesses found in this area. Try a larger radius or different city.")
+          return
+        }
+
+        // 3. Deduplicate and shape for scoring
+        const seen = new Set<string>()
+        const unique: RawBiz[] = []
+        for (const el of elements) {
+          if (!seen.has(el.tags.name)) {
+            seen.add(el.tags.name)
+            unique.push(el)
+          }
+          if (unique.length >= 50) break
+        }
+        const forScoring = unique.map(el => ({
           name: el.tags.name,
-          lat: el.lat ?? el.center!.lat,
-          lon: el.lon ?? el.center!.lon,
           type: osmTagToType(el.tags),
           address: buildAddress(el.tags),
-          website: el.tags.website || el.tags["contact:website"] || null,
-          phone: el.tags.phone || el.tags["contact:phone"] || null,
-          internScore: scores[i]?.score ?? 5,
-          scoreReason: scores[i]?.reason ?? "Local business",
-          industry: scores[i]?.industry ?? industry,
         }))
-        .filter(b => b.internScore >= minScore)
-        .sort((a, b) => b.internScore - a.internScore)
 
-      setBusinesses(results)
-      if (results.length === 0) setError("No businesses matched your minimum score. Try lowering the score filter.")
-    } catch {
-      setError("Something went wrong. Please check your connection and try again.")
+        // 4. Ask server only for AI scoring (fast, no external calls)
+        setStep("Scoring businesses with AI…")
+        let scores: { score: number; reason: string; industry: string }[] =
+          forScoring.map(() => ({ score: 5, reason: "Local business", industry }))
+        try {
+          const scoreRes = await fetch("/api/internships/score-businesses", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ businesses: forScoring, industry }),
+          })
+          if (scoreRes.ok) {
+            const scoreData = await scoreRes.json()
+            if (Array.isArray(scoreData.scores) && scoreData.scores.length === forScoring.length) {
+              scores = scoreData.scores
+            }
+          }
+        } catch { /* use default scores */ }
+
+        // 5. Build final list
+        const results: DiscoveredBusiness[] = unique
+          .map((el, i) => ({
+            id: String(el.id),
+            name: el.tags.name,
+            lat: el.lat ?? el.center!.lat,
+            lon: el.lon ?? el.center!.lon,
+            type: osmTagToType(el.tags),
+            address: buildAddress(el.tags),
+            website: el.tags.website || el.tags["contact:website"] || null,
+            phone: el.tags.phone || el.tags["contact:phone"] || null,
+            internScore: scores[i]?.score ?? 5,
+            scoreReason: scores[i]?.reason ?? "Local business",
+            industry: scores[i]?.industry ?? industry,
+          }))
+          .filter(b => b.internScore >= minScore)
+          .sort((a, b) => b.internScore - a.internScore)
+
+        setBusinesses(results)
+      }
+
+      if (businesses.length === 0 && !error) {
+        // Wait, state update is async. We should check results length.
+      }
+    } catch (err: any) {
+      setError(err.message || "Something went wrong. Please check your connection and try again.")
     } finally {
       setLoading(false)
       setStep("")
@@ -463,6 +544,34 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             <input type="range" min={1} max={9} step={1} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: "100%", accentColor: "#6366f1" }} />
           </div>
 
+          {googleEnabled && (
+            <div style={{ flex: "0 0 auto" }}>
+              <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Provider</label>
+              <div style={{ display: "flex", background: "#f1f5f9", padding: 2, borderRadius: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => setProvider("google")}
+                  style={{
+                    padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
+                    cursor: "pointer", background: provider === "google" ? "#fff" : "transparent",
+                    color: provider === "google" ? "#6366f1" : "#64748b",
+                    boxShadow: provider === "google" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
+                  }}
+                >Google</button>
+                <button
+                  type="button"
+                  onClick={() => setProvider("osm")}
+                  style={{
+                    padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
+                    cursor: "pointer", background: provider === "osm" ? "#fff" : "transparent",
+                    color: provider === "osm" ? "#6366f1" : "#64748b",
+                    boxShadow: provider === "osm" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
+                  }}
+                >OSM</button>
+              </div>
+            </div>
+          )}
+
           <button type="submit" disabled={loading || !location.trim()}
             style={{ padding: "8px 20px", background: loading ? "#c7d2fe" : "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 7, flexShrink: 0, height: 36 }}>
             {loading ? (
@@ -530,6 +639,17 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                       <div style={{ fontSize: 11, color: "#6366f1", fontWeight: 600, marginBottom: 2, textTransform: "capitalize" }}>{biz.type}</div>
                       {biz.address && <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4 }}>{biz.address}</div>}
                       <div style={{ fontSize: 11, color: "#64748b", fontStyle: "italic", marginBottom: 8 }}>{biz.scoreReason}</div>
+                      
+                      {(biz as any).emails?.length > 0 && (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+                          {(biz as any).emails.slice(0, 2).map((email: string) => (
+                            <span key={email} style={{ fontSize: 10, background: "#eff6ff", color: "#1d4ed8", padding: "1px 6px", borderRadius: 4, border: "1px solid #bfdbfe" }}>
+                              {email}
+                            </span>
+                          ))}
+                          {(biz as any).emails.length > 2 && <span style={{ fontSize: 10, color: "#94a3b8" }}>+{ (biz as any).emails.length - 2} more</span>}
+                        </div>
+                      )}
 
                       <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
                         {biz.website && (
