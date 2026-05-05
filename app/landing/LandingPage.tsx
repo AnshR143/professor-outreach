@@ -164,51 +164,51 @@ function HowItWorksSlide() {
 
 function PricingSlide() {
   return (
-    <div style={{ padding: "40px 40px 36px" }}>
-      <div style={{ textAlign: "center", marginBottom: 28 }}>
+    <div style={{ padding: "22px 28px 20px" }}>
+      <div style={{ textAlign: "center", marginBottom: 16 }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
           background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
-          borderRadius: 999, padding: "5px 14px", marginBottom: 14 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.1em" }}>Pricing</span>
+          borderRadius: 999, padding: "4px 12px", marginBottom: 8 }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.1em" }}>Pricing</span>
         </div>
-        <h2 style={{ fontSize: "clamp(22px,3vw,38px)", fontWeight: 800, color: "#0f172a",
-          margin: "0 0 8px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
+        <h2 style={{ fontSize: "clamp(18px,2.4vw,28px)", fontWeight: 800, color: "#0f172a",
+          margin: "0 0 4px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
           Simple, transparent{" "}
           <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>pricing</span>
         </h2>
-        <p style={{ fontSize: 14, color: "#475569", margin: 0 }}>Start free. No credit card required.</p>
+        <p style={{ fontSize: 12, color: "#475569", margin: 0 }}>Start free. No credit card required.</p>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16, maxWidth: 700, margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 12, maxWidth: 580, margin: "0 auto" }}>
         {PRICING.map((p, i) => (
           <motion.div key={p.plan}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              borderRadius: 20, padding: 26,
+              borderRadius: 16, padding: "16px 18px",
               background: p.primary
-                ? "linear-gradient(135deg,rgba(59,130,246,0.15),rgba(129,140,248,0.12))"
-                : "rgba(255,255,255,1)",
-              border: p.primary ? "1px solid rgba(59,130,246,0.35)" : "1px solid rgba(59,130,246,0.15)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.04)",
+                ? "linear-gradient(135deg,rgba(59,130,246,0.12),rgba(129,140,248,0.1))"
+                : "rgba(248,250,252,1)",
+              border: p.primary ? "1.5px solid rgba(59,130,246,0.35)" : "1.5px solid rgba(59,130,246,0.12)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
             }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: p.primary ? "#2563eb" : "#64748b",
-              textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>{p.plan}</div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: "#0f172a", marginBottom: 6 }}>{p.price}</div>
-            <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.5, margin: "0 0 18px" }}>{p.desc}</p>
-            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: p.primary ? "#2563eb" : "#64748b",
+              textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>{p.plan}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: "#0f172a", marginBottom: 3 }}>{p.price}</div>
+            <p style={{ fontSize: 11, color: "#475569", lineHeight: 1.4, margin: "0 0 10px" }}>{p.desc}</p>
+            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 12px", display: "flex", flexDirection: "column", gap: 5 }}>
               {p.features.map(f => (
-                <li key={f} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#475569" }}>
-                  <CheckCircle style={{ width: 14, height: 14, color: "#3b82f6", flexShrink: 0 }} />
+                <li key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#475569" }}>
+                  <CheckCircle style={{ width: 12, height: 12, color: "#3b82f6", flexShrink: 0 }} />
                   {f}
                 </li>
               ))}
             </ul>
             {p.cta && (
               <Link href={p.href} style={{
-                display: "block", textAlign: "center", padding: "10px 20px", borderRadius: 10,
-                fontSize: 13, fontWeight: 700, textDecoration: "none",
+                display: "block", textAlign: "center", padding: "8px 16px", borderRadius: 8,
+                fontSize: 12, fontWeight: 700, textDecoration: "none",
                 background: p.primary ? "linear-gradient(to right,#3b82f6,#4f46e5)" : "transparent",
                 color: p.primary ? "#fff" : "#94a3b8",
                 border: p.primary ? "none" : "1px solid rgba(59,130,246,0.2)",
@@ -278,7 +278,7 @@ function SectionCarousel() {
 
       {/* 3D Carousel track */}
       <div style={{
-        position: "relative", width: "100%", height: "580px",
+        position: "relative", width: "100%", height: "470px",
         display: "flex", alignItems: "center", justifyContent: "center",
         perspective: "1200px", zIndex: 10,
       }}>
@@ -291,13 +291,13 @@ function SectionCarousel() {
           return (
             <div key={slide.id} style={{
               position: "absolute",
-              width: "min(860px, 88vw)", height: "560px",
-              overflow: "hidden", borderRadius: 28,
-              background: "rgba(255,255,255,0.88)", backdropFilter: "blur(20px)",
-              border: "1px solid rgba(59,130,246,0.14)",
+              width: "min(690px, 72vw)", height: "448px",
+              overflow: "hidden", borderRadius: 24,
+              background: "#ffffff",
+              border: "2.5px solid #0f172a",
               boxShadow: isCenter
-                ? "0 32px 80px rgba(59,130,246,0.18), 0 8px 32px rgba(0,0,0,0.1)"
-                : "0 8px 32px rgba(0,0,0,0.08)",
+                ? "4px 4px 0px #1e3a8a, 0 16px 48px rgba(59,130,246,0.15)"
+                : "2px 2px 0px #1e3a8a",
               transform: `
                 translateX(${offset * 88}%)
                 rotateY(${offset * -14}deg)
@@ -318,7 +318,7 @@ function SectionCarousel() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  style={{ height: "100%", overflowY: "auto" }}>
+                  style={{ height: "100%", overflowY: "hidden" }}>
                   {slide.content}
                 </motion.div>
               </AnimatePresence>
@@ -537,14 +537,14 @@ export default function LandingPage() {
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55, zIndex: 0 }}
           src="/hero-bg.mp4"
         />
-        {/* Dark overlay so text stays readable */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(to bottom, rgba(10,15,30,0.45) 0%, rgba(10,15,30,0.6) 100%)" }} />
+        {/* Subtle overlay — keep clouds visible */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(to bottom, rgba(10,15,30,0.18) 0%, rgba(10,15,30,0.32) 100%)" }} />
 
         {/* Wolf with whiteboard */}
         <motion.div
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          style={{ width: "min(460px, 42vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
+          style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
           <img src="/husky.png.png" alt="OutreachAI Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           {/* No background — text sits directly on the white board area of the image */}
