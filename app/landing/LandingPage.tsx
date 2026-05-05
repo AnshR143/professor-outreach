@@ -1,14 +1,14 @@
 "use client"
-import { motion, useInView, AnimatePresence } from "framer-motion"
-import { ArrowRight, Brain, Mail, BarChart3, Zap, Shield, CheckCircle,
-         Hexagon, Triangle, Command, Ghost, Gem, Cpu, ChevronLeft, ChevronRight } from "lucide-react"
+import { motion, useInView, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { useRef, useEffect, useState, useCallback } from "react"
 import Link from "next/link"
 import Lenis from "@studio-freight/lenis"
+import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 
 /* ─────────────────────────────────────────────────────────────
    BlurWords — scroll-triggered word-by-word blur animation
-───────────────────────────────────────────────────────────── */
+ ───────────────────────────────────────────────────────────── */
 interface BlurWordsProps {
   text: string
   style?: React.CSSProperties
@@ -37,14 +37,14 @@ function BlurWords({ text, style = {}, delay = 0, wordDelay = 0.03, duration = 0
   )
 }
 
-/* ─── Feature card data ─── */
+/* ─── Feature card data (Icons removed as requested) ─── */
 const FEATURES = [
-  { icon: Brain,       title: "AI Match Scoring",     desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
-  { icon: Mail,        title: "Cold Email Generator",  desc: "AI-crafted emails tailored to each recipient — research papers for professors, role and company context for internships." },
-  { icon: BarChart3,   title: "Outreach Analytics",   desc: "Track reply rates, email statuses, and follow-up timing across your entire professor and internship pipeline." },
-  { icon: Zap,         title: "Dual Discovery",       desc: "Find professors at 500+ universities and internship contacts at top companies — all from one dashboard." },
-  { icon: Shield,      title: "Resume Parsing",       desc: "Upload your PDF once. Every match, email, and contact suggestion automatically draws on your extracted skills." },
-  { icon: CheckCircle, title: "Follow-up Engine",     desc: "Generate perfectly-timed follow-up emails that reference your original message — for both research and internship leads." },
+  { title: "AI Match Scoring",     desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
+  { title: "Cold Email Generator",  desc: "AI-crafted emails tailored to each recipient — research papers for professors, role and company context for internships." },
+  { title: "Outreach Analytics",   desc: "Track reply rates, email statuses, and follow-up timing across your entire professor and internship pipeline." },
+  { title: "Dual Discovery",       desc: "Find professors at 500+ universities and internship contacts at top companies — all from one dashboard." },
+  { title: "Resume Parsing",       desc: "Upload your PDF once. Every match, email, and contact suggestion automatically draws on your extracted skills." },
+  { title: "Follow-up Engine",     desc: "Generate perfectly-timed follow-up emails that reference your original message — for both research and internship leads." },
 ]
 
 const HOW_STEPS = [
@@ -58,21 +58,7 @@ const PRICING = [
   { plan: "Pro (coming soon)", price: "$12/mo", desc: "Advanced tools for students running high-volume outreach campaigns.", features: ["Everything in Free", "Bulk email campaigns", "Advanced analytics", "Priority support", "Custom templates"], cta: null, href: "#", primary: false },
 ]
 
-/* ─── University marquee ─── */
-const UNIS = [
-  { name: "MIT", icon: Hexagon },
-  { name: "Stanford", icon: Triangle },
-  { name: "Harvard", icon: Command },
-  { name: "Carnegie Mellon", icon: Ghost },
-  { name: "Berkeley", icon: Gem },
-  { name: "Princeton", icon: Cpu },
-  { name: "Yale", icon: Hexagon },
-  { name: "Cornell", icon: Triangle },
-  { name: "Columbia", icon: Command },
-  { name: "Caltech", icon: Ghost },
-]
-
-// navbar is now just brand + sign-in
+const UNIS = ["MIT", "Stanford", "Harvard", "Carnegie Mellon", "Berkeley", "Princeton", "Yale", "Cornell", "Columbia", "Caltech"]
 
 /* ═══════════════════════════════════════════════════════════
    CAROUSEL SECTION SLIDES
@@ -81,7 +67,6 @@ const UNIS = [
 function FeaturesSlide() {
   return (
     <div style={{ padding: "28px 32px 20px" }}>
-      {/* Label */}
       <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
         background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.25)",
         borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
@@ -105,7 +90,7 @@ function FeaturesSlide() {
         {FEATURES.map((f, i) => (
           <motion.div key={f.title}
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
             style={{
               background: "rgba(255,255,255,0.85)",
@@ -113,12 +98,6 @@ function FeaturesSlide() {
               borderRadius: 16, padding: "18px 18px",
               backdropFilter: "blur(10px)",
             }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10,
-              background: "linear-gradient(135deg,rgba(59,130,246,0.1),rgba(129,140,248,0.1))",
-              border: "1px solid rgba(59,130,246,0.2)",
-              display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
-              <f.icon style={{ width: 18, height: 18, color: "#2563eb" }} />
-            </div>
             <h3 style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>{f.title}</h3>
             <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.5, margin: 0 }}>{f.desc}</p>
           </motion.div>
@@ -131,7 +110,6 @@ function FeaturesSlide() {
 function HowItWorksSlide() {
   return (
     <div style={{ padding: "28px 32px 20px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, alignItems: "center" }}>
-      {/* Left */}
       <div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
           background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)",
@@ -151,7 +129,7 @@ function HowItWorksSlide() {
         {HOW_STEPS.map((s, i) => (
           <motion.div key={s.step}
             initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
             style={{ display: "flex", gap: 16, marginBottom: i < 2 ? 28 : 0 }}>
             <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -172,10 +150,9 @@ function HowItWorksSlide() {
         ))}
       </div>
 
-      {/* Right — visual */}
       <motion.div
         initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
+        whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         style={{
           borderRadius: 24,
@@ -215,9 +192,7 @@ function PricingSlide() {
         </div>
         <h2 style={{ fontSize: "clamp(22px,3vw,38px)", fontWeight: 800, color: "#0f172a",
           margin: "0 0 8px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
-          Simple, transparent{" "}
-          <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>pricing</span>
+          Simple, transparent pricing
         </h2>
         <p style={{ fontSize: 14, color: "#475569", margin: 0 }}>Start free. No credit card required.</p>
       </div>
@@ -226,7 +201,7 @@ function PricingSlide() {
         {PRICING.map((p, i) => (
           <motion.div key={p.plan}
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
             style={{
               borderRadius: 20, padding: 26,
@@ -243,7 +218,7 @@ function PricingSlide() {
             <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 8 }}>
               {p.features.map(f => (
                 <li key={f} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#475569" }}>
-                  <CheckCircle style={{ width: 14, height: 14, color: "#3b82f6", flexShrink: 0 }} />
+                  <span style={{ color: "#3b82f6" }}>✓</span>
                   {f}
                 </li>
               ))}
@@ -266,9 +241,6 @@ function PricingSlide() {
   )
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SECTION CAROUSEL
-═══════════════════════════════════════════════════════════ */
 const SLIDES = [
   { id: "features",    label: "Features",      content: <FeaturesSlide /> },
   { id: "how",         label: "How It Works",  content: <HowItWorksSlide /> },
@@ -279,13 +251,8 @@ function SectionCarousel() {
   const [current, setCurrent] = useState(0)
   const total = SLIDES.length
 
-  const handleNext = useCallback(() => {
-    setCurrent(prev => (prev + 1) % total)
-  }, [total])
-
-  const handlePrev = useCallback(() => {
-    setCurrent(prev => (prev - 1 + total) % total)
-  }, [total])
+  const handleNext = useCallback(() => setCurrent(prev => (prev + 1) % total), [total])
+  const handlePrev = useCallback(() => setCurrent(prev => (prev - 1 + total) % total), [total])
 
   return (
     <div id="carousel" style={{
@@ -294,7 +261,6 @@ function SectionCarousel() {
       padding: "60px 0 60px",
       background: "linear-gradient(180deg, #f0f7ff 0%, #eef2ff 60%, #f8faff 100%)",
     }}>
-      {/* Ambient glow blobs */}
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
         <div style={{ position: "absolute", top: "-15%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
           background: "radial-gradient(circle,rgba(59,130,246,0.18) 0%,transparent 70%)" }} />
@@ -302,33 +268,24 @@ function SectionCarousel() {
           background: "radial-gradient(circle,rgba(79,70,229,0.14) 0%,transparent 70%)" }} />
       </div>
 
-      {/* Section label pills */}
       <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 8, marginBottom: 32 }}>
         {SLIDES.map((slide, i) => (
           <button key={slide.id} onClick={() => setCurrent(i)} style={{
             border: "none", cursor: "pointer",
             padding: "7px 18px", borderRadius: 999, fontSize: 12, fontWeight: 700,
             letterSpacing: "0.04em",
-            background: i === current
-              ? "linear-gradient(to right,#3b82f6,#4f46e5)"
-              : "rgba(255,255,255,0.7)",
+            background: i === current ? "linear-gradient(to right,#3b82f6,#4f46e5)" : "rgba(255,255,255,0.7)",
             color: i === current ? "#fff" : "#64748b",
             border: i === current ? "none" : "1px solid rgba(59,130,246,0.2)",
             transition: "all 0.3s ease",
             backdropFilter: "blur(8px)",
-            boxShadow: i === current ? "0 4px 16px rgba(59,130,246,0.3)" : "none",
           }}>
             {slide.label}
           </button>
         ))}
       </div>
 
-      {/* Carousel track — per-card perspective so scroll doesn't jitter */}
-      <div style={{
-        position: "relative", width: "100%", height: "620px",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        zIndex: 10,
-      }}>
+      <div style={{ position: "relative", width: "100%", height: "620px", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 }}>
         {SLIDES.map((slide, index) => {
           let offset = index - current
           if (offset > Math.floor(total / 2)) offset -= total
@@ -353,7 +310,6 @@ function SectionCarousel() {
                 zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
                 pointerEvents: isCenter ? "auto" : "none",
                 willChange: "transform, opacity",
-                // perspective() lives on the card itself — immune to scroll position
                 transformPerspective: 1200,
               }}
               animate={{
@@ -362,31 +318,12 @@ function SectionCarousel() {
                 scale: isCenter ? 1 : isAdjacent ? 0.83 : 0.68,
                 opacity: isCenter ? 1 : isAdjacent ? 0.36 : 0,
                 filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(4px)" : "blur(10px)",
-                boxShadow: isCenter
-                  ? "0 32px 80px rgba(59,130,246,0.18), 0 8px 32px rgba(0,0,0,0.1)"
-                  : "0 8px 32px rgba(0,0,0,0.06)",
                 visibility: isVisible ? "visible" : "hidden",
               }}
-              transition={{
-                type: "spring",
-                stiffness: 160,
-                damping: 28,
-                mass: 1.1,
-                opacity:   { duration: 0.45, ease: "easeOut" },
-                filter:    { duration: 0.45, ease: "easeOut" },
-                boxShadow: { duration: 0.45, ease: "easeOut" },
-                visibility:{ duration: 0 },
-              }}
+              transition={{ type: "spring", stiffness: 160, damping: 28, mass: 1.1 }}
             >
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${slide.id}-${current}`}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.28, ease: "easeOut" }}
-                  style={{ height: "100%", overflowY: "auto" }}
-                >
+                <motion.div key={`${slide.id}-${current}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.28, ease: "easeOut" }} style={{ height: "100%", overflowY: "auto" }}>
                   {slide.content}
                 </motion.div>
               </AnimatePresence>
@@ -395,256 +332,138 @@ function SectionCarousel() {
         })}
       </div>
 
-      {/* Prev / Next buttons */}
-      <button onClick={handlePrev} style={{
-        position: "absolute", left: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
-        zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-        background: "rgba(255,255,255,0.88)", border: "1px solid rgba(59,130,246,0.18)",
-        backdropFilter: "blur(12px)", cursor: "pointer",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-        transition: "transform 0.15s, box-shadow 0.15s",
-      }}
-        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1.1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(59,130,246,0.2)" }}
-        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)" }}
-      >
+      <button onClick={handlePrev} style={{ position: "absolute", left: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)", zIndex: 20, width: 44, height: 44, borderRadius: "50%", background: "rgba(255,255,255,0.88)", border: "1px solid rgba(59,130,246,0.18)", backdropFilter: "blur(12px)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <ChevronLeft style={{ width: 20, height: 20, color: "#2563eb" }} />
       </button>
 
-      <button onClick={handleNext} style={{
-        position: "absolute", right: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
-        zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-        background: "rgba(255,255,255,0.88)", border: "1px solid rgba(59,130,246,0.18)",
-        backdropFilter: "blur(12px)", cursor: "pointer",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-        transition: "transform 0.15s, box-shadow 0.15s",
-      }}
-        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1.1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(59,130,246,0.2)" }}
-        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) scale(1)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)" }}
-      >
+      <button onClick={handleNext} style={{ position: "absolute", right: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)", zIndex: 20, width: 44, height: 44, borderRadius: "50%", background: "rgba(255,255,255,0.88)", border: "1px solid rgba(59,130,246,0.18)", backdropFilter: "blur(12px)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <ChevronRight style={{ width: 20, height: 20, color: "#2563eb" }} />
       </button>
 
-      {/* Dot indicators */}
       <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 8, marginTop: 28 }}>
         {SLIDES.map((_, i) => (
-          <button key={i} onClick={() => setCurrent(i)} style={{
-            border: "none", cursor: "pointer", padding: 0,
-            width: i === current ? 24 : 8,
-            height: 8, borderRadius: 999,
-            background: i === current
-              ? "linear-gradient(to right,#3b82f6,#4f46e5)"
-              : "rgba(59,130,246,0.25)",
-            transition: "all 0.35s ease",
-          }} />
+          <button key={i} onClick={() => setCurrent(i)} style={{ border: "none", cursor: "pointer", padding: 0, width: i === current ? 24 : 8, height: 8, borderRadius: 999, background: i === current ? "linear-gradient(to right,#3b82f6,#4f46e5)" : "rgba(59,130,246,0.25)", transition: "all 0.35s ease" }} />
         ))}
       </div>
     </div>
   )
 }
 
-/* ═══════════════════════════════════════════════════════════
-   LANDING PAGE
-═══════════════════════════════════════════════════════════ */
 export default function LandingPage() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
+  
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200])
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -400])
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 5])
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05])
+  
+  const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30, restDelta: 0.001 })
+  const smoothY2 = useSpring(y2, { stiffness: 100, damping: 30, restDelta: 0.001 })
+
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    })
+    const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) })
     function raf(time: number) { lenis.raf(time); requestAnimationFrame(raf) }
     requestAnimationFrame(raf)
     return () => lenis.destroy()
   }, [])
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div ref={containerRef} style={{ overflowX: "hidden", background: "#fff" }}>
       <style>{`
         @keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
         .marquee-track { animation: marquee 35s linear infinite; }
       `}</style>
 
-      {/* ═══════════════════════════════════════
-          SECTION 1 — Video Hero
-      ═══════════════════════════════════════ */}
-      <div style={{ height: "100vh", width: "100%", padding: 10 }}>
-        <div style={{ position: "relative", height: "100%", width: "100%",
-          overflow: "hidden", borderRadius: 28 }}>
+      {/* Hero Section with Aceternity Highlight */}
+      <HeroHighlight containerClassName="h-screen">
+        <div style={{ position: "absolute", top: 20, right: 28, zIndex: 50 }}>
+          <Link href="/login" className="px-6 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 font-bold hover:bg-neutral-100 transition duration-200">
+            Sign In
+          </Link>
+        </div>
 
-          <video autoPlay loop muted playsInline
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
-
-          <div style={{ pointerEvents: "none", position: "absolute", inset: 0,
-            background: "linear-gradient(to bottom,rgba(0,0,0,0.18) 0%,rgba(0,0,0,0.0) 30%,rgba(0,0,0,0.42) 100%)" }} />
-
-          {/* Sign In — floating pill top-right, no bar */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            style={{ position: "absolute", top: 20, right: 28, zIndex: 20 }}>
-            <Link href="/login"
-              style={{ display: "inline-flex", alignItems: "center",
-                background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.28)",
-                backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-                borderRadius: 999, padding: "8px 22px", fontSize: 13, fontWeight: 600,
-                color: "#fff", textDecoration: "none", transition: "background 0.15s, border-color 0.15s" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.25)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.5)" }}
-              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.15)"; (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(255,255,255,0.28)" }}>
-              Sign In
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: [20, -5, 0] }}
+          transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
+          className="text-center"
+        >
+          <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold text-neutral-900 dark:text-white tracking-tighter leading-none mb-6">
+            Reach <Highlight className="text-neutral-900 dark:text-white">further.</Highlight>
+          </h1>
+          <p className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto mb-10 leading-relaxed px-4">
+            The intelligent outreach platform for landing research positions and internships. 
+            Cross-referenced matching, AI drafts, and automated follow-ups.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/signup" className="group px-8 py-4 bg-black text-white rounded-xl font-bold flex items-center gap-2 hover:bg-neutral-800 transition duration-200 shadow-2xl">
+              Start Outreach Free
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-          </motion.div>
+          </div>
+        </motion.div>
+      </HeroHighlight>
 
-          {/* Hero bottom */}
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 40px 8px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", alignItems: "flex-end", gap: 32 }}>
-              <h1 style={{ color: "#E1E0CC", fontWeight: 600, lineHeight: 0.85,
-                letterSpacing: "-0.06em", fontSize: "clamp(72px,19vw,280px)", margin: 0 }}>
-                <BlurWords text="Reach" delay={0.3} wordDelay={0.06} duration={0.6} />
-              </h1>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: 20, paddingBottom: 40, maxWidth: 380 }}>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.1, delay: 0.6 }}
-                  style={{ color: "rgba(225,224,204,0.82)", fontSize: 15, lineHeight: 1.4, margin: 0 }}>
-                  <BlurWords
-                    text="AI-powered cold outreach for research and internships. Find the right professors and companies, generate personalised emails, and land the opportunity you deserve."
-                    delay={0.7} wordDelay={0.022} duration={0.25}
-                  />
-                </motion.p>
-
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 1.6, ease: [0.16, 1, 0.3, 1] }}>
-                  <Link href="/signup"
-                    style={{ display: "inline-flex", alignItems: "center", gap: 8,
-                      background: "#fff", color: "#000", borderRadius: 999,
-                      padding: "6px 20px 6px 6px", fontSize: 14, fontWeight: 600,
-                      textDecoration: "none", transition: "gap 0.2s" }}
-                    onMouseEnter={e => (e.currentTarget.style.gap = "14px")}
-                    onMouseLeave={e => (e.currentTarget.style.gap = "8px")}>
-                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center",
-                      width: 36, height: 36, borderRadius: "50%", background: "#000" }}>
-                      <ArrowRight style={{ width: 16, height: 16, color: "#fff" }} />
-                    </span>
-                    Get started free
-                  </Link>
-                </motion.div>
-              </div>
+      {/* University marquee with Parallax */}
+      <motion.div style={{ y: smoothY1 }} className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
+        <div className="marquee-track flex gap-0 whitespace-nowrap">
+          {[...UNIS, ...UNIS, ...UNIS, ...UNIS].map((u, i) => (
+            <div key={i} className="inline-flex items-center">
+              <span className="text-xs font-black text-neutral-300 tracking-widest uppercase px-16">{u}</span>
+              <span className="text-neutral-200">·</span>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ─── University marquee ─── */}
-      <div style={{ width: "100%", borderTop: "1px solid #e8edf2", borderBottom: "1px solid #e8edf2", background: "#f9fafb", overflow: "hidden", padding: "18px 0" }}>
-        <div style={{ position: "relative", overflow: "hidden" }}>
-          <div className="marquee-track" style={{ display: "flex", gap: 0, whiteSpace: "nowrap" }}>
-            {[...UNIS, ...UNIS, ...UNIS, ...UNIS].map((u, i) => (
-              <div key={i} style={{ display: "inline-flex", alignItems: "center", gap: 0 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#a0aec0", letterSpacing: "0.18em", textTransform: "uppercase", padding: "0 28px" }}>{u.name}</span>
-                <span style={{ color: "#c8d0da", fontSize: 10 }}>·</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ═══════════════════════════════════════
-          SECTION 2/3/4 — 3D Section Carousel
-      ═══════════════════════════════════════ */}
-      <SectionCarousel />
-
-      {/* ═══════════════════════════════════════
-          SECTION 5 — Final CTA (with cloud video bg)
-      ═══════════════════════════════════════ */}
-      <div style={{ position: "relative", overflow: "hidden", padding: "120px 40px 100px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {/* Cloud video background */}
-        <video autoPlay muted loop playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%",
-            objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }}
-          src="/hero-bg.mp4" />
-        {/* Overlay */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 1,
-          background: "linear-gradient(to bottom, rgba(186,230,253,0.55) 0%, rgba(219,241,255,0.45) 40%, rgba(240,249,255,0.6) 100%)" }} />
-
-        <div style={{ position: "relative", zIndex: 10, maxWidth: 680, width: "100%", textAlign: "center" }}>
-          <motion.div
-            initial={{ opacity: 0, y: 44 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            style={{ borderRadius: 28, padding: "72px 48px", textAlign: "center",
-              background: "rgba(255,255,255,0.55)",
-              border: "1px solid rgba(59,130,246,0.2)", backdropFilter: "blur(20px)" }}>
-            <h2 style={{ fontSize: "clamp(28px,5vw,52px)", fontWeight: 800,
-              color: "#0f172a", margin: "0 0 16px", letterSpacing: "-0.03em", lineHeight: 1.1 }}>
-              <BlurWords text="Ready to start your" delay={0} wordDelay={0.05} duration={0.3} />
-              <br />
-              <span style={{ background: "linear-gradient(to right,#2563eb,#4f46e5)",
-                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-                display: "inline-block" }}>
-                <BlurWords text="cold outreach?" delay={0.28} wordDelay={0.06} duration={0.32} />
-              </span>
-            </h2>
-            <p style={{ fontSize: 16, color: "#475569", maxWidth: 480,
-              margin: "0 auto 36px", lineHeight: 1.6 }}>
-              <BlurWords
-                text="Join students already landing research positions and internships at top universities and companies — with zero cold-email experience required."
-                delay={0.5} wordDelay={0.02} duration={0.22}
-              />
-            </p>
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.9 }}>
-              <Link href="/signup"
-                style={{ display: "inline-flex", alignItems: "center", gap: 10,
-                  background: "linear-gradient(to right,#3b82f6,#4f46e5)",
-                  color: "#fff", borderRadius: 12, padding: "14px 32px",
-                  fontSize: 16, fontWeight: 700, textDecoration: "none",
-                  boxShadow: "0 8px 32px rgba(59,130,246,0.3)", transition: "transform 0.15s" }}
-                onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.03)"}
-                onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1)"}>
-                Get started for free
-                <ArrowRight style={{ width: 18, height: 18 }} />
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid rgba(59,130,246,0.1)",
-        padding: "28px 40px", display: "flex", alignItems: "center",
-        justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8,
-            background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
-            display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
-          </div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#64748b" }}>OutreachAI</span>
-        </div>
-        <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
-          Built for students. Powered by AI. © 2025 OutreachAI.
-        </p>
-        <div style={{ display: "flex", gap: 20 }}>
-          {["Privacy", "Terms", "Contact"].map(l => (
-            <a key={l} href="#" style={{ fontSize: 13, color: "#64748b", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#0f172a"}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "#64748b"}>
-              {l}
-            </a>
           ))}
         </div>
+      </motion.div>
+
+      {/* Parallax Floating Elements */}
+      <div className="relative">
+        <motion.div style={{ y: smoothY2, rotate }} className="absolute -top-20 -left-20 w-96 h-96 bg-indigo-50 rounded-full blur-3xl opacity-50 -z-10" />
+        <motion.div style={{ y: smoothY1, scale }} className="absolute top-40 -right-20 w-80 h-80 bg-purple-50 rounded-full blur-3xl opacity-50 -z-10" />
+        <SectionCarousel />
       </div>
+
+      {/* Final CTA with Parallax background */}
+      <div className="relative py-32 px-4 overflow-hidden">
+        <motion.div style={{ scale }} className="absolute inset-0 bg-neutral-50 -z-10" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-white border border-neutral-100 rounded-[3rem] p-12 md:p-24 shadow-2xl shadow-indigo-500/10"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold text-neutral-900 mb-8 tracking-tight">
+              Stop guessing. <br /> Start <span className="text-indigo-600">connecting.</span>
+            </h2>
+            <p className="text-lg text-neutral-500 mb-12 max-w-2xl mx-auto">
+              Join thousands of students landing high-impact positions using OutreachAI's precision matching.
+            </p>
+            <Link href="/signup" className="inline-flex items-center gap-3 bg-indigo-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition shadow-xl shadow-indigo-200">
+              Create Your Account
+              <ArrowRight className="w-6 h-6" />
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Simple Footer */}
+      <footer className="border-t border-neutral-100 py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-8 bg-white">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+            <ArrowRight className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-bold text-neutral-900">OutreachAI</span>
+        </div>
+        <p className="text-sm text-neutral-400">© 2025 OutreachAI. Built for researchers and interns.</p>
+        <div className="flex gap-8">
+          {["Privacy", "Terms", "Contact"].map(l => (
+            <a key={l} href="#" className="text-sm text-neutral-400 hover:text-neutral-900 transition">{l}</a>
+          ))}
+        </div>
+      </footer>
     </div>
   )
 }
