@@ -51,8 +51,7 @@ function FeaturesSlide() {
       <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 800, color: "#304674",
         margin: "0 0 4px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
         Everything you need for cold outreach{" "}
-        <span style={{ background: "linear-gradient(to right,#98bad5,#304674)",
-          WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+        <span style={{ color: "#98bad5" }}>
           that actually works
         </span>
       </h2>
@@ -66,9 +65,8 @@ function FeaturesSlide() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: "#fff", border: "2px solid #304674",
-              borderRadius: 12, padding: "10px 12px",
-              boxShadow: "3px 3px 0px #304674",
+              background: "#fff", borderRadius: 12, padding: "10px 12px",
+              border: "1px solid #c6d3e3",
             }}>
             <h3 style={{ fontSize: 11, fontWeight: 800, color: "#304674", margin: "0 0 3px" }}>{f.title}</h3>
             <p style={{ fontSize: 10, color: "#4a5568", lineHeight: 1.45, margin: 0 }}>{f.desc}</p>
@@ -91,8 +89,7 @@ function HowItWorksSlide() {
         <h2 style={{ fontSize: "clamp(18px,2.4vw,28px)", fontWeight: 800,
           color: "#304674", margin: "0 0 14px", lineHeight: 1.1, letterSpacing: "-0.03em" }}>
           From zero to{" "}
-          <span style={{ background: "linear-gradient(to right,#98bad5,#304674)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          <span style={{ color: "#98bad5" }}>
             first reply
           </span>
         </h2>
@@ -160,8 +157,7 @@ function PricingSlide() {
         <h2 style={{ fontSize: "clamp(18px,2.4vw,28px)", fontWeight: 800, color: "#304674",
           margin: "0 0 3px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
           Simple, transparent{" "}
-          <span style={{ background: "linear-gradient(to right,#98bad5,#304674)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>pricing</span>
+          <span style={{ color: "#98bad5" }}>pricing</span>
         </h2>
         <p style={{ fontSize: 12, color: "#4a5568", margin: 0 }}>Start free. No credit card required.</p>
       </div>
@@ -451,7 +447,7 @@ export default function LandingPage() {
       }}>
         <video
           autoPlay muted loop playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55, zIndex: 0 }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.82, zIndex: 0 }}
           src="/hero-bg.mp4"
         />
 
@@ -501,7 +497,7 @@ export default function LandingPage() {
             textShadow: "0 2px 40px rgba(152,186,213,0.4)",
           }}>
             Reach<br />
-            <span style={{ background: "linear-gradient(135deg, #b2cbde 0%, #98bad5 50%, #c6d3e3 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <span style={{ background: "linear-gradient(135deg, #a78bfa 0%, #6366f1 50%, #818cf8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               further.
             </span>
           </h2>
