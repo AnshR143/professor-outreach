@@ -17,23 +17,26 @@ export async function GET(request: Request) {
 
     if (data?.user) {
       const user = data.user
+      // Upsert so it never fails silently — if row exists, leave onboarding_complete alone
       const { data: existing } = await supabase
         .from("profiles")
-        .select("user_id, onboarding_complete")
+        .select("user_id")
         .eq("user_id", user.id)
-        .single()
+        .maybeSingle()
 
       if (!existing) {
-        await supabase.from("profiles").insert({
+        const { error: insertErr } = await supabase.from("profiles").insert({
           user_id: user.id,
           name: user.user_metadata?.name || "",
           email: user.email || "",
           interests: [],
           goals: [],
+          majors: [],
           academic_level: "",
           institution: "",
           onboarding_complete: false,
         })
+        if (insertErr) console.error("Profile insert error:", insertErr.message)
       }
     }
   }

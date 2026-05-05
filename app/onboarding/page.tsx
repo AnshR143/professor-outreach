@@ -65,32 +65,40 @@ export default function OnboardingPage() {
   async function handleFinish() {
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      router.push("/login")
+      return
+    }
 
-    const { error } = await supabase.from("profiles").update({
+    // Use upsert so it works even if the profile row was never created
+    const { error } = await supabase.from("profiles").upsert({
+      user_id: user.id,
       first_name: form.firstName,
       last_name: form.lastName,
-      name: `${form.firstName} ${form.lastName}`.trim(),
+      name: `${form.firstName} ${form.lastName}`.trim() || user.email || "User",
+      email: user.email || "",
       birthday: form.birthday || null,
       academic_level: form.academicLevel,
       institution: form.institution,
       majors: form.majors,
       interests: form.interests,
       goals: form.goals,
-      resume_url: form.resumeUrl,
-      resume_text: form.resumeText,
+      resume_url: form.resumeUrl || null,
+      resume_text: form.resumeText || null,
       onboarding_complete: true,
       updated_at: new Date().toISOString(),
-    }).eq("user_id", user.id)
+    }, { onConflict: "user_id" })
 
     if (error) {
-      console.error("Update error:", error)
-      alert("Failed to save profile. Please try again.")
+      console.error("Onboarding upsert error:", error)
+      alert("Failed to save your profile: " + error.message + "\nPlease try again.")
       setLoading(false)
-    } else {
-      router.push("/dashboard")
-      router.refresh()
+      return
     }
+
+    // Hard redirect — forces a full server-side reload so dashboard sees onboarding_complete: true
+    window.location.href = "/dashboard"
   }
 
   const btnStyle = (active: boolean) => ({
