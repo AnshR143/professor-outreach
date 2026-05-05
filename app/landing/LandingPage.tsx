@@ -5,6 +5,7 @@ import { useRef, useEffect, useState, useCallback } from "react"
 import Link from "next/link"
 import Lenis from "@studio-freight/lenis"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
+import { ParallaxSection } from "@/components/ui/ParallaxSection"
 
 /* ─────────────────────────────────────────────────────────────
    Data
@@ -526,21 +527,9 @@ export default function LandingPage() {
       <SectionCarousel />
 
       {/* ═══════════════════════════════════════
-          SECTION 3 — Wolf CTA (cloud video bg)
+          SECTION 3 — Parallax CTA
       ═══════════════════════════════════════ */}
-      <div style={{ position: "relative", overflow: "hidden", padding: "80px 40px 80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <video autoPlay muted loop playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%",
-            objectFit: "cover", objectPosition: "center bottom", zIndex: 0 }}
-          src="/hero-bg.mp4" />
-        <div style={{ position: "absolute", inset: 0, zIndex: 1,
-          background: "linear-gradient(to bottom, rgba(186,230,253,0.55) 0%, rgba(219,241,255,0.45) 40%, rgba(240,249,255,0.6) 100%)" }} />
-
-        {/* Wolf centered with CTA inside the whiteboard */}
-        <div style={{ position: "relative", zIndex: 10, width: "min(560px, 90vw)" }}>
-          <FloatingCharacter />
-        </div>
-      </div>
+      <ParallaxSection />
 
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid rgba(59,130,246,0.1)",
