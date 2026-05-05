@@ -49,7 +49,7 @@ export function ParallaxSection() {
 
   return (
     /* Tall container — scroll through this to drive the parallax */
-    <div ref={containerRef} style={{ height: "200vh", position: "relative" }}>
+    <div ref={containerRef} style={{ height: "180vh", position: "relative" }}>
 
       {/* Sticky viewport — stays pinned at top while container scrolls */}
       <div style={{
@@ -162,76 +162,7 @@ export function ParallaxSection() {
           </p>
         </motion.div>
 
-        {/* ── LAYER 5: Wolf — foreground (fastest, shoots upward) ── */}
-        <motion.div style={{
-          position: "absolute", bottom: "-15%", left: "50%",
-          transform: "translateX(-50%)",
-          y: wolfY, scale: wolfScale,
-          zIndex: 4, width: "min(480px, 80vw)",
-          pointerEvents: "none",
-        }}>
-          {/* Inner motion div for the floating/levitation effect */}
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "relative" }}
-          >
-            <img
-              src="/husky.png.png"
-              alt="OutreachAI Guide"
-              style={{
-                width: "100%", height: "auto",
-                mixBlendMode: "multiply",
-                filter: "contrast(1.05) saturate(1.02)",
-              }}
-            />
-
-            {/* Whiteboard overlay — CTA inside the board area with solid white backing */}
-            <div style={{
-              position: "absolute", top: "54%", left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "78%", padding: "20px 10px",
-              background: "#fff", borderRadius: 16, 
-              textAlign: "center",
-              pointerEvents: "auto",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.03)"
-            }}>
-              <h3 style={{
-                fontSize: "clamp(11px, 1.6vw, 18px)", fontWeight: 900,
-                color: "#0f172a", marginBottom: 1, lineHeight: 1.1,
-              }}>
-                Stop guessing.
-              </h3>
-              <h3 style={{
-                fontSize: "clamp(11px, 1.6vw, 18px)", fontWeight: 900,
-                color: "#3b82f6", marginBottom: 8, lineHeight: 1.1,
-              }}>
-                Start connecting.
-              </h3>
-              <p style={{
-                fontSize: "clamp(8px, 0.8vw, 10px)", color: "#475569",
-                lineHeight: 1.4, marginBottom: 12,
-                maxWidth: "92%", marginInline: "auto",
-                fontWeight: 500
-              }}>
-                Join thousands of students landing high-impact positions using <span style={{ color: "#3b82f6" }}>AI-powered</span> precision matching.
-              </p>
-              <Link href="/signup" style={{
-                display: "inline-flex", alignItems: "center", gap: 5,
-                background: "linear-gradient(to right,#3b82f6,#4f46e5)",
-                color: "#fff", padding: "6px 14px", borderRadius: 8,
-                fontSize: "clamp(8px, 0.75vw, 10px)", fontWeight: 800,
-                textDecoration: "none", textTransform: "uppercase", letterSpacing: "0.03em",
-                boxShadow: "0 4px 14px rgba(59,130,246,0.4)",
-              }}>
-                Create Your Account
-                <ArrowRight size={11} />
-              </Link>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* Ground fog at very bottom — ties foreground to scene */}
+        {/* ── LAYER 5: Ground fog at very bottom — ties foreground to scene ── */}
         <div style={{
           position: "absolute", bottom: 0, left: 0, right: 0, height: 120,
           background: "linear-gradient(to top, rgba(186,230,253,0.45) 0%, transparent 100%)",

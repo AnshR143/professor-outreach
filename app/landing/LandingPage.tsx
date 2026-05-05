@@ -375,57 +375,52 @@ function SectionCarousel() {
 
 function FloatingCharacter() {
   return (
-    // Outer: entrance animation (fires once when scrolled into view)
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      animate={{ y: [0, -12, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       style={{ position: "relative", width: "100%", zIndex: 30 }}
     >
-      {/* Inner: continuous levitation — separate from entrance so they don't conflict */}
-      <motion.div
-        animate={{ y: [0, -16, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", repeatType: "loop" }}
-        style={{ position: "relative" }}
-      >
-        <img
-          src="/husky.png.png"
-          alt="Husky Guide"
-          style={{
-            width: "100%", height: "auto",
+      <div style={{ position: "relative" }}>
+        {/* Husky Image (Multiply blend to hide white background) */}
+        <img 
+          src="/husky.png.png" 
+          alt="Husky Guide" 
+          style={{ 
+            width: "100%", height: "auto", 
             mixBlendMode: "multiply",
-            filter: "contrast(1.08) saturate(1.05)",
-          }}
+            filter: "contrast(1.05) saturate(1.02)" 
+          }} 
         />
-
-        {/* Whiteboard overlay — CTA content positioned over the board area */}
-        <div style={{
-          position: "absolute", top: "52%", left: "50%", transform: "translate(-50%, -50%)",
-          width: "70%", textAlign: "center", fontFamily: "'Inter', sans-serif",
+        
+        {/* Whiteboard Overlay Info - Tighter fit for the whiteboard */}
+        <div style={{ 
+          position: "absolute", top: "54%", left: "50%", transform: "translate(-50%, -50%)",
+          width: "74%", padding: "15px 10px",
+          background: "#fff", borderRadius: 12,
+          textAlign: "center", color: "#1e293b", fontFamily: "'Inter', sans-serif",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.02)"
         }}>
-          <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 900, color: "#0f172a", marginBottom: 4, lineHeight: 1.1 }}>
+          <h2 style={{ fontSize: 13, fontWeight: 900, color: "#0f172a", marginBottom: 1, lineHeight: 1 }}>
             Stop guessing.
           </h2>
-          <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 900, color: "#3b82f6", marginBottom: 14, lineHeight: 1.1 }}>
+          <h2 style={{ fontSize: 13, fontWeight: 900, color: "#3b82f6", marginBottom: 8, lineHeight: 1 }}>
             Start connecting.
           </h2>
-          <p style={{ fontSize: "clamp(10px,1.1vw,13px)", fontWeight: 500, color: "#475569", lineHeight: 1.5, marginBottom: 18, maxWidth: "88%", marginInline: "auto" }}>
-            Join thousands of students landing high-impact positions using AI-powered precision matching.
+          <p style={{ fontSize: 8.5, fontWeight: 600, color: "#64748b", lineHeight: 1.3, marginBottom: 10, maxWidth: "90%", marginInline: "auto" }}>
+            Landing high-impact positions using <span style={{ color: "#3b82f6" }}>AI-powered</span> precision matching.
           </p>
-          <Link href="/signup" style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "linear-gradient(to right,#3b82f6,#4f46e5)", color: "#fff",
-            padding: "10px 20px", borderRadius: 10,
-            fontSize: "clamp(10px,1vw,13px)", fontWeight: 800, textDecoration: "none",
-            boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
-            letterSpacing: "0.02em", textTransform: "uppercase",
+          <Link href="/signup" style={{ 
+            display: "inline-flex", alignItems: "center", gap: 5,
+            background: "linear-gradient(to right, #3b82f6, #4f46e5)", color: "#fff", 
+            padding: "6px 12px", borderRadius: 6,
+            fontSize: 9, fontWeight: 800, textDecoration: "none", pointerEvents: "auto",
+            boxShadow: "0 4px 10px rgba(59, 130, 246, 0.2)", textTransform: "uppercase", letterSpacing: "0.02em"
           }}>
             Create Your Account
-            <ArrowRight size={13} />
+            <ArrowRight size={10} />
           </Link>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   )
 }
@@ -468,6 +463,7 @@ export default function LandingPage() {
             containerClassName="absolute inset-0 bg-transparent dark:bg-transparent"
             className="w-full h-full flex flex-col items-start justify-end p-12 md:p-20"
           >
+            {/* Top Right Sign In */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -482,28 +478,36 @@ export default function LandingPage() {
               </Link>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
-              className="text-left"
-            >
-              <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-6">
-                Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
-              </h1>
-              <div className="max-w-xl space-y-6">
-                <p className="text-base md:text-lg text-[#E1E0CC]/80 leading-relaxed font-medium">
-                  The intelligent outreach platform for landing research positions and internships.
-                  Precision matching, AI drafts, and automated follow-ups.
-                </p>
-                <div className="flex justify-start">
-                  <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl text-sm">
-                    Get started free
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
+            {/* Bottom Content Area: Husky + Text */}
+            <div className="flex flex-col md:flex-row items-end gap-8 md:gap-12 w-full">
+              {/* Floating Character - positioned to the left of the text */}
+              <div className="hidden md:block w-[300px] mb-[-20px] ml-[-40px]">
+                <FloatingCharacter />
               </div>
-            </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
+                className="text-left flex-1"
+              >
+                <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-6">
+                  Reach <Highlight className="text-[#E1E0CC] bg-gradient-to-r from-blue-500/20 to-purple-500/20">further.</Highlight>
+                </h1>
+                <div className="max-w-xl space-y-6">
+                  <p className="text-base md:text-lg text-[#E1E0CC]/80 leading-relaxed font-medium">
+                    The intelligent outreach platform for landing research positions and internships.
+                    Precision matching, AI drafts, and automated follow-ups.
+                  </p>
+                  <div className="flex justify-start">
+                    <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 hover:bg-neutral-100 transition duration-200 shadow-2xl text-sm">
+                      Get started free
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </HeroHighlight>
         </div>
       </div>
