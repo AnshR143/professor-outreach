@@ -46,3 +46,155 @@ body {
   80%  { z-index: 7;  opacity: 1; translate: 0px 12px; }
   100% { z-index: 5;  translate: 0px 30px; opacity: 0; }
 }
+
+/* ──────────────────────────────────────────────────────────────────────── */
+/*  Responsive overrides                                                    */
+/*  Desktop layout is untouched: every rule below lives inside a media      */
+/*  query. The codebase relies on inline React styles, so we use            */
+/*  attribute selectors + !important to override only when needed.          */
+/* ──────────────────────────────────────────────────────────────────────── */
+
+/* Always-on: prevent horizontal scroll, scale media. Safe on desktop. */
+html, body { overflow-x: hidden; max-width: 100vw; }
+img, video, svg { max-width: 100%; }
+
+/* NOTE on selectors: the codebase uses inline React styles. Different
+   browsers serialize inline styles slightly differently (with/without a
+   space after `:`), so selectors below match unique VALUE substrings only
+   (e.g. `repeat(4` rather than `grid-template-columns: repeat(4, 1fr)`).
+   This is whitespace-tolerant and keeps the targeting precise. */
+
+/* ── Tablet: ≤900px ─────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* 4-up KPI grids → 2-up */
+  [style*="repeat(4, 1fr)"],
+  [style*="repeat(4,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* 3-up grids → 2-up */
+  [style*="repeat(3, 1fr)"],
+  [style*="repeat(3,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── Phone: ≤640px ──────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Sidebar — keep collapsed on touch (hover-expand is desktop only). */
+  .sidebar { width: 52px !important; }
+  .sidebar.sidebar-expanded { width: 52px !important; }
+  .sidebar-expanded .nav-label,
+  .sidebar-expanded .logo-text {
+    opacity: 0 !important;
+    max-width: 0 !important;
+  }
+  .sidebar-expanded .nav-item { justify-content: center !important; padding-left: 0 !important; }
+  .sidebar-expanded .logo-area { justify-content: center !important; padding-left: 8px !important; }
+
+  /* 2-up grids → stack */
+  [style*="1fr 1fr"],
+  [style*="repeat(2, 1fr)"],
+  [style*="repeat(2,1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 4-up grids → 2-up on phone */
+  [style*="repeat(4, 1fr)"],
+  [style*="repeat(4,1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Card auto-fill grids — full-width cards on phone */
+  [style*="minmax(300px"],
+  [style*="minmax(280px"],
+  [style*="minmax(260px"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Modals — content panel becomes full-screen. Targets the inner panel
+     (a div with maxWidth) inside any fixed overlay. */
+  [style*="maxWidth: 1100"],
+  [style*="maxWidth: 1000"],
+  [style*="maxWidth: 900"],
+  [style*="max-width: 900"],
+  [style*="maxWidth: 880"],
+  [style*="maxWidth: 800"],
+  [style*="maxWidth: 720"],
+  [style*="maxWidth: 700"],
+  [style*="maxWidth: 640"],
+  [style*="maxWidth: 620"],
+  [style*="maxWidth: 600"],
+  [style*="maxWidth: 580"],
+  [style*="maxWidth: 560"],
+  [style*="maxWidth: 540"],
+  [style*="maxWidth: 520"],
+  [style*="maxWidth: 480"] {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 100vh !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+  }
+
+  /* MapDiscoverModal split (left list + right map): stack vertically. */
+  [style*="320"][style*="overflow"][style*="border-right"],
+  [style*="width: 320"] {
+    width: 100% !important;
+    max-height: 240px !important;
+    border-right: none !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    flex-shrink: 1 !important;
+  }
+  /* And put the modal body in column flow */
+  [style*="display: flex"][style*="flex: 1"][style*="overflow: hidden"],
+  [style*="display:flex"][style*="flex: 1"][style*="overflow:hidden"] {
+    flex-direction: column !important;
+  }
+
+  /* Hero banner — slimmer */
+  [style*="height: 160"] { height: auto !important; min-height: 130px !important; }
+  [style*="height: 200"] { height: auto !important; min-height: 160px !important; }
+
+  /* Top-bar / hero header strips: allow buttons to wrap. The patterns
+     below match the dashboard top bars and hero header (28px x-padding). */
+  [style*="14px 28px"],
+  [style*="16px 28px"],
+  [style*="0 28px"] {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    flex-wrap: wrap !important;
+    row-gap: 8px !important;
+  }
+  [style*="24px 28px"],
+  [style*="padding: 28px"],
+  [style*="padding:28px"] {
+    padding: 14px !important;
+  }
+
+  /* Forms with many fields — let inputs/selects span the full row */
+  form[style*="wrap"] > div { flex: 1 1 100% !important; min-width: 0 !important; }
+
+  /* Touch targets — sensible minimum height */
+  button, a[role="button"], [role="button"] { min-height: 36px; }
+
+  /* History/data tables: ensure horizontal scroll wins over content overflow */
+  table { font-size: 12px; }
+
+  /* Selected-business floating popup at bottom of map — cap height & wrap */
+  [style*="position: absolute"][style*="bottom: 16"][style*="left: 16"] {
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+}
+
+/* ── Very small: ≤380px ─────────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  [style*="repeat(4, 1fr)"],
+  [style*="repeat(4,1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Drop hero subtitles to save vertical space */
+  [style*="height: 160"] { min-height: 110px !important; }
+}
