@@ -27,10 +27,16 @@ function extractJSON(raw: string): Record<string, string> {
 function parseSubjectBody(raw: string): { subject: string; body: string } {
   const subjectMatch = raw.match(/SUBJECT:\s*(.+)/i)
   const bodyMatch = raw.match(/BODY:\s*\n?([\s\S]+)/i)
-  return {
-    subject: subjectMatch?.[1]?.trim() || "Reaching Out",
-    body: bodyMatch?.[1]?.trim() || raw.trim(),
+  
+  let subject = subjectMatch?.[1]?.trim() || "Reaching Out"
+  let body = bodyMatch?.[1]?.trim()
+  
+  if (!body) {
+    // If the AI forgot 'BODY:', strip out the 'SUBJECT:' line manually
+    body = raw.replace(/SUBJECT:\s*.+(\r?\n)*/i, "").trim()
   }
+  
+  return { subject, body: body || raw.trim() }
 }
 
 // ── Smart resume extraction ───────────────────────────────────────────────────

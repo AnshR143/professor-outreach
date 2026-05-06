@@ -17,9 +17,16 @@ const MODEL = "llama-3.3-70b-versatile"
 function parseSubjectBody(raw: string): { subject: string; body: string } {
   const subjectMatch = raw.match(/SUBJECT:\s*(.+)/i)
   const bodyMatch = raw.match(/BODY:\s*\n?([\s\S]+)/i)
-  const subject = subjectMatch?.[1]?.trim() || "Research Opportunity Inquiry"
-  const body = bodyMatch?.[1]?.trim() || raw.trim()
-  return { subject, body }
+  
+  let subject = subjectMatch?.[1]?.trim() || "Research Opportunity Inquiry"
+  let body = bodyMatch?.[1]?.trim()
+  
+  if (!body) {
+    // If the AI forgot 'BODY:', strip out the 'SUBJECT:' line manually
+    body = raw.replace(/SUBJECT:\s*.+(\r?\n)*/i, "").trim()
+  }
+  
+  return { subject, body: body || raw.trim() }
 }
 
 export async function generateEmail(params: {
