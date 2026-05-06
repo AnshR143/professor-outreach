@@ -371,29 +371,33 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             lat: coords.lat,
             lon: coords.lon,
             radius,
-            keyword: industry === "Any" ? "commercial" : industry
+            keyword: industry,
           })
         })
 
-        if (!res.ok) throw new Error("Geoapify search failed")
-        const data = await res.json()
+        const data = await res.json().catch(() => ({}))
+        if (!res.ok) {
+          throw new Error(data.error || `Geoapify search failed (${res.status})`)
+        }
 
-        const results: DiscoveredBusiness[] = (data.features || []).map((f: any) => ({
-          id: f.properties.place_id,
-          name: f.properties.name || f.properties.company || "Business",
-          lat: f.properties.lat,
-          lon: f.properties.lon,
-          type: f.properties.categories?.[0]?.replace(/\./g, " ") || "business",
-          address: f.properties.address_line2,
-          website: f.properties.website || null,
-          phone: f.properties.contact?.phone || null,
-          internScore: 7,
-          scoreReason: "Verified local business",
-          industry: industry
-        }))
+        const results: DiscoveredBusiness[] = (data.features || [])
+          .map((f: any) => ({
+            id: f.properties.place_id,
+            name: f.properties.name || f.properties.company || "Business",
+            lat: f.properties.lat,
+            lon: f.properties.lon,
+            type: f.properties.categories?.[0]?.replace(/\./g, " ") || "business",
+            address: f.properties.address_line2,
+            website: f.properties.website || null,
+            phone: f.properties.contact?.phone || null,
+            internScore: 7,
+            scoreReason: "Verified local business",
+            industry: industry
+          }))
+          .slice(0, 5)
 
         setBusinesses(results)
-        if (results.length === 0) setError("No businesses found via Geoapify.")
+        if (results.length === 0) setError("No businesses found via Geoapify. Try a larger radius or different industry.")
       } else {
         // 1. Geocode
         const coords = await geocodeLocation(location.trim())
@@ -581,20 +585,22 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             <input type="range" min={1} max={9} step={1} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: "100%", accentColor: "#6366f1" }} />
           </div>
 
-          {googleEnabled && (
+          {(googleEnabled || geoapifyEnabled) && (
             <div style={{ flex: "0 0 auto" }}>
               <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Provider</label>
               <div style={{ display: "flex", background: "#f1f5f9", padding: 2, borderRadius: 8 }}>
-                <button
-                  type="button"
-                  onClick={() => setProvider("google")}
-                  style={{
-                    padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
-                    cursor: "pointer", background: provider === "google" ? "#fff" : "transparent",
-                    color: provider === "google" ? "#6366f1" : "#64748b",
-                    boxShadow: provider === "google" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
-                  }}
-                >Google</button>
+                {googleEnabled && (
+                  <button
+                    type="button"
+                    onClick={() => setProvider("google")}
+                    style={{
+                      padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
+                      cursor: "pointer", background: provider === "google" ? "#fff" : "transparent",
+                      color: provider === "google" ? "#6366f1" : "#64748b",
+                      boxShadow: provider === "google" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
+                    }}
+                  >Google</button>
+                )}
                 <button
                   type="button"
                   onClick={() => setProvider("osm")}
