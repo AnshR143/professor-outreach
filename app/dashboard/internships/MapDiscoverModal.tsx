@@ -177,14 +177,6 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   const [adding, setAdding]       = useState<Set<string>>(new Set())
   const [added, setAdded]         = useState<Set<string>>(new Set())
 
-  // Outreach Kit (AI-generated email + optional call script for the just-added biz)
-  const [kitFor, setKitFor]       = useState<DiscoveredBusiness | null>(null)
-  const [kitLoading, setKitLoading] = useState(false)
-  const [kitError, setKitError]   = useState("")
-  const [kit, setKit]             = useState<{ subject: string; body: string; callScript?: string } | null>(null)
-  const [kitTab, setKitTab]       = useState<"email" | "call">("email")
-  const [kitCopied, setKitCopied] = useState(false)
-
   // Google vs OSM vs Geoapify toggle
   const [provider, setProvider]   = useState<"osm" | "google" | "geoapify">("osm")
   const [googleEnabled, setGoogleEnabled] = useState(false)
@@ -522,55 +514,6 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     setAdded(prev => new Set([...prev, biz.id]))
     setAdding(prev => { const s = new Set(prev); s.delete(biz.id); return s })
     onContactAdded?.()
-
-    // Auto-generate the outreach kit (tailored email + optional voicemail script).
-    void generateOutreachKit(biz)
-  }
-
-  async function generateOutreachKit(biz: DiscoveredBusiness) {
-    setKitFor(biz)
-    setKit(null)
-    setKitError("")
-    setKitLoading(true)
-    setKitTab("email")
-    try {
-      const res = await fetch("/api/internships/outreach-kit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          meta: {
-            company: biz.name,
-            industry: biz.industry,
-            type: biz.type,
-            address: biz.address || location,
-            scoreReason: biz.scoreReason,
-            complaints: (biz as any).complaints || [],
-            opportunity: (biz as any).opportunity || "",
-            hasPhone: !!biz.phone,
-          },
-        }),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        setKitError(data.error || `Generation failed (${res.status})`)
-        return
-      }
-      setKit({ subject: data.subject, body: data.body, callScript: data.callScript })
-    } catch (e: any) {
-      setKitError(e.message || "Network error")
-    } finally {
-      setKitLoading(false)
-    }
-  }
-
-  async function copyKit() {
-    if (!kit) return
-    const text = kitTab === "call" && kit.callScript
-      ? kit.callScript
-      : `${kit.subject}\n\n${kit.body}`
-    await navigator.clipboard.writeText(text)
-    setKitCopied(true)
-    setTimeout(() => setKitCopied(false), 2000)
   }
 
   // ── Select a business (from list or map) ────────────────────────────────────
@@ -867,81 +810,6 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
           </div>
         </div>
       </div>
-
-      {/* Outreach Kit panel  opens after Add Contact */}
-      {kitFor && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1100, padding: 16 }}>
-          <div style={{ background: "#fff", borderRadius: 14, width: "100%", maxWidth: 640, maxHeight: "85vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.28)" }}>
-            <div style={{ padding: "14px 18px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#304674", textTransform: "uppercase", letterSpacing: 0.5 }}>Outreach Kit</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{kitFor.name}</div>
-                <div style={{ fontSize: 12, color: "#64748b" }}>Tailored for {kitFor.industry}{kitFor.phone ? ` · ${kitFor.phone}` : ""}</div>
-              </div>
-              <button onClick={() => setKitFor(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1 }}>×</button>
-            </div>
-
-            {kit?.callScript && (
-              <div style={{ display: "flex", gap: 4, padding: "8px 18px 0", borderBottom: "1px solid #f1f5f9" }}>
-                {(["email", "call"] as const).map(tab => (
-                  <button
-                    key={tab}
-                    onClick={() => setKitTab(tab)}
-                    style={{
-                      padding: "8px 14px", border: "none", background: "none",
-                      borderBottom: kitTab === tab ? "2px solid #304674" : "2px solid transparent",
-                      color: kitTab === tab ? "#304674" : "#64748b",
-                      fontSize: 12, fontWeight: 700, cursor: "pointer",
-                    }}
-                  >{tab === "email" ? "Email" : "Call Script"}</button>
-                ))}
-              </div>
-            )}
-
-            <div style={{ padding: "16px 18px", overflowY: "auto", flex: 1 }}>
-              {kitLoading && (
-                <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#64748b", fontSize: 13 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#304674" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
-                  Generating tailored email{kitFor.phone ? " and voicemail script" : ""}…
-                </div>
-              )}
-
-              {kitError && !kitLoading && (
-                <div style={{ padding: "10px 14px", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8, color: "#c2410c", fontSize: 13 }}>{kitError}</div>
-              )}
-
-              {kit && !kitLoading && kitTab === "email" && (
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 4 }}>Subject</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", marginBottom: 14 }}>{kit.subject}</div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 4 }}>Body</div>
-                  <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit", fontSize: 13, color: "#0f172a", margin: 0, lineHeight: 1.55 }}>{kit.body}</pre>
-                </div>
-              )}
-
-              {kit && !kitLoading && kitTab === "call" && kit.callScript && (
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 6 }}>Voicemail / call script</div>
-                  <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit", fontSize: 13, color: "#0f172a", margin: 0, lineHeight: 1.55 }}>{kit.callScript}</pre>
-                </div>
-              )}
-            </div>
-
-            <div style={{ padding: "12px 18px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button
-                onClick={() => setKitFor(null)}
-                style={{ padding: "8px 14px", background: "#f1f5f9", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, color: "#475569", cursor: "pointer" }}
-              >Close</button>
-              {kit && (
-                <button
-                  onClick={copyKit}
-                  style={{ padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
-                >{kitCopied ? "Copied ✓" : `Copy ${kitTab === "call" ? "script" : "email"}`}</button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
