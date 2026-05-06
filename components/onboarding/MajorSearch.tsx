@@ -70,13 +70,13 @@ export default function MajorSearch({ selectedMajors, onChange }: MajorSearchPro
         {selectedMajors.map(m => (
           <div key={m} style={{ 
             display: "inline-flex", alignItems: "center", gap: 6, 
-            background: "#eff6ff", color: "#3b82f6", padding: "4px 10px", 
-            borderRadius: 16, fontSize: 13, fontWeight: 500, border: "1px solid #dbeafe" 
+            background: "#d8e1e8", color: "#304674", padding: "4px 10px", 
+            borderRadius: 16, fontSize: 13, fontWeight: 500, border: "1px solid #c6d3e3" 
           }}>
             {m}
             <button onClick={() => removeMajor(m)} style={{ 
               background: "none", border: "none", cursor: "pointer", 
-              padding: 0, display: "flex", color: "#93c5fd" 
+              padding: 0, display: "flex", color: "#98bad5" 
             }}>
               <X size={14} />
             </button>
@@ -121,7 +121,7 @@ export default function MajorSearch({ selectedMajors, onChange }: MajorSearchPro
                   alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9"
                 }}
               >
-                <span style={{ fontSize: 14, color: "#1e293b" }}>{r.name}</span>
+                <span style={{ fontSize: 14, color: "#304674" }}>{r.name}</span>
                 {selectedMajors.includes(r.name) && <Check size={14} color="#10b981" />}
               </button>
             ))

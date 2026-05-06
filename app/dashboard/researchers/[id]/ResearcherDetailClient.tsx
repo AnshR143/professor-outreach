@@ -7,13 +7,13 @@ import { createClient } from "@/lib/supabase/client"
 import { truncate } from "@/lib/utils"
 
 const FIELD_COLORS: Record<string, { bg: string; text: string }> = {
-  "AI": { bg: "#dbeafe", text: "#1d4ed8" },
-  "Artificial Intelligence": { bg: "#dbeafe", text: "#1d4ed8" },
+  "AI": { bg: "#c6d3e3", text: "#304674" },
+  "Artificial Intelligence": { bg: "#c6d3e3", text: "#304674" },
   "Finance": { bg: "#dcfce7", text: "#15803d" },
   "Quantitative Finance": { bg: "#d1fae5", text: "#047857" },
   "Mathematics": { bg: "#fce7f3", text: "#be185d" },
   "Statistics": { bg: "#fce7f3", text: "#be185d" },
-  "Machine Learning": { bg: "#e0e7ff", text: "#4338ca" },
+  "Machine Learning": { bg: "#e0e7ff", text: "#1f2f55" },
   "default": { bg: "#f1f5f9", text: "#475569" },
 }
 
@@ -267,14 +267,14 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 const res = await fetch(`/api/professors/papers?researcher_id=${researcher.id}`, { method: "POST" })
                 if (res.ok) router.refresh()
                 setFetchingPapers(false)
-              }} disabled={fetchingPapers} style={{ fontSize: 12, color: "#3b82f6", background: "none", border: "1px solid #bfdbfe", borderRadius: 6, padding: "4px 10px", cursor: fetchingPapers ? "not-allowed" : "pointer", opacity: fetchingPapers ? 0.6 : 1 }}>
+              }} disabled={fetchingPapers} style={{ fontSize: 12, color: "#304674", background: "none", border: "1px solid #98bad5", borderRadius: 6, padding: "4px 10px", cursor: fetchingPapers ? "not-allowed" : "pointer", opacity: fetchingPapers ? 0.6 : 1 }}>
                 {fetchingPapers ? "Fetching..." : "Refresh Papers"}
               </button>
             </div>
             <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
               {fetchingPapers && papersList.length === 0 ? (
                 <div style={{ textAlign: "center", padding: 24, color: "#94a3b8", fontSize: 13 }}>
-                  <div style={{ width: 28, height: 28, border: "3px solid #f1f5f9", borderTopColor: "#3b82f6", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
+                  <div style={{ width: 28, height: 28, border: "3px solid #f1f5f9", borderTopColor: "#304674", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} />
                   <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                   Looking up papers...
                 </div>
@@ -290,7 +290,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                       </div>
                       {p.abstract.length > 120 && (
                         <button onClick={() => setExpandedPaper(expandedPaper === p.id ? null : p.id)}
-                          style={{ fontSize: 11, color: "#3b82f6", background: "none", border: "none", cursor: "pointer", padding: 0, marginTop: 2 }}>
+                          style={{ fontSize: 11, color: "#304674", background: "none", border: "none", cursor: "pointer", padding: 0, marginTop: 2 }}>
                           {expandedPaper === p.id ? "↑ Read Less" : "↓ Read More"}
                         </button>
                       )}
@@ -300,7 +300,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     {p.published_date && `Recent paper from ${p.published_date}`}
                   </div>
                   {p.url && (
-                    <a href={p.url} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: "#3b82f6", textDecoration: "none", marginTop: 6 }}>
+                    <a href={p.url} target="_blank" rel="noopener" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: "#304674", textDecoration: "none", marginTop: 6 }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                       View Paper
                     </a>
@@ -354,7 +354,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     style={{ flex: 1, padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", outline: "none", background: "#fff" }}
                   />
                   <button onClick={saveProfessorEmail} disabled={savingEmail}
-                    style={{ padding: "7px 12px", background: emailAddressSaved ? "#22c55e" : "#3b82f6", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
+                    style={{ padding: "7px 12px", background: emailAddressSaved ? "#22c55e" : "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
                     {savingEmail ? "Saving..." : emailAddressSaved ? "Saved ✓" : "Save Email"}
                   </button>
                 </div>
@@ -404,7 +404,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 </div>
               )}
               {emailValidationError && (
-                <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "8px 12px", color: "#2563eb", fontSize: 12, marginBottom: 10 }}>
+                <div style={{ background: "#d8e1e8", border: "1px solid #98bad5", borderRadius: 8, padding: "8px 12px", color: "#2563eb", fontSize: 12, marginBottom: 10 }}>
                   {emailValidationError}
                 </div>
               )}
@@ -421,7 +421,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                   {generating ? "Generating..." : "Generate Email"}
                 </button>
                 <button onClick={sendEmail} disabled={sending}
-                  style={{ flex: 1, padding: "9px 14px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
+                  style={{ flex: 1, padding: "9px 14px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
                   {sending ? "Opening..." : "Open in Gmail"}
                 </button>
               </div>
@@ -444,7 +444,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                   <div style={{ fontSize: 12, color: "#475569", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{followUpEmail.body}</div>
                   <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
                     <button onClick={() => { setEmailSubject(followUpEmail.subject); setEmailBody(followUpEmail.body); setShowFollowUp(false) }}
-                      style={{ padding: "7px 12px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                      style={{ padding: "7px 12px", background: "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
                       Use This Follow-Up
                     </button>
                     <button onClick={() => { navigator.clipboard.writeText(followUpEmail.body) }}
@@ -460,7 +460,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
               )}
               {showFollowUp && !followUpEmail && (
                 <div style={{ marginTop: 16, padding: "14px 16px", background: "#f8f9fb", borderRadius: 8, border: "1px solid #e2e8f0", textAlign: "center", color: "#94a3b8", fontSize: 13 }}>
-                  <div style={{ width: 20, height: 20, border: "2px solid #f1f5f9", borderTopColor: "#3b82f6", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 6px" }} />
+                  <div style={{ width: 20, height: 20, border: "2px solid #f1f5f9", borderTopColor: "#304674", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 6px" }} />
                   Generating follow-up...
                 </div>
               )}
@@ -476,7 +476,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
               Private Notes
             </h3>
             <button onClick={saveNotes} disabled={savingNotes}
-              style={{ padding: "6px 14px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: savingNotes ? "not-allowed" : "pointer", opacity: savingNotes ? 0.7 : 1 }}>
+              style={{ padding: "6px 14px", background: "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: savingNotes ? "not-allowed" : "pointer", opacity: savingNotes ? 0.7 : 1 }}>
               {savingNotes ? "Saving..." : "Save Notes"}
             </button>
           </div>

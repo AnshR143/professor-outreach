@@ -42,10 +42,10 @@ export default function TemplatesClient({ templates: initial, userId, userName }
 
   const TemplateCard = ({ t }: { t: Template }) => (
     <div onClick={() => setSelected(t)}
-      style={{ background: selected?.id === t.id ? "#eff6ff" : "#fff", borderRadius: 10, border: `1px solid ${selected?.id === t.id ? "#bfdbfe" : "#e2e8f0"}`, padding: 16, cursor: "pointer", transition: "all 0.15s" }}>
+      style={{ background: selected?.id === t.id ? "#d8e1e8" : "#fff", borderRadius: 10, border: `1px solid ${selected?.id === t.id ? "#98bad5" : "#e2e8f0"}`, padding: 16, cursor: "pointer", transition: "all 0.15s" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>{t.name}</div>
-        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: t.type === "general" ? "#dbeafe" : "#f0fdf4", color: t.type === "general" ? "#1d4ed8" : "#16a34a", fontWeight: 500 }}>
+        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: t.type === "general" ? "#c6d3e3" : "#f0fdf4", color: t.type === "general" ? "#304674" : "#16a34a", fontWeight: 500 }}>
           {t.type === "general" ? "General" : "Personal"}
         </span>
       </div>
@@ -53,7 +53,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
       <div style={{ background: "#f8f9fb", borderRadius: 6, padding: "6px 10px", fontSize: 11, color: "#94a3b8" }}>
          Template
       </div>
-      <div style={{ marginTop: 8, padding: "6px 10px", background: selected?.id === t.id ? "#eff6ff" : "#f8f9fb", borderRadius: 6, fontSize: 11, color: "#64748b", textAlign: "center", border: "1px solid #e2e8f0" }}>
+      <div style={{ marginTop: 8, padding: "6px 10px", background: selected?.id === t.id ? "#d8e1e8" : "#f8f9fb", borderRadius: 6, fontSize: 11, color: "#64748b", textAlign: "center", border: "1px solid #e2e8f0" }}>
         {selected?.id === t.id ? " Selected" : "Click to Preview"}
       </div>
     </div>
@@ -65,11 +65,11 @@ export default function TemplatesClient({ templates: initial, userId, userName }
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Template Generation</h1>
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Researchers
           </button>
-          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>{userName?.[0]?.toUpperCase() || "A"}</div>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>{userName?.[0]?.toUpperCase() || "A"}</div>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <span style={{ fontSize: 12, color: "#94a3b8" }}>{personal.length}/10</span>
               <button onClick={() => setShowCreate(true)}
-                style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 12px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 12px", background: "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
                 + Create Template
               </button>
             </div>
@@ -190,7 +190,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={() => setShowCreate(false)} style={{ flex: 1, padding: 10, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Cancel</button>
                 <button onClick={saveTemplate} disabled={saving || !newTemplate.name}
-                  style={{ flex: 2, padding: 10, background: saving || !newTemplate.name ? "#bfdbfe" : "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
+                  style={{ flex: 2, padding: 10, background: saving || !newTemplate.name ? "#98bad5" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }}>
                   {saving ? "Saving..." : "Save Template"}
                 </button>
               </div>

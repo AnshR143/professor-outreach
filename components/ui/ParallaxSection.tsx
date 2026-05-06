@@ -111,12 +111,12 @@ export function ParallaxSection() {
           <div style={{
             position: "absolute", top: "20%", left: "10%", width: 420, height: 420,
             borderRadius: "50%", filter: "blur(100px)",
-            background: "radial-gradient(circle,rgba(59,130,246,0.18) 0%,transparent 70%)",
+            background: "radial-gradient(circle,rgba(48, 70, 116,0.18) 0%,transparent 70%)",
           }} />
           <div style={{
             position: "absolute", bottom: "15%", right: "8%", width: 380, height: 380,
             borderRadius: "50%", filter: "blur(110px)",
-            background: "radial-gradient(circle,rgba(79,70,229,0.22) 0%,transparent 70%)",
+            background: "radial-gradient(circle,rgba(31, 47, 85,0.22) 0%,transparent 70%)",
           }} />
           <div style={{
             position: "absolute", top: "55%", left: "38%", width: 300, height: 300,
@@ -153,7 +153,7 @@ export function ParallaxSection() {
               <p style={{ fontSize: "clamp(9px, 1.2vw, 15px)", fontWeight: 900, color: "#0f172a", lineHeight: 1.1, margin: 0 }}>
                 Stop guessing.
               </p>
-              <p style={{ fontSize: "clamp(9px, 1.2vw, 15px)", fontWeight: 900, color: "#3b82f6", lineHeight: 1.1, margin: 0 }}>
+              <p style={{ fontSize: "clamp(9px, 1.2vw, 15px)", fontWeight: 900, color: "#304674", lineHeight: 1.1, margin: 0 }}>
                 Start connecting.
               </p>
               <p style={{ fontSize: "clamp(7px, 0.8vw, 9px)", color: "#475569", lineHeight: 1.3, marginBottom: 0, maxWidth: "90%", marginInline: "auto" }}>
@@ -175,11 +175,11 @@ export function ParallaxSection() {
               fontWeight: 900, color: "#f0f6ff",
               letterSpacing: "-0.04em", lineHeight: 0.92,
               textAlign: "left", margin: 0,
-              textShadow: "0 2px 40px rgba(59,130,246,0.3)",
+              textShadow: "0 2px 40px rgba(48, 70, 116,0.3)",
             }}>
               Reach<br />
               <span style={{
-                background: "linear-gradient(135deg, #93c5fd 0%, #818cf8 50%, #c4b5fd 100%)",
+                background: "linear-gradient(135deg, #98bad5 0%, #818cf8 50%, #c4b5fd 100%)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
               }}>
                 further.

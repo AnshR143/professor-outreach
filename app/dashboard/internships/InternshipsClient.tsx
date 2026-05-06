@@ -14,13 +14,13 @@ type Tone = "formal" | "casual" | "enthusiastic"
 
 const STATUS_CONFIG: Record<EmailStatus, { label: string; bg: string; text: string; border: string }> = {
   not_emailed: { label: "Not Emailed", bg: "#f1f5f9", text: "#64748b", border: "#cbd5e1" },
-  emailed:     { label: "Emailed",     bg: "#dbeafe", text: "#1d4ed8", border: "#93c5fd" },
+  emailed:     { label: "Emailed",     bg: "#c6d3e3", text: "#304674", border: "#98bad5" },
   rejected:    { label: "Rejected",    bg: "#fee2e2", text: "#dc2626", border: "#fca5a5" },
   accepted:    { label: "Accepted",    bg: "#dcfce7", text: "#16a34a", border: "#86efac" },
 }
 
 const TONE_COLORS: Record<Tone, { bg: string; color: string; border: string }> = {
-  formal:       { bg: "#eff6ff", color: "#1d4ed8", border: "#93c5fd" },
+  formal:       { bg: "#d8e1e8", color: "#304674", border: "#98bad5" },
   casual:       { bg: "#f0fdf4", color: "#15803d", border: "#86efac" },
   enthusiastic: { bg: "#fdf4ff", color: "#7c3aed", border: "#c4b5fd" },
 }
@@ -219,16 +219,16 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             Map Discovery
           </button>
           <button onClick={() => setShowFind(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Contacts
           </button>
           <button onClick={() => setShowAdd(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add Contact
           </button>
-          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>
         </div>
@@ -266,7 +266,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                   Map Discovery
                 </button>
                 <button onClick={() => setShowFind(true)}
-                  style={{ padding: "10px 24px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                  style={{ padding: "10px 24px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
                   Find Contacts
                 </button>
                 <button onClick={() => setShowAdd(true)}
@@ -295,7 +295,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                   <div
                     onClick={e => openEmailModal(e, c)}
                     style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#6366f1" }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#304674" }}
                     onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
                   >
                     <div>
@@ -306,7 +306,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                           details
                         </Link>
                       </div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: "#6366f1", marginTop: 2 }}>{c.role}</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "#304674", marginTop: 2 }}>{c.role}</div>
                       {c.contact_name && <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{c.contact_name}</div>}
                     </div>
                     {c.bio && (
@@ -316,7 +316,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                     )}
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 4, borderTop: "1px solid #f1f5f9", marginTop: "auto" }}>
                       <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                        <span style={{ fontSize: 11, color: "#6366f1", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+                        <span style={{ fontSize: 11, color: "#304674", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                           Generate Email
                         </span>
@@ -383,7 +383,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                     Cancel
                   </button>
                   <button type="submit" disabled={adding || !form.company.trim() || !form.role.trim()}
-                    style={{ padding: "9px 20px", background: adding ? "#93c5fd" : "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: adding ? "not-allowed" : "pointer" }}>
+                    style={{ padding: "9px 20px", background: adding ? "#98bad5" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: adding ? "not-allowed" : "pointer" }}>
                     {adding ? "Adding..." : "Add Contact"}
                   </button>
                 </div>
@@ -402,7 +402,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
                 <div style={{ fontSize: 17, fontWeight: 700, color: "#0f172a" }}>{emailContact.contact_name || emailContact.company}</div>
-                <div style={{ fontSize: 12, color: "#6366f1", fontWeight: 600, marginTop: 2 }}>{emailContact.role}{emailContact.company ? " at " + emailContact.company : ""}</div>
+                <div style={{ fontSize: 12, color: "#304674", fontWeight: 600, marginTop: 2 }}>{emailContact.role}{emailContact.company ? " at " + emailContact.company : ""}</div>
               </div>
               <button onClick={() => setEmailContact(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 20, lineHeight: 1, padding: 4 }}>x</button>
             </div>
@@ -452,7 +452,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
 
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button onClick={generateEmail} disabled={generating}
-                  style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", background: generating ? "#c7d2fe" : "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer" }}>
+                  style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", background: generating ? "#b2cbde" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer" }}>
                   {generating ? (
                     <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>Generating...</>
                   ) : (
@@ -473,7 +473,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                   {savingDraft ? "Saving..." : "Save Draft"}
                 </button>
                 <Link href={"/dashboard/internships/" + emailContact.id}
-                  style={{ marginLeft: "auto", padding: "9px 14px", background: "#fff", color: "#6366f1", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>
+                  style={{ marginLeft: "auto", padding: "9px 14px", background: "#fff", color: "#304674", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "flex", alignItems: "center" }}>
                   Full Details →
                 </Link>
               </div>

@@ -49,7 +49,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           width: 56px;
           transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           overflow: hidden;
-          background: #1e293b;
+          background: #304674;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
@@ -63,15 +63,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .nav-item {
           display: flex;
           align-items: center;
+          justify-content: center;
           width: 100%;
-          padding: 9px 0;
+          height: 40px;
+          padding: 0;
           border-radius: 8px;
           text-decoration: none;
-          transition: background 0.15s, color 0.15s;
+          transition: background 0.15s, color 0.15s, padding 0.25s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.25s;
           white-space: nowrap;
           gap: 10px;
-          padding-left: 18px;
           box-sizing: border-box;
+        }
+        .sidebar-expanded .nav-item {
+          justify-content: flex-start;
+          padding-left: 10px;
         }
         .nav-label {
           opacity: 0;
@@ -94,13 +99,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .logo-area {
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 10px;
-          padding-left: 10px;
+          padding: 0 8px;
           margin-bottom: 16px;
           width: 100%;
           text-decoration: none;
           white-space: nowrap;
           overflow: hidden;
+          transition: justify-content 0.25s, padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-expanded .logo-area {
+          justify-content: flex-start;
+          padding-left: 18px;
         }
         .logo-text {
           opacity: 0;
@@ -123,9 +134,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           onMouseEnter={() => setExpanded(true)}
           onMouseLeave={() => setExpanded(false)}
         >
-          {/* Logo */}
-          <Link href="/dashboard" className="logo-area">
-            <div style={{ width: 36, height: 36, borderRadius: 8, background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          {/* Logo — clicks back to landing page */}
+          <Link href="/" className="logo-area">
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6z"/></svg>
             </div>
             <span className="logo-text">OutreachAI</span>
@@ -142,8 +153,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   title={expanded ? undefined : label}
                   className="nav-item"
                   style={{
-                    color: active ? "#3b82f6" : "#94a3b8",
-                    background: active ? "rgba(59,130,246,0.12)" : "transparent",
+                    color: active ? "#304674" : "#94a3b8",
+                    background: active ? "rgba(48, 70, 116,0.12)" : "transparent",
                   }}
                   onMouseEnter={e => {
                     if (!active) {
@@ -152,8 +163,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     }
                   }}
                   onMouseLeave={e => {
-                    ;(e.currentTarget as HTMLElement).style.background = active ? "rgba(59,130,246,0.12)" : "transparent"
-                    ;(e.currentTarget as HTMLElement).style.color = active ? "#3b82f6" : "#94a3b8"
+                    ;(e.currentTarget as HTMLElement).style.background = active ? "rgba(48, 70, 116,0.12)" : "transparent"
+                    ;(e.currentTarget as HTMLElement).style.color = active ? "#304674" : "#94a3b8"
                   }}
                 >
                   <span className="nav-icon"><Icon /></span>
@@ -173,8 +184,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               title={expanded ? undefined : "Settings"}
               className="nav-item"
               style={{
-                color: pathname === "/settings" ? "#3b82f6" : "#94a3b8",
-                background: pathname === "/settings" ? "rgba(59,130,246,0.12)" : "transparent",
+                color: pathname === "/settings" ? "#304674" : "#94a3b8",
+                background: pathname === "/settings" ? "rgba(48, 70, 116,0.12)" : "transparent",
               }}
             >
               <span className="nav-icon">

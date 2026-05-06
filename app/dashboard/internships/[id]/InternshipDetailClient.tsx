@@ -148,14 +148,14 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
   })
 
   const toneColors: Record<Tone, { bg: string; color: string; border: string }> = {
-    formal:       { bg: "#eff6ff", color: "#1d4ed8", border: "#93c5fd" },
+    formal:       { bg: "#d8e1e8", color: "#304674", border: "#98bad5" },
     casual:       { bg: "#f0fdf4", color: "#15803d", border: "#86efac" },
     enthusiastic: { bg: "#fdf4ff", color: "#7c3aed", border: "#c4b5fd" },
   }
 
   const statusColors: Record<string, { bg: string; color: string }> = {
     draft:   { bg: "#f1f5f9", color: "#475569" },
-    sent:    { bg: "#dbeafe", color: "#1d4ed8" },
+    sent:    { bg: "#c6d3e3", color: "#304674" },
     opened:  { bg: "#fef9c3", color: "#92400e" },
     replied: { bg: "#dcfce7", color: "#15803d" },
   }
@@ -185,7 +185,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
             <option value="rejected">Rejected</option>
           </select>
           <button onClick={() => setEditing(e => !e)}
-            style={{ padding: "6px 14px", background: editing ? "#3b82f6" : "#fff", color: editing ? "#fff" : "#475569", border: "1px solid #e2e8f0", borderRadius: 7, fontSize: 12, cursor: "pointer", fontWeight: 500 }}>
+            style={{ padding: "6px 14px", background: editing ? "#304674" : "#fff", color: editing ? "#fff" : "#475569", border: "1px solid #e2e8f0", borderRadius: 7, fontSize: 12, cursor: "pointer", fontWeight: 500 }}>
             {editing ? "Cancel" : "Edit"}
           </button>
           <button onClick={handleDelete} disabled={deleting}
@@ -202,25 +202,25 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
             <>
               <div style={{ marginBottom: 20 }}>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>{contact.contact_name || "Unknown Person"}</h2>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#6366f1", marginBottom: 4 }}>{contact.role}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#304674", marginBottom: 4 }}>{contact.role}</div>
                 <div style={{ fontSize: 13, color: "#64748b", marginBottom: 14 }}>{contact.company}</div>
 
                 {contact.email && (
                   <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", marginBottom: 6 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    <a href={"mailto:" + contact.email} style={{ color: "#3b82f6", textDecoration: "none" }}>{contact.email}</a>
+                    <a href={"mailto:" + contact.email} style={{ color: "#304674", textDecoration: "none" }}>{contact.email}</a>
                   </div>
                 )}
                 {contact.linkedin_url && (
                   <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", marginBottom: 6 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                    <a href={contact.linkedin_url.startsWith("http") ? contact.linkedin_url : "https://" + contact.linkedin_url} target="_blank" rel="noreferrer" style={{ color: "#3b82f6", textDecoration: "none" }}>LinkedIn Profile</a>
+                    <a href={contact.linkedin_url.startsWith("http") ? contact.linkedin_url : "https://" + contact.linkedin_url} target="_blank" rel="noreferrer" style={{ color: "#304674", textDecoration: "none" }}>LinkedIn Profile</a>
                   </div>
                 )}
                 {contact.website && (
                   <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", marginBottom: 6 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    <a href={contact.website.startsWith("http") ? contact.website : "https://" + contact.website} target="_blank" rel="noreferrer" style={{ color: "#3b82f6", textDecoration: "none" }}>{contact.website.replace(/^https?:\/\//, "")}</a>
+                    <a href={contact.website.startsWith("http") ? contact.website : "https://" + contact.website} target="_blank" rel="noreferrer" style={{ color: "#304674", textDecoration: "none" }}>{contact.website.replace(/^https?:\/\//, "")}</a>
                   </div>
                 )}
               </div>
@@ -237,7 +237,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Tags</div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {tags.map(t => (
-                      <span key={t} style={{ fontSize: 12, padding: "3px 10px", borderRadius: 20, background: "#eff6ff", color: "#1d4ed8", fontWeight: 500 }}>{t.trim()}</span>
+                      <span key={t} style={{ fontSize: 12, padding: "3px 10px", borderRadius: 20, background: "#d8e1e8", color: "#304674", fontWeight: 500 }}>{t.trim()}</span>
                     ))}
                   </div>
                 </div>
@@ -286,7 +286,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
                   <textarea value={editForm.bio} onChange={e => setEditForm(f => ({ ...f, bio: e.target.value }))} rows={4} style={{ ...inp(), resize: "vertical" as any }} />
                 </div>
                 <button onClick={saveEdit} disabled={savingEdit}
-                  style={{ padding: "9px 16px", background: "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                  style={{ padding: "9px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                   {savingEdit ? "Saving..." : "Save Changes"}
                 </button>
               </div>
@@ -318,7 +318,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
             {contact.email ? (
               <div style={{ fontSize: 12, color: "#64748b", marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                Sending to: <a href={"mailto:" + contact.email} style={{ color: "#3b82f6", textDecoration: "none" }}>{contact.email}</a>
+                Sending to: <a href={"mailto:" + contact.email} style={{ color: "#304674", textDecoration: "none" }}>{contact.email}</a>
               </div>
             ) : (
               <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 14 }}>No email address on file — add one by clicking Edit above.</div>
@@ -358,7 +358,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
             {/* Action buttons */}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <button onClick={generateEmail} disabled={generating}
-                style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", background: generating ? "#c7d2fe" : "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer" }}>
+                style={{ display: "flex", alignItems: "center", gap: 7, padding: "9px 18px", background: generating ? "#b2cbde" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer" }}>
                 {generating ? (
                   <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>Generating...</>
                 ) : (
@@ -395,7 +395,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
                   return (
                     <div key={e.id} onClick={() => loadEmail(e)}
                       style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#f8fafc", borderRadius: 8, cursor: "pointer", border: "1px solid #e2e8f0" }}
-                      onMouseEnter={el => (el.currentTarget.style.borderColor = "#6366f1")}
+                      onMouseEnter={el => (el.currentTarget.style.borderColor = "#304674")}
                       onMouseLeave={el => (el.currentTarget.style.borderColor = "#e2e8f0")}>
                       <div>
                         <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 2 }}>{e.subject || "(no subject)"}</div>

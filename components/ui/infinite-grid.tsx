@@ -12,7 +12,7 @@ interface InfiniteGridProps {
 }
 
 export default function InfiniteGrid({
-  color = "rgba(59,130,246,0.18)",
+  color = "rgba(48, 70, 116,0.18)",
   bgColor = "#0f172a",
   fadeColor = "#0f172a",
   lineWidth = 1,

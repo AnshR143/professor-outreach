@@ -12,7 +12,7 @@ const SIZE = {
   lg: { box: 36, gap: 6 },
 }
 
-export function Loader9({ className, color = "#3b82f6", size = "md" }: Loader9Props) {
+export function Loader9({ className, color = "#304674", size = "md" }: Loader9Props) {
   const { box, gap } = SIZE[size]
   const half = box / 2
   const totalW = box * 4 + gap * 3

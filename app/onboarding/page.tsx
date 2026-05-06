@@ -103,9 +103,9 @@ export default function OnboardingPage() {
 
   const btnStyle = (active: boolean) => ({
     padding: "8px 16px", borderRadius: 20, fontSize: 13, fontWeight: 500, cursor: "pointer", border: "1.5px solid",
-    borderColor: active ? "#3b82f6" : "#e2e8f0",
-    background: active ? "#eff6ff" : "#fff",
-    color: active ? "#3b82f6" : "#64748b",
+    borderColor: active ? "#304674" : "#e2e8f0",
+    background: active ? "#d8e1e8" : "#fff",
+    color: active ? "#304674" : "#64748b",
     transition: "all 0.15s",
   })
 
@@ -118,7 +118,7 @@ export default function OnboardingPage() {
         
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #3b82f6, #2563eb)", color: "#fff", marginBottom: 16 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #304674, #2563eb)", color: "#fff", marginBottom: 16 }}>
             <span style={{ fontWeight: 800, fontSize: 20 }}>O</span>
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", margin: "0 0 8px" }}>Welcome to OutreachAI</h1>
@@ -128,7 +128,7 @@ export default function OnboardingPage() {
         {/* Progress Bar */}
         <div style={{ display: "flex", gap: 8, marginBottom: 40 }}>
           {[1, 2, 3, 4].map(s => (
-            <div key={s} style={{ flex: 1, height: 6, borderRadius: 3, background: s <= step ? "#3b82f6" : "#e2e8f0", transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }} />
+            <div key={s} style={{ flex: 1, height: 6, borderRadius: 3, background: s <= step ? "#304674" : "#e2e8f0", transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }} />
           ))}
         </div>
 
@@ -163,7 +163,7 @@ export default function OnboardingPage() {
 
               <div style={{ display: "flex", gap: 12 }}>
                 <button onClick={() => setStep(2)}
-                  style={{ width: "100%", padding: 14, background: "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}>
+                  style={{ width: "100%", padding: 14, background: "#304674", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}>
                   Continue →
                 </button>
               </div>
@@ -192,7 +192,7 @@ export default function OnboardingPage() {
               <div style={{ display: "flex", gap: 12 }}>
                 <button onClick={() => setStep(1)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Back</button>
                 <button onClick={() => setStep(3)}
-                  style={{ flex: 2, padding: 14, background: "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+                  style={{ flex: 2, padding: 14, background: "#304674", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
                   Continue
                 </button>
               </div>
@@ -224,7 +224,7 @@ export default function OnboardingPage() {
               <div style={{ display: "flex", gap: 12 }}>
                 <button onClick={() => setStep(2)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Back</button>
                 <button onClick={() => setStep(4)}
-                  style={{ flex: 2, padding: 14, background: "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+                  style={{ flex: 2, padding: 14, background: "#304674", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
                   Almost There
                 </button>
               </div>
@@ -249,7 +249,7 @@ export default function OnboardingPage() {
                 <div style={{ display: "flex", gap: 12 }}>
                   <button onClick={() => setStep(3)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Review</button>
                   <button onClick={handleFinish} disabled={loading}
-                    style={{ flex: 2, padding: 14, background: "#3b82f6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(59,130,246,0.3)" }}>
+                    style={{ flex: 2, padding: 14, background: "#304674", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(48, 70, 116,0.3)" }}>
                     {loading ? "Finalizing..." : "Enter Dashboard →"}
                   </button>
                 </div>

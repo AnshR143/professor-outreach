@@ -415,7 +415,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                       setShowSuggestions(s.length > 0)
                     }}
                     placeholder="e.g. machine learning, NLP, computer vision"
-                    style={{ ...inputStyle, borderColor: showSuggestions ? "#3b82f6" : "#e2e8f0",
+                    style={{ ...inputStyle, borderColor: showSuggestions ? "#304674" : "#e2e8f0",
                       borderBottomLeftRadius: showSuggestions ? 0 : 10,
                       borderBottomRightRadius: showSuggestions ? 0 : 10 }}
                     autoComplete="off"
@@ -426,9 +426,9 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                     <div ref={suggestionsRef} style={{
                       position: "absolute", top: "100%", left: 0, right: 0, zIndex: 50,
                       background: "#fff",
-                      border: "1px solid #3b82f6", borderTop: "1px solid #e2e8f0",
+                      border: "1px solid #304674", borderTop: "1px solid #e2e8f0",
                       borderRadius: "0 0 10px 10px",
-                      boxShadow: "0 8px 24px rgba(59,130,246,0.12)",
+                      boxShadow: "0 8px 24px rgba(48, 70, 116,0.12)",
                       overflow: "hidden",
                     }}>
                       {suggestions.map((s, i) => (
@@ -438,7 +438,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                           style={{
                             display: "flex", alignItems: "center", justifyContent: "space-between",
                             width: "100%", padding: "8px 14px",
-                            background: i === highlightedIdx ? "#eff6ff" : "transparent",
+                            background: i === highlightedIdx ? "#d8e1e8" : "transparent",
                             border: "none", cursor: "pointer", textAlign: "left",
                             borderBottom: i < suggestions.length - 1 ? "1px solid #f1f5f9" : "none",
                             transition: "background 0.1s",
@@ -474,7 +474,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                   onChange={e => setForm(fm => ({ ...fm, universityText: e.target.value }))}
                   placeholder="e.g. Stanford, MIT, Carnegie Mellon"
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#3b82f6")}
+                  onFocus={e => (e.target.style.borderColor = "#304674")}
                   onBlur={e => (e.target.style.borderColor = "#e2e8f0")}
                 />
               </div>
@@ -482,18 +482,18 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               {/* Count */}
               <div style={{ marginBottom: 24 }}>
                 <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 8 }}>
-                  How many? <span style={{ color: "#3b82f6", fontWeight: 700 }}>{form.count}</span>
+                  How many? <span style={{ color: "#304674", fontWeight: 700 }}>{form.count}</span>
                 </label>
                 <input type="range" min={1} max={5} step={1} value={form.count}
                   onChange={e => setForm(fm => ({ ...fm, count: Number(e.target.value) }))}
-                  style={{ width: "100%", accentColor: "#3b82f6" }} />
+                  style={{ width: "100%", accentColor: "#304674" }} />
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
                   <span>1</span><span>5 (max)</span>
                 </div>
               </div>
 
               <button onClick={handleFind}
-                style={{ width: "100%", padding: "12px", background: "#3b82f6", color: "#fff",
+                style={{ width: "100%", padding: "12px", background: "#304674", color: "#fff",
                   border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
                 {form.keyword.trim()
                   ? `Search "${form.keyword.split(",")[0].trim()}${form.keyword.includes(",") ? "…" : ""}" — Find ${form.count} Researchers`
@@ -506,12 +506,12 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
           {step === "loading" && (
             <div style={{ textAlign: "center", padding: "48px 20px" }}>
               <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
-                <Loader9 color="#3b82f6" size="lg" />
+                <Loader9 color="#304674" size="lg" />
               </div>
               <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0f172a", margin: "0 0 8px" }}>Matching Researchers...</h3>
               <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>{progress.current || "Comparing fields and resume keywords..."}</p>
               <div style={{ background: "#f1f5f9", borderRadius: 20, height: 6, overflow: "hidden", maxWidth: 300, margin: "0 auto" }}>
-                <div style={{ height: "100%", background: "#3b82f6", borderRadius: 20,
+                <div style={{ height: "100%", background: "#304674", borderRadius: 20,
                   width: `${progress.total ? Math.max(8, (progress.found / progress.total) * 100) : 8}%`,
                   transition: "width 0.4s ease" }} />
               </div>
@@ -544,7 +544,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               )}
               <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
                 <button onClick={onClose}
-                  style={{ padding: "10px 24px", background: "#3b82f6", color: "#fff",
+                  style={{ padding: "10px 24px", background: "#304674", color: "#fff",
                     border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
                   View Researchers
                 </button>

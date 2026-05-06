@@ -13,7 +13,7 @@ export default function CampaignsClient({ emails, userName }: Props) {
   const statusColors: Record<string, { bg: string; text: string }> = {
     draft: { bg: "#f1f5f9", text: "#64748b" },
     sent: { bg: "#dcfce7", text: "#16a34a" },
-    opened: { bg: "#dbeafe", text: "#1d4ed8" },
+    opened: { bg: "#c6d3e3", text: "#304674" },
     replied: { bg: "#f0fdf4", text: "#15803d" },
   }
 
@@ -24,11 +24,11 @@ export default function CampaignsClient({ emails, userName }: Props) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Campaigns</h1>
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Researchers
           </button>
-          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>{userName?.[0]?.toUpperCase() || "A"}</div>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>{userName?.[0]?.toUpperCase() || "A"}</div>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ export default function CampaignsClient({ emails, userName }: Props) {
         {/* Stats */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 20 }}>
           {[
-            { label: "Total Emails", value: emails.length, color: "#3b82f6" },
+            { label: "Total Emails", value: emails.length, color: "#304674" },
             { label: "Sent", value: emails.filter(e => e.status === "sent").length, color: "#22c55e" },
             { label: "Opened", value: emails.filter(e => e.status === "opened").length, color: "#f59e0b" },
             { label: "Replied", value: emails.filter(e => e.status === "replied").length, color: "#8b5cf6" },
@@ -94,7 +94,7 @@ export default function CampaignsClient({ emails, userName }: Props) {
                     <span> Tone: {e.tone}</span>
                   </div>
                   <Link href={`/dashboard/researchers/${e.researcher_id}`}
-                    style={{ display: "inline-block", marginTop: 8, fontSize: 12, color: "#3b82f6", textDecoration: "none" }}>
+                    style={{ display: "inline-block", marginTop: 8, fontSize: 12, color: "#304674", textDecoration: "none" }}>
                     View Researcher →
                   </Link>
                 </div>

@@ -89,7 +89,7 @@ export default function ResumeUpload({ onUpload }: ResumeUploadProps) {
         
         {uploading ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
-            <div className="animate-spin" style={{ width: 24, height: 24, border: "3px solid #f3f3f3", borderTop: "3px solid #3b82f6", borderRadius: "50%" }} />
+            <div className="animate-spin" style={{ width: 24, height: 24, border: "3px solid #f3f3f3", borderTop: "3px solid #304674", borderRadius: "50%" }} />
             <span style={{ fontSize: 13, color: "#64748b" }}>Uploading...</span>
           </div>
         ) : status === "success" ? (

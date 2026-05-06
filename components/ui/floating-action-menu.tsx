@@ -109,7 +109,7 @@ export default function FloatingActionMenu({
           height: 56,
           borderRadius: "50%",
           border: "1px solid rgba(255,255,255,0.25)",
-          background: "linear-gradient(135deg, rgba(59,130,246,0.92) 0%, rgba(234,88,12,0.95) 100%)",
+          background: "linear-gradient(135deg, rgba(48, 70, 116,0.92) 0%, rgba(234,88,12,0.95) 100%)",
           backdropFilter: "blur(12px) saturate(200%)",
           WebkitBackdropFilter: "blur(12px) saturate(200%)",
           color: "#fff",
@@ -117,12 +117,12 @@ export default function FloatingActionMenu({
           alignItems: "center",
           justifyContent: "center",
           cursor: "pointer",
-          boxShadow: "0 6px 24px rgba(59,130,246,0.45), inset 0 1px 0 rgba(255,255,255,0.3)",
+          boxShadow: "0 6px 24px rgba(48, 70, 116,0.45), inset 0 1px 0 rgba(255,255,255,0.3)",
           outline: "none",
           position: "relative",
           overflow: "hidden",
         }}
-        whileHover={{ scale: 1.08, boxShadow: "0 8px 28px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.3)" }}
+        whileHover={{ scale: 1.08, boxShadow: "0 8px 28px rgba(48, 70, 116,0.55), inset 0 1px 0 rgba(255,255,255,0.3)" }}
         whileTap={{ scale: 0.95 }}
       >
         {/* Sheen */}

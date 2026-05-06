@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import FindResearchersModal from "@/components/researchers/FindResearchersModal"
 
 const FIELD_COLORS: Record<string, string> = {
-  "AI": "#dbeafe", "Artificial Intelligence": "#dbeafe", "Finance": "#dcfce7",
+  "AI": "#c6d3e3", "Artificial Intelligence": "#c6d3e3", "Finance": "#dcfce7",
   "Quantitative Finance": "#d1fae5", "Mathematics": "#fce7f3", "Machine Learning": "#e0e7ff",
   "Economics": "#fef9c3", "default": "#f1f5f9",
 }
@@ -105,7 +105,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
           <Link href={`/dashboard/researchers/${r.id}`} style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", textDecoration: "none" }}>{r.name}</Link>
           <div style={{ fontSize: 11, color: "#64748b" }}>{r.university}</div>
         </div>
-        <div style={{ width: 34, height: 34, borderRadius: "50%", border: `2px solid ${r.match_score >= 85 ? "#22c55e" : "#3b82f6"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#0f172a", flexShrink: 0 }}>
+        <div style={{ width: 34, height: 34, borderRadius: "50%", border: `2px solid ${r.match_score >= 85 ? "#22c55e" : "#304674"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#0f172a", flexShrink: 0 }}>
           {r.match_score}
         </div>
       </div>
@@ -131,7 +131,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
       onMouseLeave={e => (e.currentTarget.style.boxShadow = "none")}>
       <div style={{ marginBottom: 6 }}>
         <Link href={`/dashboard/internships/${c.id}`} style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", textDecoration: "none" }}>{c.company}</Link>
-        <div style={{ fontSize: 11, color: "#3b82f6", fontWeight: 600 }}>{c.role}</div>
+        <div style={{ fontSize: 11, color: "#304674", fontWeight: 600 }}>{c.role}</div>
         {c.contact_name && <div style={{ fontSize: 11, color: "#64748b" }}>{c.contact_name}</div>}
       </div>
       <div style={{ fontSize: 11, color: c.email_status === "emailed" ? "#16a34a" : "#94a3b8" }}>
@@ -179,11 +179,11 @@ export default function StatisticsClient({ researchers: initial, emails, interns
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Statistics</h1>
         <div style={{ display: "flex", gap: 10 }}>
           <button onClick={() => router.refresh()} style={{ padding: "8px 14px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, cursor: "pointer", color: "#475569" }}>↻ Refresh</button>
-          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Researchers
           </button>
-          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>
         </div>
@@ -234,8 +234,8 @@ export default function StatisticsClient({ researchers: initial, emails, interns
               <div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 }}>
                   {[
-                    { label: "Researchers Found", value: researchers.length, sub: "Total in your list", pct: "100%", color: "#3b82f6" },
-                    { label: "Emails Sent", value: emailsSent, sub: `${notEmailed} not yet emailed`, pct: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}% outreach rate`, color: "#3b82f6" },
+                    { label: "Researchers Found", value: researchers.length, sub: "Total in your list", pct: "100%", color: "#304674" },
+                    { label: "Emails Sent", value: emailsSent, sub: `${notEmailed} not yet emailed`, pct: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}% outreach rate`, color: "#304674" },
                     { label: "Accepted", value: accepted, sub: "Replied positively", pct: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}% reply rate`, color: "#22c55e" },
                     { label: "Rejected", value: rejectedEmail, sub: `${pending} awaiting reply`, pct: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}% rejected`, color: "#ef4444" },
                   ].map((k, i) => (
@@ -260,7 +260,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     {topUniversities.map((u, i) => (
                       <div key={u.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topUniversities.length - 1 ? "1px solid #f1f5f9" : "none" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#3b82f6", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
+                          <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#304674", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
                           <span style={{ fontSize: 13, color: "#0f172a" }}>{u.name}</span>
                         </div>
                         <span style={{ fontSize: 12, color: "#64748b" }}>{u.count} researchers</span>
@@ -273,7 +273,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     {topFields.map((f, i) => (
                       <div key={f.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topFields.length - 1 ? "1px solid #f1f5f9" : "none" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#3b82f6", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
+                          <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#304674", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
                           <span style={{ fontSize: 13, color: "#0f172a" }}>{f.name}</span>
                         </div>
                         <span style={{ fontSize: 12, color: "#64748b" }}>{f.count} researchers</span>
@@ -294,8 +294,8 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                 </p>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 32 }}>
                   {[
-                    { label: "Found", value: researchers.length, color: "#3b82f6", sub: "total" },
-                    { label: "Emailed", value: emailsSent, color: "#3b82f6", sub: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}%` },
+                    { label: "Found", value: researchers.length, color: "#304674", sub: "total" },
+                    { label: "Emailed", value: emailsSent, color: "#304674", sub: `${researchers.length ? Math.round(emailsSent/researchers.length*100) : 0}%` },
                     { label: "Awaiting", value: pending, color: "#f59e0b", sub: `${emailsSent ? Math.round(pending/emailsSent*100) : 0}%` },
                     { label: "Accepted", value: accepted, color: "#22c55e", sub: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}%` },
                     { label: "Rejected", value: rejectedEmail, color: "#ef4444", sub: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}%` },
@@ -343,8 +343,8 @@ export default function StatisticsClient({ researchers: initial, emails, interns
               <div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 }}>
                   {[
-                    { label: "Contacts Added", value: contacts.length, sub: "Total in your list", pct: "100%", color: "#3b82f6" },
-                    { label: "Emails Sent", value: intEmailsSent, sub: `${contacts.filter(c => !c.email_status || c.email_status === "not_emailed").length} not yet emailed`, pct: `${contacts.length ? Math.round(intEmailsSent/contacts.length*100) : 0}% outreach rate`, color: "#3b82f6" },
+                    { label: "Contacts Added", value: contacts.length, sub: "Total in your list", pct: "100%", color: "#304674" },
+                    { label: "Emails Sent", value: intEmailsSent, sub: `${contacts.filter(c => !c.email_status || c.email_status === "not_emailed").length} not yet emailed`, pct: `${contacts.length ? Math.round(intEmailsSent/contacts.length*100) : 0}% outreach rate`, color: "#304674" },
                     { label: "Accepted", value: intAccepted, sub: "Replied positively", pct: `${intEmailsSent ? Math.round(intAccepted/intEmailsSent*100) : 0}% reply rate`, color: "#22c55e" },
                     { label: "Rejected", value: intRejected, sub: `${intPending} awaiting reply`, pct: `${intEmailsSent ? Math.round(intRejected/intEmailsSent*100) : 0}% rejected`, color: "#ef4444" },
                   ].map((k, i) => (
@@ -369,7 +369,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     {topCompanies.map((u, i) => (
                       <div key={u.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topCompanies.length - 1 ? "1px solid #f1f5f9" : "none" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#3b82f6", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
+                          <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#304674", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{i+1}</span>
                           <span style={{ fontSize: 13, color: "#0f172a" }}>{u.name}</span>
                         </div>
                         <span style={{ fontSize: 12, color: "#64748b" }}>{u.count} contacts</span>
@@ -401,8 +401,8 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                 <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>Contacts Added → Emailed → Awaiting → Accepted</p>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 32 }}>
                   {[
-                    { label: "Added", value: contacts.length, color: "#3b82f6", sub: "total" },
-                    { label: "Emailed", value: intEmailsSent, color: "#3b82f6", sub: `${contacts.length ? Math.round(intEmailsSent/contacts.length*100) : 0}%` },
+                    { label: "Added", value: contacts.length, color: "#304674", sub: "total" },
+                    { label: "Emailed", value: intEmailsSent, color: "#304674", sub: `${contacts.length ? Math.round(intEmailsSent/contacts.length*100) : 0}%` },
                     { label: "Awaiting", value: intPending, color: "#f59e0b", sub: `${intEmailsSent ? Math.round(intPending/intEmailsSent*100) : 0}%` },
                     { label: "Accepted", value: intAccepted, color: "#22c55e", sub: `${intEmailsSent ? Math.round(intAccepted/intEmailsSent*100) : 0}%` },
                     { label: "Rejected", value: intRejected, color: "#ef4444", sub: `${intEmailsSent ? Math.round(intRejected/intEmailsSent*100) : 0}%` },

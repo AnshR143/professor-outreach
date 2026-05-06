@@ -70,9 +70,9 @@ const DotMap = () => {
         ctx!.beginPath(); ctx!.arc(route.start.x, route.start.y, 3, 0, Math.PI*2)
         ctx!.fillStyle = route.color; ctx!.fill()
         ctx!.beginPath(); ctx!.arc(x, y, 3, 0, Math.PI*2)
-        ctx!.fillStyle = "#3b82f6"; ctx!.fill()
+        ctx!.fillStyle = "#304674"; ctx!.fill()
         ctx!.beginPath(); ctx!.arc(x, y, 6, 0, Math.PI*2)
-        ctx!.fillStyle = "rgba(59,130,246,0.35)"; ctx!.fill()
+        ctx!.fillStyle = "rgba(48, 70, 116,0.35)"; ctx!.fill()
       })
       if (t > 15) startTime = Date.now()
       animId = requestAnimationFrame(draw)
@@ -136,7 +136,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: "100vh", width: "100%", display: "flex", alignItems: "center",
-      justifyContent: "center", background: "linear-gradient(135deg,#eff6ff 0%,#e0e7ff 100%)", padding: 16 }}>
+      justifyContent: "center", background: "linear-gradient(135deg,#d8e1e8 0%,#e0e7ff 100%)", padding: 16 }}>
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.45 }}
         style={{ width: "100%", maxWidth: 880, borderRadius: 20, display: "flex",
@@ -146,7 +146,7 @@ export default function LoginPage() {
         {/* Left map panel — hidden on mobile */}
         <div className="md-panel" style={{ display: "none", width: "50%", minHeight: 600,
           position: "relative", overflow: "hidden", borderRight: "1px solid #e0e7ff" }}>
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,#eff6ff,#dbeafe)" }}>
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,#d8e1e8,#c6d3e3)" }}>
             <DotMap />
           </div>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column",
@@ -154,15 +154,15 @@ export default function LoginPage() {
             <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               style={{ width: 52, height: 52, borderRadius: "50%",
-                background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
+                background: "linear-gradient(135deg,#304674,#1f2f55)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 8px 24px rgba(59,130,246,0.35)", marginBottom: 20 }}>
+                boxShadow: "0 8px 24px rgba(48, 70, 116,0.35)", marginBottom: 20 }}>
               <ArrowRight style={{ width: 22, height: 22, color: "#fff" }} />
             </motion.div>
             <motion.h2 initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
               style={{ fontSize: 28, fontWeight: 800, margin: "0 0 10px", textAlign: "center",
-                background: "linear-gradient(to right,#2563eb,#4f46e5)",
+                background: "linear-gradient(to right,#2563eb,#1f2f55)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               OutreachAI
             </motion.h2>
@@ -184,11 +184,11 @@ export default function LoginPage() {
             {/* Brand */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
               <div style={{ width: 36, height: 36, borderRadius: 10,
-                background: "linear-gradient(135deg,#3b82f6,#4f46e5)",
+                background: "linear-gradient(135deg,#304674,#1f2f55)",
                 display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <ArrowRight style={{ width: 18, height: 18, color: "#fff" }} />
               </div>
-              <span style={{ fontWeight: 700, fontSize: 16, color: "#1e293b" }}>OutreachAI</span>
+              <span style={{ fontWeight: 700, fontSize: 16, color: "#304674" }}>OutreachAI</span>
             </div>
 
             <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0f172a", margin: "0 0 4px" }}>
@@ -216,26 +216,26 @@ export default function LoginPage() {
               <div>
                 <label style={{ display: "block", fontSize: 13, fontWeight: 600,
                   color: "#374151", marginBottom: 6 }}>
-                  Email <span style={{ color: "#3b82f6" }}>*</span>
+                  Email <span style={{ color: "#304674" }}>*</span>
                 </label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="you@university.edu" autoComplete="email" required
                   style={inp}
-                  onFocus={e => (e.target.style.borderColor = "#3b82f6")}
+                  onFocus={e => (e.target.style.borderColor = "#304674")}
                   onBlur={e => (e.target.style.borderColor = "#e2e8f0")} />
               </div>
 
               <div>
                 <label style={{ display: "block", fontSize: 13, fontWeight: 600,
                   color: "#374151", marginBottom: 6 }}>
-                  Password <span style={{ color: "#3b82f6" }}>*</span>
+                  Password <span style={{ color: "#304674" }}>*</span>
                 </label>
                 <div style={{ position: "relative" }}>
                   <input type={showPassword ? "text" : "password"} value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••" autoComplete="current-password" required
                     style={{ ...inp, paddingRight: 40 }}
-                    onFocus={e => (e.target.style.borderColor = "#3b82f6")}
+                    onFocus={e => (e.target.style.borderColor = "#304674")}
                     onBlur={e => (e.target.style.borderColor = "#e2e8f0")} />
                   <button type="button" onClick={() => setShowPassword(v => !v)}
                     style={{ position: "absolute", right: 10, top: "50%",
@@ -250,11 +250,11 @@ export default function LoginPage() {
                 whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
                 onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
                 style={{ position: "relative", overflow: "hidden", width: "100%",
-                  padding: "11px 20px", background: "linear-gradient(to right,#3b82f6,#4f46e5)",
+                  padding: "11px 20px", background: "linear-gradient(to right,#304674,#1f2f55)",
                   color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 700,
                   cursor: loading ? "not-allowed" : "pointer",
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  boxShadow: hovered ? "0 8px 24px rgba(59,130,246,0.35)" : "0 2px 8px rgba(59,130,246,0.2)",
+                  boxShadow: hovered ? "0 8px 24px rgba(48, 70, 116,0.35)" : "0 2px 8px rgba(48, 70, 116,0.2)",
                   transition: "box-shadow 0.2s" }}>
                 {loading ? "Signing in..." : "Sign in"}
                 {!loading && <ArrowRight size={16} />}
@@ -268,7 +268,7 @@ export default function LoginPage() {
               </motion.button>
 
               <div style={{ textAlign: "center" }}>
-                <a href="#" style={{ fontSize: 13, color: "#3b82f6", textDecoration: "none" }}>
+                <a href="#" style={{ fontSize: 13, color: "#304674", textDecoration: "none" }}>
                   Forgot password?
                 </a>
               </div>
@@ -285,8 +285,8 @@ export default function LoginPage() {
                 border: "1.5px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontWeight: 600,
                 color: "#374151", textDecoration: "none", background: "#f8fafc",
                 transition: "border-color 0.15s,background 0.15s" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#3b82f6";
-                (e.currentTarget as HTMLAnchorElement).style.background="#eff6ff" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#304674";
+                (e.currentTarget as HTMLAnchorElement).style.background="#d8e1e8" }}
               onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor="#e2e8f0";
                 (e.currentTarget as HTMLAnchorElement).style.background="#f8fafc" }}>
               Create an account

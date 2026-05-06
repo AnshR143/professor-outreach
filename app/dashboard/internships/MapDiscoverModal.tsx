@@ -47,7 +47,7 @@ export interface DiscoveredBusiness {
 
 function scoreColor(s: number): { bg: string; text: string; border: string } {
   if (s >= 8) return { bg: "#dcfce7", text: "#15803d", border: "#86efac" }
-  if (s >= 6) return { bg: "#dbeafe", text: "#1d4ed8", border: "#93c5fd" }
+  if (s >= 6) return { bg: "#c6d3e3", text: "#304674", border: "#98bad5" }
   if (s >= 4) return { bg: "#fff7ed", text: "#c2410c", border: "#fdba74" }
   return { bg: "#f1f5f9", text: "#64748b", border: "#cbd5e1" }
 }
@@ -68,9 +68,9 @@ function MarkerDot({ score, selected }: { score: number; selected: boolean }) {
       width: selected ? 20 : 14,
       height: selected ? 20 : 14,
       borderRadius: "50%",
-      background: selected ? "#6366f1" : bg,
-      border: `2.5px solid ${selected ? "#4338ca" : border}`,
-      boxShadow: selected ? "0 0 0 4px rgba(99,102,241,0.25)" : "0 2px 6px rgba(0,0,0,0.18)",
+      background: selected ? "#304674" : bg,
+      border: `2.5px solid ${selected ? "#1f2f55" : border}`,
+      boxShadow: selected ? "0 0 0 4px rgba(48, 70, 116,0.25)" : "0 2px 6px rgba(0,0,0,0.18)",
       transition: "all 0.15s",
       cursor: "pointer",
     }} />
@@ -176,6 +176,14 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   // Adding contacts
   const [adding, setAdding]       = useState<Set<string>>(new Set())
   const [added, setAdded]         = useState<Set<string>>(new Set())
+
+  // Outreach Kit (AI-generated email + optional call script for the just-added biz)
+  const [kitFor, setKitFor]       = useState<DiscoveredBusiness | null>(null)
+  const [kitLoading, setKitLoading] = useState(false)
+  const [kitError, setKitError]   = useState("")
+  const [kit, setKit]             = useState<{ subject: string; body: string; callScript?: string } | null>(null)
+  const [kitTab, setKitTab]       = useState<"email" | "call">("email")
+  const [kitCopied, setKitCopied] = useState(false)
 
   // Google vs OSM vs Geoapify toggle
   const [provider, setProvider]   = useState<"osm" | "google" | "geoapify">("osm")
@@ -490,6 +498,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setAdding(prev => { const s = new Set(prev); s.delete(biz.id); return s }); return }
 
+    const phoneLine = biz.phone ? `Phone: ${biz.phone}. ` : ""
     await supabase.from("internship_contacts").insert({
       user_id: user.id,
       company: biz.name,
@@ -497,9 +506,8 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
       contact_name: "",
       email: null,
       website: biz.website || null,
-      phone: biz.phone || null,
       bio: `${biz.type ? biz.type.charAt(0).toUpperCase() + biz.type.slice(1) : "Business"} in ${biz.address || location}. AI intern fit score: ${biz.internScore}/10. ${biz.scoreReason}`,
-      notes: `Discovered via map search for "${industry}" in ${location}. Coordinates: ${biz.lat.toFixed(5)}, ${biz.lon.toFixed(5)}`,
+      notes: `${phoneLine}Discovered via map search for "${industry}" in ${location}. Coordinates: ${biz.lat.toFixed(5)}, ${biz.lon.toFixed(5)}`,
     })
 
     await supabase.from("activities").insert({
@@ -514,6 +522,55 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     setAdded(prev => new Set([...prev, biz.id]))
     setAdding(prev => { const s = new Set(prev); s.delete(biz.id); return s })
     onContactAdded?.()
+
+    // Auto-generate the outreach kit (tailored email + optional voicemail script).
+    void generateOutreachKit(biz)
+  }
+
+  async function generateOutreachKit(biz: DiscoveredBusiness) {
+    setKitFor(biz)
+    setKit(null)
+    setKitError("")
+    setKitLoading(true)
+    setKitTab("email")
+    try {
+      const res = await fetch("/api/internships/outreach-kit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          meta: {
+            company: biz.name,
+            industry: biz.industry,
+            type: biz.type,
+            address: biz.address || location,
+            scoreReason: biz.scoreReason,
+            complaints: (biz as any).complaints || [],
+            opportunity: (biz as any).opportunity || "",
+            hasPhone: !!biz.phone,
+          },
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setKitError(data.error || `Generation failed (${res.status})`)
+        return
+      }
+      setKit({ subject: data.subject, body: data.body, callScript: data.callScript })
+    } catch (e: any) {
+      setKitError(e.message || "Network error")
+    } finally {
+      setKitLoading(false)
+    }
+  }
+
+  async function copyKit() {
+    if (!kit) return
+    const text = kitTab === "call" && kit.callScript
+      ? kit.callScript
+      : `${kit.subject}\n\n${kit.body}`
+    await navigator.clipboard.writeText(text)
+    setKitCopied(true)
+    setTimeout(() => setKitCopied(false), 2000)
   }
 
   // ── Select a business (from list or map) ────────────────────────────────────
@@ -535,7 +592,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         {/* ── Header ── */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderBottom: "1px solid #e2e8f0", flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 8, background: "linear-gradient(135deg,#6366f1,#4f46e5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 34, height: 34, borderRadius: 8, background: "linear-gradient(135deg,#304674,#1f2f55)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
             <div>
@@ -577,12 +634,12 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
           <div style={{ flex: "1 1 130px" }}>
             <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Radius: {(radius / 1000).toFixed(1)} km</label>
-            <input type="range" min={500} max={10000} step={500} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: "100%", accentColor: "#6366f1" }} />
+            <input type="range" min={500} max={10000} step={500} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: "100%", accentColor: "#304674" }} />
           </div>
 
           <div style={{ flex: "1 1 130px" }}>
             <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Min score: {minScore}/10</label>
-            <input type="range" min={1} max={9} step={1} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: "100%", accentColor: "#6366f1" }} />
+            <input type="range" min={1} max={9} step={1} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: "100%", accentColor: "#304674" }} />
           </div>
 
           {(googleEnabled || geoapifyEnabled) && (
@@ -596,7 +653,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                     style={{
                       padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
                       cursor: "pointer", background: provider === "google" ? "#fff" : "transparent",
-                      color: provider === "google" ? "#6366f1" : "#64748b",
+                      color: provider === "google" ? "#304674" : "#64748b",
                       boxShadow: provider === "google" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
                     }}
                   >Google</button>
@@ -607,7 +664,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                   style={{
                     padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
                     cursor: "pointer", background: provider === "osm" ? "#fff" : "transparent",
-                    color: provider === "osm" ? "#6366f1" : "#64748b",
+                    color: provider === "osm" ? "#304674" : "#64748b",
                     boxShadow: provider === "osm" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
                   }}
                 >OSM</button>
@@ -618,7 +675,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                     style={{
                       padding: "6px 12px", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 700,
                       cursor: "pointer", background: provider === "geoapify" ? "#fff" : "transparent",
-                      color: provider === "geoapify" ? "#6366f1" : "#64748b",
+                      color: provider === "geoapify" ? "#304674" : "#64748b",
                       boxShadow: provider === "geoapify" ? "0 2px 4px rgba(0,0,0,0.05)" : "none",
                     }}
                   >Geoapify</button>
@@ -628,7 +685,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
           )}
 
           <button type="submit" disabled={loading || !location.trim()}
-            style={{ padding: "8px 20px", background: loading ? "#c7d2fe" : "#6366f1", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 7, flexShrink: 0, height: 36 }}>
+            style={{ padding: "8px 20px", background: loading ? "#b2cbde" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 7, flexShrink: 0, height: 36 }}>
             {loading ? (
               <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>Searching...</>
             ) : (
@@ -656,8 +713,8 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
             {loading && (
               <div style={{ padding: 32, textAlign: "center" }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" style={{ animation: "spin 1s linear infinite", marginBottom: 12 }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#6366f1", marginBottom: 4 }}>{step}</div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#304674" strokeWidth="2" style={{ animation: "spin 1s linear infinite", marginBottom: 12 }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#304674", marginBottom: 4 }}>{step}</div>
                 <div style={{ fontSize: 12, color: "#94a3b8" }}>This may take up to 15 seconds</div>
               </div>
             )}
@@ -681,7 +738,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                         borderBottom: "1px solid #f1f5f9",
                         cursor: "pointer",
                         background: isSelected ? "#f5f3ff" : "#fff",
-                        borderLeft: isSelected ? "3px solid #6366f1" : "3px solid transparent",
+                        borderLeft: isSelected ? "3px solid #304674" : "3px solid transparent",
                         transition: "background 0.12s",
                       }}
                       onMouseEnter={e => { if (!isSelected) (e.currentTarget as HTMLElement).style.background = "#f8fafc" }}
@@ -691,14 +748,14 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                         <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{biz.name}</div>
                         <ScoreBadge score={biz.internScore} />
                       </div>
-                      <div style={{ fontSize: 11, color: "#6366f1", fontWeight: 600, marginBottom: 2, textTransform: "capitalize" }}>{biz.type}</div>
+                      <div style={{ fontSize: 11, color: "#304674", fontWeight: 600, marginBottom: 2, textTransform: "capitalize" }}>{biz.type}</div>
                       {biz.address && <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4 }}>{biz.address}</div>}
                       <div style={{ fontSize: 11, color: "#64748b", fontStyle: "italic", marginBottom: 8 }}>{biz.scoreReason}</div>
                       
                       {(biz as any).emails?.length > 0 && (
                         <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
                           {(biz as any).emails.slice(0, 2).map((email: string) => (
-                            <span key={email} style={{ fontSize: 10, background: "#eff6ff", color: "#1d4ed8", padding: "1px 6px", borderRadius: 4, border: "1px solid #bfdbfe" }}>
+                            <span key={email} style={{ fontSize: 10, background: "#d8e1e8", color: "#304674", padding: "1px 6px", borderRadius: 4, border: "1px solid #98bad5" }}>
                               {email}
                             </span>
                           ))}
@@ -710,7 +767,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                         {biz.website && (
                           <a href={biz.website.startsWith("http") ? biz.website : "https://" + biz.website} target="_blank" rel="noopener noreferrer"
                             onClick={e => e.stopPropagation()}
-                            style={{ fontSize: 11, color: "#3b82f6", textDecoration: "none", display: "flex", alignItems: "center", gap: 3 }}>
+                            style={{ fontSize: 11, color: "#304674", textDecoration: "none", display: "flex", alignItems: "center", gap: 3 }}>
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                             Website
                           </a>
@@ -724,7 +781,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                           style={{
                             marginLeft: "auto",
                             padding: "4px 10px", fontSize: 11, fontWeight: 600,
-                            background: isAdded ? "#dcfce7" : "#6366f1",
+                            background: isAdded ? "#dcfce7" : "#304674",
                             color: isAdded ? "#15803d" : "#fff",
                             border: "none", borderRadius: 6, cursor: isAdded || isAdding ? "default" : "pointer",
                           }}
@@ -786,7 +843,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                     <span style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selected.name}</span>
                     <ScoreBadge score={selected.internScore} />
                   </div>
-                  <div style={{ fontSize: 12, color: "#6366f1", fontWeight: 600, marginBottom: 2, textTransform: "capitalize" }}>{selected.type}</div>
+                  <div style={{ fontSize: 12, color: "#304674", fontWeight: 600, marginBottom: 2, textTransform: "capitalize" }}>{selected.type}</div>
                   {selected.address && <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>{selected.address}</div>}
                   <div style={{ fontSize: 12, color: "#475569", fontStyle: "italic" }}>{selected.scoreReason}</div>
                 </div>
@@ -800,7 +857,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                   <button
                     onClick={() => addContact(selected)}
                     disabled={added.has(selected.id) || adding.has(selected.id)}
-                    style={{ padding: "6px 16px", background: added.has(selected.id) ? "#dcfce7" : "#6366f1", color: added.has(selected.id) ? "#15803d" : "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: added.has(selected.id) ? "default" : "pointer" }}>
+                    style={{ padding: "6px 16px", background: added.has(selected.id) ? "#dcfce7" : "#304674", color: added.has(selected.id) ? "#15803d" : "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: added.has(selected.id) ? "default" : "pointer" }}>
                     {adding.has(selected.id) ? "Adding..." : added.has(selected.id) ? "Added" : "+ Add to Contacts"}
                   </button>
                   <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 18, padding: 2 }}>×</button>
@@ -810,6 +867,81 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Outreach Kit panel — opens after Add Contact */}
+      {kitFor && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1100, padding: 16 }}>
+          <div style={{ background: "#fff", borderRadius: 14, width: "100%", maxWidth: 640, maxHeight: "85vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.28)" }}>
+            <div style={{ padding: "14px 18px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#304674", textTransform: "uppercase", letterSpacing: 0.5 }}>Outreach Kit</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{kitFor.name}</div>
+                <div style={{ fontSize: 12, color: "#64748b" }}>Tailored for {kitFor.industry}{kitFor.phone ? ` · ${kitFor.phone}` : ""}</div>
+              </div>
+              <button onClick={() => setKitFor(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1 }}>×</button>
+            </div>
+
+            {kit?.callScript && (
+              <div style={{ display: "flex", gap: 4, padding: "8px 18px 0", borderBottom: "1px solid #f1f5f9" }}>
+                {(["email", "call"] as const).map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setKitTab(tab)}
+                    style={{
+                      padding: "8px 14px", border: "none", background: "none",
+                      borderBottom: kitTab === tab ? "2px solid #304674" : "2px solid transparent",
+                      color: kitTab === tab ? "#304674" : "#64748b",
+                      fontSize: 12, fontWeight: 700, cursor: "pointer",
+                    }}
+                  >{tab === "email" ? "Email" : "Call Script"}</button>
+                ))}
+              </div>
+            )}
+
+            <div style={{ padding: "16px 18px", overflowY: "auto", flex: 1 }}>
+              {kitLoading && (
+                <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#64748b", fontSize: 13 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#304674" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+                  Generating tailored email{kitFor.phone ? " and voicemail script" : ""}…
+                </div>
+              )}
+
+              {kitError && !kitLoading && (
+                <div style={{ padding: "10px 14px", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8, color: "#c2410c", fontSize: 13 }}>{kitError}</div>
+              )}
+
+              {kit && !kitLoading && kitTab === "email" && (
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 4 }}>Subject</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", marginBottom: 14 }}>{kit.subject}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 4 }}>Body</div>
+                  <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit", fontSize: 13, color: "#0f172a", margin: 0, lineHeight: 1.55 }}>{kit.body}</pre>
+                </div>
+              )}
+
+              {kit && !kitLoading && kitTab === "call" && kit.callScript && (
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 6 }}>Voicemail / call script</div>
+                  <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit", fontSize: 13, color: "#0f172a", margin: 0, lineHeight: 1.55 }}>{kit.callScript}</pre>
+                </div>
+              )}
+            </div>
+
+            <div style={{ padding: "12px 18px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <button
+                onClick={() => setKitFor(null)}
+                style={{ padding: "8px 14px", background: "#f1f5f9", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 600, color: "#475569", cursor: "pointer" }}
+              >Close</button>
+              {kit && (
+                <button
+                  onClick={copyKit}
+                  style={{ padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+                >{kitCopied ? "Copied ✓" : `Copy ${kitTab === "call" ? "script" : "email"}`}</button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

@@ -169,7 +169,7 @@ export function MarkerContent({ children, className }: { children?: ReactNode; c
   if (!isReady || !elementRef.current) return null
   return createPortal(
     <div className={cn("relative cursor-pointer", className)}>
-      {children ?? <div style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #fff", background: "#3b82f6", boxShadow: "0 2px 6px rgba(0,0,0,0.25)" }} />}
+      {children ?? <div style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid #fff", background: "#304674", boxShadow: "0 2px 6px rgba(0,0,0,0.25)" }} />}
     </div>,
     elementRef.current,
   )
@@ -250,7 +250,7 @@ export function MarkerTooltip({ children, className, ...opts }: { children: Reac
 
   if (!mounted || !containerRef.current) return null
   return createPortal(
-    <div style={{ background: "#1e293b", color: "#f8fafc", padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500, whiteSpace: "nowrap" }} className={className}>
+    <div style={{ background: "#304674", color: "#f8fafc", padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500, whiteSpace: "nowrap" }} className={className}>
       {children}
     </div>,
     containerRef.current,
@@ -387,7 +387,7 @@ type MapRouteProps = {
   dashArray?: [number, number]
 }
 
-export function MapRoute({ coordinates, color = "#3b82f6", width = 3, opacity = 0.8, dashArray }: MapRouteProps) {
+export function MapRoute({ coordinates, color = "#304674", width = 3, opacity = 0.8, dashArray }: MapRouteProps) {
   const { map, isLoaded } = useMap()
   const id = useId()
   const sourceId = `route-src-${id}`

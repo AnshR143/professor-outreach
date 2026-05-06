@@ -57,7 +57,7 @@ export default function HistoryClient({ researchActivities, internshipActivities
 
   const typeConfig: Record<string, { label: string; bg: string }> = {
     email_sent:                { label: "Email Sent",       bg: "#dcfce7" },
-    researcher_found:          { label: "Researcher Found", bg: "#dbeafe" },
+    researcher_found:          { label: "Researcher Found", bg: "#c6d3e3" },
     status_changed:            { label: "Status Changed",   bg: "#fef9c3" },
     note_added:                { label: "Note Added",        bg: "#f3e8ff" },
     profile_updated:           { label: "Profile Updated",  bg: "#f1f5f9" },
@@ -80,7 +80,7 @@ export default function HistoryClient({ researchActivities, internshipActivities
             Refresh
           </button>
           <button onClick={() => setShowFind(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Researchers
           </button>

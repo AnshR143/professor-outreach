@@ -161,8 +161,8 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
 
   const modeTab = (m: Mode, label: string, icon: React.ReactNode) => (
     <button onClick={() => { setMode(m); setError("") }}
-      style={{ flex: 1, padding: "10px 8px", background: mode === m ? "#3b82f6" : "#f8fafc",
-        color: mode === m ? "#fff" : "#475569", border: `1.5px solid ${mode === m ? "#3b82f6" : "#e2e8f0"}`,
+      style={{ flex: 1, padding: "10px 8px", background: mode === m ? "#304674" : "#f8fafc",
+        color: mode === m ? "#fff" : "#475569", border: `1.5px solid ${mode === m ? "#304674" : "#e2e8f0"}`,
         borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
         display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
       {icon}{label}
@@ -172,9 +172,9 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
   const chip = (val: string, active: string, setActive: (v: string) => void) => (
     <button key={val} onClick={() => setActive(active === val ? "" : val)}
       style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 500,
-        border: `1px solid ${active === val ? "#3b82f6" : "#e2e8f0"}`,
-        background: active === val ? "#eff6ff" : "#f8fafc",
-        color: active === val ? "#1d4ed8" : "#475569", cursor: "pointer" }}>
+        border: `1px solid ${active === val ? "#304674" : "#e2e8f0"}`,
+        background: active === val ? "#d8e1e8" : "#f8fafc",
+        color: active === val ? "#304674" : "#475569", cursor: "pointer" }}>
       {val}
     </button>
   )
@@ -204,7 +204,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
 
               {mode === "company" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  <div style={{ background: "#eff6ff", borderRadius: 8, padding: "9px 12px", fontSize: 12, color: "#1d4ed8", border: "1px solid #bfdbfe" }}>
+                  <div style={{ background: "#d8e1e8", borderRadius: 8, padding: "9px 12px", fontSize: 12, color: "#304674", border: "1px solid #98bad5" }}>
                     Uses your AI key (Groq or Gemini) from Settings to find real professionals at this company via AI.
                   </div>
                   <div>
@@ -263,7 +263,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
 
               {mode === "specific" && !specDone && (
                 <form onSubmit={handleAddSpecific}>
-                  <div style={{ background: "#eff6ff", borderRadius: 10, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: "#1d4ed8", lineHeight: 1.5, border: "1px solid #bfdbfe" }}>
+                  <div style={{ background: "#d8e1e8", borderRadius: 10, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: "#304674", lineHeight: 1.5, border: "1px solid #98bad5" }}>
                     Add someone specific you already know about. The more details you fill in, the more personalized the generated email will be.
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -304,7 +304,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                         rows={3} style={{ ...inp(), resize: "vertical" as any, lineHeight: 1.5 }} />
                     </div>
                     <button type="submit" disabled={addingSpec || !specName.trim() || !specCompany.trim() || !specRole.trim()}
-                      style={{ padding: "10px 20px", background: addingSpec ? "#93c5fd" : "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: addingSpec ? "not-allowed" : "pointer", width: "100%" }}>
+                      style={{ padding: "10px 20px", background: addingSpec ? "#98bad5" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: addingSpec ? "not-allowed" : "pointer", width: "100%" }}>
                       {addingSpec ? "Adding..." : "Add Contact"}
                     </button>
                   </div>
@@ -318,7 +318,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                   </div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>Contact Added!</div>
                   <div style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Open their profile and hit Generate Email — the AI will write a tailored email using everything you entered.</div>
-                  <button onClick={onClose} style={{ padding: "9px 24px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>View Contacts</button>
+                  <button onClick={onClose} style={{ padding: "9px 24px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>View Contacts</button>
                 </div>
               )}
 
@@ -339,7 +339,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                     <button onClick={onClose} style={{ flex: 1, padding: "10px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, cursor: "pointer", color: "#475569" }}>Cancel</button>
                     <button onClick={handleFind}
                       disabled={(mode === "company" && !company.trim()) || (mode === "field" && !field.trim())}
-                      style={{ flex: 2, padding: "10px 20px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      style={{ flex: 2, padding: "10px 20px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer",
                         display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                         opacity: ((mode === "company" && !company.trim()) || (mode === "field" && !field.trim())) ? 0.5 : 1 }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -354,14 +354,14 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
           {step === "loading" && (
             <div style={{ padding: "20px 0" }}>
               <div style={{ textAlign: "center", marginBottom: 24 }}>
-                <div style={{ width: 48, height: 48, borderRadius: "50%", border: "3px solid #e2e8f0", borderTopColor: "#3b82f6", margin: "0 auto 14px", animation: "spin 0.8s linear infinite" }} />
+                <div style={{ width: 48, height: 48, borderRadius: "50%", border: "3px solid #e2e8f0", borderTopColor: "#304674", margin: "0 auto 14px", animation: "spin 0.8s linear infinite" }} />
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#0f172a", marginBottom: 4 }}>
                   "Finding professionals..."
                 </div>
                 <div style={{ fontSize: 12, color: "#64748b" }}>{progress.current}</div>
               </div>
               <div style={{ background: "#f1f5f9", borderRadius: 99, height: 6, marginBottom: 12, overflow: "hidden" }}>
-                <div style={{ height: "100%", borderRadius: 99, background: "linear-gradient(90deg, #3b82f6, #6366f1)",
+                <div style={{ height: "100%", borderRadius: 99, background: "linear-gradient(90deg, #304674, #304674)",
                   width: progress.total > 0 ? `${Math.round((progress.found / progress.total) * 100)}%` : "20%", transition: "width 0.4s ease" }} />
               </div>
               <div style={{ fontSize: 12, color: "#94a3b8", textAlign: "center" }}>{progress.found} of {progress.total} contacts added</div>
@@ -397,7 +397,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                   style={{ padding: "9px 20px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, cursor: "pointer", color: "#475569" }}>
                   Search Again
                 </button>
-                <button onClick={onClose} style={{ padding: "9px 24px", background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                <button onClick={onClose} style={{ padding: "9px 24px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                   {progress.found > 0 ? "View Contacts" : "Close"}
                 </button>
               </div>
