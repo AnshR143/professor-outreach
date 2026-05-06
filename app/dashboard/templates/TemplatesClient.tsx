@@ -133,7 +133,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
               <div key={t.id} style={{ background: "#f8f9fb", borderRadius: 8, border: "1px solid #e2e8f0", padding: 12, marginBottom: 8 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 4, flex: 1 }}>{t.name}</div>
-                  <button onClick={() => deleteTemplate(t.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: 16, padding: "0 0 0 8px" }}>Ã—</button>
+                  <button onClick={() => deleteTemplate(t.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: 16, padding: "0 0 0 8px" }}>Ã</button>
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b" }}>{t.description}</div>
                 <button onClick={() => setSelected(t)}
@@ -202,3 +202,4 @@ export default function TemplatesClient({ templates: initial, userId, userName }
     </div>
   )
 }
+

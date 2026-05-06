@@ -408,8 +408,9 @@ export default function LandingPage() {
               transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
               className="text-left"
             >
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4">
-                Intern<Highlight className="text-[#1a2e52]">Link</Highlight>
+              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4 flex items-center gap-3">
+                <img src="/link.png" alt="Logo" style={{ height: "1em", width: "auto" }} />
+                <span>Intern<Highlight className="text-[#1a2e52]">Link</Highlight></span>
               </h1>
               <div className="max-w-lg space-y-4">
                 <p className="text-sm md:text-base text-[#E1E0CC]/80 leading-relaxed font-medium">
@@ -477,7 +478,7 @@ export default function LandingPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
-          <img src="/link.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
+          <img src="/husky.png.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           <div className="landing-wolf-text" style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
             width: "68%", textAlign: "center", pointerEvents: "none",
@@ -522,12 +523,7 @@ export default function LandingPage() {
         padding: "28px 40px", display: "flex", alignItems: "center",
         justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 28, height: 28, borderRadius: 8,
-            background: "linear-gradient(135deg,#98bad5,#304674)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            border: "2px solid #304674" }}>
-            <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
-          </div>
+          <img src="/link.png" alt="Logo" style={{ width: 28, height: 28, objectFit: "contain" }} />
           <span style={{ fontSize: 14, fontWeight: 700, color: "#304674" }}>InternLink</span>
         </div>
         <p style={{ fontSize: 13, color: "#4a5568", margin: 0 }}>

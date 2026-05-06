@@ -1,5 +1,5 @@
 const BASE = "https://api.openalex.org"
-const MAILTO = "mailto=outreachai@app.dev"
+const MAILTO = "mailto=InternLink@app.dev"
 
 async function oaGet(path: string): Promise<any> {
   try {
@@ -137,3 +137,4 @@ export function normalizeOAAuthor(author: OAAuthor): {
     profile_url: author.homepage_url || `https://openalex.org/authors/${author.id.split("/").pop()}`,
   }
 }
+
