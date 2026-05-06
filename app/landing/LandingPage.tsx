@@ -1,9 +1,8 @@
 "use client"
 import { motion, useInView, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
 import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react"
-import { useRef, useEffect, useState, useCallback } from "react"
+import { useRef, useState, useCallback } from "react"
 import Link from "next/link"
-import Lenis from "@studio-freight/lenis"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 
 /* ─── Palette ────────────────────────────────────────────────
@@ -356,13 +355,6 @@ export default function LandingPage() {
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -200])
   const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 })
 
-  useEffect(() => {
-    const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) })
-    function raf(time: number) { lenis.raf(time); requestAnimationFrame(raf) }
-    requestAnimationFrame(raf)
-    return () => lenis.destroy()
-  }, [])
-
   return (
     <div ref={containerRef} style={{ background: "#fff", color: "#304674", overflow: "hidden" }}>
       <style>{`
@@ -417,7 +409,7 @@ export default function LandingPage() {
               className="text-left"
             >
               <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4">
-                Reach <Highlight className="text-[#1a2e52]">further.</Highlight>
+                Intern<Highlight className="text-[#1a2e52]">Link</Highlight>
               </h1>
               <div className="max-w-lg space-y-4">
                 <p className="text-sm md:text-base text-[#E1E0CC]/80 leading-relaxed font-medium">
@@ -510,17 +502,7 @@ export default function LandingPage() {
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(178,203,222,0.9)", marginBottom: 16, display: "block" }}>
             AI-Powered Cold Outreach
           </span>
-          <h2 style={{
-            fontSize: "clamp(42px, 7vw, 88px)", fontWeight: 900, color: "#f0f6ff",
-            letterSpacing: "-0.04em", lineHeight: 0.92, margin: "0 0 20px",
-            textShadow: "0 2px 40px rgba(152,186,213,0.4)",
-          }}>
-            Reach<br />
-            <span style={{ color: "#98bad5" }}>
-              further.
-            </span>
-          </h2>
-          <p style={{ fontSize: "clamp(14px,1.2vw,18px)", color: "rgba(216,225,232,0.85)", fontWeight: 400, maxWidth: 400, lineHeight: 1.55, margin: "0 0 28px" }}>
+          <p style={{ fontSize: "clamp(16px,1.4vw,22px)", color: "rgba(216,225,232,0.92)", fontWeight: 500, maxWidth: 460, lineHeight: 1.5, margin: "0 0 28px" }}>
             From first contact to first reply — automated, personalized, and precise.
           </p>
           <Link href="/signup" style={{

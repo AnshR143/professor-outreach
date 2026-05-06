@@ -54,8 +54,10 @@ body {
 /*  attribute selectors + !important to override only when needed.          */
 /* ──────────────────────────────────────────────────────────────────────── */
 
-/* Always-on: prevent horizontal scroll, scale media. Safe on desktop. */
-html, body { overflow-x: hidden; max-width: 100vw; }
+/* Always-on: keep media from blowing out narrow containers. Stop horizontal
+   scroll on body only — applying overflow-x or max-width to <html> can
+   conflict with smooth-scroll libs and framer-motion useScroll. */
+body { overflow-x: hidden; }
 img, video, svg { max-width: 100%; }
 
 /* NOTE on selectors: the codebase uses inline React styles. Different
