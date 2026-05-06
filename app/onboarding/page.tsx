@@ -118,7 +118,7 @@ export default function OnboardingPage() {
         
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #304674, #2563eb)", color: "#fff", marginBottom: 16 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #304674, #304674)", color: "#fff", marginBottom: 16 }}>
             <span style={{ fontWeight: 800, fontSize: 20 }}>O</span>
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", margin: "0 0 8px" }}>Welcome to OutreachAI</h1>

@@ -10,10 +10,10 @@ const DotMap = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const routes = [
-    { start: { x: 100, y: 150, delay: 0 }, end: { x: 200, y: 80 }, color: "#2563eb" },
-    { start: { x: 200, y: 80,  delay: 2 }, end: { x: 260, y: 120 }, color: "#2563eb" },
-    { start: { x: 50,  y: 50,  delay: 1 }, end: { x: 150, y: 180 }, color: "#2563eb" },
-    { start: { x: 280, y: 60,  delay: 0.5 }, end: { x: 180, y: 180 }, color: "#2563eb" },
+    { start: { x: 100, y: 150, delay: 0 }, end: { x: 200, y: 80 }, color: "#304674" },
+    { start: { x: 200, y: 80,  delay: 2 }, end: { x: 260, y: 120 }, color: "#304674" },
+    { start: { x: 50,  y: 50,  delay: 1 }, end: { x: 150, y: 180 }, color: "#304674" },
+    { start: { x: 280, y: 60,  delay: 0.5 }, end: { x: 180, y: 180 }, color: "#304674" },
   ]
   const generateDots = (width: number, height: number) => {
     const dots: { x: number; y: number; opacity: number }[] = []
@@ -136,7 +136,7 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: "100vh", width: "100%", display: "flex", alignItems: "center",
-      justifyContent: "center", background: "linear-gradient(135deg,#d8e1e8 0%,#e0e7ff 100%)", padding: 16 }}>
+      justifyContent: "center", background: "linear-gradient(135deg,#d8e1e8 0%,#c6d3e3 100%)", padding: 16 }}>
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.45 }}
         style={{ width: "100%", maxWidth: 880, borderRadius: 20, display: "flex",
@@ -145,7 +145,7 @@ export default function LoginPage() {
 
         {/* Left map panel — hidden on mobile */}
         <div className="md-panel" style={{ display: "none", width: "50%", minHeight: 600,
-          position: "relative", overflow: "hidden", borderRight: "1px solid #e0e7ff" }}>
+          position: "relative", overflow: "hidden", borderRight: "1px solid #c6d3e3" }}>
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,#d8e1e8,#c6d3e3)" }}>
             <DotMap />
           </div>
@@ -162,7 +162,7 @@ export default function LoginPage() {
             <motion.h2 initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
               style={{ fontSize: 28, fontWeight: 800, margin: "0 0 10px", textAlign: "center",
-                background: "linear-gradient(to right,#2563eb,#1f2f55)",
+                background: "linear-gradient(to right,#304674,#1f2f55)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               OutreachAI
             </motion.h2>

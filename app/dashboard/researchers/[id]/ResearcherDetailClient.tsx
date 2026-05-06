@@ -13,7 +13,7 @@ const FIELD_COLORS: Record<string, { bg: string; text: string }> = {
   "Quantitative Finance": { bg: "#d1fae5", text: "#047857" },
   "Mathematics": { bg: "#fce7f3", text: "#be185d" },
   "Statistics": { bg: "#fce7f3", text: "#be185d" },
-  "Machine Learning": { bg: "#e0e7ff", text: "#1f2f55" },
+  "Machine Learning": { bg: "#c6d3e3", text: "#1f2f55" },
   "default": { bg: "#f1f5f9", text: "#475569" },
 }
 
@@ -404,7 +404,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 </div>
               )}
               {emailValidationError && (
-                <div style={{ background: "#d8e1e8", border: "1px solid #98bad5", borderRadius: 8, padding: "8px 12px", color: "#2563eb", fontSize: 12, marginBottom: 10 }}>
+                <div style={{ background: "#d8e1e8", border: "1px solid #98bad5", borderRadius: 8, padding: "8px 12px", color: "#304674", fontSize: 12, marginBottom: 10 }}>
                   {emailValidationError}
                 </div>
               )}

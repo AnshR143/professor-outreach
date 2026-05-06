@@ -205,13 +205,16 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
           </span>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button onClick={resetAll} disabled={resetting || contacts.length === 0}
-            style={{ padding: "5px 10px", background: "transparent", color: "#94a3b8", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 500, cursor: resetting || contacts.length === 0 ? "not-allowed" : "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>
-            {resetting ? "Resetting..." : "Reset All"}
-          </button>
-          <button onClick={() => router.refresh()}
-            style={{ padding: "8px 10px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", color: "#64748b" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          <button
+            onClick={resetAll}
+            disabled={resetting || contacts.length === 0}
+            title="Reset all contacts"
+            aria-label="Reset all contacts"
+            style={{ width: 30, height: 30, padding: 0, background: "transparent", color: resetting || contacts.length === 0 ? "#cbd5e1" : "#94a3b8", border: "none", borderRadius: 6, cursor: resetting || contacts.length === 0 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+            onMouseEnter={e => { if (!resetting && contacts.length > 0) { e.currentTarget.style.background = "#fef2f2"; e.currentTarget.style.color = "#dc2626" } }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = resetting || contacts.length === 0 ? "#cbd5e1" : "#94a3b8" }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
           </button>
           <button onClick={() => setShowMap(true)}
             style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#0f172a", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
@@ -222,11 +225,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Contacts
-          </button>
-          <button onClick={() => setShowAdd(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add Contact
           </button>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}

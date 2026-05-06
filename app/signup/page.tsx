@@ -127,7 +127,7 @@ export default function SignupPage() {
   if (sent) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-        background: "linear-gradient(135deg,#d8e1e8 0%,#e0e7ff 100%)", padding: 16 }}>
+        background: "linear-gradient(135deg,#d8e1e8 0%,#c6d3e3 100%)", padding: 16 }}>
         <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
           style={{ background: "#fff", borderRadius: 20, padding: "56px 48px", maxWidth: 480, width: "100%",
@@ -169,7 +169,7 @@ export default function SignupPage() {
 
   return (
     <div style={{ minHeight: "100vh", width: "100%", display: "flex", alignItems: "center",
-      justifyContent: "center", background: "linear-gradient(135deg,#d8e1e8 0%,#e0e7ff 100%)", padding: 16 }}>
+      justifyContent: "center", background: "linear-gradient(135deg,#d8e1e8 0%,#c6d3e3 100%)", padding: 16 }}>
       <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.45 }}
         style={{ width: "100%", maxWidth: 880, borderRadius: 20, display: "flex",
@@ -177,7 +177,7 @@ export default function SignupPage() {
           overflow: "hidden" }}>
 
         <div className="md-panel" style={{ display: "none", width: "50%", minHeight: 600,
-          position: "relative", overflow: "hidden", borderRight: "1px solid #e0e7ff" }}>
+          position: "relative", overflow: "hidden", borderRight: "1px solid #c6d3e3" }}>
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,#d8e1e8,#c6d3e3)" }}>
             <DotMap />
           </div>
@@ -194,7 +194,7 @@ export default function SignupPage() {
             <motion.h2 initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
               style={{ fontSize: 28, fontWeight: 800, margin: "0 0 10px", textAlign: "center",
-                background: "linear-gradient(to right,#2563eb,#1f2f55)",
+                background: "linear-gradient(to right,#304674,#1f2f55)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               OutreachAI
             </motion.h2>

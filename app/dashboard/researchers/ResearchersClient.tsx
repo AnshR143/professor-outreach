@@ -19,8 +19,8 @@ const EMAIL_STATUS_CONFIG: Record<EmailStatus, { label: string; bg: string; text
 }
 
 const TAG_COLORS: [string, { bg: string; text: string }][] = [
-  ["Machine Learning",       { bg: "#e0e7ff", text: "#1f2f55" }],
-  ["Deep Learning",          { bg: "#e0e7ff", text: "#1f2f55" }],
+  ["Machine Learning",       { bg: "#c6d3e3", text: "#1f2f55" }],
+  ["Deep Learning",          { bg: "#c6d3e3", text: "#1f2f55" }],
   ["Artificial Intelligence",{ bg: "#c6d3e3", text: "#304674" }],
   ["LLM",                    { bg: "#c6d3e3", text: "#304674" }],
   ["NLP",                    { bg: "#c6d3e3", text: "#304674" }],

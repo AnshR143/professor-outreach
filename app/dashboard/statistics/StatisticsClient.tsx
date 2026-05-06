@@ -1,6 +1,5 @@
 "use client"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import type { Researcher, Email, InternshipContact } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
@@ -8,7 +7,7 @@ import FindResearchersModal from "@/components/researchers/FindResearchersModal"
 
 const FIELD_COLORS: Record<string, string> = {
   "AI": "#c6d3e3", "Artificial Intelligence": "#c6d3e3", "Finance": "#dcfce7",
-  "Quantitative Finance": "#d1fae5", "Mathematics": "#fce7f3", "Machine Learning": "#e0e7ff",
+  "Quantitative Finance": "#d1fae5", "Mathematics": "#fce7f3", "Machine Learning": "#c6d3e3",
   "Economics": "#fef9c3", "default": "#f1f5f9",
 }
 
@@ -20,7 +19,6 @@ interface Props {
 }
 
 export default function StatisticsClient({ researchers: initial, emails, internshipContacts: initialContacts, userName }: Props) {
-  const router = useRouter()
   const supabase = createClient()
   const [researchers, setResearchers] = useState(initial)
   const [contacts, setContacts] = useState(initialContacts)
@@ -178,7 +176,6 @@ export default function StatisticsClient({ researchers: initial, emails, interns
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Statistics</h1>
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={() => router.refresh()} style={{ padding: "8px 14px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, cursor: "pointer", color: "#475569" }}>↻ Refresh</button>
           <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Researchers

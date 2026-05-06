@@ -279,21 +279,20 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
             </div>
           </div>
 
-          <div style={{ marginTop: 64, paddingTop: 32, borderTop: "1px solid #fee2e2" }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#991b1b", margin: "0 0 8px" }}>Danger Zone</h3>
-            <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>Once you delete your account, there is no going back. All your data will be permanently removed.</p>
-            
-            <button 
+          <div style={{ marginTop: 48, paddingTop: 24, borderTop: "1px solid #e2e8f0" }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", margin: "0 0 4px" }}>Delete account</h3>
+            <p style={{ color: "#64748b", fontSize: 13, margin: "0 0 14px" }}>This permanently removes your account and all associated data. This action cannot be undone.</p>
+            <button
               onClick={handleDeleteAccount}
-              style={{ 
-                padding: "10px 20px", background: "#fee2e2", color: "#991b1b", 
-                border: "1px solid #fecaca", borderRadius: 8, fontSize: 13, 
-                fontWeight: 600, cursor: "pointer", transition: "all 0.2s" 
+              style={{
+                padding: "7px 14px", background: "transparent", color: "#dc2626",
+                border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12,
+                fontWeight: 500, cursor: "pointer",
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#fef2f2" }}
-              onMouseLeave={e => { e.currentTarget.style.background = "#fee2e2" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#fca5a5" }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e8f0" }}
             >
-              Delete My Account
+              Delete account
             </button>
           </div>
         </div>

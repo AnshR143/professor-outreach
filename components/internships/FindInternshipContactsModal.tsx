@@ -50,12 +50,56 @@ function fuzzyMatchFields(query: string): string[] {
   }).slice(0, 8)
 }
 
-const POPULAR_COMPANIES = [
-  "Google", "Meta", "Apple", "Microsoft", "Amazon",
-  "OpenAI", "Anthropic", "Stripe", "Coinbase", "Figma",
-  "Netflix", "Uber", "Airbnb", "Nvidia", "Salesforce",
-  "Bloomberg", "Two Sigma", "Jane Street", "Citadel", "SpaceX",
+// Internal reference list — used only for typo correction, not shown as chips.
+const KNOWN_COMPANIES = [
+  "Google","Meta","Apple","Microsoft","Amazon","OpenAI","Anthropic","Stripe",
+  "Coinbase","Figma","Netflix","Uber","Airbnb","Nvidia","Salesforce","Bloomberg",
+  "Two Sigma","Jane Street","Citadel","SpaceX","Tesla","IBM","Oracle","Adobe",
+  "Intel","AMD","Cisco","Qualcomm","PayPal","Square","Shopify","Spotify","Zoom",
+  "Slack","Twitter","X","LinkedIn","Pinterest","Snap","Reddit","Lyft","DoorDash",
+  "Instacart","Robinhood","Plaid","Databricks","Snowflake","Palantir","ServiceNow",
+  "Workday","Atlassian","GitHub","GitLab","HubSpot","Twilio","MongoDB","Cloudflare",
+  "Datadog","Asana","Notion","Canva","Discord","Mozilla","Goldman Sachs","JP Morgan",
+  "Morgan Stanley","BlackRock","Bank of America","Wells Fargo","Visa","Mastercard",
+  "American Express","McKinsey","BCG","Bain","Deloitte","Accenture","PwC","EY","KPMG",
+  "Disney","Pixar","Sony","Samsung","LG","Huawei","TikTok","ByteDance","Tencent",
+  "Alibaba","Baidu","Boeing","Lockheed Martin","Northrop Grumman","Raytheon",
+  "Pfizer","Moderna","Johnson & Johnson","Merck","Genentech","Tempus","Verily",
 ]
+
+// Damerau-Levenshtein distance, capped at 3 — fast for short strings.
+function editDistance(a: string, b: string): number {
+  if (a === b) return 0
+  if (Math.abs(a.length - b.length) > 3) return 4
+  const dp: number[][] = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0))
+  for (let i = 0; i <= a.length; i++) dp[i][0] = i
+  for (let j = 0; j <= b.length; j++) dp[0][j] = j
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost)
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        dp[i][j] = Math.min(dp[i][j], dp[i - 2][j - 2] + 1)
+      }
+    }
+  }
+  return dp[a.length][b.length]
+}
+
+// Returns the closest known company if the user looks like they typo'd, else null.
+function suggestCompany(input: string): string | null {
+  const q = input.trim()
+  if (q.length < 4) return null
+  const lower = q.toLowerCase()
+  // Already a known company (case-insensitive) — no suggestion.
+  if (KNOWN_COMPANIES.some(c => c.toLowerCase() === lower)) return null
+  let best: { name: string; dist: number } | null = null
+  for (const name of KNOWN_COMPANIES) {
+    const d = editDistance(lower, name.toLowerCase())
+    if (d <= 2 && (!best || d < best.dist)) best = { name, dist: d }
+  }
+  return best?.name ?? null
+}
 
 interface Props { onClose: () => void }
 
@@ -169,16 +213,6 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
     </button>
   )
 
-  const chip = (val: string, active: string, setActive: (v: string) => void) => (
-    <button key={val} onClick={() => setActive(active === val ? "" : val)}
-      style={{ padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 500,
-        border: `1px solid ${active === val ? "#304674" : "#e2e8f0"}`,
-        background: active === val ? "#d8e1e8" : "#f8fafc",
-        color: active === val ? "#304674" : "#475569", cursor: "pointer" }}>
-      {val}
-    </button>
-  )
-
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
       <div style={{ background: "#fff", borderRadius: 18, width: "100%", maxWidth: 560, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 64px rgba(0,0,0,0.18)" }}>
@@ -209,10 +243,22 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Company Name *</label>
-                    <input value={company} onChange={e => setCompany(e.target.value)} placeholder="e.g. Google, Stripe, Anthropic" style={inp()} />
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 8 }}>
-                      {POPULAR_COMPANIES.map(c => chip(c, company, setCompany))}
-                    </div>
+                    <input value={company} onChange={e => setCompany(e.target.value)} placeholder="Type any company name" style={inp()} />
+                    {(() => {
+                      const s = suggestCompany(company)
+                      if (!s) return null
+                      return (
+                        <div style={{ marginTop: 6, fontSize: 12, color: "#64748b" }}>
+                          Did you mean{" "}
+                          <button
+                            type="button"
+                            onClick={() => setCompany(s)}
+                            style={{ background: "none", border: "none", padding: 0, color: "#304674", fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}
+                          >{s}</button>
+                          ?
+                        </div>
+                      )
+                    })()}
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>
