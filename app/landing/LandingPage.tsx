@@ -254,7 +254,7 @@ function SectionCarousel() {
       </div>
 
       {/* 3D Carousel track */}
-      <div style={{
+      <div className="landing-carousel-track" style={{
         position: "relative", width: "100%", height: "470px",
         display: "flex", alignItems: "center", justifyContent: "center",
         perspective: "1200px", zIndex: 10,
@@ -266,7 +266,7 @@ function SectionCarousel() {
           const isCenter   = offset === 0
           const isAdjacent = Math.abs(offset) === 1
           return (
-            <div key={slide.id} style={{
+            <div key={slide.id} className="landing-carousel-card" style={{
               position: "absolute",
               width: "min(690px, 72vw)", height: "448px",
               overflow: "hidden", borderRadius: 24,
@@ -295,7 +295,8 @@ function SectionCarousel() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  style={{ height: "100%", overflowY: "hidden" }}>
+                  className="landing-carousel-card-inner"
+                  style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
                   {slide.content}
                 </motion.div>
               </AnimatePresence>
@@ -371,9 +372,24 @@ export default function LandingPage() {
 
       {/* SECTION 1 — Video Hero */}
       <div style={{ height: "100vh", width: "100%", padding: 10 }}>
-        <div style={{ position: "relative", height: "100%", width: "100%", overflow: "hidden", borderRadius: 28 }}>
-          <video autoPlay loop muted playsInline
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        <div style={{
+          position: "relative", height: "100%", width: "100%", overflow: "hidden", borderRadius: 28,
+          // Fallback gradient — visible underneath the video so when iOS blocks
+          // autoplay or shows the "tap to play" overlay, the section still
+          // looks designed instead of black + ▶ icon.
+          background: "linear-gradient(135deg, #1a2e52 0%, #304674 45%, #98bad5 100%)",
+        }}>
+          <video
+            autoPlay loop muted playsInline
+            preload="auto"
+            controls={false}
+            disablePictureInPicture
+            {...({ "webkit-playsinline": "true", "x5-playsinline": "true" } as Record<string, string>)}
+            style={{
+              position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+              // Block taps so iOS can't surface its native controls.
+              pointerEvents: "none",
+            }}
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
 
           <HeroHighlight
@@ -438,27 +454,39 @@ export default function LandingPage() {
       <SectionCarousel />
 
       {/* SECTION 3 — CTA with Wolf */}
-      <div style={{
+      <div className="landing-cta-section" style={{
         position: "relative", overflow: "hidden",
-        background: "#0a0f1e",
+        // Layered gradient mimics the video's cloudy navy look so when the
+        // bg video fails to autoplay (common on iOS Low Power Mode), the
+        // section still looks designed instead of plain black with a ▶.
+        background: "radial-gradient(ellipse at 25% 40%, rgba(48,70,116,0.55) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(152,186,213,0.32) 0%, transparent 60%), #0a0f1e",
         padding: "80px 40px",
         display: "flex", alignItems: "center", justifyContent: "center", gap: "6vw",
         flexWrap: "wrap",
       }}>
         <video
           autoPlay muted loop playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.68, zIndex: 0 }}
+          preload="auto"
+          controls={false}
+          disablePictureInPicture
+          {...({ "webkit-playsinline": "true" } as Record<string, string>)}
+          style={{
+            position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
+            opacity: 0.68, zIndex: 0,
+            pointerEvents: "none",
+          }}
           src="/hero-bg.mp4"
         />
 
         {/* Wolf with whiteboard */}
         <motion.div
+          className="landing-wolf"
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
           <img src="/husky.png.png" alt="OutreachAI Guide" style={{ width: "100%", height: "auto", display: "block" }} />
-          <div style={{
+          <div className="landing-wolf-text" style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
             width: "68%", textAlign: "center", pointerEvents: "none",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 4,

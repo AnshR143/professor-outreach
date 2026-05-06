@@ -198,3 +198,97 @@ img, video, svg { max-width: 100%; }
   /* Drop hero subtitles to save vertical space */
   [style*="height: 160"] { min-height: 110px !important; }
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+   Landing page mobile adjustments — class-based, so reliable.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Wolf — bump from 29vw to 65vw so the whiteboard text fits at all */
+  .landing-wolf {
+    width: min(322px, 65vw) !important;
+  }
+  /* Boost the text inside to keep proportion */
+  .landing-wolf-text p:nth-child(1),
+  .landing-wolf-text p:nth-child(2) { font-size: clamp(11px, 3.4vw, 15px) !important; }
+  .landing-wolf-text p:nth-child(3) { font-size: clamp(8px, 2vw, 10.5px) !important; }
+
+  /* CTA section — tighten padding so the wolf + headline both fit */
+  .landing-cta-section {
+    padding: 56px 20px !important;
+    gap: 32px !important;
+  }
+
+  /* Carousel — make cards fit phone width and auto-grow with content. */
+  .landing-carousel-track {
+    height: auto !important;
+    min-height: 540px !important;
+    perspective: none !important;
+  }
+  .landing-carousel-card {
+    width: min(680px, 92vw) !important;
+    height: clamp(460px, 70vh, 560px) !important;
+    /* Drop the 3D rotation/scale on mobile — it makes side cards readable
+       from off-screen and looks broken on small viewports. Center card only. */
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    filter: none !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+  /* Hide non-center cards entirely on mobile (3D fan looks bad at this width) */
+  .landing-carousel-card[style*="opacity: 0.38"],
+  .landing-carousel-card[style*="visibility: hidden"] {
+    display: none !important;
+  }
+  /* Inner content can scroll vertically on phone */
+  .landing-carousel-card-inner {
+    padding-bottom: 24px !important;
+  }
+  /* Features sub-grid inside slide cards: 3-up → 1-up so each card is readable */
+  .landing-carousel-card-inner [style*="repeat(3,1fr)"],
+  .landing-carousel-card-inner [style*="repeat(3, 1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Dashboard mobile — broader, more aggressive selectors.
+   ──────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  /* Any dashboard top-bar ("16px 28px" / "14px 28px" padding pattern):
+     reduce padding, allow buttons to wrap. Targets the property+value chunk. */
+  div[style*="28px"][style*="space-between"] {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    flex-wrap: wrap !important;
+    row-gap: 8px !important;
+  }
+  /* Inner button-row container that holds the right-side action buttons */
+  div[style*="28px"][style*="space-between"] > div[style*="display"][style*="flex"] {
+    flex-wrap: wrap !important;
+  }
+
+  /* Hero / banner padding — drop horizontal */
+  div[style*="padding: 0 28px"],
+  div[style*="padding:0 28px"] {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  /* KPI / Card grids inside dashboard pages — explicit catch */
+  div[style*="display: grid"][style*="repeat(4"],
+  div[style*="display:grid"][style*="repeat(4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  div[style*="display: grid"][style*="1fr 1fr"],
+  div[style*="display:grid"][style*="1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Search/filter inputs full-width on mobile */
+  input[type="text"], input[type="search"], input:not([type]) {
+    max-width: 100% !important;
+  }
+}
