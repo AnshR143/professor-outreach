@@ -90,7 +90,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
         {/* KPI Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 28 }}>
           {kpis.map((k, i) => (
-            <div key={i} style={{ background: "#fff", borderRadius: 12, padding: "20px", border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+            <div key={i} style={{ background: "#fff", borderRadius: 12, padding: "20px", border: "2px solid #304674", boxShadow: "4px 4px 0px #304674" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                 <span style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>{k.label}</span>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: k.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -105,7 +105,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           {/* Recent Activity */}
-          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
+          <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", boxShadow: "4px 4px 0px #304674", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0f172a" }}>Recent Activity</h3>
               <Link href="/dashboard/history" style={{ fontSize: 12, color: "#304674", textDecoration: "none", fontWeight: 500 }}>View all</Link>
@@ -135,7 +135,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
           </div>
 
           {/* Top Matches */}
-          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
+          <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", boxShadow: "4px 4px 0px #304674", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0f172a" }}>Top Matches</h3>
               <Link href="/dashboard/researchers" style={{ fontSize: 12, color: "#304674", textDecoration: "none", fontWeight: 500 }}>View all</Link>
