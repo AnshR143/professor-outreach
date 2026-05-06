@@ -1,11 +1,26 @@
 "use client"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useMemo, useState } from "react"
 import type { Activity } from "@/lib/supabase/types"
-import { formatDate, formatTime } from "@/lib/utils"
 import FindResearchersModal from "@/components/researchers/FindResearchersModal"
 import { createClient } from "@/lib/supabase/client"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  OutreachHistoryTable,
+  ALL_OUTREACH_COLUMNS,
+  type OutreachActivityRow,
+  type OutreachColumn,
+  type ActivityKind,
+} from "@/components/ui/outreach-history-table"
+import { Columns3, ListFilter, Search, Trash2 } from "lucide-react"
 
 interface Props {
   researchActivities: Activity[]
@@ -13,149 +28,226 @@ interface Props {
   userName: string
 }
 
-export default function HistoryClient({ researchActivities, internshipActivities, userName }: Props) {
-  const router = useRouter()
+const KIND_OPTIONS: { value: ActivityKind | "all"; label: string }[] = [
+  { value: "all", label: "All activity" },
+  { value: "email_sent", label: "Email Sent" },
+  { value: "researcher_found", label: "Researcher Found" },
+  { value: "contact_added", label: "Contact Added" },
+  { value: "status_changed", label: "Status Changed" },
+  { value: "note_added", label: "Note Added" },
+]
+
+function toRow(a: Activity): OutreachActivityRow {
+  const isInternship = a.category === "internship"
+  // Map raw activity types onto the table's normalized ActivityKind set.
+  const kind: ActivityKind = (() => {
+    switch (a.type) {
+      case "email_sent":
+      case "internship_email_sent":
+        return isInternship ? "internship_email_sent" : "email_sent"
+      case "status_changed":
+      case "internship_status_changed":
+        return isInternship ? "internship_status_changed" : "status_changed"
+      case "researcher_found":
+      case "contact_added":
+      case "note_added":
+      case "profile_updated":
+        return a.type as ActivityKind
+      default:
+        return "profile_updated"
+    }
+  })()
+  return {
+    id: a.id,
+    subject: a.researcher_name || (isInternship ? "Unknown Contact" : "Unknown Researcher"),
+    href: a.researcher_id
+      ? (isInternship
+          ? `/dashboard/internships/${a.researcher_id}`
+          : `/dashboard/researchers/${a.researcher_id}`)
+      : null,
+    context: a.university || "",
+    description: a.description || "",
+    createdAt: a.created_at,
+    category: isInternship ? "internship" : "research",
+    kind,
+  }
+}
+
+export default function HistoryClient({ researchActivities, internshipActivities }: Props) {
   const supabase = createClient()
   const [researchActs, setResearchActs] = useState(researchActivities)
   const [internshipActs, setInternshipActs] = useState(internshipActivities)
-  const [activeTab, setActiveTab] = useState<"research" | "internships">("research")
+  const [activeTab, setActiveTab] = useState<"research" | "internships" | "all">("all")
   const [search, setSearch] = useState("")
+  const [kindFilter, setKindFilter] = useState<ActivityKind | "all">("all")
+  const [visibleColumns, setVisibleColumns] = useState<Set<OutreachColumn>>(
+    new Set(ALL_OUTREACH_COLUMNS),
+  )
   const [showFind, setShowFind] = useState(false)
   const [resetting, setResetting] = useState(false)
 
-  const activities = activeTab === "research" ? researchActs : internshipActs
+  const allRows = useMemo<OutreachActivityRow[]>(() => {
+    const r = researchActs.map(toRow)
+    const i = internshipActs.map(toRow)
+    return [...r, ...i].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+  }, [researchActs, internshipActs])
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return allRows.filter(r => {
+      if (activeTab !== "all" && r.category !== (activeTab === "research" ? "research" : "internship")) {
+        return false
+      }
+      if (kindFilter !== "all" && r.kind !== kindFilter) return false
+      if (!q) return true
+      return (
+        r.subject.toLowerCase().includes(q) ||
+        r.context.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q)
+      )
+    })
+  }, [allRows, activeTab, kindFilter, search])
 
   async function resetHistory() {
-    const label = activeTab === "research" ? "research" : "internship"
-    if (!confirm(`Clear all ${label} activity history? This cannot be undone.`)) return
+    const scope =
+      activeTab === "research" ? "research" : activeTab === "internships" ? "internship" : "all"
+    if (!confirm(`Clear ${scope === "all" ? "all" : scope} activity history? This cannot be undone.`)) return
     setResetting(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      if (activeTab === "research") {
-        await supabase.from("activities").delete().eq("user_id", user.id).or("category.eq.research,category.is.null")
-        setResearchActs([])
-      } else {
-        await supabase.from("activities").delete().eq("user_id", user.id).eq("category", "internship")
-        setInternshipActs([])
-      }
+      let q = supabase.from("activities").delete().eq("user_id", user.id)
+      if (scope === "research") q = q.or("category.eq.research,category.is.null")
+      if (scope === "internship") q = q.eq("category", "internship")
+      await q
+      if (scope !== "internship") setResearchActs([])
+      if (scope !== "research") setInternshipActs([])
     }
     setResetting(false)
   }
 
-  const filtered = activities.filter(a =>
-    a.researcher_name?.toLowerCase().includes(search.toLowerCase()) ||
-    a.university?.toLowerCase().includes(search.toLowerCase()) ||
-    a.description?.toLowerCase().includes(search.toLowerCase())
-  )
+  function toggleColumn(c: OutreachColumn) {
+    setVisibleColumns(prev => {
+      const next = new Set(prev)
+      next.has(c) ? next.delete(c) : next.add(c)
+      return next
+    })
+  }
 
-  const grouped: Record<string, Activity[]> = {}
-  filtered.forEach(a => {
-    const date = formatDate(a.created_at)
-    if (!grouped[date]) grouped[date] = []
-    grouped[date].push(a)
-  })
-
-  const typeConfig: Record<string, { label: string; bg: string }> = {
-    email_sent:                { label: "Email Sent",       bg: "#dcfce7" },
-    researcher_found:          { label: "Researcher Found", bg: "#c6d3e3" },
-    status_changed:            { label: "Status Changed",   bg: "#fef9c3" },
-    note_added:                { label: "Note Added",        bg: "#f3e8ff" },
-    profile_updated:           { label: "Profile Updated",  bg: "#f1f5f9" },
-    contact_added:             { label: "Contact Added",    bg: "#fde68a" },
-    internship_email_sent:     { label: "Email Sent",       bg: "#dcfce7" },
-    internship_status_changed: { label: "Status Changed",   bg: "#fef9c3" },
+  const counts = {
+    all: allRows.length,
+    research: researchActs.length,
+    internships: internshipActs.length,
   }
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>History</h1>
-        <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={resetHistory} disabled={resetting}
-            style={{ padding: "7px 14px", background: "#fff", color: resetting ? "#94a3b8" : "#dc2626", border: "1px solid #fecaca", borderRadius: 8, fontSize: 12, fontWeight: 500, cursor: resetting ? "not-allowed" : "pointer" }}>
-            {resetting ? "Clearing..." : "Reset History"}
+      {/* Top bar */}
+      <div className="flex items-center justify-between border-b border-[#e2e8f0] bg-white px-7 py-4">
+        <h1 className="m-0 text-lg font-bold text-[#0f172a]">History</h1>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={resetHistory}
+            disabled={resetting || counts.all === 0}
+            title="Clear history"
+            aria-label="Clear history"
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-md text-[#94a3b8] transition-colors hover:bg-[#fef2f2] hover:text-[#dc2626] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-[#cbd5e1]"
+          >
+            <Trash2 className="h-[15px] w-[15px]" />
           </button>
-          <button onClick={() => router.refresh()}
-            style={{ padding: "8px 14px", background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, cursor: "pointer", color: "#475569" }}>
-            Refresh
-          </button>
-          <button onClick={() => setShowFind(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <Button onClick={() => setShowFind(true)} size="sm" className="gap-2">
+            <Search className="h-3.5 w-3.5" />
             Find Researchers
-          </button>
+          </Button>
         </div>
       </div>
 
-      <div style={{ padding: "24px 28px" }}>
+      <div className="px-7 py-6">
         {/* Category toggle */}
-        <div style={{ display: "flex", gap: 4, marginBottom: 20, background: "#f1f5f9", padding: 4, borderRadius: 10, width: "fit-content" }}>
-          {([["research", "Research Outreach"], ["internships", "Internship Outreach"]] as const).map(([tab, label]) => (
-            <button key={tab} onClick={() => setActiveTab(tab)}
-              style={{ padding: "8px 18px", borderRadius: 7, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500,
-                background: activeTab === tab ? "#fff" : "transparent",
-                color: activeTab === tab ? "#0f172a" : "#64748b",
-                boxShadow: activeTab === tab ? "0 1px 3px rgba(0,0,0,0.1)" : "none" }}>
-              {label}
-              <span style={{ marginLeft: 6, fontSize: 11, background: activeTab === tab ? "#e2e8f0" : "transparent", padding: "1px 6px", borderRadius: 8, color: "#64748b" }}>
-                {tab === "research" ? researchActs.length : internshipActs.length}
+        <div className="mb-5 inline-flex gap-1 rounded-lg bg-[#f1f5f9] p-1">
+          {(["all", "research", "internships"] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setActiveTab(t)}
+              className={`flex items-center gap-2 rounded-md px-4 py-1.5 text-[13px] font-semibold transition-colors ${
+                activeTab === t
+                  ? "bg-white text-[#0f172a] shadow-sm"
+                  : "text-[#64748b] hover:text-[#0f172a]"
+              }`}
+            >
+              {t === "all" ? "All" : t === "research" ? "Research" : "Internships"}
+              <span className="rounded bg-[#e2e8f0] px-1.5 py-0.5 text-[10px] font-semibold text-[#475569]">
+                {counts[t]}
               </span>
             </button>
           ))}
         </div>
 
-        <div style={{ marginBottom: 20 }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>
-            {activeTab === "research" ? "Research Activity Timeline" : "Internship Activity Timeline"}
-          </h2>
-          <p style={{ color: "#64748b", fontSize: 14, margin: 0 }}>
-            {activeTab === "research"
-              ? "Track all your research activities and interactions"
-              : "Track all your internship outreach activities"}
+        {/* Header strip */}
+        <div className="mb-2">
+          <h2 className="m-0 text-2xl font-bold text-[#0f172a]">Activity Timeline</h2>
+          <p className="m-0 text-sm text-[#64748b]">
+            Every email sent, contact added, and status change across your outreach.
           </p>
         </div>
 
-        <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", padding: "16px 20px", marginBottom: 24 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 10 }}>Search Activity</div>
-          <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder={activeTab === "research" ? "Search by researcher name, university, or activity..." : "Search by contact name, company, or activity..."}
-            style={{ width: "100%", padding: "9px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, outline: "none", background: "#f8f9fb", color: "#0f172a", boxSizing: "border-box" }} />
+        {/* Filter row */}
+        <div className="mb-4 mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex flex-1 gap-2">
+            <Input
+              placeholder="Search by name, university, company, or description…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="max-w-md"
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <ListFilter className="h-3.5 w-3.5" />
+                  {KIND_OPTIONS.find(o => o.value === kindFilter)?.label ?? "Activity"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuLabel>Filter by activity</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {KIND_OPTIONS.map(opt => (
+                  <DropdownMenuCheckboxItem
+                    key={opt.value}
+                    checked={kindFilter === opt.value}
+                    onCheckedChange={() => setKindFilter(opt.value)}
+                  >
+                    {opt.label}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Columns3 className="h-3.5 w-3.5" />
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {ALL_OUTREACH_COLUMNS.map(c => (
+                <DropdownMenuCheckboxItem
+                  key={c}
+                  className="capitalize"
+                  checked={visibleColumns.has(c)}
+                  onCheckedChange={() => toggleColumn(c)}
+                >
+                  {c}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        {Object.keys(grouped).length === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px 20px" }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: "#475569", marginBottom: 8 }}>No activity yet</div>
-            <div style={{ fontSize: 14, color: "#94a3b8" }}>
-              {activeTab === "research"
-                ? "Your research activities will appear here."
-                : "Your internship outreach activities will appear here."}
-            </div>
-          </div>
-        ) : Object.entries(grouped).map(([date, items]) => (
-          <div key={date} style={{ marginBottom: 28 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", margin: "0 0 16px", padding: "0 0 10px", borderBottom: "1px solid #e2e8f0" }}>{date}</h3>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {items.map(a => {
-                const cfg = typeConfig[a.type] || { label: a.type, bg: "#f1f5f9" }
-                return (
-                  <div key={a.id} style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "12px 0", borderBottom: "1px solid #f1f5f9", alignItems: "flex-start" }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <span style={{ display: "inline-block", fontSize: 11, padding: "2px 8px", borderRadius: 10, background: cfg.bg, color: "#374151", fontWeight: 500, marginBottom: 4 }}>{cfg.label}</span>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>
-                        {a.researcher_id
-                          ? <Link href={"/dashboard/researchers/" + a.researcher_id} style={{ color: "#0f172a", textDecoration: "none" }}>{a.researcher_name}</Link>
-                          : a.researcher_name}
-                      </div>
-                      {a.university ? <div style={{ fontSize: 12, color: "#64748b" }}>{a.university}</div> : null}
-                      {a.description ? <div style={{ fontSize: 12, color: "#94a3b8" }}>{a.description}</div> : null}
-                    </div>
-                    <div style={{ fontSize: 12, color: "#94a3b8", flexShrink: 0 }}>{formatTime(a.created_at)}</div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        ))}
+        <OutreachHistoryTable rows={filtered} visibleColumns={visibleColumns} />
       </div>
 
       {showFind && <FindResearchersModal onClose={() => setShowFind(false)} />}
