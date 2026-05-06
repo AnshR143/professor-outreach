@@ -95,7 +95,7 @@ export default function InfiniteGrid({
         ctx.stroke()
       }
 
-      // Fade gradient — fade top and sides
+      // Fade gradient  fade top and sides
       const gradTop = ctx.createLinearGradient(0, 0, 0, horizon + H * 0.12)
       gradTop.addColorStop(0, fadeColor)
       gradTop.addColorStop(1, "transparent")

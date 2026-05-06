@@ -15,7 +15,7 @@ import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 
 const FEATURES = [
   { title: "Smart Contact Matching",         desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
-  { title: "Personalized Email Drafts",      desc: "AI crafts tailored cold emails based on each recipient's work, interests, and your background — no generic templates." },
+  { title: "Personalized Email Drafts",      desc: "AI crafts tailored cold emails based on each recipient's work, interests, and your background  no generic templates." },
   { title: "Outreach Analytics",             desc: "Track open rates, reply statuses, and follow-up timing across your entire cold outreach pipeline in one place." },
   { title: "Contact Discovery",              desc: "Find researchers, professors, and internship contacts across academia and industry, all filtered by field and location." },
   { title: "Resume-Powered Personalization", desc: "Upload your CV once. Every email draft automatically pulls your skills, projects, and experience to match each contact." },
@@ -25,7 +25,7 @@ const FEATURES = [
 const HOW_STEPS = [
   { step: "01", title: "Upload your resume",     desc: "Paste or upload your CV. The parser extracts keywords, skills, and experience automatically." },
   { step: "02", title: "Find your targets",      desc: "Search for professors, researchers, or company contacts by field, location, or institution. Match scores update live." },
-  { step: "03", title: "Generate & send emails", desc: "Click Generate — AI crafts a tailored cold email for each contact. Open Gmail pre-filled and hit send." },
+  { step: "03", title: "Generate & send emails", desc: "Click Generate  AI crafts a tailored cold email for each contact. Open Gmail pre-filled and hit send." },
 ]
 
 const PRICING = [
@@ -45,7 +45,7 @@ function FeaturesSlide() {
         background: "#d8e1e8", border: "2px solid #304674", borderRadius: 999,
         padding: "3px 12px", marginBottom: 10, boxShadow: "2px 2px 0px #304674" }}>
         <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#98bad5" }} />
-        <span style={{ fontSize: 10, fontWeight: 800, color: "#304674", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why OutreachAI</span>
+        <span style={{ fontSize: 10, fontWeight: 800, color: "#304674", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why InternLink</span>
       </div>
       <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 800, color: "#304674",
         margin: "0 0 4px", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
@@ -362,11 +362,11 @@ export default function LandingPage() {
         .marquee-track { animation: marquee 35s linear infinite; }
       `}</style>
 
-      {/* SECTION 1 — Video Hero */}
+      {/* SECTION 1  Video Hero */}
       <div style={{ height: "100vh", width: "100%", padding: 10 }}>
         <div style={{
           position: "relative", height: "100%", width: "100%", overflow: "hidden", borderRadius: 28,
-          // Fallback gradient — visible underneath the video so when iOS blocks
+          // Fallback gradient  visible underneath the video so when iOS blocks
           // autoplay or shows the "tap to play" overlay, the section still
           // looks designed instead of black + ▶ icon.
           background: "linear-gradient(135deg, #1a2e52 0%, #304674 45%, #98bad5 100%)",
@@ -442,10 +442,10 @@ export default function LandingPage() {
         </div>
       </motion.div>
 
-      {/* SECTION 2 — 3D Carousel */}
+      {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
 
-      {/* SECTION 3 — CTA with Wolf */}
+      {/* SECTION 3  CTA with Wolf */}
       <div className="landing-cta-section" style={{
         position: "relative", overflow: "hidden",
         // Layered gradient mimics the video's cloudy navy look so when the
@@ -477,7 +477,7 @@ export default function LandingPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
-          <img src="/husky.png.png" alt="OutreachAI Guide" style={{ width: "100%", height: "auto", display: "block" }} />
+          <img src="/link.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           <div className="landing-wolf-text" style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
             width: "68%", textAlign: "center", pointerEvents: "none",
@@ -503,7 +503,7 @@ export default function LandingPage() {
             AI-Powered Cold Outreach
           </span>
           <p style={{ fontSize: "clamp(16px,1.4vw,22px)", color: "rgba(216,225,232,0.92)", fontWeight: 500, maxWidth: 460, lineHeight: 1.5, margin: "0 0 28px" }}>
-            From first contact to first reply — automated, personalized, and precise.
+            From first contact to first reply  automated, personalized, and precise.
           </p>
           <Link href="/signup" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
@@ -528,10 +528,10 @@ export default function LandingPage() {
             border: "2px solid #304674" }}>
             <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
           </div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "#304674" }}>OutreachAI</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#304674" }}>InternLink</span>
         </div>
         <p style={{ fontSize: 13, color: "#4a5568", margin: 0 }}>
-          Built for students. Powered by AI. © 2025 OutreachAI.
+          Built for students. Powered by AI. © 2025 InternLink.
         </p>
         <div style={{ display: "flex", gap: 20 }}>
           {["Privacy", "Terms", "Contact"].map(l => (

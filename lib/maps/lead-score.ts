@@ -9,7 +9,7 @@
  *
  * We blend these into a 0–100 lead score plus a categorical tier (cold/warm/hot)
  * and a list of explanation strings the UI can render as chips. Keep this
- * deterministic — the LLM-flavoured "intern fit" score lives elsewhere.
+ * deterministic  the LLM-flavoured "intern fit" score lives elsewhere.
  */
 
 export interface LeadInputs {
@@ -42,13 +42,13 @@ export function scoreLead(input: LeadInputs): LeadScore {
   if (input.rating != null) {
     if (input.rating < 3.5) {
       score += 18
-      reasons.push(`Low rating (${input.rating.toFixed(1)}) — clear opportunity to help`)
+      reasons.push(`Low rating (${input.rating.toFixed(1)})  clear opportunity to help`)
     } else if (input.rating < 4.2) {
       score += 10
-      reasons.push(`Moderate rating (${input.rating.toFixed(1)}) — room to improve`)
+      reasons.push(`Moderate rating (${input.rating.toFixed(1)})  room to improve`)
     } else if (input.rating >= 4.7) {
       score -= 5
-      reasons.push(`Very high rating (${input.rating.toFixed(1)}) — already polished`)
+      reasons.push(`Very high rating (${input.rating.toFixed(1)})  already polished`)
     }
   } else {
     reasons.push("No public rating yet")
@@ -59,28 +59,28 @@ export function scoreLead(input: LeadInputs): LeadScore {
   const rc = input.reviewCount ?? 0
   if (rc === 0) {
     score += 8
-    reasons.push("No reviews yet — likely brand new")
+    reasons.push("No reviews yet  likely brand new")
   } else if (rc < 15) {
     score += 12
-    reasons.push(`Only ${rc} reviews — early-stage`)
+    reasons.push(`Only ${rc} reviews  early-stage`)
   } else if (rc < 100) {
     score += 6
-    reasons.push(`${rc} reviews — small/medium business`)
+    reasons.push(`${rc} reviews  small/medium business`)
   } else if (rc > 1000) {
     score -= 10
-    reasons.push(`${rc}+ reviews — large/established`)
+    reasons.push(`${rc}+ reviews  large/established`)
   }
 
   // ── Website signals ───────────────────────────────────────────────────────
   if (!input.hasWebsite) {
     score += 15
-    reasons.push("No website — high opportunity to pitch web/marketing help")
+    reasons.push("No website  high opportunity to pitch web/marketing help")
   } else if (input.emailCount === 0 && input.socialCount === 0) {
     score += 6
-    reasons.push("Has website but no contact info — direct outreach gap")
+    reasons.push("Has website but no contact info  direct outreach gap")
   } else if (input.emailCount > 0) {
     score += 4
-    reasons.push(`Public email${input.emailCount > 1 ? "s" : ""} found — reachable`)
+    reasons.push(`Public email${input.emailCount > 1 ? "s" : ""} found  reachable`)
   }
 
   // ── Complaints ────────────────────────────────────────────────────────────
@@ -95,7 +95,7 @@ export function scoreLead(input: LeadInputs): LeadScore {
     input.businessStatus === "CLOSED_TEMPORARILY"
   if (closed) {
     score -= 40
-    reasons.push("Business is closed — not actionable")
+    reasons.push("Business is closed  not actionable")
   }
 
   // ── Clamp + tier ──────────────────────────────────────────────────────────

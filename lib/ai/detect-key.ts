@@ -1,7 +1,7 @@
 /**
  * detect-key.ts
  * Centralized AI API key detection using strict regex patterns.
- * Add new providers here — never use startsWith() elsewhere in the codebase.
+ * Add new providers here  never use startsWith() elsewhere in the codebase.
  */
 
 export type AIProvider =
@@ -54,7 +54,7 @@ const KEY_PATTERNS: Array<{ provider: AIProvider; label: string; regex: RegExp }
     label: "Anthropic",
     regex: /^sk-ant-[A-Za-z0-9_-]{32,}$/,
   },
-  // Cohere:  random 40-char alphanumeric (no prefix) — detected by elimination + length
+  // Cohere:  random 40-char alphanumeric (no prefix)  detected by elimination + length
   // We match the exact documented format
   {
     provider: "cohere",
@@ -103,12 +103,12 @@ export function detectApiKey(key: string): DetectedKey {
     }
   }
 
-  // JWT / Bearer token — treat as unknown but structurally valid
+  // JWT / Bearer token  treat as unknown but structurally valid
   if (JWT_REGEX.test(trimmed)) {
     return { provider: "unknown", label: "JWT Token", isValid: true }
   }
 
-  // Generic long key — valid format but unknown provider
+  // Generic long key  valid format but unknown provider
   if (GENERIC_LONG_KEY_REGEX.test(trimmed)) {
     return { provider: "unknown", label: "API Key", isValid: true }
   }
@@ -148,7 +148,7 @@ export function pickBestKey(...keys: (string | null | undefined)[]): string {
 
 /**
  * Get a display label for a stored key (for Settings UI).
- * Never expose the key itself — only the provider name.
+ * Never expose the key itself  only the provider name.
  */
 export function getKeyProviderLabel(key: string | null | undefined): string {
   if (!key) return "No key set"

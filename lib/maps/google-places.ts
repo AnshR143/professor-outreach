@@ -8,7 +8,7 @@
  * The legacy endpoints are used because they return next_page_token (so we
  * can pull >20 results) and they are still fully supported alongside the
  * newer Places API (New). If you migrate to the New API, swap fetchNearby /
- * fetchDetails — public surface stays the same.
+ * fetchDetails  public surface stays the same.
  *
  * IMPORTANT: per Google ToS we only call official endpoints. We never scrape
  * google.com or maps.google.com.
@@ -76,7 +76,7 @@ export interface NearbySearchInput {
   radius: number      // metres, max 50000
   keyword?: string    // e.g. "software company"
   type?: string       // optional Places type, e.g. "cafe", "store"
-  maxResults?: number // hard cap (default 60 — Google returns max 60 across 3 pages)
+  maxResults?: number // hard cap (default 60  Google returns max 60 across 3 pages)
   signal?: AbortSignal
 }
 
@@ -157,7 +157,7 @@ export async function nearbySearch(input: NearbySearchInput): Promise<NearbyPlac
       params.delete("keyword")
       params.delete("type")
       params.set("pagetoken", pageToken)
-      // Token isn't immediately valid — wait a moment.
+      // Token isn't immediately valid  wait a moment.
       await sleep(2000)
     }
     const url = `${NEARBY_URL}?${params.toString()}`
@@ -173,7 +173,7 @@ export async function nearbySearch(input: NearbySearchInput): Promise<NearbyPlac
       if (data.results) out.push(...data.results)
       pageToken = data.next_page_token
     } else {
-      throw new Error(`Google Places error: ${data.status} — ${data.error_message ?? "no detail"}`)
+      throw new Error(`Google Places error: ${data.status}  ${data.error_message ?? "no detail"}`)
     }
 
     pages++
@@ -203,7 +203,7 @@ export async function placeDetails(opts: {
   const data = await fetchJson<DetailsApiResponse>(url, signal)
 
   if (data.status !== "OK") {
-    throw new Error(`Google Place Details error: ${data.status} — ${data.error_message ?? "no detail"}`)
+    throw new Error(`Google Place Details error: ${data.status}  ${data.error_message ?? "no detail"}`)
   }
   const r = data.result!
 
@@ -243,7 +243,7 @@ export async function geocode(opts: {
   }>(url, signal)
 
   if (data.status === "ZERO_RESULTS") return null
-  if (data.status !== "OK") throw new Error(`Geocode error: ${data.status} — ${data.error_message ?? ""}`)
+  if (data.status !== "OK") throw new Error(`Geocode error: ${data.status}  ${data.error_message ?? ""}`)
 
   const r = data.results[0]
   return { lat: r.geometry.location.lat, lng: r.geometry.location.lng, formatted: r.formatted_address }

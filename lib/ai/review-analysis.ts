@@ -2,8 +2,8 @@
  * Review analysis with optional LLM summarization.
  *
  * Two paths:
- *   1. analyzeReviewsHeuristic — pure regex/keyword fallback. Always available.
- *   2. analyzeReviewsLLM — uses the user's configured Groq or Gemini key for
+ *   1. analyzeReviewsHeuristic  pure regex/keyword fallback. Always available.
+ *   2. analyzeReviewsLLM  uses the user's configured Groq or Gemini key for
  *      a concise complaints/sentiment/opportunity object.
  *
  * The pipeline calls analyzeReviews(...) which picks the right path based on

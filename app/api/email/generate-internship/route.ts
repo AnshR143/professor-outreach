@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   try {
     let result: { subject: string; body: string }
 
-    // Try Gemini first (better personalization) — fall back to Groq
+    // Try Gemini first (better personalization)  fall back to Groq
     if (useGemini) {
       const geminiKey = (detectGemini(apiKey) ? apiKey : process.env.GEMINI_API_KEY) as string
       result = await generateInternshipEmailGemini({

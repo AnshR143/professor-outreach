@@ -60,7 +60,7 @@ export default function DashboardClient({ profile, researchers, activities, emai
               Dashboard
             </h1>
             <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, margin: 0 }}>
-              Welcome back, {profile?.name?.split(" ")[0] || "there"} — your research outreach hub
+              Welcome back, {profile?.name?.split(" ")[0] || "there"}  your research outreach hub
             </p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

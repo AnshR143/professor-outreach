@@ -13,7 +13,7 @@ function getGroq(apiKey?: string): Groq {
 
 const MODEL = "llama-3.3-70b-versatile"
 
-// Parse plain-text "SUBJECT: ...\nBODY:\n..." format — avoids JSON escaping issues
+// Parse plain-text "SUBJECT: ...\nBODY:\n..." format  avoids JSON escaping issues
 function parseSubjectBody(raw: string): { subject: string; body: string } {
   const subjectMatch = raw.match(/SUBJECT:\s*(.+)/i)
   const bodyMatch = raw.match(/BODY:\s*\n?([\s\S]+)/i)
@@ -49,14 +49,14 @@ export async function generateEmail(params: {
   let prompt = ""
 
   const resumeSection = params.resumeText
-    ? `STUDENT RESUME (use specific skills, projects, courses, and experience from this to personalize the email — pick the 2-3 most relevant things that match the professor's work):
+    ? `STUDENT RESUME (use specific skills, projects, courses, and experience from this to personalize the email  pick the 2-3 most relevant things that match the professor's work):
 ---
 ${params.resumeText.slice(0, 1800)}
 ---`
     : ""
 
   if (params.templateBody) {
-    prompt = `Fill in an email template that a student (${params.userName}) is sending TO a professor. Write everything in FIRST PERSON ("I", "my", "me") — the student is the author.
+    prompt = `Fill in an email template that a student (${params.userName}) is sending TO a professor. Write everything in FIRST PERSON ("I", "my", "me")  the student is the author.
 
 STUDENT (the sender):
 - Name: ${params.userName}
@@ -106,7 +106,7 @@ Requirements:
 1. Start with "Dear Professor ${params.professorName.split(" ").pop()}," or "Dear Dr. ${params.professorName.split(" ").pop()},"
 2. First sentence: briefly introduce yourself (name, level, institution if available from resume)
 3. Reference their specific research or recent paper naturally
-4. Pull 1-2 SPECIFIC things from the resume (a project name, a course, a skill, a past role) that connect to this professor's work — make it feel hand-written, not generic
+4. Pull 1-2 SPECIFIC things from the resume (a project name, a course, a skill, a past role) that connect to this professor's work  make it feel hand-written, not generic
 5. Make a clear ask (research collaboration, meeting, unpaid internship, etc.)
 6. Sign off with the student's name: ${params.userName}
 7. Under 220 words, plain text, no markdown, no bullet points in body
@@ -251,7 +251,7 @@ ${params.templateBody}
 
 INSTRUCTIONS:
 - Fill in the [bracketed placeholders] using real details
-- Write in FIRST PERSON ("I", "my", "me") — the student is the author
+- Write in FIRST PERSON ("I", "my", "me")  the student is the author
 - Reference SPECIFIC skills/projects from the resume relevant to this role
 - Keep the tone ${toneGuide}
 

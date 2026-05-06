@@ -196,7 +196,7 @@ export default function SignupPage() {
               style={{ fontSize: 28, fontWeight: 800, margin: "0 0 10px", textAlign: "center",
                 background: "linear-gradient(to right,#304674,#1f2f55)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              OutreachAI
+              InternLink
             </motion.h2>
             <motion.p initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
@@ -218,7 +218,7 @@ export default function SignupPage() {
                 display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <ArrowRight style={{ width: 18, height: 18, color: "#fff" }} />
               </div>
-              <span style={{ fontWeight: 700, fontSize: 16, color: "#304674" }}>OutreachAI</span>
+              <span style={{ fontWeight: 700, fontSize: 16, color: "#304674" }}>InternLink</span>
             </div>
 
             <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0f172a", margin: "0 0 4px" }}>

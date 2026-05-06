@@ -2,7 +2,7 @@ import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { detectApiKey, getKeyProviderLabel } from "@/lib/ai/detect-key"
 import { NextResponse } from "next/server"
 
-// GET — returns ONLY whether a key is set and which provider it is, never the key itself
+// GET  returns ONLY whether a key is set and which provider it is, never the key itself
 export async function GET() {
   const authClient = await createClient()
   const { data: { user } } = await authClient.auth.getUser()
@@ -24,7 +24,7 @@ export async function GET() {
   })
 }
 
-// POST — saves the key server-side, never echoes it back
+// POST  saves the key server-side, never echoes it back
 export async function POST(req: Request) {
   const authClient = await createClient()
   const { data: { user } } = await authClient.auth.getUser()
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   }
   const { isValid } = detectApiKey(key.trim())
   if (key.trim().length > 0 && !isValid) {
-    // Allow saving but warn — user may have an unusual provider
+    // Allow saving but warn  user may have an unusual provider
     console.warn("Unrecognised API key format saved by user " + user.id)
   }
 
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ success: true })
 }
 
-// DELETE — clears the key
+// DELETE  clears the key
 export async function DELETE() {
   const authClient = await createClient()
   const { data: { user } } = await authClient.auth.getUser()

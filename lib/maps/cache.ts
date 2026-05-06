@@ -37,7 +37,7 @@ export class TTLCache<T> {
   }
 }
 
-// Module-level singletons — survive across requests in the same Node process.
+// Module-level singletons  survive across requests in the same Node process.
 declare global {
   // eslint-disable-next-line no-var
   var __mapsCaches: {
@@ -48,9 +48,9 @@ declare global {
 }
 
 const caches = (globalThis.__mapsCaches ??= {
-  search:  new TTLCache<unknown>(15 * 60 * 1000),  // 15m — search results turn over fast
-  details: new TTLCache<unknown>(60 * 60 * 1000),  // 1h  — details are stable
-  scrape:  new TTLCache<unknown>(24 * 60 * 60 * 1000), // 24h — homepages rarely change
+  search:  new TTLCache<unknown>(15 * 60 * 1000),  // 15m  search results turn over fast
+  details: new TTLCache<unknown>(60 * 60 * 1000),  // 1h   details are stable
+  scrape:  new TTLCache<unknown>(24 * 60 * 60 * 1000), // 24h  homepages rarely change
 })
 
 export const searchCache  = caches.search  as TTLCache<unknown>

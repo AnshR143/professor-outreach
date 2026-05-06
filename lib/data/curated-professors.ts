@@ -1,4 +1,4 @@
-// All professors from the curated list — structured and ready to use
+// All professors from the curated list  structured and ready to use
 export const PRELOADED_PROFESSORS = [
   { name: "Liang Zhan", university: "University of Pittsburgh", areas: ["Computational Neuroimaging", "AI", "Imaging Genetics", "LLM"], url: "https://sites.pitt.edu/~liz119/" },
   { name: "Yixuan He", university: "Arizona State University", areas: ["Graph Neural Networks", "Machine Learning", "LLM", "AI for Science"], url: "https://sherylhyx.github.io" },

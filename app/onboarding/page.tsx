@@ -97,7 +97,7 @@ export default function OnboardingPage() {
       return
     }
 
-    // Hard redirect — forces a full server-side reload so dashboard sees onboarding_complete: true
+    // Hard redirect  forces a full server-side reload so dashboard sees onboarding_complete: true
     window.location.href = "/dashboard"
   }
 
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
           <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg, #304674, #304674)", color: "#fff", marginBottom: 16 }}>
             <span style={{ fontWeight: 800, fontSize: 20 }}>O</span>
           </div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", margin: "0 0 8px" }}>Welcome to OutreachAI</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: "#0f172a", margin: "0 0 8px" }}>Welcome to InternLink</h1>
           <p style={{ color: "#64748b", fontSize: 15 }}>Let's set up your researcher profile.</p>
         </div>
 

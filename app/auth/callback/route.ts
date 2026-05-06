@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
     if (data?.user) {
       const user = data.user
-      // Upsert so it never fails silently — if row exists, leave onboarding_complete alone
+      // Upsert so it never fails silently  if row exists, leave onboarding_complete alone
       const { data: existing } = await supabase
         .from("profiles")
         .select("user_id")

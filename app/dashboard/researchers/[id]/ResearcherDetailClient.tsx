@@ -361,7 +361,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 5 }}>
                   {professorEmail
                     ? "This email will be pre-filled when you open Gmail."
-                    : `Estimated: ${guessEmail(researcher.name, researcher.university)} — confirm or correct before sending.`}
+                    : `Estimated: ${guessEmail(researcher.name, researcher.university)}  confirm or correct before sending.`}
                 </div>
               </div>
 
@@ -485,7 +485,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={4}
-              placeholder="Add private notes about this researcher — research interests, conversation history, reminders..."
+              placeholder="Add private notes about this researcher  research interests, conversation history, reminders..."
               style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", lineHeight: 1.6, resize: "vertical", outline: "none", fontFamily: "inherit", boxSizing: "border-box" }}
             />
           </div>

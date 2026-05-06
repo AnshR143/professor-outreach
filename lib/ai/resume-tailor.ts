@@ -5,7 +5,7 @@
  * opportunity, scraped keywords). Outputs:
  *   - tailored bullet points (rewritten, role-appropriate)
  *   - personalized outreach message (subject + body)
- *   - "why you fit" — short paragraph the user can paste anywhere
+ *   - "why you fit"  short paragraph the user can paste anywhere
  *
  * Uses whichever LLM key is configured (Groq or Gemini). Falls back to a
  * deterministic template-based generator if no key is present so the route
@@ -37,7 +37,7 @@ export interface TailoredResume {
 
 const SYS = `You are an expert career coach. You rewrite a student's resume bullets so they
 match a specific company, and you draft a short, sincere outreach email. Do
-not invent qualifications — only re-frame what's already in the resume. Keep
+not invent qualifications  only re-frame what's already in the resume. Keep
 copy plain text, no markdown.`
 
 function buildPrompt(resume: string, ctx: CompanyContext): string {
@@ -55,7 +55,7 @@ function buildPrompt(resume: string, ctx: CompanyContext): string {
 
   return `${lines}
 
-STUDENT RESUME (raw text — re-use the candidate's real skills/projects, do not fabricate):
+STUDENT RESUME (raw text  re-use the candidate's real skills/projects, do not fabricate):
 ---
 ${resume.slice(0, 3500)}
 ---
@@ -136,17 +136,17 @@ function fallbackTailor(resume: string, ctx: CompanyContext): TailoredResume {
                             `Brought a self-starter mindset to projects in ${ctx.industry ?? "this field"}.`,
     ctx.complaints?.[0] ? `Built fixes/process improvements addressing issues like "${ctx.complaints[0]}".` :
                           `Delivered measurable improvements to past projects' user experience.`,
-    ctx.keywords?.[0] ? `Familiar with ${ctx.keywords.slice(0, 3).join(", ")} — directly relevant to ${ctx.name}'s focus.` :
+    ctx.keywords?.[0] ? `Familiar with ${ctx.keywords.slice(0, 3).join(", ")}  directly relevant to ${ctx.name}'s focus.` :
                         `Quick to ramp on new tools and codebases.`,
     `Available for an internship; can start immediately and commit consistent weekly hours.`,
   ]
 
-  const subject = `Internship interest — help with ${opp} at ${ctx.name}`
+  const subject = `Internship interest  help with ${opp} at ${ctx.name}`
   const body = `Hi ${ctx.name} team,
 
 I'm a student researching local companies where my skills could make an immediate impact, and ${ctx.name} stood out${ctx.industry ? ` in ${ctx.industry}` : ""}. ${ctx.opportunity ? `I noticed an opportunity around ${ctx.opportunity}.` : ""}
 
-In past projects I've worked on${uniqSkills.length ? ` ${uniqSkills.slice(0, 3).join(", ")}` : " similar problems"}, and I'd love a chance to help — paid or unpaid — for a few weeks this term.
+In past projects I've worked on${uniqSkills.length ? ` ${uniqSkills.slice(0, 3).join(", ")}` : " similar problems"}, and I'd love a chance to help  paid or unpaid  for a few weeks this term.
 
 Would you be open to a 15-minute call?
 

@@ -212,7 +212,7 @@ function buildWhyMatch(
   if (resumeMatches.length > 0) {
     return `Your resume background in ${resumeMatches.slice(0, 2).join(", ")} aligns with their work.`
   }
-  return `Researcher at ${profUniversity} in ${profAreas[0] || "AI"} — expand your search criteria for a stronger match.`
+  return `Researcher at ${profUniversity} in ${profAreas[0] || "AI"}  expand your search criteria for a stronger match.`
 }
 
 export async function POST(req: Request) {

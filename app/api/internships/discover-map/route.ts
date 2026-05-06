@@ -36,7 +36,7 @@ async function geocode(location: string): Promise<{ lat: number; lon: number } |
   try {
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`
     const res = await fetch(url, {
-      headers: { "User-Agent": "OutreachAI/1.0 (internship discovery)" },
+      headers: { "User-Agent": "InternLink/1.0 (internship discovery)" },
     })
     const data = await res.json()
     if (!data.length) return null
@@ -96,7 +96,7 @@ Given the following list of businesses and the target internship industry "${ind
 Businesses:
 ${businesses.map((b, i) => `${i + 1}. Name: "${b.name}" | Type: ${b.type} | Location: ${b.address || "local area"}`).join("\n")}
 
-Respond ONLY with valid JSON — an array of exactly ${businesses.length} objects, each with:
+Respond ONLY with valid JSON  an array of exactly ${businesses.length} objects, each with:
 { "score": number 1-10, "reason": string max 60 chars, "industry": string (the relevant industry category) }
 
 Example: [{"score":8,"reason":"Small digital agency, likely needs design interns","industry":"Design"}]`
@@ -208,7 +208,7 @@ export async function POST(request: Request) {
       }
     }
     if (!overpassOk) {
-      return NextResponse.json({ error: "Could not query business data. The map data service is temporarily unavailable — please try again in a moment." }, { status: 503 })
+      return NextResponse.json({ error: "Could not query business data. The map data service is temporarily unavailable  please try again in a moment." }, { status: 503 })
     }
 
     if (elements.length === 0) {

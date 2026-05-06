@@ -26,32 +26,32 @@ export function ParallaxSection() {
     offset: ["start start", "end end"],
   })
 
-  // Smooth spring for all transforms — removes jitter
+  // Smooth spring for all transforms  removes jitter
   const smooth = useSpring(scrollYProgress, { stiffness: 60, damping: 20, mass: 0.4 })
 
-  // Layer 1 — background (slowest: 15% travel)
+  // Layer 1  background (slowest: 15% travel)
   const bgY = useTransform(smooth, [0, 1], ["0%", "15%"])
 
-  // Layer 2 — cloud overlay (slow: 25%)
+  // Layer 2  cloud overlay (slow: 25%)
   const cloudY = useTransform(smooth, [0, 1], ["0%", "25%"])
 
-  // Layer 3 — glow orbs (medium: 40%)
+  // Layer 3  glow orbs (medium: 40%)
   const orbY = useTransform(smooth, [0, 1], ["0%", "40%"])
 
-  // Layer 4 — headline text (medium-fast: -50%, floats upward)
+  // Layer 4  headline text (medium-fast: -50%, floats upward)
   const textY = useTransform(smooth, [0, 1], ["0%", "-55%"])
   const textOpacity = useTransform(smooth, [0, 0.55], [1, 0])
   const textScale = useTransform(smooth, [0, 0.55], [1, 0.88])
 
-  // Layer 5 — wolf foreground (fastest: -90%, shoots up)
+  // Layer 5  wolf foreground (fastest: -90%, shoots up)
   const wolfY = useTransform(smooth, [0, 1], ["0%", "-90%"])
   const wolfScale = useTransform(smooth, [0, 1], [1, 1.06])
 
   return (
-    /* Tall container — scroll through this to drive the parallax */
+    /* Tall container  scroll through this to drive the parallax */
     <div ref={containerRef} style={{ height: "180vh", position: "relative" }}>
 
-      {/* Sticky viewport — stays pinned at top while container scrolls */}
+      {/* Sticky viewport  stays pinned at top while container scrolls */}
       <div style={{
         position: "sticky", top: 0,
         height: "100vh", overflow: "hidden",
@@ -103,7 +103,7 @@ export function ParallaxSection() {
           />
         </motion.div>
 
-        {/* ── LAYER 3: Glow orbs — ambient depth (medium) ── */}
+        {/* ── LAYER 3: Glow orbs  ambient depth (medium) ── */}
         <motion.div style={{
           position: "absolute", inset: 0, y: orbY, zIndex: 2,
           pointerEvents: "none",
@@ -140,10 +140,10 @@ export function ParallaxSection() {
           >
             <img
               src="/husky.png.png"
-              alt="OutreachAI Guide"
+              alt="InternLink Guide"
               style={{ width: "100%", height: "auto", display: "block" }}
             />
-            {/* Whiteboard overlay — fitted to the sign the husky holds (center ~62%, width ~74%) */}
+            {/* Whiteboard overlay  fitted to the sign the husky holds (center ~62%, width ~74%) */}
             <div style={{
               position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
               width: "70%",
@@ -190,12 +190,12 @@ export function ParallaxSection() {
               color: "rgba(226,232,240,0.72)", fontWeight: 400,
               maxWidth: 400, textAlign: "left", lineHeight: 1.5,
             }}>
-              From first contact to first reply — automated, personalized, and precise.
+              From first contact to first reply  automated, personalized, and precise.
             </p>
           </div>
         </motion.div>
 
-        {/* ── LAYER 5: Ground fog at very bottom — ties foreground to scene ── */}
+        {/* ── LAYER 5: Ground fog at very bottom  ties foreground to scene ── */}
         <div style={{
           position: "absolute", bottom: 0, left: 0, right: 0, height: 120,
           background: "linear-gradient(to top, rgba(186,230,253,0.45) 0%, transparent 100%)",

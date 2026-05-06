@@ -28,7 +28,7 @@ function buildAddress(tags: Record<string, string>): string {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-// Inline type — avoids importing from an API route file (causes webpack bundling issues)
+// Inline type  avoids importing from an API route file (causes webpack bundling issues)
 export interface DiscoveredBusiness {
   id: string
   name: string
@@ -118,7 +118,7 @@ const US_LOCATIONS = [
   "Wisconsin","Wyoming",
 ]
 
-// ─── FlyTo helper — must be inside Map context ────────────────────────────────
+// ─── FlyTo helper  must be inside Map context ────────────────────────────────
 
 function FlyToCenter({ center, zoom }: { center: [number, number]; zoom: number }) {
   const { map, isLoaded } = useMap()
@@ -219,7 +219,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
           const { latitude, longitude } = pos.coords
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
-            { headers: { "User-Agent": "OutreachAI/1.0 (internship map)" } }
+            { headers: { "User-Agent": "InternLink/1.0 (internship map)" } }
           )
           const data = await res.json()
           const city = data.address?.city || data.address?.town || data.address?.village || ""
@@ -241,7 +241,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
       const t = setTimeout(() => ctrl.abort(), 8000)
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(loc)}&format=json&limit=1`,
-        { headers: { "User-Agent": "OutreachAI/1.0" }, signal: ctrl.signal }
+        { headers: { "User-Agent": "InternLink/1.0" }, signal: ctrl.signal }
       )
       clearTimeout(t)
       const data = await res.json()
@@ -254,7 +254,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
   async function queryOverpass(lat: number, lon: number, radiusM: number): Promise<RawBiz[]> {
     const r = Math.min(radiusM, 10000)
-    // Include both node AND way — US cities map most businesses as ways (building polygons)
+    // Include both node AND way  US cities map most businesses as ways (building polygons)
     // "out center" returns centroid coords for ways so we can place markers
     const q = (tag: string) =>
       `node["${tag}"]["name"](around:${r},${lat},${lon});way["${tag}"]["name"](around:${r},${lat},${lon});`
@@ -868,7 +868,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         </div>
       </div>
 
-      {/* Outreach Kit panel — opens after Add Contact */}
+      {/* Outreach Kit panel  opens after Add Contact */}
       {kitFor && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1100, padding: 16 }}>
           <div style={{ background: "#fff", borderRadius: 14, width: "100%", maxWidth: 640, maxHeight: "85vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.28)" }}>

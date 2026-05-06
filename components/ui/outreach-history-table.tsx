@@ -28,19 +28,19 @@ export type ActivityKind =
 
 export interface OutreachActivityRow {
   id: string
-  /** Subject of the activity — researcher name or company name */
+  /** Subject of the activity  researcher name or company name */
   subject: string
-  /** Optional link target — clicking the row goes here */
+  /** Optional link target  clicking the row goes here */
   href: string | null
-  /** Secondary identifier — university for research, role/contact for internship */
+  /** Secondary identifier  university for research, role/contact for internship */
   context: string
   /** Activity description (already humanized) */
   description: string
   /** ISO timestamp */
   createdAt: string
-  /** "Research" or "Internship" — which tab generated this row */
+  /** "Research" or "Internship"  which tab generated this row */
   category: "research" | "internship"
-  /** Kind tag — drives the badge variant */
+  /** Kind tag  drives the badge variant */
   kind: ActivityKind
 }
 
@@ -166,7 +166,7 @@ export function OutreachHistoryTable({ rows, visibleColumns }: Props) {
 
                   {visibleColumns.has("context") && (
                     <TableCell className="text-[#64748b]">
-                      <span className="block max-w-[220px] truncate">{r.context || "—"}</span>
+                      <span className="block max-w-[220px] truncate">{r.context || ""}</span>
                     </TableCell>
                   )}
 
@@ -188,7 +188,7 @@ export function OutreachHistoryTable({ rows, visibleColumns }: Props) {
 
                   {visibleColumns.has("description") && (
                     <TableCell className="text-[#64748b]">
-                      <span className="block max-w-[360px] truncate">{r.description || "—"}</span>
+                      <span className="block max-w-[360px] truncate">{r.description || ""}</span>
                     </TableCell>
                   )}
 

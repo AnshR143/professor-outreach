@@ -1,4 +1,4 @@
-# Professor Outreach Platform — Setup Guide
+# Professor Outreach Platform  Setup Guide
 
 ## 1. Install Dependencies
 
@@ -36,7 +36,7 @@ Edit `.env.local` and fill in your values.
 npm run dev
 ```
 
-Visit http://localhost:3000 — you'll be redirected to login.
+Visit http://localhost:3000  you'll be redirected to login.
 
 ## 6. Create Your Account
 
@@ -76,9 +76,9 @@ Click the orange "Find Researchers" button → select your fields → hit Find!
 The platform now includes a production-ready Google Maps pipeline for discovering local internships and companies.
 
 ### 1. Maps Data Pipeline
-- **Search**: `/api/maps/search` — Finds companies via Google Places Nearby Search (paginated to 60+ results).
-- **Enrichment**: `/api/maps/details` — Fetches full details, ratings, and reviews.
-- **AI Analysis**: `/api/pipeline/run` — Orchestrates the full flow:
+- **Search**: `/api/maps/search`  Finds companies via Google Places Nearby Search (paginated to 60+ results).
+- **Enrichment**: `/api/maps/details`  Fetches full details, ratings, and reviews.
+- **AI Analysis**: `/api/pipeline/run`  Orchestrates the full flow:
     - Scrapes company websites for emails and socials.
     - Analyzes Google Reviews using Groq/Gemini to find "opportunities" (e.g., bad website, slow service).
     - Scores leads (0-100) based on signals like rating, review count, and digital presence.
@@ -97,7 +97,7 @@ The platform now includes a production-ready Google Maps pipeline for discoverin
 - **Next.js 16** (App Router, TypeScript)
 - **Tailwind CSS v4**
 - **Supabase** (Auth + PostgreSQL)
-- **Groq/Gemini** (AI — LLM analysis and tailoring)
+- **Groq/Gemini** (AI  LLM analysis and tailoring)
 - **Google Maps API** (Places & Geocoding)
 - **Semantic Scholar API** (Professor discovery)
 

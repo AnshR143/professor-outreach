@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 // Map dropdown industry values (from MapDiscoverModal INDUSTRIES) to Geoapify categories.
 // Keys MUST match the strings the client sends. Categories MUST be valid Geoapify category
-// names — see https://apidocs.geoapify.com/docs/places/ for the full list.
+// names  see https://apidocs.geoapify.com/docs/places/ for the full list.
 // `office.*` covers actual company offices (the right thing for internship searches).
 // `commercial.*` covers retail/shops. `service.*` covers banks, repair, etc.
 const INDUSTRY_CATEGORIES: Record<string, string> = {

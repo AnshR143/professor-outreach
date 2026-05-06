@@ -64,7 +64,7 @@ async function findByCompanyWithAI(
     "For each person return a JSON object with:",
     "  name: full real name (first + last)",
     "  role: their actual job title at " + company,
-    "  bio: 2-3 sentences about their background and what they work on — be specific, mention actual projects or talks if known",
+    "  bio: 2-3 sentences about their background and what they work on  be specific, mention actual projects or talks if known",
     "  website: personal site or GitHub URL if known, else null",
     "  linkedin: LinkedIn slug like linkedin.com/in/username if known, else null",
     "",
@@ -244,7 +244,7 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ type: "error", message: "Rate limit exceeded: You can only add 50 contacts per hour." }), { status: 429 });
   }
 
-  // Load user's AI key (works with Groq OR Gemini — whatever they set in Settings)
+  // Load user's AI key (works with Groq OR Gemini  whatever they set in Settings)
   const { data: profileRaw } = await supabase
     .from("profiles").select("ai_api_key").eq("user_id", user.id).single()
   const profile = profileRaw as { ai_api_key?: string | null } | null
@@ -321,7 +321,7 @@ export async function POST(req: Request) {
           description: "Found via AI: " + c.role + " at " + company,
         }).then(() => {}).catch(() => {})
         added++
-        send({ type: "progress", found: added, total: fresh.length, current: "Added " + c.name + " — " + c.role })
+        send({ type: "progress", found: added, total: fresh.length, current: "Added " + c.name + "  " + c.role })
       }
       send({ type: "done", found: added })
 

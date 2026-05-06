@@ -9,7 +9,7 @@
  *   - extracts a small set of "company keywords" from <title>, meta description,
  *     and prominent headings for downstream relevance scoring
  *
- * No heavy DOM parsing dependency — Cheerio adds bundle weight and Next runs
+ * No heavy DOM parsing dependency  Cheerio adds bundle weight and Next runs
  * fine without it. Regex is plenty for what we need.
  */
 
@@ -88,7 +88,7 @@ function extractKeywords(haystack: string, max = 12): string[] {
 }
 
 /**
- * Scrape a company homepage. Always resolves — never throws — so callers can
+ * Scrape a company homepage. Always resolves  never throws  so callers can
  * fan it out across many sites without try/catch on every one.
  */
 export async function scrapeWebsite(
@@ -112,8 +112,8 @@ export async function scrapeWebsite(
       signal: ctrl.signal,
       redirect: "follow",
       headers: {
-        // Respectful UA — identify our app so site owners can recognise us.
-        "User-Agent": "OutreachAI/1.0 (+https://outreach-ai.local; contact@outreach-ai.local)",
+        // Respectful UA  identify our app so site owners can recognise us.
+        "User-Agent": "InternLink/1.0 (+https://outreach-ai.local; contact@outreach-ai.local)",
         "Accept": "text/html,application/xhtml+xml",
         "Accept-Language": "en-US,en;q=0.7",
       },

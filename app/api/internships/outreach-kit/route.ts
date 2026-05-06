@@ -46,7 +46,7 @@ ${oppLine}
 Write a SHORT, specific cold email asking about an internship at this company.
 - Subject line: under 60 chars, no clickbait, mentions the company.
 - Body: 90–150 words. First person. Reference one concrete thing about the company
-  (their industry, the complaint area, or the opportunity above) — not generic
+  (their industry, the complaint area, or the opportunity above)  not generic
   "I admire your work". End with a clear ask for a 15-minute call or to send a resume.
 
 ${p.hasPhone ? `Also write a 30-second voicemail script the student could leave if they call the company's listed phone number. Friendly, names the company, says who's calling, why, and leaves a callback ask. Plain text, ~60 words.` : ""}

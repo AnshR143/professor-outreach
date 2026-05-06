@@ -84,7 +84,7 @@ function extractRelevantResumeParts(
     .filter(l => l.length > 25)
 
   if (domainKws.length === 0 || lines.length === 0) {
-    // No domain detected — fall back to first meaningful chunk
+    // No domain detected  fall back to first meaningful chunk
     return lines.slice(0, maxLines).join("\n")
   }
 
@@ -101,7 +101,7 @@ function extractRelevantResumeParts(
   const relevant = scored.filter(s => s.score > 0).slice(0, maxLines)
 
   if (relevant.length < 2) {
-    // Not enough domain-specific lines — blend top relevant + top overall
+    // Not enough domain-specific lines  blend top relevant + top overall
     const fallback = lines.slice(0, Math.max(0, maxLines - relevant.length))
     return [...relevant.map(s => s.line), ...fallback].slice(0, maxLines).join("\n")
   }
@@ -189,7 +189,7 @@ ${recentPaper ? `- Recent paper: "${recentPaper.title}"` : ""}
 TONE: ${toneGuide}
 
 Write a personalized cold email under 200 words. Reference their specific research. Sound like a real student.
-The resume lines above are pre-selected as the most relevant to this professor — weave 1-2 of them naturally into the email.
+The resume lines above are pre-selected as the most relevant to this professor  weave 1-2 of them naturally into the email.
 Return ONLY valid JSON: {"subject": "...", "body": "..."}`
   }
 
@@ -268,9 +268,9 @@ export async function generateInternshipEmailGemini(params: {
     "",
     "RULES:",
     "- Write in FIRST PERSON (I, my) as the student",
-    "- Reference something SPECIFIC about this person (from bio/notes/website) — not generic praise",
+    "- Reference something SPECIFIC about this person (from bio/notes/website)  not generic praise",
     "- Naturally mention 1-2 skills or projects from the resume lines above that align with their work",
-    "- Under 180 words — short and punchy",
+    "- Under 180 words  short and punchy",
     "- No generic openers like 'I came across your profile' or 'I admire your work'",
     "- Sound like a real thoughtful student, not a template",
     "- Tone: " + toneGuide,

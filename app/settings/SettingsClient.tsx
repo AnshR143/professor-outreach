@@ -110,7 +110,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
             { onConflict: "user_id" }
           )
         }
-        setUploadStatus({ ok: true, msg: "Resume parsed — " + data.text.length + " characters extracted across " + data.pages + " page" + (data.pages !== 1 ? "s" : "") + ". AI will use this to personalize your emails." })
+        setUploadStatus({ ok: true, msg: "Resume parsed  " + data.text.length + " characters extracted across " + data.pages + " page" + (data.pages !== 1 ? "s" : "") + ". AI will use this to personalize your emails." })
       } else {
         setUploadStatus({ ok: false, msg: data.error || "Failed to parse resume." })
       }
@@ -186,14 +186,14 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
 
           <Section title="Resume / CV">
             <div style={{ background: "#d8e1e8", border: "1px solid #98bad5", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#304674", marginBottom: 16 }}>
-              Your resume powers everything — it personalizes cold emails with your actual experience and skills, and is used to calculate how well you match each professor&apos;s research areas.
+              Your resume powers everything  it personalizes cold emails with your actual experience and skills, and is used to calculate how well you match each professor&apos;s research areas.
             </div>
             <div style={{ border: "2px dashed #e2e8f0", borderRadius: 10, padding: "24px", textAlign: "center" }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", marginBottom: 4 }}>Upload your resume</div>
               <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>PDF only. Used to personalize your cold emails.</div>
               {initial?.resume_text && !uploadStatus && (
                 <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 6, padding: "8px 12px", fontSize: 12, color: "#15803d", marginBottom: 12 }}>
-                  Resume on file — {initial.resume_text.length} characters parsed
+                  Resume on file  {initial.resume_text.length} characters parsed
                 </div>
               )}
               {uploadStatus && (
@@ -210,7 +210,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
 
           <Section title="AI API Key">
             <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#0369a1", marginBottom: 16 }}>
-              <strong>Used to generate personalized emails.</strong> Accepts any key — Groq, Gemini, or OpenAI compatible. Stored securely server-side, never sent to your browser.
+              <strong>Used to generate personalized emails.</strong> Accepts any key  Groq, Gemini, or OpenAI compatible. Stored securely server-side, never sent to your browser.
             </div>
 
             {hasKey && (
@@ -253,7 +253,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                 <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#304674" }}>Groq</a>
                 {" (fastest) or "}
                 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style={{ color: "#304674" }}>Gemini</a>
-                {" — both free tiers available."}
+                {"  both free tiers available."}
               </div>
             </Field>
           </Section>

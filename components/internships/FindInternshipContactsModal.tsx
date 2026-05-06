@@ -50,7 +50,7 @@ function fuzzyMatchFields(query: string): string[] {
   }).slice(0, 8)
 }
 
-// Internal reference list — used only for typo correction, not shown as chips.
+// Internal reference list  used only for typo correction, not shown as chips.
 const KNOWN_COMPANIES = [
   "Google","Meta","Apple","Microsoft","Amazon","OpenAI","Anthropic","Stripe",
   "Coinbase","Figma","Netflix","Uber","Airbnb","Nvidia","Salesforce","Bloomberg",
@@ -67,7 +67,7 @@ const KNOWN_COMPANIES = [
   "Pfizer","Moderna","Johnson & Johnson","Merck","Genentech","Tempus","Verily",
 ]
 
-// Damerau-Levenshtein distance, capped at 3 — fast for short strings.
+// Damerau-Levenshtein distance, capped at 3  fast for short strings.
 function editDistance(a: string, b: string): number {
   if (a === b) return 0
   if (Math.abs(a.length - b.length) > 3) return 4
@@ -91,7 +91,7 @@ function suggestCompany(input: string): string | null {
   const q = input.trim()
   if (q.length < 4) return null
   const lower = q.toLowerCase()
-  // Already a known company (case-insensitive) — no suggestion.
+  // Already a known company (case-insensitive)  no suggestion.
   if (KNOWN_COMPANIES.some(c => c.toLowerCase() === lower)) return null
   let best: { name: string; dist: number } | null = null
   for (const name of KNOWN_COMPANIES) {
@@ -288,7 +288,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                       }}
                       onFocus={() => { setFieldSuggestions(fuzzyMatchFields(field)); setShowFieldDrop(true) }}
                       onBlur={() => setTimeout(() => setShowFieldDrop(false), 150)}
-                      placeholder="Type anything — e.g. art → Artificial Intelligence"
+                      placeholder="Type anything  e.g. art → Artificial Intelligence"
                       style={inp()}
                       autoComplete="off"
                     />
@@ -343,7 +343,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                     </div>
                     <div>
                       <label style={{ fontSize: 11, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
-                        About Them <span style={{ fontWeight: 400, color: "#94a3b8" }}>(projects, background, articles — AI uses this to personalize)</span>
+                        About Them <span style={{ fontWeight: 400, color: "#94a3b8" }}>(projects, background, articles  AI uses this to personalize)</span>
                       </label>
                       <textarea value={specBio} onChange={e => setSpecBio(e.target.value)}
                         placeholder="e.g. Works on ML infra at Google, ex-DeepMind, wrote the blog post on distributed training..."
@@ -363,7 +363,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>Contact Added!</div>
-                  <div style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Open their profile and hit Generate Email — the AI will write a tailored email using everything you entered.</div>
+                  <div style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Open their profile and hit Generate Email  the AI will write a tailored email using everything you entered.</div>
                   <button onClick={onClose} style={{ padding: "9px 24px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>View Contacts</button>
                 </div>
               )}
@@ -426,7 +426,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                     {mode === "company" ? `Found via AI at ${company}` : `Found for ${field || fieldRole}`}
                   </div>
                   <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 24, lineHeight: 1.5 }}>
-                    Open any contact and hit Generate Email — the AI will write a tailored email referencing their specific work and your resume.
+                    Open any contact and hit Generate Email  the AI will write a tailored email referencing their specific work and your resume.
                   </div>
                 </>
               ) : (

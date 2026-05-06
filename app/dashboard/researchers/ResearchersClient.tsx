@@ -327,7 +327,7 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
                       </div>
                     </div>
 
-                    {/* Email status — click to cycle */}
+                    {/* Email status  click to cycle */}
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       {(() => {
                         const status = (emailStatuses[r.id] ?? r.email_status ?? "not_emailed") as EmailStatus

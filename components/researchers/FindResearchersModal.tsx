@@ -396,7 +396,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               <div style={{ marginBottom: 20 }}>
                 <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
                   Keywords or research fields
-                  <span style={{ color: "#94a3b8", fontWeight: 400 }}> — separate multiple with commas</span>
+                  <span style={{ color: "#94a3b8", fontWeight: 400 }}>  separate multiple with commas</span>
                 </label>
                 <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
                   Spelling and capitalisation don&apos;t matter. "AI", "artificial intelligence", and "machien lerning" all work.
@@ -464,10 +464,10 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               <div style={{ marginBottom: 20 }}>
                 <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
                   University
-                  <span style={{ color: "#94a3b8", fontWeight: 400 }}> — optional, leave blank to search all</span>
+                  <span style={{ color: "#94a3b8", fontWeight: 400 }}>  optional, leave blank to search all</span>
                 </label>
                 <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
-                  Comma-separate multiple. Fuzzy-matched — "stanfrod" and "carnegie melon" still work.
+                  Comma-separate multiple. Fuzzy-matched  "stanfrod" and "carnegie melon" still work.
                 </p>
                 <input
                   value={form.universityText}
@@ -496,7 +496,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                 style={{ width: "100%", padding: "12px", background: "#304674", color: "#fff",
                   border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
                 {form.keyword.trim()
-                  ? `Search "${form.keyword.split(",")[0].trim()}${form.keyword.includes(",") ? "…" : ""}" — Find ${form.count} Researchers`
+                  ? `Search "${form.keyword.split(",")[0].trim()}${form.keyword.includes(",") ? "…" : ""}"  Find ${form.count} Researchers`
                   : `Find ${form.count} Researchers`}
               </button>
             </div>
@@ -535,7 +535,7 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 8px" }}>
                 {progress.found === 0
                   ? (suggestion || "All matching professors are already in your list, or none were found. Try different keywords or clear university filters.")
-                  : `${progress.found} new researcher${progress.found !== 1 ? "s" : ""} matched and added — ranked by field + resume fit.`}
+                  : `${progress.found} new researcher${progress.found !== 1 ? "s" : ""} matched and added  ranked by field + resume fit.`}
               </p>
               {progress.found > 0 && (
                 <p style={{ color: "#94a3b8", fontSize: 12, margin: "0 0 24px" }}>

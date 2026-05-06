@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "OutreachAI | Find Professors. Send Perfect Emails.",
+  title: "InternLink | Find Professors. Send Perfect Emails.",
   description: "AI-powered professor outreach and research connection platform",
 }
 

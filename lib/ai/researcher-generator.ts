@@ -55,9 +55,9 @@ Return a JSON array like this:
 ]
 
 RULES:
-- Only include real, verifiable professors — not fictional people
+- Only include real, verifiable professors  not fictional people
 - Use their actual university, not a made-up one
-- Research areas should be specific (not just "AI" — say "Transformer Models" or "Reinforcement Learning")
+- Research areas should be specific (not just "AI"  say "Transformer Models" or "Reinforcement Learning")
 - Do not repeat professors
 - Return valid JSON array only, no extra text`
 }

@@ -115,7 +115,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
 
   async function openGmail() {
     if (!emailContact) return
-    // Copy body to clipboard so user can paste in Gmail — avoids URL-length limit that causes tab to close
+    // Copy body to clipboard so user can paste in Gmail  avoids URL-length limit that causes tab to close
     try { await navigator.clipboard.writeText(genBody) } catch {}
     const url = "https://mail.google.com/mail/?view=cm&fs=1&to=" +
       encodeURIComponent(emailContact.email || "") +
@@ -243,7 +243,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
 
         <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>
           Showing <strong style={{ color: "#0f172a" }}>{filtered.length}</strong> of {contacts.length} contacts
-          {contacts.length > 0 && <span style={{ marginLeft: 8, fontSize: 12, color: "#94a3b8" }}>— click any card to generate an email</span>}
+          {contacts.length > 0 && <span style={{ marginLeft: 8, fontSize: 12, color: "#94a3b8" }}> click any card to generate an email</span>}
         </div>
 
         {filtered.length === 0 && (
@@ -454,7 +454,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                 <button onClick={openGmail} disabled={!genSubject && !genBody}
                   style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 14px", background: gmailCopied ? "#dcfce7" : "#fff", color: gmailCopied ? "#15803d" : "#374151", border: `1px solid ${gmailCopied ? "#86efac" : "#e2e8f0"}`, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: !genSubject && !genBody ? 0.4 : 1, transition: "all 0.2s" }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  {gmailCopied ? "Body copied — paste in Gmail!" : "Open in Gmail"}
+                  {gmailCopied ? "Body copied  paste in Gmail!" : "Open in Gmail"}
                 </button>
                 <button onClick={copyEmail} disabled={!genSubject && !genBody}
                   style={{ padding: "9px 14px", background: copied ? "#dcfce7" : "#f1f5f9", color: copied ? "#15803d" : "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: !genSubject && !genBody ? 0.4 : 1 }}>
