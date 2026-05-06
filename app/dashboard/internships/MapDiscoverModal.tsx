@@ -600,7 +600,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
               <div style={{ fontSize: 12, color: "#64748b" }}>Find local businesses that need interns</div>
             </div>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1, padding: 4 }}>�</button>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1, padding: 4 }}>×</button>
         </div>
 
         {/* ── Search bar ── */}
@@ -860,7 +860,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                     style={{ padding: "6px 16px", background: added.has(selected.id) ? "#dcfce7" : "#304674", color: added.has(selected.id) ? "#15803d" : "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: added.has(selected.id) ? "default" : "pointer" }}>
                     {adding.has(selected.id) ? "Adding..." : added.has(selected.id) ? "Added" : "+ Add to Contacts"}
                   </button>
-                  <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 18, padding: 2 }}>�</button>
+                  <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 18, padding: 2 }}>×</button>
                 </div>
               </div>
             )}
@@ -878,7 +878,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                 <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{kitFor.name}</div>
                 <div style={{ fontSize: 12, color: "#64748b" }}>Tailored for {kitFor.industry}{kitFor.phone ? ` · ${kitFor.phone}` : ""}</div>
               </div>
-              <button onClick={() => setKitFor(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1 }}>�</button>
+              <button onClick={() => setKitFor(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1 }}>×</button>
             </div>
 
             {kit?.callScript && (
@@ -951,4 +951,3 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     </div>
   )
 }
-
