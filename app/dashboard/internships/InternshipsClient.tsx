@@ -299,13 +299,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                     onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
                   >
                     <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.company || "Unknown Company"}</div>
-                        <Link href={"/dashboard/internships/" + c.id} onClick={e => e.stopPropagation()}
-                          style={{ fontSize: 10, color: "#94a3b8", textDecoration: "none", padding: "2px 6px", borderRadius: 4, border: "1px solid #e2e8f0", whiteSpace: "nowrap", flexShrink: 0, marginLeft: 6 }}>
-                          details
-                        </Link>
-                      </div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.company || "Unknown Company"}</div>
                       <div style={{ fontSize: 12, fontWeight: 600, color: "#304674", marginTop: 2 }}>{c.role}</div>
                       {c.contact_name && <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{c.contact_name}</div>}
                     </div>

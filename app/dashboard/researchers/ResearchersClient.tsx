@@ -144,9 +144,13 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
           <button
             onClick={resetAllResearchers}
             disabled={resetting}
-            style={{ padding: "7px 14px", background: "#fff", color: resetting ? "#94a3b8" : "#dc2626", border: "1px solid #fecaca", borderRadius: 8, fontSize: 12, fontWeight: 500, cursor: resetting ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}
+            title="Reset all researchers"
+            aria-label="Reset all researchers"
+            style={{ width: 30, height: 30, padding: 0, background: "transparent", color: resetting ? "#cbd5e1" : "#94a3b8", border: "none", borderRadius: 6, cursor: resetting ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+            onMouseEnter={e => { if (!resetting) { e.currentTarget.style.background = "#fef2f2"; e.currentTarget.style.color = "#dc2626" } }}
+            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = resetting ? "#cbd5e1" : "#94a3b8" }}
           >
-            {resetting ? "Resetting..." : "Reset All"}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
           </button>
           <LiquidGlassButton
             onClick={() => setShowFind(true)}

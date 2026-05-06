@@ -153,18 +153,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   title={expanded ? undefined : label}
                   className="nav-item"
                   style={{
-                    color: active ? "#304674" : "#94a3b8",
-                    background: active ? "rgba(48, 70, 116,0.12)" : "transparent",
+                    color: active ? "#fff" : "#c6d3e3",
+                    background: active ? "rgba(255,255,255,0.16)" : "transparent",
                   }}
                   onMouseEnter={e => {
                     if (!active) {
-                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)"
-                      ;(e.currentTarget as HTMLElement).style.color = "#f8fafc"
+                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)"
+                      ;(e.currentTarget as HTMLElement).style.color = "#fff"
                     }
                   }}
                   onMouseLeave={e => {
-                    ;(e.currentTarget as HTMLElement).style.background = active ? "rgba(48, 70, 116,0.12)" : "transparent"
-                    ;(e.currentTarget as HTMLElement).style.color = active ? "#304674" : "#94a3b8"
+                    ;(e.currentTarget as HTMLElement).style.background = active ? "rgba(255,255,255,0.16)" : "transparent"
+                    ;(e.currentTarget as HTMLElement).style.color = active ? "#fff" : "#c6d3e3"
                   }}
                 >
                   <span className="nav-icon"><Icon /></span>
@@ -184,8 +184,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               title={expanded ? undefined : "Settings"}
               className="nav-item"
               style={{
-                color: pathname === "/settings" ? "#304674" : "#94a3b8",
-                background: pathname === "/settings" ? "rgba(48, 70, 116,0.12)" : "transparent",
+                color: pathname === "/settings" ? "#fff" : "#c6d3e3",
+                background: pathname === "/settings" ? "rgba(255,255,255,0.16)" : "transparent",
               }}
             >
               <span className="nav-icon">
@@ -197,7 +197,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               onClick={handleSignOut}
               title={expanded ? undefined : "Sign out"}
               className="nav-item"
-              style={{ color: "#94a3b8", background: "transparent", border: "none", cursor: "pointer" }}
+              style={{ color: "#c6d3e3", background: "transparent", border: "none", cursor: "pointer" }}
             >
               <span className="nav-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
