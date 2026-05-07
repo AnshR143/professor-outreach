@@ -378,7 +378,12 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                   </div>
 
                   {error && (
-                    <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#dc2626", marginTop: 12 }}>{error}</div>
+                    <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#dc2626", marginTop: 12 }}>
+                      {error}
+                      {(error.toLowerCase().includes("key") || error.toLowerCase().includes("api")) && (
+                        <span> <a href="/settings" style={{ color: "#dc2626", fontWeight: 600 }}>Add your API key in Settings.</a></span>
+                      )}
+                    </div>
                   )}
 
                   <div style={{ display: "flex", gap: 10, marginTop: 20 }}>

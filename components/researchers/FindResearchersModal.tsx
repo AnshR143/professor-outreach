@@ -389,6 +389,9 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                 <div style={{ background: "#fee2e2", border: "1px solid #fecaca", borderRadius: 8,
                   padding: "10px 14px", color: "#dc2626", fontSize: 13, marginBottom: 16 }}>
                   {error}
+                  {(error.toLowerCase().includes("key") || error.toLowerCase().includes("api")) && (
+                    <span> <a href="/settings" style={{ color: "#dc2626", fontWeight: 600 }}>Add your API key in Settings.</a></span>
+                  )}
                 </div>
               )}
 

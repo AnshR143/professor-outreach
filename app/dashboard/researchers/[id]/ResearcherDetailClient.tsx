@@ -401,6 +401,9 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
               {emailError && (
                 <div style={{ background: "#fee2e2", border: "1px solid #fecaca", borderRadius: 8, padding: "8px 12px", color: "#dc2626", fontSize: 12, marginBottom: 10 }}>
                   {emailError}
+                  {(emailError.toLowerCase().includes("key") || emailError.toLowerCase().includes("api")) && (
+                    <span> <a href="/settings" style={{ color: "#dc2626", fontWeight: 600 }}>Add your API key in Settings.</a></span>
+                  )}
                 </div>
               )}
               {emailValidationError && (
