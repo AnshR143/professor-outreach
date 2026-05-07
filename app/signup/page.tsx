@@ -291,8 +291,10 @@ export default function SignupPage() {
               </motion.button>
 
               <p style={{ fontSize: 11, color: "#94a3b8", textAlign: "center", margin: 0 }}>
-                By creating an account you agree to our{" "}
-                <a href="#" style={{ color: "#64748b", textDecoration: "underline" }}>Terms of Service</a>.
+                By signing up, you agree to our{" "}
+                <Link href="/terms" style={{ color: "#64748b", textDecoration: "underline" }}>
+                  Terms of Service
+                </Link>.
               </p>
             </form>
 
