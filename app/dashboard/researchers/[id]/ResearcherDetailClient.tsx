@@ -103,7 +103,11 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
       const res = await fetch("/api/professors/find-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ researcherName: researcher.name, university: researcher.university }),
+        body: JSON.stringify({
+          researcherName: researcher.name,
+          university: researcher.university,
+          areas: researcher.research_areas
+        }),
       })
       const data = await res.json()
       if (data.email) {
