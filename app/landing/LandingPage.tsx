@@ -5,6 +5,7 @@ import { useRef, useState, useCallback, useEffect } from "react"
 import Link from "next/link"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 import { createClient } from "@/lib/supabase/client"
+import Lenis from "lenis"
 
 /* ─── Palette ────────────────────────────────────────────────
    #98bad5  medium blue-gray   → primary accent
@@ -376,6 +377,26 @@ export default function LandingPage() {
     supabase.auth.getSession().then(({ data }) => {
       setIsLoggedIn(!!data.session)
     })
+
+    // Initialize Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+    })
+
+    function raf(time: number) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+    }
   }, [])
 
   return (
