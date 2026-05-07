@@ -1,5 +1,5 @@
 "use client"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
 import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react"
 import { useRef, useState, useCallback, useEffect } from "react"
 import Link from "next/link"
@@ -252,31 +252,70 @@ function SectionCarousel() {
         ))}
       </div>
 
-      {/* Carousel card - only show active slide */}
-      <div style={{
-        position: "relative", width: "100%", maxWidth: 740, height: "470px",
+      {/* 3D Carousel track */}
+      <div className="landing-carousel-track" style={{
+        position: "relative", width: "100%", height: "470px",
         display: "flex", alignItems: "center", justifyContent: "center",
-        zIndex: 10, margin: "0 auto",
+        perspective: "1200px", zIndex: 10,
       }}>
-        <div style={{
-          width: "min(690px, 80vw)", height: "448px",
-          overflow: "hidden", borderRadius: 24,
-          background: "#ffffff",
-          border: "2.5px solid #304674",
-          boxShadow: "4px 4px 0px #304674, 0 16px 48px rgba(48,70,116,0.18)",
-        }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={SLIDES[current].id}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
-              {SLIDES[current].content}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        {SLIDES.map((slide, index) => {
+          let offset = index - current
+          if (offset > Math.floor(total / 2)) offset -= total
+          if (offset < -Math.floor(total / 2)) offset += total
+          const isCenter   = offset === 0
+          const isAdjacent = Math.abs(offset) === 1
+          return (
+            <div key={slide.id} className="landing-carousel-card" style={{
+              position: "absolute",
+              width: "min(690px, 72vw)", height: "448px",
+              overflow: "hidden", borderRadius: 24,
+              background: "#ffffff",
+              border: "2.5px solid #304674",
+              boxShadow: isCenter
+                ? "4px 4px 0px #304674, 0 16px 48px rgba(48,70,116,0.18)"
+                : "2px 2px 0px #304674",
+              transform: `
+                translateX(${offset * 88}%)
+                rotateY(${offset * -14}deg)
+                scale(${isCenter ? 1 : isAdjacent ? 0.82 : 0.68})
+              `,
+              transformOrigin: "center center",
+              opacity: isCenter ? 1 : isAdjacent ? 0.38 : 0,
+              filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(6px)" : "blur(12px)",
+              transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease, filter 0.5s ease, box-shadow 0.4s ease",
+              zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
+              visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
+              pointerEvents: isCenter ? "auto" : "none",
+              willChange: "transform, filter, opacity",
+            }}>
+              <AnimatePresence mode="wait">
+                {isCenter ? (
+                  <motion.div
+                    key={`${slide.id}-center`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="landing-carousel-card-inner"
+                    style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
+                    {slide.content}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`${slide.id}-side`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.8 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ height: "100%", overflow: "hidden", pointerEvents: "none" }}>
+                    {/* Render content but disable interactivity and keep it faded/blurred */}
+                    {slide.content}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )
+        })}
       </div>
 
       {/* Prev arrow */}
@@ -327,6 +366,10 @@ function SectionCarousel() {
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200])
+  const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 })
 
   useEffect(() => {
     const supabase = createClient()
@@ -414,8 +457,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* University marquee - fixed position, no parallax bounce */}
-      <div className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
+      {/* University marquee */}
+      <motion.div style={{ y: smoothY1 }} className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
             {[...UNIS, ...UNIS].map((uni, i) => (
@@ -425,7 +468,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
