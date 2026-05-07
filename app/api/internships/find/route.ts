@@ -48,6 +48,7 @@ interface AIContact {
   bio: string
   website?: string | null
   linkedin?: string | null
+  email?: string | null
 }
 
 async function findByCompanyWithAI(
@@ -67,10 +68,11 @@ async function findByCompanyWithAI(
     "  bio: 2-3 sentences about their background and what they work on  be specific, mention actual projects or talks if known",
     "  website: personal site or GitHub URL if known, else null",
     "  linkedin: LinkedIn slug like linkedin.com/in/username if known, else null",
+    "  email: their actual professional or public email address if known and publicly available online, else null",
     "",
     "IMPORTANT: Only include people you are confident are real and at this company. Do not invent people.",
     "Respond ONLY with a valid JSON array. No explanation. Example:",
-    '[{"name":"Jane Smith","role":"Senior ML Engineer","bio":"Works on recommendation systems at ' + company + '. Previously at DeepMind. Open source contributor to PyTorch.","website":"https://janesmith.dev","linkedin":"linkedin.com/in/janesmith"}]',
+    '[{"name":"Jane Smith","role":"Senior ML Engineer","bio":"Works on recommendation systems at ' + company + '. Previously at DeepMind. Open source contributor to PyTorch.","website":"https://janesmith.dev","linkedin":"linkedin.com/in/janesmith","email":"jane@janesmith.dev"}]',
   ].join("\n")
 
   const raw = isGeminiKey(apiKey) ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
@@ -111,6 +113,7 @@ async function findByFieldWithAI(
     "  bio: 2-3 sentences about their background, what they actually work on, and any notable projects or talks",
     "  website: personal site, GitHub, or portfolio URL if known, else null",
     "  linkedin: LinkedIn URL like linkedin.com/in/username if publicly known, else null",
+    "  email: their actual professional or public email address if known and publicly available online, else null",
     "",
     "Only include people you are confident exist and are findable. Do not invent people.",
     "Respond ONLY with a valid JSON array.",
@@ -307,7 +310,7 @@ export async function POST(req: Request) {
           company: company.trim(),
           contact_name: c.name,
           role: c.role,
-          email: null,
+          email: c.email || null,
           linkedin_url: c.linkedin ? (c.linkedin.startsWith("http") ? c.linkedin : "https://" + c.linkedin) : null,
           website: c.website || null,
           bio: c.bio,
@@ -353,7 +356,7 @@ export async function POST(req: Request) {
               company: fieldLabel,
               contact_name: c.name,
               role: c.role,
-              email: null,
+              email: c.email || null,
               linkedin_url: c.linkedin ? (c.linkedin.startsWith("http") ? c.linkedin : "https://" + c.linkedin) : null,
               website: c.website || null,
               bio: c.bio,
