@@ -90,7 +90,11 @@ export default function SignupPage() {
       },
     })
     if (authError) {
-      setError(authError.message)
+      if (authError.message.toLowerCase().includes("rate") || authError.status === 429) {
+        setError("Too many signups right now. Please wait a minute and try again.")
+      } else {
+        setError(authError.message)
+      }
       setLoading(false)
       return
     }
