@@ -495,13 +495,7 @@ export default function LandingPage() {
       {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
 
-      <Contact2
-        title="Get in Touch"
-        description="Have questions about professor outreach or internships? We're here to help you land your next position."
-        email="ansh.rao.152@gmail.com"
-        phone="(123) 345-6789"
-        web={{ label: "internlink.ai", url: "https://internlink.ai" }}
-      />
+
 
       {/* SECTION 3  CTA with Wolf */}
       <div className="landing-cta-section" style={{
@@ -574,6 +568,8 @@ export default function LandingPage() {
           </Link>
         </motion.div>
       </div>
+
+      <Contact2 />
 
       {/* Footer */}
       <div style={{ background: "#d8e1e8", borderTop: "2px solid #b2cbde",
