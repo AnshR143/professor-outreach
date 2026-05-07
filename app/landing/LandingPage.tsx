@@ -6,6 +6,7 @@ import Link from "next/link"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 import { createClient } from "@/lib/supabase/client"
 import Lenis from "lenis"
+import { Contact2 } from "@/components/ui/contact-2"
 
 /* ─── Palette ────────────────────────────────────────────────
    #98bad5  medium blue-gray   → primary accent
@@ -494,6 +495,14 @@ export default function LandingPage() {
       {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
 
+      <Contact2
+        title="Get in Touch"
+        description="Have questions about professor outreach or internships? We're here to help you land your next position."
+        email="ansh.rao.152@gmail.com"
+        phone="(123) 345-6789"
+        web={{ label: "internlink.ai", url: "https://internlink.ai" }}
+      />
+
       {/* SECTION 3  CTA with Wolf */}
       <div className="landing-cta-section" style={{
         position: "relative", overflow: "hidden",
@@ -578,13 +587,9 @@ export default function LandingPage() {
           Built for students. Powered by AI. © 2025 InternLink.
         </p>
         <div style={{ display: "flex", gap: 20 }}>
-          {["Privacy", "Terms", "Contact"].map(l => (
-            <a key={l} href="#" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#304674"}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "#4a5568"}>
-              {l}
-            </a>
-          ))}
+          <Link href="/privacy" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}>Privacy</Link>
+          <Link href="/terms" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}>Terms</Link>
+          <a href="#contact" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}>Contact</a>
         </div>
       </div>
     </div>
