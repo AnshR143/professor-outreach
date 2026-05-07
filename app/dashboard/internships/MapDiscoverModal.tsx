@@ -38,6 +38,7 @@ export interface DiscoveredBusiness {
   address: string
   website: string | null
   phone: string | null
+  email?: string | null
   internScore: number
   scoreReason: string
   industry: string
@@ -460,6 +461,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             address: buildAddress(el.tags),
             website: el.tags.website || el.tags["contact:website"] || null,
             phone: el.tags.phone || el.tags["contact:phone"] || null,
+            email: el.tags.email || el.tags["contact:email"] || null,
             internScore: scores[i]?.score ?? 5,
             scoreReason: scores[i]?.reason ?? "Local business",
             industry: scores[i]?.industry ?? industry,
@@ -496,7 +498,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
       company: biz.name,
       role: `${biz.industry} Intern`,
       contact_name: "",
-      email: null,
+      email: biz.email || null,
       website: biz.website || null,
       bio: `${biz.type ? biz.type.charAt(0).toUpperCase() + biz.type.slice(1) : "Business"} in ${biz.address || location}. AI intern fit score: ${biz.internScore}/10. ${biz.scoreReason}`,
       notes: `${phoneLine}Discovered via map search for "${industry}" in ${location}. Coordinates: ${biz.lat.toFixed(5)}, ${biz.lon.toFixed(5)}`,
@@ -694,6 +696,14 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                       <div style={{ fontSize: 11, color: "#304674", fontWeight: 600, marginBottom: 2, textTransform: "capitalize" }}>{biz.type}</div>
                       {biz.address && <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4 }}>{biz.address}</div>}
                       <div style={{ fontSize: 11, color: "#64748b", fontStyle: "italic", marginBottom: 8 }}>{biz.scoreReason}</div>
+                      
+                      {biz.email && (
+                        <div style={{ marginBottom: 8 }}>
+                          <span style={{ fontSize: 10, background: "#dcfce7", color: "#15803d", padding: "1px 6px", borderRadius: 4, border: "1px solid #86efac" }}>
+                            {biz.email}
+                          </span>
+                        </div>
+                      )}
                       
                       {(biz as any).emails?.length > 0 && (
                         <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>

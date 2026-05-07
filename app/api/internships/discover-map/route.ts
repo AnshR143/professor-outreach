@@ -25,6 +25,7 @@ export interface DiscoveredBusiness {
   address: string
   website: string | null
   phone: string | null
+  email: string | null
   internScore: number   // 1–10
   scoreReason: string
   industry: string
@@ -260,6 +261,7 @@ export async function POST(request: Request) {
         address: buildAddress(el.tags),
         website: el.tags.website || el.tags["contact:website"] || null,
         phone: el.tags.phone || el.tags["contact:phone"] || null,
+        email: el.tags.email || el.tags["contact:email"] || null,
         internScore: scores[i]?.score ?? 5,
         scoreReason: scores[i]?.reason ?? "Local business",
         industry: scores[i]?.industry ?? industry,
