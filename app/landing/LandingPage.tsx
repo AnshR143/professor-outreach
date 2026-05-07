@@ -458,7 +458,7 @@ export default function LandingPage() {
       </div>
 
       {/* University marquee */}
-      <motion.div style={{ y: smoothY1 }} className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
+      <div className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
             {[...UNIS, ...UNIS].map((uni, i) => (
@@ -468,7 +468,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
