@@ -55,6 +55,8 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
   const [savingEmail, setSavingEmail] = useState(false)
   const [emailAddressSaved, setEmailAddressSaved] = useState(false)
   const [findingEmail, setFindingEmail] = useState(false)
+  const [emailSource, setEmailSource] = useState("")
+  const [emailAlternatives, setEmailAlternatives] = useState<string[]>([])
 
   function guessEmail(name: string, university: string): string {
     const parts = name.toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/)
@@ -99,6 +101,8 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
 
   async function findEmailWithAI() {
     setFindingEmail(true)
+    setEmailSource("")
+    setEmailAlternatives([])
     try {
       const res = await fetch("/api/professors/find-email", {
         method: "POST",
@@ -112,11 +116,15 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
       const data = await res.json()
       if (data.email) {
         setProfessorEmail(data.email)
+        setEmailSource(data.source === "scraped" ? "Found on university website" : data.source === "ai_search" ? "AI prediction" : "")
+        if (data.alternatives?.length > 0) setEmailAlternatives(data.alternatives)
       } else if (data.error) {
         alert(data.error)
+      } else {
+        alert("Could not find an email. Try entering it manually.")
       }
     } catch {
-      alert("Failed to find email with AI.")
+      alert("Failed to find email. Check your connection.")
     }
     setFindingEmail(false)
   }
@@ -379,18 +387,38 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     style={{ flex: 1, padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", outline: "none", background: "#fff" }}
                   />
                   <button onClick={findEmailWithAI} disabled={findingEmail}
-                    style={{ padding: "7px 12px", background: "#f1f5f9", color: "#304674", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: findingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-                    {findingEmail ? "Finding..." : "Find with AI"}
+                    style={{ padding: "7px 12px", background: "#f1f5f9", color: "#304674", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: findingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 4 }}>
+                    {findingEmail ? (
+                      <><div style={{ width: 10, height: 10, border: "2px solid #cbd5e1", borderTopColor: "#304674", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />Searching web...</>
+                    ) : (
+                      <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Find Email</>
+                    )}
                   </button>
                   <button onClick={saveProfessorEmail} disabled={savingEmail}
                     style={{ padding: "7px 12px", background: emailAddressSaved ? "#22c55e" : "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-                    {savingEmail ? "Saving..." : emailAddressSaved ? "Saved ✓" : "Save Email"}
+                    {savingEmail ? "Saving..." : emailAddressSaved ? "Saved \u2713" : "Save Email"}
                   </button>
                 </div>
+                {emailSource && (
+                  <div style={{ fontSize: 10, color: emailSource.includes("website") ? "#15803d" : "#b45309", marginTop: 5, display: "flex", alignItems: "center", gap: 4 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: emailSource.includes("website") ? "#22c55e" : "#f59e0b", display: "inline-block" }} />
+                    {emailSource}
+                  </div>
+                )}
+                {emailAlternatives.length > 0 && (
+                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 4 }}>
+                    Also found: {emailAlternatives.map((alt, i) => (
+                      <button key={alt} onClick={() => setProfessorEmail(alt)}
+                        style={{ background: "none", border: "none", color: "#304674", textDecoration: "underline", cursor: "pointer", fontSize: 10, padding: 0, marginLeft: i > 0 ? 6 : 2 }}>
+                        {alt}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 5 }}>
                   {professorEmail
                     ? "This email will be pre-filled when you open Gmail."
-                    : <span>Estimated: <strong>{guessEmail(researcher.name, researcher.university)}</strong> · Use the AI button to find the actual email.</span>}
+                    : <span>Estimated: <strong>{guessEmail(researcher.name, researcher.university)}</strong> \u00b7 Click <strong>Find Email</strong> to search the web for their real address.</span>}
                 </div>
               </div>
 
