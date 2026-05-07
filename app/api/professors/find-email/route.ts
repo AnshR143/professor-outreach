@@ -28,7 +28,8 @@ async function callGemini(apiKey: string, prompt: string): Promise<string> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0, maxOutputTokens: 50 },
+        tools: [{ google_search: {} }],
+        generationConfig: { temperature: 0, maxOutputTokens: 100 },
       }),
     }
   )
