@@ -249,11 +249,9 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                 </button>
               </div>
               <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
-                Free options:{" "}
-                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#304674" }}>Groq</a>
-                {" (fastest) or "}
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style={{ color: "#304674" }}>Gemini</a>
-                {"  both free tiers available."}
+                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#304674", fontWeight: 600, textDecoration: "underline" }}>
+                  Click here to make a free API key
+                </a>
               </div>
             </Field>
           </Section>
