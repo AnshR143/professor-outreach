@@ -63,19 +63,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .nav-item {
           display: flex;
           align-items: center;
-          justify-content: center;
           width: 100%;
           height: 40px;
-          padding: 0;
+          padding: 0 0 0 10px;
           border-radius: 8px;
           text-decoration: none;
-          transition: background 0.15s, color 0.15s, padding 0.25s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.25s;
+          transition: background 0.15s, color 0.15s;
           white-space: nowrap;
           gap: 10px;
           box-sizing: border-box;
         }
         .sidebar-expanded .nav-item {
-          justify-content: flex-start;
           padding-left: 10px;
         }
         .nav-label {
@@ -92,6 +90,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
         .nav-icon {
           flex-shrink: 0;
+          width: 20px;
+          height: 20px;
           display: flex;
           align-items: center;
           justify-content: center;

@@ -190,7 +190,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
             </div>
             <div style={{ border: "2px dashed #e2e8f0", borderRadius: 10, padding: "24px", textAlign: "center" }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", marginBottom: 4 }}>Upload your resume</div>
-              <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>PDF only. Used to personalize your cold emails.</div>
+              <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>PDF or DOCX. Used to personalize your cold emails.</div>
               {initial?.resume_text && !uploadStatus && (
                 <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 6, padding: "8px 12px", fontSize: 12, color: "#15803d", marginBottom: 12 }}>
                   Resume on file  {initial.resume_text.length} characters parsed
@@ -202,8 +202,8 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                 </div>
               )}
               <label style={{ display: "inline-block", padding: "10px 20px", background: uploading ? "#98bad5" : "#304674", color: "#fff", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: uploading ? "not-allowed" : "pointer" }}>
-                {uploading ? "Parsing PDF..." : "Choose PDF File"}
-                <input type="file" accept=".pdf" onChange={handleResumeUpload} disabled={uploading} style={{ display: "none" }} />
+                {uploading ? "Parsing..." : "Choose File"}
+                <input type="file" accept=".pdf,.doc,.docx" onChange={handleResumeUpload} disabled={uploading} style={{ display: "none" }} />
               </label>
             </div>
           </Section>

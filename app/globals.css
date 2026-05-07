@@ -201,6 +201,31 @@ img, video, svg { max-width: 100%; }
   [style*="height: 160"] { min-height: 110px !important; }
 }
 
+/* ── 4K / Ultrawide: ≥2000px ───────────────────────────────────────────── */
+/* Prevents the page from looking tiny/empty on high-res or zoomed-out screens */
+@media (min-width: 2000px) {
+  body { font-size: 18px; }
+  /* Dashboard main content — cap width so it doesn't stretch to infinity */
+  main { max-width: 1800px; margin: 0 auto; }
+  /* Scale KPI cards and containers to fill space */
+  [style*="repeat(4, 1fr)"],
+  [style*="repeat(4,1fr)"] {
+    gap: 24px !important;
+  }
+  [style*="repeat(3, 1fr)"],
+  [style*="repeat(3,1fr)"] {
+    gap: 20px !important;
+  }
+  /* Ensure nav items, buttons, inputs stay readable */
+  button, a, input, select, textarea { font-size: inherit; }
+  .nav-label { font-size: 15px; }
+}
+
+@media (min-width: 2560px) {
+  body { font-size: 20px; }
+  main { max-width: 2200px; }
+}
+
 /* ────────────────────────────────────────────────────────────────────────
    Landing page mobile adjustments  class-based, so reliable.
    ──────────────────────────────────────────────────────────────────────── */

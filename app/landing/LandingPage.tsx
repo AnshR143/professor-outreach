@@ -1,9 +1,10 @@
 "use client"
-import { motion, useInView, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react"
-import { useRef, useState, useCallback } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
 import Link from "next/link"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
+import { createClient } from "@/lib/supabase/client"
 
 /* ─── Palette ────────────────────────────────────────────────
    #98bad5  medium blue-gray   → primary accent
@@ -44,7 +45,6 @@ function FeaturesSlide() {
       <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
         background: "#d8e1e8", border: "2px solid #304674", borderRadius: 999,
         padding: "3px 12px", marginBottom: 10, boxShadow: "2px 2px 0px #304674" }}>
-        <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#98bad5" }} />
         <span style={{ fontSize: 10, fontWeight: 800, color: "#304674", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why InternLink</span>
       </div>
       <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 800, color: "#304674",
@@ -105,7 +105,7 @@ function HowItWorksSlide() {
                 display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontSize: 11, fontWeight: 900, color: "#304674" }}>{s.step}</span>
               </div>
-              {i < 2 && <div style={{ width: 2, height: 12, background: "#304674", margin: "4px 0", opacity: 0.25 }} />}
+              {i < 2 && <div style={{ width: 2, flex: 1, minHeight: 12, background: "#304674", opacity: 0.25 }} />}
             </div>
             <div style={{ paddingTop: 6 }}>
               <h3 style={{ fontSize: 12, fontWeight: 700, color: "#304674", margin: "0 0 2px" }}>{s.title}</h3>
@@ -252,56 +252,31 @@ function SectionCarousel() {
         ))}
       </div>
 
-      {/* 3D Carousel track */}
-      <div className="landing-carousel-track" style={{
-        position: "relative", width: "100%", height: "470px",
+      {/* Carousel card - only show active slide */}
+      <div style={{
+        position: "relative", width: "100%", maxWidth: 740, height: "470px",
         display: "flex", alignItems: "center", justifyContent: "center",
-        perspective: "1200px", zIndex: 10,
+        zIndex: 10, margin: "0 auto",
       }}>
-        {SLIDES.map((slide, index) => {
-          let offset = index - current
-          if (offset > Math.floor(total / 2)) offset -= total
-          if (offset < -Math.floor(total / 2)) offset += total
-          const isCenter   = offset === 0
-          const isAdjacent = Math.abs(offset) === 1
-          return (
-            <div key={slide.id} className="landing-carousel-card" style={{
-              position: "absolute",
-              width: "min(690px, 72vw)", height: "448px",
-              overflow: "hidden", borderRadius: 24,
-              background: "#ffffff",
-              border: "2.5px solid #304674",
-              boxShadow: isCenter
-                ? "4px 4px 0px #304674, 0 16px 48px rgba(48,70,116,0.18)"
-                : "2px 2px 0px #304674",
-              transform: `
-                translateX(${offset * 88}%)
-                rotateY(${offset * -14}deg)
-                scale(${isCenter ? 1 : isAdjacent ? 0.82 : 0.68})
-              `,
-              transformOrigin: "center center",
-              opacity: isCenter ? 1 : isAdjacent ? 0.38 : 0,
-              filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(5px)" : "blur(10px)",
-              transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease, filter 0.5s ease, box-shadow 0.4s ease",
-              zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
-              visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
-              pointerEvents: isCenter ? "auto" : "none",
-            }}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${slide.id}-${current}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="landing-carousel-card-inner"
-                  style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
-                  {slide.content}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          )
-        })}
+        <div style={{
+          width: "min(690px, 80vw)", height: "448px",
+          overflow: "hidden", borderRadius: 24,
+          background: "#ffffff",
+          border: "2.5px solid #304674",
+          boxShadow: "4px 4px 0px #304674, 0 16px 48px rgba(48,70,116,0.18)",
+        }}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={SLIDES[current].id}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
+              {SLIDES[current].content}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Prev arrow */}
@@ -351,15 +326,24 @@ function SectionCarousel() {
 ═══════════════════════════════════════════════════════════ */
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200])
-  const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 })
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(!!data.session)
+    })
+  }, [])
 
   return (
     <div ref={containerRef} style={{ background: "#fff", color: "#304674", overflow: "hidden" }}>
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-track { animation: marquee 35s linear infinite; }
+        @media (min-width: 2000px) {
+          .landing-hero-text h1 { font-size: 4.5rem !important; }
+          .landing-hero-text p { font-size: 1.25rem !important; }
+        }
       `}</style>
 
       {/* SECTION 1  Video Hero */}
@@ -393,12 +377,12 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               style={{ position: "absolute", top: 20, right: 28, zIndex: 50 }}>
-              <Link href="/login"
+              <Link href={isLoggedIn ? "/dashboard" : "/signup"}
                 style={{ display: "inline-flex", alignItems: "center",
                   background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.28)",
                   backdropFilter: "blur(12px)", borderRadius: 999, padding: "8px 22px",
                   fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
-                Sign In
+                {isLoggedIn ? "Dashboard" : "Sign Up"}
               </Link>
             </motion.div>
 
@@ -430,8 +414,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* University marquee */}
-      <motion.div style={{ y: smoothY1 }} className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
+      {/* University marquee - fixed position, no parallax bounce */}
+      <div className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
             {[...UNIS, ...UNIS].map((uni, i) => (
@@ -441,7 +425,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
