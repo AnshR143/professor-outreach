@@ -54,6 +54,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
   )
   const [savingEmail, setSavingEmail] = useState(false)
   const [emailAddressSaved, setEmailAddressSaved] = useState(false)
+  const [findingEmail, setFindingEmail] = useState(false)
 
   function guessEmail(name: string, university: string): string {
     const parts = name.toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/)
@@ -94,6 +95,26 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
     setSavingEmail(false)
     setEmailAddressSaved(true)
     setTimeout(() => setEmailAddressSaved(false), 3000)
+  }
+
+  async function findEmailWithAI() {
+    setFindingEmail(true)
+    try {
+      const res = await fetch("/api/professors/find-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ researcherName: researcher.name, university: researcher.university }),
+      })
+      const data = await res.json()
+      if (data.email) {
+        setProfessorEmail(data.email)
+      } else if (data.error) {
+        alert(data.error)
+      }
+    } catch {
+      alert("Failed to find email with AI.")
+    }
+    setFindingEmail(false)
   }
 
   // Sync papersList when server sends fresh props (after router.refresh())
@@ -353,6 +374,10 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     placeholder={guessEmail(researcher.name, researcher.university)}
                     style={{ flex: 1, padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", outline: "none", background: "#fff" }}
                   />
+                  <button onClick={findEmailWithAI} disabled={findingEmail}
+                    style={{ padding: "7px 12px", background: "#f1f5f9", color: "#304674", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: findingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
+                    {findingEmail ? "Finding..." : "Find with AI"}
+                  </button>
                   <button onClick={saveProfessorEmail} disabled={savingEmail}
                     style={{ padding: "7px 12px", background: emailAddressSaved ? "#22c55e" : "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
                     {savingEmail ? "Saving..." : emailAddressSaved ? "Saved ✓" : "Save Email"}
@@ -361,7 +386,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                 <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 5 }}>
                   {professorEmail
                     ? "This email will be pre-filled when you open Gmail."
-                    : `Estimated: ${guessEmail(researcher.name, researcher.university)}  confirm or correct before sending.`}
+                    : <span>Estimated: <strong>{guessEmail(researcher.name, researcher.university)}</strong> · Use the AI button to find the actual email.</span>}
                 </div>
               </div>
 
