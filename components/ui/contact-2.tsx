@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+import { FloatingPaths } from "@/components/ui/background-paths";
+
 interface Contact2Props {
   title?: string;
   description?: string;
@@ -54,8 +56,13 @@ export const Contact2 = ({
   };
 
   return (
-    <section id="contact" className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-24 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <FloatingPaths position={1} />
+        <FloatingPaths position={-1} />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-xl mx-auto flex flex-col items-center gap-8">
           <div className="text-center">
             <h2 className="mb-2 text-4xl font-bold tracking-tight text-[#304674]">
