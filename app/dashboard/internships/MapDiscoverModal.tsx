@@ -131,6 +131,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   const [radius, setRadius]       = useState(3000)
   const [minScore, setMinScore]   = useState(6)
   const [locating, setLocating]   = useState(false)
+  const [websiteOnly, setWebsiteOnly] = useState(false)
 
   // Results
   const [loading, setLoading]     = useState(false)
@@ -553,6 +554,11 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             <input type="range" min={1} max={9} step={1} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: "100%", accentColor: "#304674" }} />
           </div>
 
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, cursor: "pointer" }} onClick={() => setWebsiteOnly(!websiteOnly)}>
+            <input type="checkbox" checked={websiteOnly} readOnly style={{ cursor: "pointer" }} />
+            <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", cursor: "pointer" }}>Website Only</label>
+          </div>
+
           {(googleEnabled || geoapifyEnabled) && (
             <div style={{ flex: "0 0 auto" }}>
               <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Provider</label>
@@ -631,13 +637,17 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
             {businesses.length > 0 && (
               <div>
-                <div style={{ padding: "10px 14px 6px", fontSize: 11, fontWeight: 600, color: "#94a3b8", borderBottom: "1px solid #f1f5f9" }}>
-                  {businesses.length} businesses found · sorted by fit score
-                </div>
-                {businesses.map(biz => {
-                  const isSelected = selected?.id === biz.id
-                  const isAdded = added.has(biz.id)
-                  const isAdding = adding.has(biz.id)
+                {(() => {
+                  const filtered = businesses.filter(b => !websiteOnly || b.website);
+                  return (
+                    <>
+                      <div style={{ padding: "10px 14px 6px", fontSize: 11, fontWeight: 600, color: "#94a3b8", borderBottom: "1px solid #f1f5f9" }}>
+                        {filtered.length} businesses {websiteOnly ? "with sites" : ""} found
+                      </div>
+                      {filtered.map(biz => {
+                        const isSelected = selected?.id === biz.id
+                        const isAdded = added.has(biz.id)
+                        const isAdding = adding.has(biz.id)
                   return (
                     <div
                       key={biz.id}
@@ -725,8 +735,11 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                     </div>
                   )
                 })}
-              </div>
-            )}
+              </>
+            );
+          })()}
+            </div>
+          )}
           </div>
 
           {/* Right: map */}
