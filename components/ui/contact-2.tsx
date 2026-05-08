@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,33 +8,49 @@ import { Textarea } from "@/components/ui/textarea";
 interface Contact2Props {
   title?: string;
   description?: string;
-  email?: string;
 }
 
 export const Contact2 = ({
   title = "Get in Touch",
   description = "Have questions about professor outreach or internships? We're here to help you land your next position.",
-  email = "ansh.rao.152@gmail.com",
 }: Contact2Props) => {
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setStatus(null);
     
     const formData = new FormData(e.currentTarget);
-    const firstName = formData.get("firstname");
-    const lastName = formData.get("lastname");
-    const userEmail = formData.get("email");
-    const subject = formData.get("subject");
-    const message = formData.get("message");
+    const payload = {
+      firstName: formData.get("firstname"),
+      lastName: formData.get("lastname"),
+      email: formData.get("email"),
+      subject: formData.get("subject"),
+      message: formData.get("message"),
+    };
 
-    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject as string || "Contact Form Submission")}&body=${encodeURIComponent(
-      `Name: ${firstName} ${lastName}\nEmail: ${userEmail}\n\nMessage:\n${message}`
-    )}`;
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    window.location.href = mailtoUrl;
-    setLoading(false);
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatus({ type: "success", msg: "Message sent successfully!" });
+        (e.target as HTMLFormElement).reset();
+      } else {
+        setStatus({ type: "error", msg: data.error || "Failed to send message." });
+      }
+    } catch (err) {
+      setStatus({ type: "error", msg: "Something went wrong. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,12 +90,19 @@ export const Contact2 = ({
               <Label htmlFor="message" className="text-xs font-bold text-[#304674]">Message</Label>
               <Textarea placeholder="Type your message here." id="message" name="message" required className="bg-white min-h-[100px] text-sm" />
             </div>
+
+            {status && (
+              <div className={`p-3 rounded-md text-xs font-bold ${status.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+                {status.msg}
+              </div>
+            )}
+
             <Button 
               type="submit" 
               disabled={loading}
               className="w-full bg-[#304674] hover:bg-[#1a2e52] text-white font-bold h-10 transition-all active:scale-95"
             >
-              {loading ? "Opening Mail..." : "Send Message"}
+              {loading ? "Sending..." : "Send Message"}
             </Button>
           </form>
         </div>
