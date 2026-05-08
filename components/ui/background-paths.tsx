@@ -12,14 +12,14 @@ export function FloatingPaths({ position }: { position: number }) {
         } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
             684 - i * 5 * position
         } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-        color: `rgba(48,70,116,${0.05 + i * 0.01})`, // Using our navy color
-        width: 0.5 + i * 0.03,
+        color: `rgba(48,70,116,${0.15 + i * 0.02})`, // Increased base opacity and step
+        width: 0.8 + i * 0.04, // Slightly thicker lines
     }));
 
     return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <svg
-                className="w-full h-full text-slate-200"
+                className="w-full h-full text-slate-300" // Lightened color for better contrast on white
                 viewBox="0 0 696 316"
                 fill="none"
                 preserveAspectRatio="xMidYMid slice"
@@ -31,15 +31,15 @@ export function FloatingPaths({ position }: { position: number }) {
                         d={path.d}
                         stroke="currentColor"
                         strokeWidth={path.width}
-                        strokeOpacity={0.1 + path.id * 0.02}
+                        strokeOpacity={0.2 + path.id * 0.03} // Increased opacity range
                         initial={{ pathLength: 0.3, opacity: 0.6 }}
                         animate={{
                             pathLength: 1,
-                            opacity: [0.3, 0.6, 0.3],
+                            opacity: [0.4, 0.8, 0.4], // Brighter animation cycle
                             pathOffset: [0, 1, 0],
                         }}
                         transition={{
-                            duration: 20 + Math.random() * 10,
+                            duration: 15 + Math.random() * 8, // Slightly faster to be more noticeable
                             repeat: Number.POSITIVE_INFINITY,
                             ease: "linear",
                         }}
