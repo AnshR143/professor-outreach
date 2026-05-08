@@ -397,13 +397,9 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
 
               {/* Keywords / Fields with autocomplete */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 8 }}>
                   Keywords or research fields
-                  <span style={{ color: "#94a3b8", fontWeight: 400 }}>  separate multiple with commas</span>
                 </label>
-                <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
-                  Spelling and capitalisation don&apos;t matter. "AI", "artificial intelligence", and "machien lerning" all work.
-                </p>
 
                 {/* Input + dropdown wrapper */}
                 <div style={{ position: "relative" }}>
@@ -465,13 +461,10 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
 
               {/* University */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 8 }}>
                   University
                   <span style={{ color: "#94a3b8", fontWeight: 400 }}>  optional, leave blank to search all</span>
                 </label>
-                <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
-                  Comma-separate multiple. Fuzzy-matched  "stanfrod" and "carnegie melon" still work.
-                </p>
                 <input
                   value={form.universityText}
                   onChange={e => setForm(fm => ({ ...fm, universityText: e.target.value }))}
