@@ -580,7 +580,7 @@ export default function LandingPage() {
           <span style={{ fontSize: 14, fontWeight: 700, color: "#304674" }}>InternLink</span>
         </div>
         <p style={{ fontSize: 13, color: "#4a5568", margin: 0 }}>
-          Built for students. Powered by AI. © 2025 InternLink.
+          Built for students. Powered by AI. © 2026 InternLink.
         </p>
         <div style={{ display: "flex", gap: 20 }}>
           <Link href="/privacy" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}>Privacy</Link>
