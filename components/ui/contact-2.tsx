@@ -56,50 +56,50 @@ export const Contact2 = ({
   };
 
   return (
-    <section id="contact" className="py-12 bg-white relative overflow-hidden">
+    <section id="contact" className="py-8 bg-white relative overflow-hidden">
       <div className="absolute inset-0 z-0">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-xl mx-auto flex flex-col items-center gap-6">
+        <div className="max-w-md mx-auto flex flex-col items-center gap-4">
           <div className="text-center">
-            <h2 className="mb-1 text-3xl font-bold tracking-tight text-[#304674]">
+            <h2 className="mb-0.5 text-2xl font-bold tracking-tight text-[#304674]">
               {title}
             </h2>
-            <p className="text-muted-foreground text-xs max-w-sm mx-auto">{description}</p>
+            <p className="text-muted-foreground text-[10px] max-w-xs mx-auto">{description}</p>
           </div>
 
           <form 
             onSubmit={handleSubmit}
-            className="w-full flex flex-col gap-3 rounded-xl border border-[#e2e8f0] p-6 bg-[#f8f9fb] shadow-sm"
+            className="w-full flex flex-col gap-2.5 rounded-xl border border-[#e2e8f0] p-4 bg-[#f8f9fb] shadow-sm"
           >
-            <div className="flex gap-4">
-              <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="firstname" className="text-xs font-bold text-[#304674]">First Name</Label>
-                <Input type="text" id="firstname" name="firstname" placeholder="First Name" required className="bg-white h-9 text-sm" />
+            <div className="flex gap-3">
+              <div className="grid w-full items-center gap-1">
+                <Label htmlFor="firstname" className="text-[10px] font-bold text-[#304674]">First Name</Label>
+                <Input type="text" id="firstname" name="firstname" placeholder="First Name" required className="bg-white h-8 text-[11px] px-2" />
               </div>
-              <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="lastname" className="text-xs font-bold text-[#304674]">Last Name</Label>
-                <Input type="text" id="lastname" name="lastname" placeholder="Last Name" required className="bg-white h-9 text-sm" />
+              <div className="grid w-full items-center gap-1">
+                <Label htmlFor="lastname" className="text-[10px] font-bold text-[#304674]">Last Name</Label>
+                <Input type="text" id="lastname" name="lastname" placeholder="Last Name" required className="bg-white h-8 text-[11px] px-2" />
               </div>
             </div>
-            <div className="grid w-full items-center gap-1.5">
-              <Label htmlFor="email" className="text-xs font-bold text-[#304674]">Email</Label>
-              <Input type="email" id="email" name="email" placeholder="Email" required className="bg-white h-9 text-sm" />
+            <div className="grid w-full items-center gap-1">
+              <Label htmlFor="email" className="text-[10px] font-bold text-[#304674]">Email</Label>
+              <Input type="email" id="email" name="email" placeholder="Email" required className="bg-white h-8 text-[11px] px-2" />
             </div>
-            <div className="grid w-full items-center gap-1.5">
-              <Label htmlFor="subject" className="text-xs font-bold text-[#304674]">Subject</Label>
-              <Input type="text" id="subject" name="subject" placeholder="Subject" required className="bg-white h-9 text-sm" />
+            <div className="grid w-full items-center gap-1">
+              <Label htmlFor="subject" className="text-[10px] font-bold text-[#304674]">Subject</Label>
+              <Input type="text" id="subject" name="subject" placeholder="Subject" required className="bg-white h-8 text-[11px] px-2" />
             </div>
-            <div className="grid w-full gap-1.5">
-              <Label htmlFor="message" className="text-xs font-bold text-[#304674]">Message</Label>
-              <Textarea placeholder="Type your message here." id="message" name="message" required className="bg-white min-h-[100px] text-sm" />
+            <div className="grid w-full gap-1">
+              <Label htmlFor="message" className="text-[10px] font-bold text-[#304674]">Message</Label>
+              <Textarea placeholder="Type your message here." id="message" name="message" required className="bg-white min-h-[60px] text-[11px] px-2 py-1.5" />
             </div>
 
             {status && (
-              <div className={`p-3 rounded-md text-xs font-bold ${status.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+              <div className={`p-2 rounded-md text-[10px] font-bold ${status.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
                 {status.msg}
               </div>
             )}
@@ -107,7 +107,7 @@ export const Contact2 = ({
             <Button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-[#304674] hover:bg-[#1a2e52] text-white font-bold h-10 transition-all active:scale-95"
+              className="w-full bg-[#304674] hover:bg-[#1a2e52] text-white font-bold h-8 text-xs transition-all active:scale-95"
             >
               {loading ? "Sending..." : "Send Message"}
             </Button>
