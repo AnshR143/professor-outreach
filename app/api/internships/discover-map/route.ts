@@ -49,10 +49,13 @@ async function geocode(location: string): Promise<{ lat: number; lon: number } |
 
 function buildOverpassQuery(lat: number, lon: number, radiusM: number): string {
   // Exclude low-value/chain tags that aren't suitable for professional internships
+  // Negative lookahead to skip food/drink/hospitality when we want professional offices
   return `[out:json][timeout:25];
 (
   node["office"]["name"](around:${radiusM},${lat},${lon});
-  node["amenity"~"^(studio|coworking|clinic|school|college|library|marketplace|research_institute|community_centre)$"]["name"](around:${radiusM},${lat},${lon});
+  node["amenity"~"^(studio|coworking|research_institute|community_centre)$"]["name"](around:${radiusM},${lat},${lon});
+  // Exclude amenities that are clearly pubs, bars, cafes, or restaurants
+  node["amenity"!~"^(pub|bar|cafe|restaurant|fast_food|biergarten)$"]["name"](around:${radiusM},${lat},${lon});
   node["craft"]["name"](around:${radiusM},${lat},${lon});
   node["company"]["name"](around:${radiusM},${lat},${lon});
   // Filtered shops - avoid gas stations, ATMs, and convenience stores
@@ -88,21 +91,20 @@ async function scoreWithGroq(
   const Groq = (await import("groq-sdk")).default
   const client = new Groq({ apiKey })
 
-  const prompt = `You are an expert at identifying which local businesses are likely to hire interns or part-time workers.
+  const prompt = `You are an expert at identifying professional internship opportunities.
+  
+Given the following list of businesses and the target internship industry "${industry}", rate each one on a scale of 1–10.
 
-Given the following list of businesses and the target internship industry "${industry}", rate each one on a scale of 1–10 for likelihood of hiring interns. Consider:
-- Small/medium-sized = higher chance
-- Relevance to "${industry}" field = higher score
-- Tech, design, marketing, media companies tend to hire interns
-- Very large chains or utilities = lower score
+STRICT SCORING RULES:
+1. DIRECT MATCH: If the business is a professional office/firm in "${industry}" (e.g. an Architecture firm for Architecture industry), give it 8-10.
+2. IRRELEVANT / LIFESTYLE: If the business is a pub, brewery, restaurant, cafe, gym, or retail shop, give it 1-2. These are NOT for professional internships.
+3. SCALE: Small to medium professional firms are the gold standard.
 
 Businesses:
 ${businesses.map((b, i) => `${i + 1}. Name: "${b.name}" | Type: ${b.type} | Location: ${b.address || "local area"}`).join("\n")}
 
-Respond ONLY with valid JSON  an array of exactly ${businesses.length} objects, each with:
-{ "score": number 1-10, "description": string (1-2 sentences explaining what the company does and why they are a good internship fit), "industry": string }
-
-Example: [{"score":8,"description":"A boutique marketing firm specializing in social media growth for startups; likely needs creative interns.","industry":"Marketing"}]`
+Respond ONLY with valid JSON array of exactly ${businesses.length} objects:
+{ "score": number 1-10, "description": string (1 sentence about the company and why it is/isn't a fit), "industry": string }`
 
   const completion = await client.chat.completions.create({
     model: "llama-3.3-70b-versatile",
