@@ -195,8 +195,8 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
     setEmailValidationError("")
     setSending(true)
     const toEmail = professorEmail.trim() || guessEmail(researcher.name, researcher.university)
-    const mailtoUrl = `mailto:${encodeURIComponent(toEmail)}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
-    window.location.href = mailtoUrl
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(toEmail)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+    window.open(gmailUrl, "_blank")
 
     // Mark as sent
     const supabaseClient = createClient()
