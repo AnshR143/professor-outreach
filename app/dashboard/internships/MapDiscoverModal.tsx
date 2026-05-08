@@ -40,7 +40,7 @@ export interface DiscoveredBusiness {
   phone: string | null
   email?: string | null
   internScore: number
-  scoreReason: string
+  description: string
   industry: string
 }
 
@@ -692,9 +692,24 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                         <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{biz.name}</div>
                         <ScoreBadge score={biz.internScore} />
                       </div>
-                      <div style={{ fontSize: 11, color: "#304674", fontWeight: 600, marginBottom: 2, textTransform: "capitalize" }}>{biz.type}</div>
-                      {biz.address && <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4 }}>{biz.address}</div>}
-                      <div style={{ fontSize: 11, color: "#64748b", fontStyle: "italic", marginBottom: 8 }}>{biz.scoreReason}</div>
+                      <div style={{ fontSize: 11, color: "#304674", fontWeight: 600, marginBottom: 4, textTransform: "capitalize" }}>{biz.type}</div>
+                      
+                      <div style={{ position: "relative", marginBottom: 8 }}>
+                        <div style={{ 
+                          fontSize: 11, 
+                          color: "#64748b", 
+                          lineHeight: 1.4,
+                          display: "-webkit-box",
+                          WebkitLineClamp: isSelected ? "unset" : 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden"
+                        }}>
+                          {biz.description}
+                        </div>
+                        {!isSelected && biz.description?.length > 60 && (
+                          <div style={{ fontSize: 10, color: "#304674", fontWeight: 700, marginTop: 2 }}>View more</div>
+                        )}
+                      </div>
                       
                       {biz.email && (
                         <div style={{ marginBottom: 8 }}>

@@ -27,7 +27,7 @@ export interface DiscoveredBusiness {
   phone: string | null
   email: string | null
   internScore: number   // 1–10
-  scoreReason: string
+  description: string
   industry: string
 }
 
@@ -100,9 +100,9 @@ Businesses:
 ${businesses.map((b, i) => `${i + 1}. Name: "${b.name}" | Type: ${b.type} | Location: ${b.address || "local area"}`).join("\n")}
 
 Respond ONLY with valid JSON  an array of exactly ${businesses.length} objects, each with:
-{ "score": number 1-10, "reason": string max 60 chars, "industry": string (the relevant industry category) }
+{ "score": number 1-10, "description": string (1-2 sentences explaining what the company does and why they are a good internship fit), "industry": string }
 
-Example: [{"score":8,"reason":"Small digital agency, likely needs design interns","industry":"Design"}]`
+Example: [{"score":8,"description":"A boutique marketing firm specializing in social media growth for startups; likely needs creative interns.","industry":"Marketing"}]`
 
   const completion = await client.chat.completions.create({
     model: "llama-3.3-70b-versatile",
@@ -118,7 +118,7 @@ Example: [{"score":8,"reason":"Small digital agency, likely needs design interns
     if (Array.isArray(parsed) && parsed.length === businesses.length) return parsed
   } catch { /* fallback below */ }
   // Fallback: return neutral scores
-  return businesses.map(() => ({ score: 5, reason: "Could be a fit", industry: industry }))
+  return businesses.map(() => ({ score: 5, description: "Local business in the requested area.", industry: industry }))
 }
 
 async function scoreWithGemini(
@@ -132,7 +132,7 @@ Consider: small/medium businesses score higher, relevant industry = higher score
 Businesses:
 ${businesses.map((b, i) => `${i + 1}. "${b.name}" (${b.type})`).join("\n")}
 
-Reply ONLY with JSON array of ${businesses.length} objects: [{"score":N,"reason":"short reason","industry":"category"}]`
+Reply ONLY with JSON array of ${businesses.length} objects: [{"score":N,"description":"1-2 sentences about the company and fit","industry":"category"}]`
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
@@ -149,7 +149,7 @@ Reply ONLY with JSON array of ${businesses.length} objects: [{"score":N,"reason"
     const parsed = JSON.parse(jsonStr)
     if (Array.isArray(parsed) && parsed.length === businesses.length) return parsed
   } catch { /* fallback */ }
-  return businesses.map(() => ({ score: 5, reason: "Could be a fit", industry }))
+  return businesses.map(() => ({ score: 5, description: "Local business in the requested area.", industry }))
 }
 
 // ─── Route ────────────────────────────────────────────────────────────────────
@@ -265,7 +265,7 @@ export async function POST(request: Request) {
         phone: el.tags.phone || el.tags["contact:phone"] || null,
         email: el.tags.email || el.tags["contact:email"] || null,
         internScore: scores[i]?.score ?? 5,
-        scoreReason: scores[i]?.reason ?? "Local business",
+        description: scores[i]?.description ?? "Local business in the requested area.",
         industry: scores[i]?.industry ?? industry,
       }))
       .filter(b => b.internScore >= minScore)
