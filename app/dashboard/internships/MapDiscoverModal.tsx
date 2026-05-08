@@ -650,7 +650,6 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
             {!loading && businesses.length === 0 && !error && (
               <div style={{ padding: 32, textAlign: "center", color: "#94a3b8" }}>
-                <div style={{ fontSize: 36, marginBottom: 12 }}>📍</div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#64748b", marginBottom: 6 }}>Search a location</div>
                 <div style={{ fontSize: 13 }}>Enter a city and industry above to find businesses near you</div>
               </div>
