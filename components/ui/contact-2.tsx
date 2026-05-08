@@ -56,24 +56,24 @@ export const Contact2 = ({
   };
 
   return (
-    <section id="contact" className="py-24 bg-white relative overflow-hidden">
+    <section id="contact" className="py-12 bg-white relative overflow-hidden">
       <div className="absolute inset-0 z-0">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-xl mx-auto flex flex-col items-center gap-8">
+        <div className="max-w-xl mx-auto flex flex-col items-center gap-6">
           <div className="text-center">
-            <h2 className="mb-2 text-4xl font-bold tracking-tight text-[#304674]">
+            <h2 className="mb-1 text-3xl font-bold tracking-tight text-[#304674]">
               {title}
             </h2>
-            <p className="text-muted-foreground text-sm max-w-sm mx-auto">{description}</p>
+            <p className="text-muted-foreground text-xs max-w-sm mx-auto">{description}</p>
           </div>
 
           <form 
             onSubmit={handleSubmit}
-            className="w-full flex flex-col gap-4 rounded-xl border border-[#e2e8f0] p-8 bg-[#f8f9fb] shadow-sm"
+            className="w-full flex flex-col gap-3 rounded-xl border border-[#e2e8f0] p-6 bg-[#f8f9fb] shadow-sm"
           >
             <div className="flex gap-4">
               <div className="grid w-full items-center gap-1.5">
