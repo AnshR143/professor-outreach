@@ -1,8 +1,17 @@
-import React from "react"
-import Link from "next/link"
+"use client";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function PrivacyPage() {
-  const lastUpdated = "May 7, 2026"
+  const lastUpdated = "May 7, 2026";
+  const [referrer, setReferrer] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only access document.referrer on client side
+    setReferrer(document.referrer);
+  }, []);
+
+  const isFromSignup = referrer?.includes("/signup");
 
   return (
     <div style={{ background: "#f8f9fb", minHeight: "100vh", color: "#304674", fontFamily: "Inter, sans-serif" }}>
@@ -13,7 +22,9 @@ export default function PrivacyPage() {
             <img src="/link.png" alt="Logo" style={{ width: 32, height: 32 }} />
             <span>InternLink</span>
           </Link>
-          <Link href="/signup" style={{ fontSize: 14, fontWeight: 600, color: "#304674", textDecoration: "none" }}>Back to Sign Up</Link>
+          <Link href={isFromSignup ? "/signup" : "/"} style={{ fontSize: 14, fontWeight: 600, color: "#304674", textDecoration: "none" }}>
+            {isFromSignup ? "Back to Sign Up" : "Back to Home"}
+          </Link>
         </div>
       </header>
 
@@ -63,5 +74,5 @@ export default function PrivacyPage() {
         &copy; 2026 InternLink. All rights reserved.
       </footer>
     </div>
-  )
+  );
 }
