@@ -48,13 +48,15 @@ async function geocode(location: string): Promise<{ lat: number; lon: number } |
 }
 
 function buildOverpassQuery(lat: number, lon: number, radiusM: number): string {
+  // Exclude low-value/chain tags that aren't suitable for professional internships
   return `[out:json][timeout:25];
 (
   node["office"]["name"](around:${radiusM},${lat},${lon});
-  node["shop"]["name"](around:${radiusM},${lat},${lon});
-  node["amenity"~"^(restaurant|cafe|bar|studio|coworking|gym|salon|clinic|pharmacy|school|college|library|marketplace)$"]["name"](around:${radiusM},${lat},${lon});
+  node["amenity"~"^(studio|coworking|clinic|school|college|library|marketplace|research_institute|community_centre)$"]["name"](around:${radiusM},${lat},${lon});
   node["craft"]["name"](around:${radiusM},${lat},${lon});
   node["company"]["name"](around:${radiusM},${lat},${lon});
+  // Filtered shops - avoid gas stations, ATMs, and convenience stores
+  node["shop"~"^(books|electronics|frame|interior_decoration|music|photo|printing|computer|software)$"]["name"](around:${radiusM},${lat},${lon});
 );
 out body 80;`
 }
