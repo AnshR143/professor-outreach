@@ -25,9 +25,8 @@ export interface DiscoveredBusiness {
   address: string
   website: string | null
   phone: string | null
-  email: string | null
   internScore: number   // 1–10
-  description: string
+  scoreReason: string
   industry: string
 }
 
@@ -48,18 +47,13 @@ async function geocode(location: string): Promise<{ lat: number; lon: number } |
 }
 
 function buildOverpassQuery(lat: number, lon: number, radiusM: number): string {
-  // Exclude low-value/chain tags that aren't suitable for professional internships
-  // Negative lookahead to skip food/drink/hospitality when we want professional offices
   return `[out:json][timeout:25];
 (
   node["office"]["name"](around:${radiusM},${lat},${lon});
-  node["amenity"~"^(studio|coworking|research_institute|community_centre)$"]["name"](around:${radiusM},${lat},${lon});
-  // Exclude amenities that are clearly pubs, bars, cafes, or restaurants
-  node["amenity"!~"^(pub|bar|cafe|restaurant|fast_food|biergarten)$"]["name"](around:${radiusM},${lat},${lon});
+  node["shop"]["name"](around:${radiusM},${lat},${lon});
+  node["amenity"~"^(restaurant|cafe|bar|studio|coworking|gym|salon|clinic|pharmacy|school|college|library|marketplace)$"]["name"](around:${radiusM},${lat},${lon});
   node["craft"]["name"](around:${radiusM},${lat},${lon});
   node["company"]["name"](around:${radiusM},${lat},${lon});
-  // Filtered shops - avoid gas stations, ATMs, and convenience stores
-  node["shop"~"^(books|electronics|frame|interior_decoration|music|photo|printing|computer|software)$"]["name"](around:${radiusM},${lat},${lon});
 );
 out body 80;`
 }
@@ -91,20 +85,21 @@ async function scoreWithGroq(
   const Groq = (await import("groq-sdk")).default
   const client = new Groq({ apiKey })
 
-  const prompt = `You are an expert at identifying professional internship opportunities.
-  
-Given the following list of businesses and the target internship industry "${industry}", rate each one on a scale of 1–10.
+  const prompt = `You are an expert at identifying which local businesses are likely to hire interns or part-time workers.
 
-STRICT SCORING RULES:
-1. DIRECT MATCH: If the business is a professional office/firm in "${industry}" (e.g. an Architecture firm for Architecture industry), give it 8-10.
-2. IRRELEVANT / LIFESTYLE: If the business is a pub, brewery, restaurant, cafe, gym, or retail shop, give it 1-2. These are NOT for professional internships.
-3. SCALE: Small to medium professional firms are the gold standard.
+Given the following list of businesses and the target internship industry "${industry}", rate each one on a scale of 1–10 for likelihood of hiring interns. Consider:
+- Small/medium-sized = higher chance
+- Relevance to "${industry}" field = higher score
+- Tech, design, marketing, media companies tend to hire interns
+- Very large chains or utilities = lower score
 
 Businesses:
 ${businesses.map((b, i) => `${i + 1}. Name: "${b.name}" | Type: ${b.type} | Location: ${b.address || "local area"}`).join("\n")}
 
-Respond ONLY with valid JSON array of exactly ${businesses.length} objects:
-{ "score": number 1-10, "description": string (1 sentence about the company and why it is/isn't a fit), "industry": string }`
+Respond ONLY with valid JSON  an array of exactly ${businesses.length} objects, each with:
+{ "score": number 1-10, "reason": string max 60 chars, "industry": string (the relevant industry category) }
+
+Example: [{"score":8,"reason":"Small digital agency, likely needs design interns","industry":"Design"}]`
 
   const completion = await client.chat.completions.create({
     model: "llama-3.3-70b-versatile",
@@ -120,7 +115,7 @@ Respond ONLY with valid JSON array of exactly ${businesses.length} objects:
     if (Array.isArray(parsed) && parsed.length === businesses.length) return parsed
   } catch { /* fallback below */ }
   // Fallback: return neutral scores
-  return businesses.map(() => ({ score: 5, description: "Local business in the requested area.", industry: industry }))
+  return businesses.map(() => ({ score: 5, reason: "Could be a fit", industry: industry }))
 }
 
 async function scoreWithGemini(
@@ -134,7 +129,7 @@ Consider: small/medium businesses score higher, relevant industry = higher score
 Businesses:
 ${businesses.map((b, i) => `${i + 1}. "${b.name}" (${b.type})`).join("\n")}
 
-Reply ONLY with JSON array of ${businesses.length} objects: [{"score":N,"description":"1-2 sentences about the company and fit","industry":"category"}]`
+Reply ONLY with JSON array of ${businesses.length} objects: [{"score":N,"reason":"short reason","industry":"category"}]`
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
@@ -151,7 +146,7 @@ Reply ONLY with JSON array of ${businesses.length} objects: [{"score":N,"descrip
     const parsed = JSON.parse(jsonStr)
     if (Array.isArray(parsed) && parsed.length === businesses.length) return parsed
   } catch { /* fallback */ }
-  return businesses.map(() => ({ score: 5, description: "Local business in the requested area.", industry }))
+  return businesses.map(() => ({ score: 5, reason: "Could be a fit", industry }))
 }
 
 // ─── Route ────────────────────────────────────────────────────────────────────
@@ -265,9 +260,8 @@ export async function POST(request: Request) {
         address: buildAddress(el.tags),
         website: el.tags.website || el.tags["contact:website"] || null,
         phone: el.tags.phone || el.tags["contact:phone"] || null,
-        email: el.tags.email || el.tags["contact:email"] || null,
         internScore: scores[i]?.score ?? 5,
-        description: scores[i]?.description ?? "Local business in the requested area.",
+        scoreReason: scores[i]?.reason ?? "Local business",
         industry: scores[i]?.industry ?? industry,
       }))
       .filter(b => b.internScore >= minScore)
@@ -284,3 +278,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Discovery failed: " + message }, { status: 500 })
   }
 }
+

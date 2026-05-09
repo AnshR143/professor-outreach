@@ -6,8 +6,7 @@ import type { InternshipContact } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
 import dynamic from "next/dynamic"
 import FindInternshipContactsModal from "@/components/internships/FindInternshipContactsModal"
-import "maplibre-gl/dist/maplibre-gl.css"
-import { Map, MapMarker, MarkerContent, MarkerTooltip } from "@/components/ui/map"
+import LiquidGlassButton from "@/components/ui/liquid-glass-button"
 const MapDiscoverModal = dynamic(() => import("./MapDiscoverModal"), { ssr: false })
 
 const EMAIL_STATUS_CYCLE = ["not_emailed", "emailed", "rejected", "accepted"] as const
@@ -45,7 +44,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
   const [showAdd, setShowAdd] = useState(false)
   const [showFind, setShowFind] = useState(false)
   const [showMap, setShowMap] = useState(false)
-  const [viewMode, setViewMode] = useState<"list" | "map">("list")
   const [form, setForm] = useState<AddForm>(EMPTY_FORM)
   const [adding, setAdding] = useState(false)
   const [resetting, setResetting] = useState(false)
@@ -219,24 +217,15 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
           </button>
-          <button onClick={() => setViewMode(v => v === "list" ? "map" : "list")}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#fff", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            {viewMode === "list" ? (
-              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Map View</>
-            ) : (
-              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> List View</>
-            )}
-          </button>
           <button onClick={() => setShowMap(true)}
             style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#0f172a", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             Map Discovery
           </button>
-          <button onClick={() => setShowFind(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <LiquidGlassButton onClick={() => setShowFind(true)} variant="primary" size="md">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Contacts
-          </button>
+          </LiquidGlassButton>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>
@@ -287,7 +276,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
           </div>
         )}
 
-        {filtered.length > 0 && viewMode === "list" && (
+        {filtered.length > 0 && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
             {filtered.map(c => {
               const status = (emailStatuses[c.id] ?? c.email_status ?? "not_emailed") as EmailStatus
@@ -300,12 +289,12 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                     style={{ position: "absolute", top: 10, right: 10, zIndex: 2, width: 22, height: 22, borderRadius: "50%", background: "#f1f5f9", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", fontSize: 14, lineHeight: 1, padding: 0 }}
                     onMouseEnter={e => { e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.color = "#dc2626" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#94a3b8" }}
-                  >×</button>
+                  >�</button>
                   <div
                     onClick={e => openEmailModal(e, c)}
-                    style={{ background: "#fff", borderRadius: 14, border: "2px solid #304674", padding: "18px 20px", cursor: "pointer", transition: "transform 0.15s, box-shadow 0.15s", boxShadow: "4px 4px 0px #304674", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "6px 6px 0px #304674"; e.currentTarget.style.transform = "translate(-2px, -2px)" }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "4px 4px 0px #304674"; e.currentTarget.style.transform = "translate(0, 0)" }}
+                    style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#304674" }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
                   >
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.company || "Unknown Company"}</div>
@@ -334,29 +323,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                 </div>
               )
             })}
-          </div>
-        )}
-
-        {filtered.length > 0 && viewMode === "map" && (
-          <div style={{ height: "65vh", borderRadius: 16, overflow: "hidden", border: "2px solid #304674", boxShadow: "4px 4px 0px #304674" }}>
-            <Map center={[-98.5795, 39.8283]} zoom={3} minZoom={2} maxZoom={18}>
-              {filtered.map(c => {
-                const match = c.notes?.match(/Coordinates:\s*(-?[\d.]+),\s*(-?[\d.]+)/);
-                if (!match) return null;
-                const lat = parseFloat(match[1]);
-                const lon = parseFloat(match[2]);
-                const status = (emailStatuses[c.id] ?? c.email_status ?? "not_emailed") as EmailStatus
-                const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.not_emailed
-                return (
-                  <MapMarker key={c.id} longitude={lon} latitude={lat} onClick={(e: any) => { openEmailModal(e, c) }}>
-                    <MarkerContent>
-                      <div style={{ width: 16, height: 16, borderRadius: "50%", background: cfg.bg, border: `2.5px solid ${cfg.border}`, boxShadow: "0 2px 6px rgba(0,0,0,0.18)", cursor: "pointer" }} />
-                    </MarkerContent>
-                    <MarkerTooltip>{c.company} · {cfg.label}</MarkerTooltip>
-                  </MapMarker>
-                )
-              })}
-            </Map>
           </div>
         )}
       </div>
@@ -428,17 +394,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
             <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
                 <div style={{ fontSize: 17, fontWeight: 700, color: "#0f172a" }}>{emailContact.contact_name || emailContact.company}</div>
-                <div style={{ fontSize: 12, color: "#304674", fontWeight: 600, marginTop: 2 }}>{emailContact.role}{emailContact.company && emailContact.contact_name ? " at " + emailContact.company : ""}</div>
-                {(emailContact.email || (emailContact.notes && emailContact.notes.includes("Phone:"))) && (
-                  <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 12, color: "#475569" }}>
-                    {emailContact.email && <div style={{ background: "#f1f5f9", padding: "4px 8px", borderRadius: 6, border: "1px solid #e2e8f0" }}><strong>Email:</strong> {emailContact.email}</div>}
-                    {emailContact.notes && emailContact.notes.includes("Phone:") && (
-                      <div style={{ background: "#f1f5f9", padding: "4px 8px", borderRadius: 6, border: "1px solid #e2e8f0" }}>
-                        <strong>Phone:</strong> {emailContact.notes.match(/Phone:\s*([^.]+)/)?.[1]}
-                      </div>
-                    )}
-                  </div>
-                )}
+                <div style={{ fontSize: 12, color: "#304674", fontWeight: 600, marginTop: 2 }}>{emailContact.role}{emailContact.company ? " at " + emailContact.company : ""}</div>
               </div>
               <button onClick={() => setEmailContact(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 20, lineHeight: 1, padding: 4 }}>x</button>
             </div>

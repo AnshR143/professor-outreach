@@ -4,6 +4,7 @@ import Link from "next/link"
 import type { Researcher, Email, InternshipContact } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
 import FindResearchersModal from "@/components/researchers/FindResearchersModal"
+import LiquidGlassButton from "@/components/ui/liquid-glass-button"
 
 const FIELD_COLORS: Record<string, string> = {
   "AI": "#c6d3e3", "Artificial Intelligence": "#c6d3e3", "Finance": "#dcfce7",
@@ -176,10 +177,10 @@ export default function StatisticsClient({ researchers: initial, emails, interns
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Statistics</h1>
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={() => setShowFind(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <LiquidGlassButton onClick={() => setShowFind(true)} variant="primary" size="md">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Researchers
-          </button>
+          </LiquidGlassButton>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>
@@ -236,7 +237,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     { label: "Accepted", value: accepted, sub: "Replied positively", pct: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}% reply rate`, color: "#22c55e" },
                     { label: "Rejected", value: rejectedEmail, sub: `${pending} awaiting reply`, pct: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}% rejected`, color: "#ef4444" },
                   ].map((k, i) => (
-                    <div key={i} style={{ background: "#fff", borderRadius: 12, padding: 20, border: "2px solid #304674", boxShadow: "4px 4px 0px #304674" }}>
+                    <div key={i} style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                         <div style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>{k.label}</div>
                         <div style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${k.color}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -252,7 +253,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                   ))}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", padding: 20, boxShadow: "4px 4px 0px #304674" }}>
+                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Top Universities</h3>
                     {topUniversities.map((u, i) => (
                       <div key={u.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topUniversities.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -265,7 +266,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     ))}
                     {topUniversities.length === 0 && <div style={{ color: "#94a3b8", fontSize: 13, textAlign: "center", padding: 20 }}>No data yet</div>}
                   </div>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", padding: 20, boxShadow: "4px 4px 0px #304674" }}>
+                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Research Fields</h3>
                     {topFields.map((f, i) => (
                       <div key={f.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topFields.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -283,7 +284,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
             )}
 
             {activeTab === "sankey" && (
-              <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", padding: 40, textAlign: "center", boxShadow: "4px 4px 0px #304674" }}>
+              <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 40, textAlign: "center" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🔬</div>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0f172a", margin: "0 0 8px" }}>Research Outreach Funnel</h3>
                 <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>
@@ -299,7 +300,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                   ].map((node, i, arr) => (
                     <div key={node.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ textAlign: "center" }}>
-                        <div style={{ width: 90, height: 70, borderRadius: 10, background: node.color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff", boxShadow: "4px 4px 0px #0f172a", border: "2px solid #0f172a" }}>
+                        <div style={{ width: 90, height: 70, borderRadius: 10, background: node.color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
                           <div style={{ fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{node.value}</div>
                           <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>{node.sub}</div>
                         </div>
@@ -345,7 +346,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     { label: "Accepted", value: intAccepted, sub: "Replied positively", pct: `${intEmailsSent ? Math.round(intAccepted/intEmailsSent*100) : 0}% reply rate`, color: "#22c55e" },
                     { label: "Rejected", value: intRejected, sub: `${intPending} awaiting reply`, pct: `${intEmailsSent ? Math.round(intRejected/intEmailsSent*100) : 0}% rejected`, color: "#ef4444" },
                   ].map((k, i) => (
-                    <div key={i} style={{ background: "#fff", borderRadius: 12, padding: 20, border: "2px solid #304674", boxShadow: "4px 4px 0px #304674" }}>
+                    <div key={i} style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                         <div style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>{k.label}</div>
                         <div style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${k.color}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -361,7 +362,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                   ))}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", padding: 20, boxShadow: "4px 4px 0px #304674" }}>
+                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Top Companies</h3>
                     {topCompanies.map((u, i) => (
                       <div key={u.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topCompanies.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -374,7 +375,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     ))}
                     {topCompanies.length === 0 && <div style={{ color: "#94a3b8", fontSize: 13, textAlign: "center", padding: 20 }}>No data yet</div>}
                   </div>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", padding: 20, boxShadow: "4px 4px 0px #304674" }}>
+                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Top Roles</h3>
                     {topRoles.map((f, i) => (
                       <div key={f.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topRoles.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -392,7 +393,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
             )}
 
             {activeTab === "sankey" && (
-              <div style={{ background: "#fff", borderRadius: 12, border: "2px solid #304674", padding: 40, textAlign: "center", boxShadow: "4px 4px 0px #304674" }}>
+              <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 40, textAlign: "center" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>💼</div>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0f172a", margin: "0 0 8px" }}>Internship Outreach Funnel</h3>
                 <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>Contacts Added → Emailed → Awaiting → Accepted</p>
@@ -406,7 +407,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                   ].map((node, i, arr) => (
                     <div key={node.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ textAlign: "center" }}>
-                        <div style={{ width: 90, height: 70, borderRadius: 10, background: node.color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff", boxShadow: "4px 4px 0px #0f172a", border: "2px solid #0f172a" }}>
+                        <div style={{ width: 90, height: 70, borderRadius: 10, background: node.color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
                           <div style={{ fontSize: 26, fontWeight: 700, lineHeight: 1 }}>{node.value}</div>
                           <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>{node.sub}</div>
                         </div>

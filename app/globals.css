@@ -55,7 +55,7 @@ body {
 /* ──────────────────────────────────────────────────────────────────────── */
 
 /* Always-on: keep media from blowing out narrow containers. Stop horizontal
-   scroll on body only  applying overflow-x or max-width to <html> can
+   scroll on body only — applying overflow-x or max-width to <html> can
    conflict with smooth-scroll libs and framer-motion useScroll. */
 body { overflow-x: hidden; }
 img, video, svg { max-width: 100%; }
@@ -82,7 +82,7 @@ img, video, svg { max-width: 100%; }
 
 /* ── Phone: ≤640px ──────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
-  /* Sidebar  keep collapsed on touch (hover-expand is desktop only). */
+  /* Sidebar — keep collapsed on touch (hover-expand is desktop only). */
   .sidebar { width: 52px !important; }
   .sidebar.sidebar-expanded { width: 52px !important; }
   .sidebar-expanded .nav-label,
@@ -106,14 +106,14 @@ img, video, svg { max-width: 100%; }
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
-  /* Card auto-fill grids  full-width cards on phone */
+  /* Card auto-fill grids — full-width cards on phone */
   [style*="minmax(300px"],
   [style*="minmax(280px"],
   [style*="minmax(260px"] {
     grid-template-columns: 1fr !important;
   }
 
-  /* Modals  content panel becomes full-screen. Targets the inner panel
+  /* Modals — content panel becomes full-screen. Targets the inner panel
      (a div with maxWidth) inside any fixed overlay. */
   [style*="maxWidth: 1100"],
   [style*="maxWidth: 1000"],
@@ -153,7 +153,7 @@ img, video, svg { max-width: 100%; }
     flex-direction: column !important;
   }
 
-  /* Hero banner  slimmer */
+  /* Hero banner — slimmer */
   [style*="height: 160"] { height: auto !important; min-height: 130px !important; }
   [style*="height: 200"] { height: auto !important; min-height: 160px !important; }
 
@@ -173,16 +173,16 @@ img, video, svg { max-width: 100%; }
     padding: 14px !important;
   }
 
-  /* Forms with many fields  let inputs/selects span the full row */
+  /* Forms with many fields — let inputs/selects span the full row */
   form[style*="wrap"] > div { flex: 1 1 100% !important; min-width: 0 !important; }
 
-  /* Touch targets  sensible minimum height */
+  /* Touch targets — sensible minimum height */
   button, a[role="button"], [role="button"] { min-height: 36px; }
 
   /* History/data tables: ensure horizontal scroll wins over content overflow */
   table { font-size: 12px; }
 
-  /* Selected-business floating popup at bottom of map  cap height & wrap */
+  /* Selected-business floating popup at bottom of map — cap height & wrap */
   [style*="position: absolute"][style*="bottom: 16"][style*="left: 16"] {
     max-height: 50vh !important;
     overflow-y: auto !important;
@@ -201,37 +201,12 @@ img, video, svg { max-width: 100%; }
   [style*="height: 160"] { min-height: 110px !important; }
 }
 
-/* ── 4K / Ultrawide: ≥2000px ───────────────────────────────────────────── */
-/* Prevents the page from looking tiny/empty on high-res or zoomed-out screens */
-@media (min-width: 2000px) {
-  body { font-size: 18px; }
-  /* Dashboard main content — cap width so it doesn't stretch to infinity */
-  main { max-width: 1800px; margin: 0 auto; }
-  /* Scale KPI cards and containers to fill space */
-  [style*="repeat(4, 1fr)"],
-  [style*="repeat(4,1fr)"] {
-    gap: 24px !important;
-  }
-  [style*="repeat(3, 1fr)"],
-  [style*="repeat(3,1fr)"] {
-    gap: 20px !important;
-  }
-  /* Ensure nav items, buttons, inputs stay readable */
-  button, a, input, select, textarea { font-size: inherit; }
-  .nav-label { font-size: 15px; }
-}
-
-@media (min-width: 2560px) {
-  body { font-size: 20px; }
-  main { max-width: 2200px; }
-}
-
 /* ────────────────────────────────────────────────────────────────────────
-   Landing page mobile adjustments  class-based, so reliable.
+   Landing page mobile adjustments — class-based, so reliable.
    ──────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
-  /* Wolf  bump from 29vw to 65vw so the whiteboard text fits at all */
+  /* Wolf — bump from 29vw to 65vw so the whiteboard text fits at all */
   .landing-wolf {
     width: min(322px, 65vw) !important;
   }
@@ -240,13 +215,13 @@ img, video, svg { max-width: 100%; }
   .landing-wolf-text p:nth-child(2) { font-size: clamp(11px, 3.4vw, 15px) !important; }
   .landing-wolf-text p:nth-child(3) { font-size: clamp(8px, 2vw, 10.5px) !important; }
 
-  /* CTA section  tighten padding so the wolf + headline both fit */
+  /* CTA section — tighten padding so the wolf + headline both fit */
   .landing-cta-section {
     padding: 56px 20px !important;
     gap: 32px !important;
   }
 
-  /* Carousel  make cards fit phone width and auto-grow with content. */
+  /* Carousel — make cards fit phone width and auto-grow with content. */
   .landing-carousel-track {
     height: auto !important;
     min-height: 540px !important;
@@ -255,7 +230,7 @@ img, video, svg { max-width: 100%; }
   .landing-carousel-card {
     width: min(680px, 92vw) !important;
     height: clamp(460px, 70vh, 560px) !important;
-    /* Drop the 3D rotation/scale on mobile  it makes side cards readable
+    /* Drop the 3D rotation/scale on mobile — it makes side cards readable
        from off-screen and looks broken on small viewports. Center card only. */
     transform: translateX(0) !important;
     opacity: 1 !important;
@@ -280,7 +255,7 @@ img, video, svg { max-width: 100%; }
 }
 
 /* ────────────────────────────────────────────────────────────────────────
-   Dashboard mobile  broader, more aggressive selectors.
+   Dashboard mobile — broader, more aggressive selectors.
    ──────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
@@ -297,14 +272,14 @@ img, video, svg { max-width: 100%; }
     flex-wrap: wrap !important;
   }
 
-  /* Hero / banner padding  drop horizontal */
+  /* Hero / banner padding — drop horizontal */
   div[style*="padding: 0 28px"],
   div[style*="padding:0 28px"] {
     padding-left: 14px !important;
     padding-right: 14px !important;
   }
 
-  /* KPI / Card grids inside dashboard pages  explicit catch */
+  /* KPI / Card grids inside dashboard pages — explicit catch */
   div[style*="display: grid"][style*="repeat(4"],
   div[style*="display:grid"][style*="repeat(4"] {
     grid-template-columns: repeat(2, 1fr) !important;

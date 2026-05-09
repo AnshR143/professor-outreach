@@ -1,12 +1,9 @@
 "use client"
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
+import { motion, useInView, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
 import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react"
-import { useRef, useState, useCallback, useEffect } from "react"
+import { useRef, useState, useCallback } from "react"
 import Link from "next/link"
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
-import { createClient } from "@/lib/supabase/client"
-import Lenis from "lenis"
-import { Contact2 } from "@/components/ui/contact-2"
 
 /* ─── Palette ────────────────────────────────────────────────
    #98bad5  medium blue-gray   → primary accent
@@ -47,6 +44,7 @@ function FeaturesSlide() {
       <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
         background: "#d8e1e8", border: "2px solid #304674", borderRadius: 999,
         padding: "3px 12px", marginBottom: 10, boxShadow: "2px 2px 0px #304674" }}>
+        <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#98bad5" }} />
         <span style={{ fontSize: 10, fontWeight: 800, color: "#304674", textTransform: "uppercase", letterSpacing: "0.1em" }}>Why InternLink</span>
       </div>
       <h2 style={{ fontSize: "clamp(16px,2.2vw,26px)", fontWeight: 800, color: "#304674",
@@ -107,7 +105,7 @@ function HowItWorksSlide() {
                 display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontSize: 11, fontWeight: 900, color: "#304674" }}>{s.step}</span>
               </div>
-              {i < 2 && <div style={{ width: 2, flex: 1, minHeight: 12, background: "#304674", opacity: 0.25 }} />}
+              {i < 2 && <div style={{ width: 2, height: 12, background: "#304674", margin: "4px 0", opacity: 0.25 }} />}
             </div>
             <div style={{ paddingTop: 6 }}>
               <h3 style={{ fontSize: 12, fontWeight: 700, color: "#304674", margin: "0 0 2px" }}>{s.title}</h3>
@@ -283,37 +281,23 @@ function SectionCarousel() {
               `,
               transformOrigin: "center center",
               opacity: isCenter ? 1 : isAdjacent ? 0.38 : 0,
-              filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(6px)" : "blur(12px)",
+              filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(5px)" : "blur(10px)",
               transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease, filter 0.5s ease, box-shadow 0.4s ease",
               zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
               visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
               pointerEvents: isCenter ? "auto" : "none",
-              willChange: "transform, filter, opacity",
             }}>
               <AnimatePresence mode="wait">
-                {isCenter ? (
-                  <motion.div
-                    key={`${slide.id}-center`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="landing-carousel-card-inner"
-                    style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
-                    {slide.content}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key={`${slide.id}-side`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ height: "100%", overflow: "hidden", pointerEvents: "none" }}>
-                    {/* Render content but disable interactivity and keep it faded/blurred */}
-                    {slide.content}
-                  </motion.div>
-                )}
+                <motion.div
+                  key={`${slide.id}-${current}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="landing-carousel-card-inner"
+                  style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
+                  {slide.content}
+                </motion.div>
               </AnimatePresence>
             </div>
           )
@@ -367,48 +351,15 @@ function SectionCarousel() {
 ═══════════════════════════════════════════════════════════ */
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -200])
   const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 })
-
-  useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getSession().then(({ data }) => {
-      setIsLoggedIn(!!data.session)
-    })
-
-    // Initialize Lenis smooth scroll
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-    })
-
-    function raf(time: number) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
-    }
-
-    requestAnimationFrame(raf)
-
-    return () => {
-      lenis.destroy()
-    }
-  }, [])
 
   return (
     <div ref={containerRef} style={{ background: "#fff", color: "#304674", overflow: "hidden" }}>
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-track { animation: marquee 35s linear infinite; }
-        @media (min-width: 2000px) {
-          .landing-hero-text h1 { font-size: 4.5rem !important; }
-          .landing-hero-text p { font-size: 1.25rem !important; }
-        }
       `}</style>
 
       {/* SECTION 1  Video Hero */}
@@ -442,12 +393,12 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               style={{ position: "absolute", top: 20, right: 28, zIndex: 50 }}>
-              <Link href={isLoggedIn ? "/dashboard" : "/signup"}
+              <Link href="/login"
                 style={{ display: "inline-flex", alignItems: "center",
                   background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.28)",
                   backdropFilter: "blur(12px)", borderRadius: 999, padding: "8px 22px",
                   fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
-                {isLoggedIn ? "Dashboard" : "Sign Up"}
+                Sign In
               </Link>
             </motion.div>
 
@@ -457,9 +408,8 @@ export default function LandingPage() {
               transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
               className="text-left"
             >
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4 flex items-center gap-3">
-                <img src="/link.png" alt="Logo" style={{ height: "1em", width: "auto" }} />
-                <span>Intern<Highlight className="text-[#1a2e52]">Link</Highlight></span>
+              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4">
+                Intern<Highlight className="text-[#1a2e52]">Link</Highlight>
               </h1>
               <div className="max-w-lg space-y-4">
                 <p className="text-sm md:text-base text-[#E1E0CC]/80 leading-relaxed font-medium">
@@ -480,7 +430,7 @@ export default function LandingPage() {
       </div>
 
       {/* University marquee */}
-      <div className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
+      <motion.div style={{ y: smoothY1 }} className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
             {[...UNIS, ...UNIS].map((uni, i) => (
@@ -490,12 +440,10 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
-
-
 
       {/* SECTION 3  CTA with Wolf */}
       <div className="landing-cta-section" style={{
@@ -569,25 +517,33 @@ export default function LandingPage() {
         </motion.div>
       </div>
 
-      <Contact2 />
-
       {/* Footer */}
       <div style={{ background: "#d8e1e8", borderTop: "2px solid #b2cbde",
         padding: "28px 40px", display: "flex", alignItems: "center",
         justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/link.png" alt="Logo" style={{ width: 28, height: 28, objectFit: "contain" }} />
+          <div style={{ width: 28, height: 28, borderRadius: 8,
+            background: "linear-gradient(135deg,#98bad5,#304674)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            border: "2px solid #304674" }}>
+            <ArrowRight style={{ width: 14, height: 14, color: "#fff" }} />
+          </div>
           <span style={{ fontSize: 14, fontWeight: 700, color: "#304674" }}>InternLink</span>
         </div>
         <p style={{ fontSize: 13, color: "#4a5568", margin: 0 }}>
-          Built for students. Powered by AI. © 2026 InternLink.
+          Built for students. Powered by AI. © 2025 InternLink.
         </p>
         <div style={{ display: "flex", gap: 20 }}>
-          <Link href="/privacy" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}>Privacy</Link>
-          <Link href="/terms" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}>Terms</Link>
-          <a href="#contact" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}>Contact</a>
+          {["Privacy", "Terms", "Contact"].map(l => (
+            <a key={l} href="#" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = "#304674"}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "#4a5568"}>
+              {l}
+            </a>
+          ))}
         </div>
       </div>
     </div>
   )
 }
+

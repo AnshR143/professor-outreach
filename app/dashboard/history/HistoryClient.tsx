@@ -1,7 +1,6 @@
 "use client"
 import { useMemo, useState } from "react"
 import type { Activity } from "@/lib/supabase/types"
-import FindResearchersModal from "@/components/researchers/FindResearchersModal"
 import { createClient } from "@/lib/supabase/client"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -20,7 +19,7 @@ import {
   type OutreachColumn,
   type ActivityKind,
 } from "@/components/ui/outreach-history-table"
-import { Columns3, ListFilter, Search, Trash2 } from "lucide-react"
+import { Columns3, ListFilter, Trash2 } from "lucide-react"
 
 interface Props {
   researchActivities: Activity[]
@@ -83,7 +82,6 @@ export default function HistoryClient({ researchActivities, internshipActivities
   const [visibleColumns, setVisibleColumns] = useState<Set<OutreachColumn>>(
     new Set(ALL_OUTREACH_COLUMNS),
   )
-  const [showFind, setShowFind] = useState(false)
   const [resetting, setResetting] = useState(false)
 
   const allRows = useMemo<OutreachActivityRow[]>(() => {
@@ -156,10 +154,6 @@ export default function HistoryClient({ researchActivities, internshipActivities
           >
             <Trash2 className="h-[15px] w-[15px]" />
           </button>
-          <Button onClick={() => setShowFind(true)} size="sm" className="gap-2">
-            <Search className="h-3.5 w-3.5" />
-            Find Researchers
-          </Button>
         </div>
       </div>
 
@@ -250,7 +244,6 @@ export default function HistoryClient({ researchActivities, internshipActivities
         <OutreachHistoryTable rows={filtered} visibleColumns={visibleColumns} />
       </div>
 
-      {showFind && <FindResearchersModal onClose={() => setShowFind(false)} />}
     </div>
   )
 }
