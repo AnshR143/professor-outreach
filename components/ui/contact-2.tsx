@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { FloatingPaths } from "@/components/ui/background-paths";
 
+import { motion } from "framer-motion";
+
 interface Contact2Props {
   title?: string;
   description?: string;
@@ -56,10 +58,30 @@ export const Contact2 = ({
   };
 
   return (
-    <section id="contact" className="py-8 bg-white relative overflow-hidden">
+    <section id="contact" className="py-12 bg-white relative overflow-hidden">
       <div className="absolute inset-0 z-0">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
+        
+        {/* Variety of clouds around the form */}
+        <motion.img 
+          src="/cloud-1.png" 
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "15%", left: "5%", width: 140, opacity: 0.6, pointerEvents: "none" }}
+        />
+        <motion.img 
+          src="/cloud-3.png" 
+          animate={{ y: [0, 12, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", bottom: "10%", right: "8%", width: 160, opacity: 0.5, pointerEvents: "none" }}
+        />
+        <motion.img 
+          src="/cloud-2.png" 
+          animate={{ x: [0, 8, 0], y: [0, -5, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "40%", right: "3%", width: 110, opacity: 0.45, pointerEvents: "none" }}
+        />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

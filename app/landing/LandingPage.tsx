@@ -430,15 +430,6 @@ export default function LandingPage() {
 
       {/* SECTION 1 - Feature1 Video Hero */}
       <div style={{ position: "relative" }}>
-        {/* Variety of clouds scatter */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none", overflow: "hidden" }}>
-          <motion.img src="/cloud-1.png" animate={{ y: [0, -12, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "absolute", top: "10%", left: "4%", width: 160, opacity: 0.7, filter: "blur(0.5px)" }} />
-          <motion.img src="/cloud-2.png" animate={{ y: [0, 15, 0] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "absolute", top: "15%", right: "6%", width: 190, opacity: 0.6, filter: "blur(1px)" }} />
-          <motion.img src="/cloud-3.png" animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "absolute", bottom: "15%", left: "8%", width: 140, opacity: 0.5 }} />
-        </div>
         <Feature1
           title="The intelligent outreach platform for landing research positions and internships."
           description="Precision contact matching, AI-crafted cold emails, and automated follow-ups powered by your resume. Stop guessing, start connecting."
@@ -450,6 +441,13 @@ export default function LandingPage() {
 
       {/* University marquee */}
       <div className="py-12 relative z-10" style={{ background: "#d8e1e8" }}>
+        {/* Cloud above the marquee all the way in the right */}
+        <motion.img 
+          src="/cloud-4.png" 
+          animate={{ x: [0, -10, 0], y: [0, 5, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: -60, right: 20, width: 140, opacity: 0.8, pointerEvents: "none", zIndex: 20 }}
+        />
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
             {[...UNIS, ...UNIS].map((uni, i) => (
@@ -496,13 +494,6 @@ export default function LandingPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
-          {/* Cloud behind the wolf */}
-          <motion.img 
-            src="/cloud-1.png" 
-            animate={{ scale: [1, 1.05, 1], rotate: [0, 2, 0] }}
-            transition={{ duration: 15, repeat: Infinity }}
-            style={{ position: "absolute", top: "-10%", left: "-10%", width: "120%", opacity: 0.4, zIndex: -1, filter: "blur(4px)" }} 
-          />
           <img src="/husky.png.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           <div className="landing-wolf-text" style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
