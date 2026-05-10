@@ -244,18 +244,6 @@ function SectionCarousel() {
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
           style={{ position: "absolute", bottom: "5%", right: "-12%", width: 550, opacity: 0.5, filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", transform: "scaleX(-1)" }} 
         />
-        <motion.img 
-          src="/cloud-3.png" 
-          animate={{ opacity: [0.2, 0.4, 0.2], y: [0, -20, 0] }}
-          transition={{ duration: 13, repeat: Infinity }}
-          style={{ position: "absolute", top: "35%", right: "5%", width: 320, opacity: 0.3 }} 
-        />
-        <motion.img 
-          src="/cloud-1.png" 
-          animate={{ y: [0, 30, 0], x: [0, 15, 0] }}
-          transition={{ duration: 15, repeat: Infinity }}
-          style={{ position: "absolute", top: "50%", left: "10%", width: 280, opacity: 0.4 }} 
-        />
 
         <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
           background: "radial-gradient(circle,rgba(152,186,213,0.35) 0%,transparent 70%)" }} />
@@ -507,19 +495,6 @@ export default function LandingPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
-          {/* Decorative clouds around the wolf */}
-          <motion.img 
-            src="/cloud-3.png" 
-            animate={{ scale: [1, 1.1, 1], x: [0, 10, 0] }}
-            transition={{ duration: 14, repeat: Infinity }}
-            style={{ position: "absolute", top: "-20%", right: "-30%", width: 300, opacity: 0.3, zIndex: -1 }} 
-          />
-          <motion.img 
-            src="/cloud-2.png" 
-            animate={{ scale: [1, 1.05, 1], x: [0, -8, 0] }}
-            transition={{ duration: 12, repeat: Infinity }}
-            style={{ position: "absolute", bottom: "-10%", left: "-40%", width: 340, opacity: 0.35, zIndex: -1, transform: "scaleX(-1)" }} 
-          />
           <img src="/husky.png.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           <div className="landing-wolf-text" style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",

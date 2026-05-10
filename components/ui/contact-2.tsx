@@ -76,17 +76,12 @@ export const Contact2 = ({
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
           style={{ position: "absolute", bottom: "5%", right: "-12%", width: 420, opacity: 0.45, pointerEvents: "none", filter: "blur(2px)" }}
         />
-        <motion.img 
-          src="/cloud-2.png" 
-          animate={{ x: [0, 15, 0], y: [0, -10, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "35%", right: "-5%", width: 280, opacity: 0.4, pointerEvents: "none" }}
-        />
+        {/* Repositioned bottom-left cloud closer to center */}
         <motion.img 
           src="/cloud-4.png" 
-          animate={{ y: [0, -15, 0] }}
+          animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
           transition={{ duration: 13, repeat: Infinity }}
-          style={{ position: "absolute", bottom: "25%", left: "5%", width: 240, opacity: 0.35, pointerEvents: "none" }}
+          style={{ position: "absolute", bottom: "15%", left: "15%", width: 280, opacity: 0.4, pointerEvents: "none" }}
         />
         <motion.img 
           src="/cloud-1.png" 
