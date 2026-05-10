@@ -156,10 +156,7 @@ export default function HistoryClient({ researchActivities, internshipActivities
           >
             <Trash2 className="h-[15px] w-[15px]" />
           </button>
-          <Button onClick={() => setShowFind(true)} size="sm" className="gap-2">
-            <Search className="h-3.5 w-3.5" />
-            Find Researchers
-          </Button>
+
         </div>
       </div>
 

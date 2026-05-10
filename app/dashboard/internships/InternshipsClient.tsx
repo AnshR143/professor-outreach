@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import type { InternshipContact } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
 import dynamic from "next/dynamic"
+import LiquidGlassButton from "@/components/ui/liquid-glass-button"
 import FindInternshipContactsModal from "@/components/internships/FindInternshipContactsModal"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { Map, MapMarker, MarkerContent, MarkerTooltip } from "@/components/ui/map"
@@ -227,16 +228,18 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> List View</>
             )}
           </button>
-          <button onClick={() => setShowMap(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#0f172a", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          <LiquidGlassButton 
+            onClick={() => setShowMap(true)} 
+            size="sm"
+            style={{ background: "#0f172a", color: "#fff" }}
+          >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Map Discovery
-          </button>
-          <button onClick={() => setShowFind(true)}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            Map Discovery <span style={{ fontSize: 9, fontWeight: 900, background: "#304674", color: "#fff", padding: "1px 6px", borderRadius: 4, marginLeft: 6, textTransform: "uppercase", letterSpacing: 0.5, boxShadow: "0 0 10px rgba(48,70,116,0.3)" }}>Beta</span>
+          </LiquidGlassButton>
+          <LiquidGlassButton onClick={() => setShowFind(true)} variant="primary" size="sm">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find Contacts
-          </button>
+          </LiquidGlassButton>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>
@@ -269,19 +272,20 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               {contacts.length === 0 ? "Use Map Discovery or Find Contacts to discover real opportunities." : "Try a different search term."}
             </div>
             {contacts.length === 0 && (
-              <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-                <button onClick={() => setShowMap(true)}
-                  style={{ padding: "10px 24px", background: "#0f172a", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                <LiquidGlassButton 
+                  onClick={() => setShowMap(true)} 
+                  size="md"
+                  style={{ background: "#0f172a", color: "#fff" }}
+                >
                   Map Discovery
-                </button>
-                <button onClick={() => setShowFind(true)}
-                  style={{ padding: "10px 24px", background: "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                </LiquidGlassButton>
+                <LiquidGlassButton onClick={() => setShowFind(true)} variant="primary" size="md">
                   Find Contacts
-                </button>
-                <button onClick={() => setShowAdd(true)}
-                  style={{ padding: "10px 24px", background: "#fff", color: "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                </LiquidGlassButton>
+                <LiquidGlassButton onClick={() => setShowAdd(true)} variant="secondary" size="md" style={{ color: "#475569" }}>
                   Add Manually
-                </button>
+                </LiquidGlassButton>
               </div>
             )}
           </div>

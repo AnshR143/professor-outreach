@@ -109,7 +109,7 @@ export default function FloatingActionMenu({
           height: 56,
           borderRadius: "50%",
           border: "1px solid rgba(255,255,255,0.25)",
-          background: "linear-gradient(135deg, rgba(48, 70, 116,0.92) 0%, rgba(234,88,12,0.95) 100%)",
+          background: "linear-gradient(135deg, #304674 0%, #98bad5 100%)",
           backdropFilter: "blur(12px) saturate(200%)",
           WebkitBackdropFilter: "blur(12px) saturate(200%)",
           color: "#fff",

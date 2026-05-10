@@ -7,6 +7,8 @@ import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight"
 import { createClient } from "@/lib/supabase/client"
 import Lenis from "lenis"
 import { Contact2 } from "@/components/ui/contact-2"
+import { PortalHero } from "@/components/landing/PortalHero"
+import { Feature1 } from "@/components/ui/feature-1"
 
 /* ─── Palette ────────────────────────────────────────────────
    #98bad5  medium blue-gray   → primary accent
@@ -14,11 +16,11 @@ import { Contact2 } from "@/components/ui/contact-2"
    #c6d3e3  soft blue-gray     → light backgrounds
    #d8e1e8  very light         → lightest bg / pill bg
    #304674  dark navy          → borders, shadows, dark text
-──────────────────────────────────────────────────────────── */
+ ──────────────────────────────────────────────────────────── */
 
 const FEATURES = [
   { title: "Smart Contact Matching",         desc: "Your resume is cross-referenced against professors and company contacts to surface the highest-fit targets automatically." },
-  { title: "Personalized Email Drafts",      desc: "AI crafts tailored cold emails based on each recipient's work, interests, and your background  no generic templates." },
+  { title: "Personalized Email Drafts",      desc: "AI crafts tailored cold emails based on each recipient's work, interests, and your background – no generic templates." },
   { title: "Outreach Analytics",             desc: "Track open rates, reply statuses, and follow-up timing across your entire cold outreach pipeline in one place." },
   { title: "Contact Discovery",              desc: "Find researchers, professors, and internship contacts across academia and industry, all filtered by field and location." },
   { title: "Resume-Powered Personalization", desc: "Upload your CV once. Every email draft automatically pulls your skills, projects, and experience to match each contact." },
@@ -28,7 +30,7 @@ const FEATURES = [
 const HOW_STEPS = [
   { step: "01", title: "Upload your resume",     desc: "Paste or upload your CV. The parser extracts keywords, skills, and experience automatically." },
   { step: "02", title: "Find your targets",      desc: "Search for professors, researchers, or company contacts by field, location, or institution. Match scores update live." },
-  { step: "03", title: "Generate & send emails", desc: "Click Generate  AI crafts a tailored cold email for each contact. Open Gmail pre-filled and hit send." },
+  { step: "03", title: "Generate & send emails", desc: "Click Generate – AI crafts a tailored cold email for each contact. Open Gmail pre-filled and hit send." },
 ]
 
 const PRICING = [
@@ -40,7 +42,7 @@ const UNIS = ["MIT", "Stanford", "Harvard", "Oxford", "Cambridge", "ETH Zurich",
 
 /* ═══════════════════════════════════════════════════════════
    CAROUSEL SLIDES
-═══════════════════════════════════════════════════════════ */
+ ═══════════════════════════════════════════════════════════ */
 function FeaturesSlide() {
   return (
     <div style={{ padding: "18px 24px 16px" }}>
@@ -207,7 +209,7 @@ function PricingSlide() {
 
 /* ═══════════════════════════════════════════════════════════
    SECTION CAROUSEL
-═══════════════════════════════════════════════════════════ */
+ ═══════════════════════════════════════════════════════════ */
 const SLIDES = [
   { id: "features", label: "Features",     content: <FeaturesSlide /> },
   { id: "how",      label: "How It Works", content: <HowItWorksSlide /> },
@@ -230,7 +232,7 @@ function SectionCarousel() {
     }}>
       {/* Ambient glow blobs */}
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
-        <div style={{ position: "absolute", top: "-15%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
+        <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
           background: "radial-gradient(circle,rgba(152,186,213,0.35) 0%,transparent 70%)" }} />
         <div style={{ position: "absolute", bottom: "-10%", right: "-10%", width: 500, height: 500, borderRadius: "50%",
           background: "radial-gradient(circle,rgba(48,70,116,0.18) 0%,transparent 70%)" }} />
@@ -310,7 +312,6 @@ function SectionCarousel() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     style={{ height: "100%", overflow: "hidden", pointerEvents: "none" }}>
-                    {/* Render content but disable interactivity and keep it faded/blurred */}
                     {slide.content}
                   </motion.div>
                 )}
@@ -364,14 +365,12 @@ function SectionCarousel() {
 
 /* ═══════════════════════════════════════════════════════════
    LANDING PAGE
-═══════════════════════════════════════════════════════════ */
+ ═══════════════════════════════════════════════════════════ */
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200])
-  const smoothY1 = useSpring(y1, { stiffness: 100, damping: 30 })
 
   useEffect(() => {
     const supabase = createClient()
@@ -379,7 +378,6 @@ export default function LandingPage() {
       setIsLoggedIn(!!data.session)
     })
 
-    // Initialize Lenis smooth scroll
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -411,82 +409,26 @@ export default function LandingPage() {
         }
       `}</style>
 
-      {/* SECTION 1  Video Hero */}
-      <div style={{ height: "100vh", width: "100%", padding: 10 }}>
-        <div style={{
-          position: "relative", height: "100%", width: "100%", overflow: "hidden", borderRadius: 28,
-          // Fallback gradient  visible underneath the video so when iOS blocks
-          // autoplay or shows the "tap to play" overlay, the section still
-          // looks designed instead of black + ▶ icon.
-          background: "linear-gradient(135deg, #1a2e52 0%, #304674 45%, #98bad5 100%)",
-        }}>
-          <video
-            autoPlay loop muted playsInline
-            preload="auto"
-            controls={false}
-            disablePictureInPicture
-            {...({ "webkit-playsinline": "true", "x5-playsinline": "true" } as Record<string, string>)}
-            style={{
-              position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
-              // Block taps so iOS can't surface its native controls.
-              pointerEvents: "none",
-            }}
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4" />
-
-          <HeroHighlight
-            containerClassName="absolute inset-0 bg-transparent dark:bg-transparent"
-            className="w-full h-full flex flex-col items-start justify-end p-12 md:p-20"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              style={{ position: "absolute", top: 20, right: 28, zIndex: 50 }}>
-              <Link href={isLoggedIn ? "/dashboard" : "/signup"}
-                style={{ display: "inline-flex", alignItems: "center",
-                  background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.28)",
-                  backdropFilter: "blur(12px)", borderRadius: 999, padding: "8px 22px",
-                  fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
-                {isLoggedIn ? "Dashboard" : "Sign Up"}
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.4, 0.0, 0.2, 1] }}
-              className="text-left"
-            >
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-[#E1E0CC] tracking-tighter leading-none mb-4 flex items-center gap-3">
-                <img src="/link.png" alt="Logo" style={{ height: "1em", width: "auto" }} />
-                <span>Intern<Highlight className="text-[#1a2e52]">Link</Highlight></span>
-              </h1>
-              <div className="max-w-lg space-y-4">
-                <p className="text-sm md:text-base text-[#E1E0CC]/80 leading-relaxed font-medium">
-                  The intelligent outreach platform for landing research positions and internships.
-                  Precision matching, AI drafts, and automated follow-ups.
-                </p>
-                <div className="flex justify-start">
-                  <Link href="/signup" className="group px-6 py-3 bg-white text-black rounded-full font-bold flex items-center gap-2 text-sm"
-                    style={{ border: "2.5px solid #304674", boxShadow: "3px 3px 0px #304674", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8 }}>
-                    Get started free
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </HeroHighlight>
-        </div>
-      </div>
+      {/* SECTION 1 - Feature1 Video Hero */}
+      <Feature1
+        title="The intelligent outreach platform for landing research positions and internships."
+        description="Precision contact matching, AI-crafted cold emails, and automated follow-ups powered by your resume. Stop guessing, start connecting."
+        videoSrc="/videos/sky_loop_v2.mp4"
+        buttonPrimary={{ label: "Get started free", href: "/signup" }}
+        buttonSecondary={{ label: "See how it works", href: "#carousel" }}
+      />
 
       {/* University marquee */}
-      <div className="w-full border-y border-neutral-100 bg-neutral-50/50 py-12 relative z-10">
+      <div className="py-12 relative z-10" style={{ background: "#d8e1e8" }}>
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
             {[...UNIS, ...UNIS].map((uni, i) => (
-              <span key={i} className="text-sm font-bold tracking-widest text-neutral-400 uppercase">
-                {uni}
-              </span>
+              <div key={i} className="flex items-center gap-16">
+                <span className="text-sm font-bold tracking-widest text-black uppercase">
+                  {uni}
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-black/40" />
+              </div>
             ))}
           </div>
         </div>
@@ -495,34 +437,29 @@ export default function LandingPage() {
       {/* SECTION 2  3D Carousel */}
       <SectionCarousel />
 
-
-
       {/* SECTION 3  CTA with Wolf */}
       <div className="landing-cta-section" style={{
         position: "relative", overflow: "hidden",
-        // Layered gradient mimics the video's cloudy navy look so when the
-        // bg video fails to autoplay (common on iOS Low Power Mode), the
-        // section still looks designed instead of plain black with a ▶.
         background: "radial-gradient(ellipse at 25% 40%, rgba(48,70,116,0.55) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(152,186,213,0.32) 0%, transparent 60%), #0a0f1e",
         padding: "80px 40px",
         display: "flex", alignItems: "center", justifyContent: "center", gap: "6vw",
         flexWrap: "wrap",
       }}>
         <video
-          autoPlay muted loop playsInline
+          autoPlay
+          muted
+          loop
+          playsInline
           preload="auto"
-          controls={false}
-          disablePictureInPicture
-          {...({ "webkit-playsinline": "true" } as Record<string, string>)}
           style={{
-            position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",
-            opacity: 0.68, zIndex: 0,
+            position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+            width: "100%", height: "100%", objectFit: "cover",
+            opacity: 0.75, zIndex: 0,
             pointerEvents: "none",
           }}
-          src="/hero-bg.mp4"
+          src="/videos/PixVerse_V6_Image_Text_720P_A_hyperrealistic_w.mp4"
         />
 
-        {/* Wolf with whiteboard */}
         <motion.div
           className="landing-wolf"
           animate={{ y: [0, -10, 0] }}
@@ -543,7 +480,6 @@ export default function LandingPage() {
           </div>
         </motion.div>
 
-        {/* Headline text */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -555,7 +491,7 @@ export default function LandingPage() {
             AI-Powered Cold Outreach
           </span>
           <p style={{ fontSize: "clamp(16px,1.4vw,22px)", color: "rgba(216,225,232,0.92)", fontWeight: 500, maxWidth: 460, lineHeight: 1.5, margin: "0 0 28px" }}>
-            From first contact to first reply  automated, personalized, and precise.
+            From first contact to first reply – automated, personalized, and precise.
           </p>
           <Link href="/signup" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
@@ -571,7 +507,6 @@ export default function LandingPage() {
 
       <Contact2 />
 
-      {/* Footer */}
       <div style={{ background: "#d8e1e8", borderTop: "2px solid #b2cbde",
         padding: "28px 40px", display: "flex", alignItems: "center",
         justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>

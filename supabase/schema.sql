@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS profiles (
   last_name TEXT,
   name TEXT, -- Keeping for compatibility
   birthday DATE,
-  university TEXT,
   major TEXT, -- Single major field
   majors TEXT[] NOT NULL DEFAULT '{}', -- Multiple majors
   interests TEXT[] NOT NULL DEFAULT '{}',
@@ -166,192 +165,109 @@ CREATE INDEX IF NOT EXISTS idx_global_professors_university ON global_professors
 
 -- Seed general templates
 INSERT INTO templates (user_id, name, subject_line, body, description, type, is_default) VALUES
-(NULL, 'Research Internship Outreach', 'Your take on [researcher''s research topic]',
-'Hi [Researcher Name],
+(NULL, 'Research Internship Outreach (Advanced)', 'Research Internship Opportunity',
+'Hi Professor [Last Name],
 
-I hope this email finds you well. My name is [Your Name] and I am a [Academic Level] at [Institution]. I recently came across your work on [researcher''s work], and it really stuck out to me because [short reason].
+My name is [Your Name], and I’m a [year/major] student at [School]. I recently came across your work on [topic/project], and I found it really interesting.
 
-If there''s any way I can help out with (unpaid, of course), I''d be incredibly grateful. I know opportunities like this are rare, and I''m dead-set on proving my worth if given the chance.
+I’m reaching out to ask if there might be any opportunities to assist with research in your lab or group, either during the semester or over the summer. I’m especially interested in [specific interest].
 
-Attached is my resume for context. Would you be open to a 10-15 minute call to see how I can contribute?
-
-Thank you again for your time, and I hope we can connect.
+I’d love the chance to learn more and contribute however I can. Thank you for your time, and I’d be happy to share my resume or additional information.
 
 Best,
-[Your Name]
-[Institution]',
-'Outreach for Research Internships', 'general', TRUE),
+[Your Name]',
+'Personalized outreach for research positions in labs.', 'general', TRUE),
 
-(NULL, 'PhD Program Short', 'PhD Application Inquiry',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
+(NULL, 'Paper Collaboration Request', 'Interest in Collaborating on Research',
+'Hi [Name],
 
-I hope you''re doing well. I''m [Your Name], a [Academic Level] interested in applying for the PhD program in [Department] at [University] to work under your supervision. My research interests focus on [research interests], and I have developed skills in [skills] through recent work including [experience].
+I hope you’re doing well. My name is [Your Name], and I’ve been following your work on [topic]. I really enjoyed reading your recent paper/project about [specific detail].
 
-Your work on [specific research topic] strongly aligns with my interests, and I believe my background would contribute meaningfully to your research program.
+I’m reaching out because I’d love the opportunity to collaborate or contribute to future work in this area. I have experience with [skill/topic], and I’m eager to learn more.
 
-I''ve attached my CV and would welcome the opportunity to discuss potential research opportunities in your lab. Would you be available for a brief conversation about the possibility of joining your research group?
+If you’re open to it, I’d appreciate the chance to connect further.
 
-Thank you for your consideration.
+Best,
+[Your Name]',
+'Propose a collaboration after reading a researcher''s paper.', 'general', TRUE),
+
+(NULL, 'Research Collaboration Inquiry', 'Research Collaboration Inquiry',
+'Hello [Name],
+
+My name is [Your Name], and I’m currently working on [brief project/topic]. I came across your work in [field/topic], and I think our interests align closely.
+
+I wanted to reach out to see if you’d be open to discussing a possible collaboration or sharing ideas. I’d really value the chance to connect and learn from your experience.
+
+Thank you for your time, and I look forward to hearing from you.
 
 Best regards,
 [Your Name]',
-'Concise template for PhD program applications', 'general', TRUE),
+'Inquire about aligning research interests for a joint project.', 'general', TRUE),
 
-(NULL, 'Coffee Chat Short', 'Brief Coffee Chat Request',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
+(NULL, 'Internship Outreach', 'Inquiry Regarding Internship Opportunities',
+'Hi [Name],
 
-I hope you''re doing well. I''m [Your Name], a [Academic Level] interested in [research interests]. I''ve been following your work on [specific topic] and would love to learn more about your research and career path.
+My name is [Your Name], and I’m a [year/major] student at [School]. I’m very interested in opportunities related to [field/company focus].
 
-Would you be available for a brief coffee chat? I''d greatly appreciate 20-30 minutes of your time to discuss [topic of interest].
+I’m reaching out to ask if there are any internship openings available, or if there’s someone you’d recommend I connect with regarding opportunities at [Company/Lab].
 
-I''m flexible with scheduling and happy to meet at your convenience.
+I’d love the chance to learn, contribute, and gain hands-on experience. Thank you for your time.
 
-Thank you for considering this request.
-
-Best regards,
+Best,
 [Your Name]',
-'Concise template for requesting informal meetings', 'general', TRUE),
+'General outreach for internship openings at companies or labs.', 'general', TRUE),
 
-(NULL, 'Research Collaboration Request', 'Interest in [professor research description]',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
+(NULL, 'Startup Internship Inquiry', 'Interested in [Company Name] - Internship Inquiry',
+'Hi [Name],
 
-I hope you''re doing well! I recently came across your research on [brief description], and I found it genuinely compelling - especially your work on [specific part].
+I hope you’re doing well. I recently came across [Company Name] and really liked what your team is building, especially [specific feature/project].
 
-As a [Academic Level] with a deep interest in [general field], I''ve been actively exploring this space through [relevant experiences]. These experiences have made me eager to gain hands-on experience in a real research setting.
+I’m a student interested in [field], and I wanted to ask if there are any internship or part-time opportunities available. I’d be excited to contribute and learn from the team.
 
-I was wondering if there might be any opportunities - formal or informal - to get involved with your lab, either remotely or on-site. I''m eager to learn and very open to helping out with anything useful.
+Thank you for your time, and I’d love to connect further if possible.
 
-Thank you so much for your time.
-
-Warmly,
+Best,
 [Your Name]',
-'Use when you have strong experiences to back up your inquiry', 'general', TRUE),
+'Specific outreach for startups with a focus on their features/projects.', 'general', TRUE),
 
-(NULL, 'General Inquiry', 'Research Inquiry and Introduction',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
+(NULL, 'Cold Outreach for Internship', 'Internship Inquiry - [Your Name]',
+'Hi [Name],
 
-I hope this email finds you well. My name is [Your Name], and I''m a [Academic Level] with interests in [research interests].
+My name is [Your Name], and I’m currently studying [major/field] at [School]. I’m reaching out because I’m very interested in gaining experience in [industry/field].
 
-I came across your profile and research on [specific topic], and I''m impressed by your work on [specific project].
+I admire the work your team is doing at [Company], and I’d love the opportunity to contribute as an intern if there are any openings available.
 
-I''m writing to inquire about [specific purpose - research opportunities, career guidance, etc.]. I would greatly appreciate any guidance you might offer. If you have a few minutes for a brief conversation, I would be very grateful for your insights.
+Please let me know if there’s a good way to apply or connect further.
 
-Thank you for your time and consideration.
-
-Best regards,
+Thank you,
 [Your Name]',
-'Flexible template for general research inquiries', 'general', TRUE),
+'Direct cold outreach for industry experience.', 'general', TRUE),
 
-(NULL, 'Meet-up Request', 'Request for Brief Meeting',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
+(NULL, 'Follow-Up Email', 'Following up on [Topic]',
+'Hi [Name],
 
-I hope this message finds you well. My name is [Your Name], and I''m a [Academic Level] with a strong interest in [research areas]. I''ve been following your work on [specific research area] and find your approach to [specific aspect] particularly innovative.
+I hope you’re doing well. I just wanted to follow up on my previous email regarding possible research/internship opportunities.
 
-I''m reaching out to request a brief meeting to discuss [specific purpose], given my recent work on [experiences]. Even a 15-20 minute conversation would be incredibly helpful.
+I’m still very interested and would really appreciate the opportunity to connect if there’s availability.
 
-I would be happy to meet at your convenience, whether in person or via video call.
+Thank you again for your time.
 
-Thank you very much.
-
-Best regards,
+Best,
 [Your Name]',
-'Template for requesting an informal meeting or discussion', 'general', TRUE),
+'Polite follow-up for previous outreach.', 'general', TRUE),
 
-(NULL, 'Masters Program Short', 'Master''s Program Application Inquiry',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
+(NULL, 'Coffee Chat Request', 'Coffee Chat Request - [Your Name]',
+'Hi [Name],
 
-I hope this message finds you well. I''m [Your Name], a [Academic Level] interested in applying for the Master''s program in [Department] at [University] to work with your research group.
+I hope you’re doing well. My name is [Your Name], and I’m interested in learning more about your experience in [field/company].
 
-My background includes [skills]. Your research on [specific topic] aligns well with my interests.
+If you have a few minutes sometime in the next couple of weeks, I’d really appreciate the chance to chat and hear more about your journey and advice.
 
-I''ve attached my CV. Would you be open to discussing potential research opportunities for incoming Master''s students?
+Thank you for your time, and I completely understand if your schedule is busy.
 
-Thank you for your consideration.
-
-Best regards,
+Best,
 [Your Name]',
-'Concise template for Master''s program applications', 'general', TRUE),
-
-(NULL, 'Lab Collaboration', 'Research Lab Collaboration Opportunity',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
-
-I hope this email finds you well. My name is [Your Name], and I''m a [Academic Level] with research experience in [skills/research interests].
-
-I''ve been following your work on [specific research area], particularly your recent publication on [specific paper]. I''m writing to explore potential collaboration opportunities. My current work focuses on [research areas], and I believe there''s significant potential for synergy with your expertise in [their expertise].
-
-Would you be available for a brief call to explore these possibilities?
-
-Best regards,
-[Your Name]',
-'Template for exploring collaboration opportunities', 'general', TRUE),
-
-(NULL, 'Paper Collaboration', 'Collaborative Publication Opportunity',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
-
-I hope you''re doing well. I''ve been following your excellent work on [specific research area]. Your recent paper on [specific paper title] aligns closely with research I''ve been conducting.
-
-I''m reaching out because I believe there''s an opportunity for a collaborative publication that could advance our understanding of [shared research area].
-
-Would you be interested in discussing this collaboration further?
-
-Thank you for considering this opportunity.
-
-Best regards,
-[Your Name]',
-'Template for proposing joint research publications', 'general', TRUE),
-
-(NULL, 'Coffee Chat Long', 'Informal Coffee Chat Request',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
-
-I hope you''re having a good week. My name is [Your Name], and I''m a [Academic Level] with a growing interest in [research interests].
-
-I''ve been following your work on [specific research area] and am particularly intrigued by your approach to [specific aspect]. I have had experience with [skills] and have worked on projects such as [experiences].
-
-I''m reaching out to ask if you might have time for an informal coffee chat to discuss your research and insights about the field. I''m particularly curious about [specific topics] and would greatly value the opportunity to learn from your experience.
-
-Even 30 minutes of your time would be incredibly valuable. I''m flexible with timing and happy to meet at a location convenient for you, or via video call.
-
-Thank you so much for considering this request.
-
-Best regards,
-[Your Name]',
-'Template for requesting informal meetings and networking', 'general', TRUE),
-
-(NULL, 'PhD Program Long', 'PhD Application and Research Interest',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
-
-I hope this email finds you well. My name is [Your Name], and I am writing to express my strong interest in pursuing doctoral studies under your supervision in [Department] at [University].
-
-Your research on [specific research area] aligns perfectly with my academic interests in [research interests] and career aspirations. I am currently a [Academic Level] at [Institution], where I have developed expertise in [skills]. My academic journey has been shaped by hands-on experience with several significant projects: [experiences].
-
-Your recent publication on [specific paper] particularly resonated with me because [specific reason]. My research interests center on [specific research questions], and I am eager to contribute to advancing knowledge in this field.
-
-I have attached my CV, transcripts, and a research statement outlining my specific interests. I would welcome the opportunity to discuss how my background and interests align with your research program.
-
-Thank you for your time and consideration.
-
-Sincerely,
-[Your Name]',
-'Comprehensive template for PhD program applications', 'general', TRUE),
-
-(NULL, 'Masters Program Long', 'Master''s Program Application and Research Interest',
-'Dear Professor/Dr/Mr/Mrs [Last Name],
-
-I hope you are well. My name is [Your Name], and I am writing to express my interest in pursuing a Master''s degree in [Program] at [University], with the hope of conducting research under your guidance.
-
-I am currently a [Academic Level] with a background in [research interests/skills]. Your research on [specific topic] particularly interests me because [specific reason].
-
-My recent academic and project experiences include [projects]. These experiences have led me to focus on [research skills/interests], and I believe that your expertise in [their research area] would provide excellent guidance for my graduate studies.
-
-I am especially interested in [specific aspect of their research] and how it relates to [broader applications].
-
-I have attached my academic transcripts, CV, and a statement of purpose. I would be honored to discuss how my background aligns with the graduate opportunities available in your lab.
-
-Thank you very much for your time and consideration.
-
-Sincerely,
-[Your Name]',
-'Comprehensive template for Master''s program applications', 'general', TRUE);
+'Request for an informal informational interview.', 'general', TRUE);
 
 -- Update timestamp trigger
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -414,3 +330,34 @@ CREATE INDEX IF NOT EXISTS idx_internship_contacts_status ON internship_contacts
 CREATE INDEX IF NOT EXISTS idx_internship_emails_user_id ON internship_emails(user_id);
 CREATE INDEX IF NOT EXISTS idx_internship_emails_contact_id ON internship_emails(contact_id);
 CREATE INDEX IF NOT EXISTS idx_activities_category ON activities(category);
+
+-- ============================================================
+-- ADMINISTRATIVE VIEWS
+-- ============================================================
+
+-- View to see all user info at a glance
+CREATE OR REPLACE VIEW user_directory AS
+SELECT 
+  first_name, 
+  last_name, 
+  email, 
+  birthday, 
+  institution, 
+  majors, 
+  interests, 
+  academic_level,
+  onboarding_complete,
+  created_at
+FROM profiles;
+
+-- View to see resumes linked to names
+CREATE OR REPLACE VIEW resume_directory AS
+SELECT 
+  first_name, 
+  last_name, 
+  email, 
+  resume_url, 
+  resume_text,
+  created_at as uploaded_at
+FROM profiles
+WHERE resume_url IS NOT NULL OR resume_text IS NOT NULL;
