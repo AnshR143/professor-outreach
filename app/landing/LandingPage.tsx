@@ -414,27 +414,27 @@ export default function LandingPage() {
         {/* Clouds spritesheet scatter */}
         <div style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none", overflow: "hidden" }}>
           {[
-            { top: "15%", left: "8%", index: 0, scale: 0.6, opacity: 0.8 },
-            { top: "25%", right: "10%", index: 1, scale: 0.8, opacity: 0.9 },
-            { top: "65%", left: "15%", index: 2, scale: 0.5, opacity: 0.7 },
-            { top: "55%", right: "12%", index: 3, scale: 0.7, opacity: 0.85 },
-            { top: "10%", right: "25%", index: 4, scale: 0.4, opacity: 0.6 },
-            { top: "75%", right: "5%", index: 5, scale: 0.9, opacity: 0.95 },
+            { top: "5%", left: "3%", index: 0, scale: 0.8, opacity: 0.9 },
+            { top: "12%", right: "4%", index: 1, scale: 0.9, opacity: 0.95 },
+            { bottom: "15%", left: "4%", index: 2, scale: 0.7, opacity: 0.8 },
+            { bottom: "20%", right: "3%", index: 3, scale: 0.85, opacity: 0.9 },
+            { top: "45%", left: "-2%", index: 4, scale: 0.6, opacity: 0.7 },
+            { top: "35%", right: "-2%", index: 5, scale: 0.65, opacity: 0.75 },
           ].map((c, i) => (
             <motion.div
               key={i}
-              animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
-              transition={{ duration: 5 + i, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: [0, -15, 0], x: [0, 8, 0] }}
+              transition={{ duration: 6 + i, repeat: Infinity, ease: "easeInOut" }}
               style={{
                 position: "absolute",
-                top: c.top, left: c.left, right: c.right,
-                width: 334, height: 200,
+                top: c.top, left: c.left, right: c.right, bottom: c.bottom,
+                width: 341, height: 341,
                 backgroundImage: "url(/clouds.png)",
-                backgroundSize: "1002px 400px", // 3x2 grid of 334x200
-                backgroundPosition: `${-(c.index % 3) * 334}px ${-Math.floor(c.index / 3) * 200}px`,
+                backgroundSize: "1024px 682px",
+                backgroundPosition: `${(c.index % 3) * 50}% ${Math.floor(c.index / 3) * 100}%`,
                 transform: `scale(${c.scale})`,
                 opacity: c.opacity,
-                filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.1))",
+                filter: "drop-shadow(0 15px 30px rgba(0,0,0,0.12))",
               }}
             />
           ))}
