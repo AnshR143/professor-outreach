@@ -230,8 +230,23 @@ function SectionCarousel() {
       padding: "60px 0 60px",
       background: "linear-gradient(180deg, #d8e1e8 0%, #c6d3e3 60%, #d8e1e8 100%)",
     }}>
-      {/* Ambient glow blobs */}
+      {/* Ambient glow blobs and clouds */}
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
+        {/* Single cloud at top left */}
+        <motion.img 
+          src="/single-cloud.png" 
+          animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "8%", left: "5%", width: 180, opacity: 0.8, filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.08))" }} 
+        />
+        {/* Another cloud at bottom right */}
+        <motion.img 
+          src="/single-cloud.png" 
+          animate={{ y: [0, 15, 0], x: [0, -10, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", bottom: "12%", right: "6%", width: 220, opacity: 0.7, filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.1))", transform: "scaleX(-1)" }} 
+        />
+
         <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
           background: "radial-gradient(circle,rgba(152,186,213,0.35) 0%,transparent 70%)" }} />
         <div style={{ position: "absolute", bottom: "-10%", right: "-10%", width: 500, height: 500, borderRadius: "50%",
