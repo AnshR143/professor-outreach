@@ -68,17 +68,9 @@ export const Feature1 = ({
       </div>
 
       <div
+        className="container mx-auto px-6 py-16 md:py-24 lg:py-32 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10"
         style={{
-          position: "relative",
-          zIndex: 10,
-          width: "100%",
           maxWidth: 1400,
-          margin: "0 auto",
-          padding: "96px 48px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 64,
-          alignItems: "center",
         }}
       >
         {/* LEFT: text */}

@@ -79,26 +79,30 @@ export const Contact2 = ({
           src="/cloud-1.png" 
           animate={{ x: [0, 15, 0] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "10%", left: "-10%", width: 380, opacity: 0.5, pointerEvents: "none", filter: "blur(1px)", y: y1 }}
+          className="hidden md:block absolute top-[10%] left-[-10%] w-[380px] opacity-50 pointer-events-none"
+          style={{ filter: "blur(1px)", y: y1 }}
         />
         <motion.img 
           src="/cloud-3.png" 
           animate={{ x: [0, -20, 0] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 420, opacity: 0.45, pointerEvents: "none", filter: "blur(2px)", y: y2 }}
+          className="hidden md:block absolute bottom-[5%] right-[-12%] w-[420px] opacity-45 pointer-events-none"
+          style={{ filter: "blur(2px)", y: y2 }}
         />
         {/* Repositioned bottom-left cloud closer to center */}
         <motion.img 
           src="/cloud-4.png" 
           animate={{ x: [0, 10, 0] }}
           transition={{ duration: 13, repeat: Infinity }}
-          style={{ position: "absolute", bottom: "15%", left: "15%", width: 280, opacity: 0.4, pointerEvents: "none", y: y3 }}
+          className="hidden md:block absolute bottom-[15%] left-[15%] w-[280px] opacity-40 pointer-events-none"
+          style={{ y: y3 }}
         />
         <motion.img 
           src="/cloud-1.png" 
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 10, repeat: Infinity }}
-          style={{ position: "absolute", top: "60%", right: "12%", width: 180, opacity: 0.3, pointerEvents: "none", transform: "scaleX(-1)", y: y4 }}
+          className="hidden md:block absolute top-[60%] right-[12%] w-[180px] opacity-30 pointer-events-none scale-x-[-1]"
+          style={{ y: y4 }}
         />
       </div>
 

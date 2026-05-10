@@ -61,7 +61,7 @@ function FeaturesSlide() {
       <p style={{ fontSize: 11, color: "#4a5568", margin: "0 0 14px", lineHeight: 1.5, maxWidth: 520 }}>
         Built for students and early-career professionals who want a systematic, AI-powered approach to reaching the right people.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {FEATURES.map((f, i) => (
           <motion.div key={f.title}
             initial={{ opacity: 0, y: 16 }}
@@ -82,7 +82,7 @@ function FeaturesSlide() {
 
 function HowItWorksSlide() {
   return (
-    <div style={{ padding: "18px 24px 16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22, alignItems: "center" }}>
+    <div className="p-[18px_24px_16px] grid grid-cols-1 lg:grid-cols-2 gap-[22px] items-center">
       <div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 6,
           background: "#d8e1e8", border: "2px solid #304674", borderRadius: 999,
@@ -164,7 +164,7 @@ function PricingSlide() {
         </h2>
         <p style={{ fontSize: 12, color: "#4a5568", margin: 0 }}>Start free. No credit card required.</p>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 14, maxWidth: 580, margin: "0 auto" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[580px] mx-auto">
         {PRICING.map((p, i) => (
           <motion.div key={p.plan}
             initial={{ opacity: 0, y: 16 }}
@@ -221,10 +221,7 @@ function SectionCarousel({ ySlow, yReverse }: { ySlow: any, yReverse: any }) {
   const handlePrev = useCallback(() => { setCurrent(prev => (prev - 1 + total) % total) }, [total])
 
   return (
-    <div id="carousel" style={{
-      position: "relative", minHeight: "100vh", overflow: "hidden",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "60px 0 60px",
+    <div id="carousel" className="py-12 md:py-20 lg:py-24 flex flex-col items-center justify-center relative min-h-[100vh] overflow-hidden" style={{
       background: "linear-gradient(180deg, #d8e1e8 0%, #c6d3e3 60%, #d8e1e8 100%)",
     }}>
       {/* Ambient glow blobs and clouds */}
@@ -233,13 +230,15 @@ function SectionCarousel({ ySlow, yReverse }: { ySlow: any, yReverse: any }) {
           src="/cloud-4.png" 
           animate={{ x: [0, 20, 0] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "5%", left: "-10%", width: 500, opacity: 0.5, filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.05))", y: ySlow }} 
+          className="hidden sm:block absolute top-[5%] left-[-10%] w-[500px] opacity-50 pointer-events-none"
+          style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.05))", y: ySlow }} 
         />
         <motion.img 
           src="/cloud-2.png" 
           animate={{ x: [0, -25, 0] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 550, opacity: 0.5, filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", transform: "scaleX(-1)", y: yReverse }} 
+          className="hidden sm:block absolute bottom-[5%] right-[-12%] w-[550px] opacity-50 pointer-events-none scale-x-[-1]"
+          style={{ filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", y: yReverse }} 
         />
 
         <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
@@ -267,10 +266,8 @@ function SectionCarousel({ ySlow, yReverse }: { ySlow: any, yReverse: any }) {
       </div>
 
       {/* 3D Carousel track */}
-      <div className="landing-carousel-track" style={{
-        position: "relative", width: "100%", height: "470px",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        perspective: "1200px", zIndex: 10,
+      <div className="landing-carousel-track relative w-full h-[400px] md:h-[470px] flex items-center justify-center z-10" style={{
+        perspective: "1200px",
       }}>
         {SLIDES.map((slide, index) => {
           let offset = index - current
@@ -281,7 +278,7 @@ function SectionCarousel({ ySlow, yReverse }: { ySlow: any, yReverse: any }) {
           return (
             <div key={slide.id} className="landing-carousel-card" style={{
               position: "absolute",
-              width: "min(690px, 72vw)", height: "448px",
+              width: "min(690px, 90vw)", height: "448px",
               overflow: "hidden", borderRadius: 24,
               background: "#ffffff",
               border: "2.5px solid #304674",
@@ -429,13 +426,15 @@ export default function LandingPage() {
         <div style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none", overflow: "hidden" }}>
           <motion.img 
             src="/cloud-1.png" 
-            style={{ position: "absolute", bottom: "5%", left: "-5%", width: 450, opacity: 0.6, filter: "blur(1px)", y: ySlow }} 
+            className="hidden md:block absolute bottom-[5%] left-[-5%] w-[450px] opacity-60 pointer-events-none"
+            style={{ filter: "blur(1px)", y: ySlow }} 
             animate={{ x: [0, 10, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.img 
             src="/cloud-4.png" 
-            style={{ position: "absolute", bottom: "8%", right: "-8%", width: 500, opacity: 0.5, filter: "blur(2px)", y: yMed }} 
+            className="hidden md:block absolute bottom-[8%] right-[-8%] w-[500px] opacity-50 pointer-events-none"
+            style={{ filter: "blur(2px)", y: yMed }} 
             animate={{ x: [0, -15, 0] }}
             transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -456,7 +455,8 @@ export default function LandingPage() {
           src="/cloud-4.png" 
           animate={{ x: [0, -20, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: -120, right: -40, width: 380, opacity: 0.7, pointerEvents: "none", zIndex: 20, y: yFast }}
+          className="hidden md:block absolute top-[-120px] right-[-40px] w-[380px] opacity-70 pointer-events-none z-20"
+          style={{ y: yFast }}
         />
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
