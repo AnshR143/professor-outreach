@@ -207,192 +207,173 @@ function PricingSlide() {
   )
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SECTION CAROUSEL
- ═══════════════════════════════════════════════════════════ */
+const SLIDES = [
+  { id: "features", label: "Features",     content: <FeaturesSlide /> },
+  { id: "how",      label: "How It Works", content: <HowItWorksSlide /> },
+  { id: "pricing",  label: "Pricing",      content: <PricingSlide /> },
+]
 
+function SectionCarousel({ ySlow, yReverse }: { ySlow: any, yReverse: any }) {
+  const [current, setCurrent] = useState(0)
+  const total = SLIDES.length
 
-/* ═══════════════════════════════════════════════════════════
-   LANDING PAGE
- ═══════════════════════════════════════════════════════════ */
-export default function LandingPage() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const handleNext = useCallback(() => { setCurrent(prev => (prev + 1) % total) }, [total])
+  const handlePrev = useCallback(() => { setCurrent(prev => (prev - 1 + total) % total) }, [total])
 
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
-  const scrollYSpring = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
+  return (
+    <div id="carousel" style={{
+      position: "relative", minHeight: "100vh", overflow: "hidden",
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      padding: "60px 0 60px",
+      background: "linear-gradient(180deg, #d8e1e8 0%, #c6d3e3 60%, #d8e1e8 100%)",
+    }}>
+      {/* Ambient glow blobs and clouds */}
+      <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
+        <motion.img 
+          src="/cloud-4.png" 
+          animate={{ x: [0, 20, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "5%", left: "-10%", width: 500, opacity: 0.5, filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.05))", y: ySlow }} 
+        />
+        <motion.img 
+          src="/cloud-2.png" 
+          animate={{ x: [0, -25, 0] }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 550, opacity: 0.5, filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", transform: "scaleX(-1)", y: yReverse }} 
+        />
 
-  // Parallax offsets
-  const ySlow   = useTransform(scrollYSpring, [0, 1], [0, 200])
-  const yMed    = useTransform(scrollYSpring, [0, 1], [0, -400])
-  const yFast   = useTransform(scrollYSpring, [0, 1], [0, -700])
-  const yReverse = useTransform(scrollYSpring, [0, 1], [0, 350])
-
-  const SLIDES = [
-    { id: "features", label: "Features",     content: <FeaturesSlide /> },
-    { id: "how",      label: "How It Works", content: <HowItWorksSlide /> },
-    { id: "pricing",  label: "Pricing",      content: <PricingSlide /> },
-  ]
-
-  function SectionCarousel() {
-    const [current, setCurrent] = useState(0)
-    const total = SLIDES.length
-  
-    const handleNext = useCallback(() => { setCurrent(prev => (prev + 1) % total) }, [total])
-    const handlePrev = useCallback(() => { setCurrent(prev => (prev - 1 + total) % total) }, [total])
-  
-    return (
-      <div id="carousel" style={{
-        position: "relative", minHeight: "100vh", overflow: "hidden",
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-        padding: "60px 0 60px",
-        background: "linear-gradient(180deg, #d8e1e8 0%, #c6d3e3 60%, #d8e1e8 100%)",
-      }}>
-        {/* Ambient glow blobs and clouds */}
-        <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
-          <motion.img 
-            src="/cloud-4.png" 
-            animate={{ x: [0, 20, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "absolute", top: "5%", left: "-10%", width: 500, opacity: 0.5, filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.05))", y: ySlow }} 
-          />
-          <motion.img 
-            src="/cloud-2.png" 
-            animate={{ x: [0, -25, 0] }}
-            transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "absolute", bottom: "5%", right: "-12%", width: 550, opacity: 0.5, filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", transform: "scaleX(-1)", y: yReverse }} 
-          />
-  
-          <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
-            background: "radial-gradient(circle,rgba(152,186,213,0.35) 0%,transparent 70%)" }} />
-          <div style={{ position: "absolute", bottom: "-10%", right: "-10%", width: 500, height: 500, borderRadius: "50%",
-            background: "radial-gradient(circle,rgba(48,70,116,0.18) 0%,transparent 70%)" }} />
-        </div>
-  
-        {/* Tab pills */}
-        <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 10, marginBottom: 32 }}>
-          {SLIDES.map((slide, i) => (
-            <button key={slide.id} onClick={() => setCurrent(i)} style={{
-              border: "2.5px solid #304674",
-              cursor: "pointer", padding: "7px 20px", borderRadius: 999, fontSize: 12, fontWeight: 800,
-              letterSpacing: "0.04em",
-              background: i === current ? "linear-gradient(to right,#98bad5,#304674)" : "#fff",
-              color: i === current ? "#fff" : "#304674",
-              transition: "all 0.25s ease",
-              boxShadow: i === current ? "3px 3px 0px #304674" : "2px 2px 0px #304674",
-              transform: i === current ? "translate(-1px,-1px)" : "none",
-            }}>
-              {slide.label}
-            </button>
-          ))}
-        </div>
-  
-        {/* 3D Carousel track */}
-        <div className="landing-carousel-track" style={{
-          position: "relative", width: "100%", height: "470px",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          perspective: "1200px", zIndex: 10,
-        }}>
-          {SLIDES.map((slide, index) => {
-            let offset = index - current
-            if (offset > Math.floor(total / 2)) offset -= total
-            if (offset < -Math.floor(total / 2)) offset += total
-            const isCenter   = offset === 0
-            const isAdjacent = Math.abs(offset) === 1
-            return (
-              <div key={slide.id} className="landing-carousel-card" style={{
-                position: "absolute",
-                width: "min(690px, 72vw)", height: "448px",
-                overflow: "hidden", borderRadius: 24,
-                background: "#ffffff",
-                border: "2.5px solid #304674",
-                boxShadow: isCenter
-                  ? "4px 4px 0px #304674, 0 16px 48px rgba(48,70,116,0.18)"
-                  : "2px 2px 0px #304674",
-                transform: `
-                  translateX(${offset * 88}%)
-                  rotateY(${offset * -14}deg)
-                  scale(${isCenter ? 1 : isAdjacent ? 0.82 : 0.68})
-                `,
-                transformOrigin: "center center",
-                opacity: isCenter ? 1 : isAdjacent ? 0.38 : 0,
-                filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(6px)" : "blur(12px)",
-                transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease, filter 0.5s ease, box-shadow 0.4s ease",
-                zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
-                visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
-                pointerEvents: isCenter ? "auto" : "none",
-                willChange: "transform, filter, opacity",
-              }}>
-                <AnimatePresence mode="wait">
-                  {isCenter ? (
-                    <motion.div
-                      key={`${slide.id}-center`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="landing-carousel-card-inner"
-                      style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
-                      {slide.content}
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key={`${slide.id}-side`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.8 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      style={{ height: "100%", overflow: "hidden", pointerEvents: "none" }}>
-                      {slide.content}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )
-          })}
-        </div>
-  
-        {/* Prev arrow */}
-        <button onClick={handlePrev} style={{
-          position: "absolute", left: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
-          zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-          background: "#fff", border: "2.5px solid #304674", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "3px 3px 0px #304674", transition: "box-shadow 0.15s, transform 0.15s",
-        }}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "1px 1px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) translate(2px,2px)" }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "3px 3px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%)" }}>
-          <ChevronLeft style={{ width: 20, height: 20, color: "#304674" }} />
-        </button>
-  
-        {/* Next arrow */}
-        <button onClick={handleNext} style={{
-          position: "absolute", right: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
-          zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-          background: "#fff", border: "2.5px solid #304674", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "3px 3px 0px #304674", transition: "box-shadow 0.15s, transform 0.15s",
-        }}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "1px 1px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) translate(2px,2px)" }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "3px 3px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%)" }}>
-          <ChevronRight style={{ width: 20, height: 20, color: "#304674" }} />
-        </button>
-  
-        {/* Dot indicators */}
-        <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 8, marginTop: 28 }}>
-          {SLIDES.map((_, i) => (
-            <button key={i} onClick={() => setCurrent(i)} style={{
-              border: "2px solid #304674", cursor: "pointer", padding: 0,
-              width: i === current ? 28 : 10, height: 10, borderRadius: 999,
-              background: i === current ? "linear-gradient(to right,#98bad5,#304674)" : "#fff",
-              boxShadow: "2px 2px 0px #304674",
-              transition: "all 0.3s ease",
-            }} />
-          ))}
-        </div>
+        <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
+          background: "radial-gradient(circle,rgba(152,186,213,0.35) 0%,transparent 70%)" }} />
+        <div style={{ position: "absolute", bottom: "-10%", right: "-10%", width: 500, height: 500, borderRadius: "50%",
+          background: "radial-gradient(circle,rgba(48,70,116,0.18) 0%,transparent 70%)" }} />
       </div>
-    )
-  }
+
+      {/* Tab pills */}
+      <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 10, marginBottom: 32 }}>
+        {SLIDES.map((slide, i) => (
+          <button key={slide.id} onClick={() => setCurrent(i)} style={{
+            border: "2.5px solid #304674",
+            cursor: "pointer", padding: "7px 20px", borderRadius: 999, fontSize: 12, fontWeight: 800,
+            letterSpacing: "0.04em",
+            background: i === current ? "linear-gradient(to right,#98bad5,#304674)" : "#fff",
+            color: i === current ? "#fff" : "#304674",
+            transition: "all 0.25s ease",
+            boxShadow: i === current ? "3px 3px 0px #304674" : "2px 2px 0px #304674",
+            transform: i === current ? "translate(-1px,-1px)" : "none",
+          }}>
+            {slide.label}
+          </button>
+        ))}
+      </div>
+
+      {/* 3D Carousel track */}
+      <div className="landing-carousel-track" style={{
+        position: "relative", width: "100%", height: "470px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        perspective: "1200px", zIndex: 10,
+      }}>
+        {SLIDES.map((slide, index) => {
+          let offset = index - current
+          if (offset > Math.floor(total / 2)) offset -= total
+          if (offset < -Math.floor(total / 2)) offset += total
+          const isCenter   = offset === 0
+          const isAdjacent = Math.abs(offset) === 1
+          return (
+            <div key={slide.id} className="landing-carousel-card" style={{
+              position: "absolute",
+              width: "min(690px, 72vw)", height: "448px",
+              overflow: "hidden", borderRadius: 24,
+              background: "#ffffff",
+              border: "2.5px solid #304674",
+              boxShadow: isCenter
+                ? "4px 4px 0px #304674, 0 16px 48px rgba(48,70,116,0.18)"
+                : "2px 2px 0px #304674",
+              transform: `
+                translateX(${offset * 88}%)
+                rotateY(${offset * -14}deg)
+                scale(${isCenter ? 1 : isAdjacent ? 0.82 : 0.68})
+              `,
+              transformOrigin: "center center",
+              opacity: isCenter ? 1 : isAdjacent ? 0.38 : 0,
+              filter: isCenter ? "blur(0px)" : isAdjacent ? "blur(6px)" : "blur(12px)",
+              transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease, filter 0.5s ease, box-shadow 0.4s ease",
+              zIndex: isCenter ? 10 : isAdjacent ? 5 : 1,
+              visibility: Math.abs(offset) > 1 ? "hidden" : "visible",
+              pointerEvents: isCenter ? "auto" : "none",
+              willChange: "transform, filter, opacity",
+            }}>
+              <AnimatePresence mode="wait">
+                {isCenter ? (
+                  <motion.div
+                    key={`${slide.id}-center`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="landing-carousel-card-inner"
+                    style={{ height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" }}>
+                    {slide.content}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`${slide.id}-side`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.8 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ height: "100%", overflow: "hidden", pointerEvents: "none" }}>
+                    {slide.content}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Prev arrow */}
+      <button onClick={handlePrev} style={{
+        position: "absolute", left: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
+        zIndex: 20, width: 44, height: 44, borderRadius: "50%",
+        background: "#fff", border: "2.5px solid #304674", cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "3px 3px 0px #304674", transition: "box-shadow 0.15s, transform 0.15s",
+      }}
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "1px 1px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) translate(2px,2px)" }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "3px 3px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%)" }}>
+        <ChevronLeft style={{ width: 20, height: 20, color: "#304674" }} />
+      </button>
+
+      {/* Next arrow */}
+      <button onClick={handleNext} style={{
+        position: "absolute", right: "max(20px, 3vw)", top: "50%", transform: "translateY(-50%)",
+        zIndex: 20, width: 44, height: 44, borderRadius: "50%",
+        background: "#fff", border: "2.5px solid #304674", cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "3px 3px 0px #304674", transition: "box-shadow 0.15s, transform 0.15s",
+      }}
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "1px 1px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%) translate(2px,2px)" }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "3px 3px 0px #304674"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-50%)" }}>
+        <ChevronRight style={{ width: 20, height: 20, color: "#304674" }} />
+      </button>
+
+      {/* Dot indicators */}
+      <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 8, marginTop: 28 }}>
+        {SLIDES.map((_, i) => (
+          <button key={i} onClick={() => setCurrent(i)} style={{
+            border: "2px solid #304674", cursor: "pointer", padding: 0,
+            width: i === current ? 28 : 10, height: 10, borderRadius: 999,
+            background: i === current ? "linear-gradient(to right,#98bad5,#304674)" : "#fff",
+            boxShadow: "2px 2px 0px #304674",
+            transition: "all 0.3s ease",
+          }} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function LandingPage() {
 
   useEffect(() => {
     const supabase = createClient()
@@ -481,7 +462,7 @@ export default function LandingPage() {
       </div>
 
       {/* SECTION 2  3D Carousel */}
-      <SectionCarousel />
+      <SectionCarousel ySlow={ySlow} yReverse={yReverse} />
 
       {/* SECTION 3  CTA with Wolf */}
       <div className="landing-cta-section" style={{
