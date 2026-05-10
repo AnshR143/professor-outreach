@@ -136,8 +136,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           {/* Logo  clicks back to landing page */}
           <Link href="/" className="logo-area">
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: "#fff", border: "2.5px solid #000", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginLeft: expanded ? 0 : 0 }}>
-              <img src="/link.png" alt="InternLink" style={{ width: 22, height: 22 }} />
+            <div style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <img src="/link.png" alt="InternLink" style={{ width: 28, height: 28 }} />
             </div>
             <span className="logo-text">InternLink</span>
           </Link>

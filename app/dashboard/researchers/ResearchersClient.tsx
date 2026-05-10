@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
+import { X } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { Profile, Researcher } from "@/lib/supabase/types"
