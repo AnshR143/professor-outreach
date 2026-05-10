@@ -363,22 +363,22 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000,
       display: "flex", alignItems: "center", justifyContent: "center", padding: 20, backdropFilter: "blur(4px)" }}>
-      <div style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: 560,
-        maxHeight: "92vh", overflow: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
+      <div style={{ background: "#fff", borderRadius: 20, width: "100%", maxWidth: 560, border: "4px solid #000",
+        maxHeight: "92vh", overflow: "auto", boxShadow: "12px 12px 0px rgba(0,0,0,1)" }}>
 
         {/* Header */}
-        <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0",
+        <div style={{ padding: "20px 24px", borderBottom: "3px solid #000",
           display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#0f172a" }}>Find Researchers</h2>
-            <p style={{ margin: "2px 0 0", fontSize: 13, color: "#64748b" }}>
+            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: "-0.02em" }}>Find Researchers</h2>
+            <p style={{ margin: "2px 0 0", fontSize: 13, color: "#64748b", fontWeight: 500 }}>
               Match scores are calculated from your resume
             </p>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: 4 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+          <button onClick={onClose} style={{ background: "#f1f5f9", border: "2px solid #000", borderRadius: 8, cursor: "pointer", color: "#000", padding: "6px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "2px 2px 0px #000", transition: "all 0.1s" }}
+            onMouseEnter={e => e.currentTarget.style.transform = "translate(-1px, -1px)"}
+            onMouseLeave={e => e.currentTarget.style.transform = "translate(0, 0)"}>
+            <X size={20} strokeWidth={3} />
           </button>
         </div>
 

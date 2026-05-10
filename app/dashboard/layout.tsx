@@ -101,8 +101,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           align-items: center;
           justify-content: center;
           gap: 10px;
-          padding: 0 8px;
-          margin-bottom: 16px;
+          padding: 0;
+          margin-bottom: 20px;
           width: 100%;
           text-decoration: none;
           white-space: nowrap;
@@ -111,7 +111,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
         .sidebar-expanded .logo-area {
           justify-content: flex-start;
-          padding-left: 18px;
+          padding-left: 10px;
         }
         .logo-text {
           opacity: 0;
@@ -136,14 +136,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           {/* Logo  clicks back to landing page */}
           <Link href="/" className="logo-area">
-            <div style={{ width: 36, height: 36, borderRadius: 8, background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6z"/></svg>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: "#fff", border: "2.5px solid #000", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginLeft: expanded ? 0 : 0 }}>
+              <img src="/link.png" alt="InternLink" style={{ width: 22, height: 22 }} />
             </div>
             <span className="logo-text">InternLink</span>
           </Link>
 
           {/* Nav */}
-          <nav style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, width: "100%", padding: "0 8px" }}>
+          <nav style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, width: "100%", padding: "0 8px" }}>
             {NAV.map(({ href, label, icon: Icon, badge }: { href: string; label: string; icon: () => JSX.Element; badge?: string }) => {
               const active = isActive(href)
               return (
@@ -155,6 +155,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   style={{
                     color: active ? "#fff" : "#c6d3e3",
                     background: active ? "rgba(255,255,255,0.16)" : "transparent",
+                    gap: expanded ? 10 : 0,
                   }}
                   onMouseEnter={e => {
                     if (!active) {

@@ -301,15 +301,37 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                   <button
                     onClick={e => deleteContact(e, c.id)}
                     title="Remove contact"
-                    style={{ position: "absolute", top: 10, right: 10, zIndex: 2, width: 22, height: 22, borderRadius: "50%", background: "#f1f5f9", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", fontSize: 14, lineHeight: 1, padding: 0 }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.color = "#dc2626" }}
-                    onMouseLeave={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#94a3b8" }}
-                  >×</button>
+                    style={{ position: "absolute", top: -8, right: -8, zIndex: 10, width: 28, height: 28, borderRadius: "50%", background: "#fff", border: "2.5px solid #000", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#000", boxShadow: "2px 2px 0px #000", transition: "all 0.1s" }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.background = "#fee2e2" }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.background = "#fff" }}
+                  >
+                    <X size={14} strokeWidth={3} />
+                  </button>
                   <div
                     onClick={e => openEmailModal(e, c)}
-                    style={{ background: "#fff", borderRadius: 14, border: "2px solid #304674", padding: "18px 20px", cursor: "pointer", transition: "transform 0.15s, box-shadow 0.15s", boxShadow: "4px 4px 0px #304674", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "6px 6px 0px #304674"; e.currentTarget.style.transform = "translate(-2px, -2px)" }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "4px 4px 0px #304674"; e.currentTarget.style.transform = "translate(0, 0)" }}
+                    style={{ 
+                      background: "#fff", 
+                      borderRadius: 14, 
+                      border: "3px solid #000", 
+                      padding: "18px 20px", 
+                      cursor: "pointer", 
+                      transition: "all 0.15s cubic-bezier(0.4, 0, 0.2, 1)", 
+                      boxShadow: "6px 6px 0px #000", 
+                      display: "flex", 
+                      flexDirection: "column", 
+                      gap: 12, 
+                      height: "100%", 
+                      boxSizing: "border-box",
+                      position: "relative"
+                    }}
+                    onMouseEnter={e => { 
+                      e.currentTarget.style.boxShadow = "10px 10px 0px #000"; 
+                      e.currentTarget.style.transform = "translate(-2px, -2px)";
+                    }}
+                    onMouseLeave={e => { 
+                      e.currentTarget.style.boxShadow = "6px 6px 0px #000"; 
+                      e.currentTarget.style.transform = "translate(0, 0)";
+                    }}
                   >
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.company || "Unknown Company"}</div>
@@ -368,10 +390,12 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
       {/* ── Add Contact Modal ── */}
       {showAdd && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
+          <div style={{ background: "#fff", borderRadius: 20, border: "4px solid #000", padding: 28, width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", boxShadow: "10px 10px 0px #000" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Add Internship Contact</h2>
-              <button onClick={() => setShowAdd(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 20, lineHeight: 1 }}>x</button>
+              <button onClick={() => setShowAdd(false)} style={{ background: "#f1f5f9", border: "2px solid #000", borderRadius: 8, cursor: "pointer", color: "#000", padding: "6px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "2px 2px 0px #000", transition: "all 0.1s" }}>
+                <X size={18} strokeWidth={3} />
+              </button>
             </div>
             <form onSubmit={handleAdd}>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -427,7 +451,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
       {emailContact && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}
           onClick={() => setEmailContact(null)}>
-          <div style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: 600, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 64px rgba(0,0,0,0.22)" }}
+          <div style={{ background: "#fff", borderRadius: 20, border: "4px solid #000", width: "100%", maxWidth: 600, maxHeight: "90vh", overflowY: "auto", boxShadow: "12px 12px 0px #000" }}
             onClick={e => e.stopPropagation()}>
             <div style={{ padding: "20px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
@@ -444,7 +468,9 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                   </div>
                 )}
               </div>
-              <button onClick={() => setEmailContact(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 20, lineHeight: 1, padding: 4 }}>x</button>
+              <button onClick={() => setEmailContact(null)} style={{ background: "#f1f5f9", border: "2px solid #000", borderRadius: 8, cursor: "pointer", color: "#000", padding: "6px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "2px 2px 0px #000", transition: "all 0.1s" }}>
+                <X size={18} strokeWidth={3} />
+              </button>
             </div>
 
             <div style={{ padding: "16px 24px 24px" }}>
