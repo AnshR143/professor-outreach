@@ -374,6 +374,17 @@ function SectionCarousel({ ySlow, yReverse }: { ySlow: any, yReverse: any }) {
 }
 
 export default function LandingPage() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
+  const scrollYSpring = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
+
+  // Parallax offsets
+  const ySlow   = useTransform(scrollYSpring, [0, 1], [0, 200])
+  const yMed    = useTransform(scrollYSpring, [0, 1], [0, -400])
+  const yFast   = useTransform(scrollYSpring, [0, 1], [0, -700])
+  const yReverse = useTransform(scrollYSpring, [0, 1], [0, 350])
 
   useEffect(() => {
     const supabase = createClient()
