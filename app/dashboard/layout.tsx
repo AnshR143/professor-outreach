@@ -63,17 +63,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .nav-item {
           display: flex;
           align-items: center;
+          justify-content: center;
           width: 100%;
           height: 40px;
-          padding: 0 0 0 10px;
+          padding: 0;
           border-radius: 8px;
           text-decoration: none;
-          transition: background 0.15s, color 0.15s;
+          transition: background 0.15s, color 0.15s, padding 0.25s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.25s;
           white-space: nowrap;
           gap: 10px;
           box-sizing: border-box;
         }
         .sidebar-expanded .nav-item {
+          justify-content: flex-start;
           padding-left: 10px;
         }
         .nav-label {
@@ -90,8 +92,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
         .nav-icon {
           flex-shrink: 0;
-          width: 20px;
-          height: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -136,7 +136,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           {/* Logo  clicks back to landing page */}
           <Link href="/" className="logo-area">
-            <img src="/link.png" alt="Logo" style={{ width: 36, height: 36, objectFit: "contain", flexShrink: 0 }} />
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6z"/></svg>
+            </div>
             <span className="logo-text">InternLink</span>
           </Link>
 
@@ -213,3 +215,4 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </>
   )
 }
+

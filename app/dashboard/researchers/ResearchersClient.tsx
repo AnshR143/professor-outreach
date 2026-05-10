@@ -261,12 +261,12 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
                     style={{ position: "absolute", top: 10, right: 10, zIndex: 2, width: 22, height: 22, borderRadius: "50%", background: "#f1f5f9", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#94a3b8", fontSize: 14, lineHeight: 1, padding: 0 }}
                     onMouseEnter={e => { e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.color = "#dc2626" }}
                     onMouseLeave={e => { e.currentTarget.style.background = "#f1f5f9"; e.currentTarget.style.color = "#94a3b8" }}
-                  >×</button>
+                  >�</button>
                   <Link href={`/dashboard/researchers/${r.id}`} style={{ textDecoration: "none" }}>
                   <div
-                    style={{ background: "#fff", borderRadius: 14, border: "2px solid #304674", padding: "18px 20px", cursor: "pointer", transition: "transform 0.15s, box-shadow 0.15s", boxShadow: "4px 4px 0px #304674", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "6px 6px 0px #304674"; e.currentTarget.style.transform = "translate(-2px, -2px)" }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "4px 4px 0px #304674"; e.currentTarget.style.transform = "translate(0, 0)" }}
+                    style={{ background: "#fff", borderRadius: 14, border: "1px solid #e2e8f0", padding: "18px 20px", cursor: "pointer", transition: "box-shadow 0.15s, border-color 0.15s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", display: "flex", flexDirection: "column", gap: 12, height: "100%", boxSizing: "border-box" }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.09)"; e.currentTarget.style.borderColor = "#304674" }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; e.currentTarget.style.borderColor = "#e2e8f0" }}
                   >
                     {/* Name + score + date */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
@@ -395,3 +395,4 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
     </div>
   )
 }
+

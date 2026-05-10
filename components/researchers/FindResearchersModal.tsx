@@ -389,17 +389,18 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
                 <div style={{ background: "#fee2e2", border: "1px solid #fecaca", borderRadius: 8,
                   padding: "10px 14px", color: "#dc2626", fontSize: 13, marginBottom: 16 }}>
                   {error}
-                  {(error.toLowerCase().includes("key") || error.toLowerCase().includes("api")) && (
-                    <span> <a href="/settings" style={{ color: "#dc2626", fontWeight: 600 }}>Add your API key in Settings.</a></span>
-                  )}
                 </div>
               )}
 
               {/* Keywords / Fields with autocomplete */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 8 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
                   Keywords or research fields
+                  <span style={{ color: "#94a3b8", fontWeight: 400 }}>  separate multiple with commas</span>
                 </label>
+                <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
+                  Spelling and capitalisation don&apos;t matter. "AI", "artificial intelligence", and "machien lerning" all work.
+                </p>
 
                 {/* Input + dropdown wrapper */}
                 <div style={{ position: "relative" }}>
@@ -461,10 +462,13 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
 
               {/* University */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 8 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
                   University
                   <span style={{ color: "#94a3b8", fontWeight: 400 }}>  optional, leave blank to search all</span>
                 </label>
+                <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
+                  Comma-separate multiple. Fuzzy-matched  "stanfrod" and "carnegie melon" still work.
+                </p>
                 <input
                   value={form.universityText}
                   onChange={e => setForm(fm => ({ ...fm, universityText: e.target.value }))}

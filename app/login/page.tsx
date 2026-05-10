@@ -153,8 +153,11 @@ export default function LoginPage() {
             alignItems: "center", justifyContent: "center", padding: 32, zIndex: 10 }}>
             <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              style={{ width: 64, height: 64, marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <img src="/link.png" alt="Logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+              style={{ width: 52, height: 52, borderRadius: "50%",
+                background: "linear-gradient(135deg,#304674,#1f2f55)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 8px 24px rgba(48, 70, 116,0.35)", marginBottom: 20 }}>
+              <ArrowRight style={{ width: 22, height: 22, color: "#fff" }} />
             </motion.div>
             <motion.h2 initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
@@ -180,7 +183,11 @@ export default function LoginPage() {
 
             {/* Brand */}
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
-              <img src="/link.png" alt="Logo" style={{ width: 36, height: 36, objectFit: "contain" }} />
+              <div style={{ width: 36, height: 36, borderRadius: 10,
+                background: "linear-gradient(135deg,#304674,#1f2f55)",
+                display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <ArrowRight style={{ width: 18, height: 18, color: "#fff" }} />
+              </div>
               <span style={{ fontWeight: 700, fontSize: 16, color: "#304674" }}>InternLink</span>
             </div>
 
@@ -292,3 +299,4 @@ export default function LoginPage() {
     </div>
   )
 }
+
