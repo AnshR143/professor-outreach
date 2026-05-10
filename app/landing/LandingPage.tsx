@@ -234,21 +234,27 @@ function SectionCarousel() {
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
         <motion.img 
           src="/cloud-4.png" 
-          animate={{ y: [0, -20, 0], x: [0, 15, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "12%", left: "7%", width: 200, opacity: 0.65, filter: "drop-shadow(0 10px 30px rgba(0,0,0,0.05))" }} 
+          animate={{ y: [0, -40, 0], x: [0, 20, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "5%", left: "-10%", width: 500, opacity: 0.5, filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.05))" }} 
         />
         <motion.img 
           src="/cloud-2.png" 
-          animate={{ y: [0, 25, 0], x: [0, -12, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", bottom: "10%", right: "8%", width: 240, opacity: 0.6, filter: "drop-shadow(0 15px 35px rgba(0,0,0,0.07))", transform: "scaleX(-1)" }} 
+          animate={{ y: [0, 45, 0], x: [0, -25, 0] }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 550, opacity: 0.5, filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", transform: "scaleX(-1)" }} 
         />
         <motion.img 
           src="/cloud-3.png" 
-          animate={{ opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 12, repeat: Infinity }}
-          style={{ position: "absolute", top: "45%", right: "15%", width: 120, opacity: 0.4 }} 
+          animate={{ opacity: [0.2, 0.4, 0.2], y: [0, -20, 0] }}
+          transition={{ duration: 13, repeat: Infinity }}
+          style={{ position: "absolute", top: "35%", right: "5%", width: 320, opacity: 0.3 }} 
+        />
+        <motion.img 
+          src="/cloud-1.png" 
+          animate={{ y: [0, 30, 0], x: [0, 15, 0] }}
+          transition={{ duration: 15, repeat: Infinity }}
+          style={{ position: "absolute", top: "50%", left: "10%", width: 280, opacity: 0.4 }} 
         />
 
         <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
@@ -430,6 +436,13 @@ export default function LandingPage() {
 
       {/* SECTION 1 - Feature1 Video Hero */}
       <div style={{ position: "relative" }}>
+        {/* Large clouds scatter */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none", overflow: "hidden" }}>
+          <motion.img src="/cloud-1.png" animate={{ y: [0, -20, 0], x: [0, 10, 0] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            style={{ position: "absolute", bottom: "5%", left: "-5%", width: 450, opacity: 0.6, filter: "blur(1px)" }} />
+          <motion.img src="/cloud-4.png" animate={{ y: [0, 25, 0], x: [0, -15, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            style={{ position: "absolute", bottom: "8%", right: "-8%", width: 500, opacity: 0.5, filter: "blur(2px)" }} />
+        </div>
         <Feature1
           title="The intelligent outreach platform for landing research positions and internships."
           description="Precision contact matching, AI-crafted cold emails, and automated follow-ups powered by your resume. Stop guessing, start connecting."
@@ -444,9 +457,9 @@ export default function LandingPage() {
         {/* Cloud above the marquee all the way in the right */}
         <motion.img 
           src="/cloud-4.png" 
-          animate={{ x: [0, -10, 0], y: [0, 5, 0] }}
+          animate={{ x: [0, -20, 0], y: [0, 10, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: -60, right: 20, width: 140, opacity: 0.8, pointerEvents: "none", zIndex: 20 }}
+          style={{ position: "absolute", top: -120, right: -40, width: 380, opacity: 0.7, pointerEvents: "none", zIndex: 20 }}
         />
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">
@@ -494,6 +507,19 @@ export default function LandingPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
+          {/* Decorative clouds around the wolf */}
+          <motion.img 
+            src="/cloud-3.png" 
+            animate={{ scale: [1, 1.1, 1], x: [0, 10, 0] }}
+            transition={{ duration: 14, repeat: Infinity }}
+            style={{ position: "absolute", top: "-20%", right: "-30%", width: 300, opacity: 0.3, zIndex: -1 }} 
+          />
+          <motion.img 
+            src="/cloud-2.png" 
+            animate={{ scale: [1, 1.05, 1], x: [0, -8, 0] }}
+            transition={{ duration: 12, repeat: Infinity }}
+            style={{ position: "absolute", bottom: "-10%", left: "-40%", width: 340, opacity: 0.35, zIndex: -1, transform: "scaleX(-1)" }} 
+          />
           <img src="/husky.png.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           <div className="landing-wolf-text" style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",

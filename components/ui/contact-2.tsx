@@ -66,21 +66,33 @@ export const Contact2 = ({
         {/* Variety of clouds around the form */}
         <motion.img 
           src="/cloud-1.png" 
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "15%", left: "5%", width: 140, opacity: 0.6, pointerEvents: "none" }}
+          animate={{ y: [0, -25, 0], x: [0, 15, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "10%", left: "-10%", width: 380, opacity: 0.5, pointerEvents: "none", filter: "blur(1px)" }}
         />
         <motion.img 
           src="/cloud-3.png" 
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", bottom: "10%", right: "8%", width: 160, opacity: 0.5, pointerEvents: "none" }}
+          animate={{ y: [0, 30, 0], x: [0, -20, 0] }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 420, opacity: 0.45, pointerEvents: "none", filter: "blur(2px)" }}
         />
         <motion.img 
           src="/cloud-2.png" 
-          animate={{ x: [0, 8, 0], y: [0, -5, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "40%", right: "3%", width: 110, opacity: 0.45, pointerEvents: "none" }}
+          animate={{ x: [0, 15, 0], y: [0, -10, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", top: "35%", right: "-5%", width: 280, opacity: 0.4, pointerEvents: "none" }}
+        />
+        <motion.img 
+          src="/cloud-4.png" 
+          animate={{ y: [0, -15, 0] }}
+          transition={{ duration: 13, repeat: Infinity }}
+          style={{ position: "absolute", bottom: "25%", left: "5%", width: 240, opacity: 0.35, pointerEvents: "none" }}
+        />
+        <motion.img 
+          src="/cloud-1.png" 
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 10, repeat: Infinity }}
+          style={{ position: "absolute", top: "60%", right: "12%", width: 180, opacity: 0.3, pointerEvents: "none", transform: "scaleX(-1)" }}
         />
       </div>
 
