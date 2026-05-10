@@ -234,15 +234,15 @@ function SectionCarousel() {
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
         <motion.img 
           src="/cloud-4.png" 
-          animate={{ y: [0, -40, 0], x: [0, 20, 0] }}
+          animate={{ x: [0, 20, 0] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "5%", left: "-10%", width: 500, opacity: 0.5, filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.05))" }} 
+          style={{ position: "absolute", top: "5%", left: "-10%", width: 500, opacity: 0.5, filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.05))", y: ySlow }} 
         />
         <motion.img 
           src="/cloud-2.png" 
-          animate={{ y: [0, 45, 0], x: [0, -25, 0] }}
+          animate={{ x: [0, -25, 0] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 550, opacity: 0.5, filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", transform: "scaleX(-1)" }} 
+          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 550, opacity: 0.5, filter: "drop-shadow(0 25px 45px rgba(0,0,0,0.07))", transform: "scaleX(-1)", y: yReverse }} 
         />
 
         <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
@@ -384,6 +384,13 @@ export default function LandingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
+  const scrollYSpring = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
+
+  // Parallax offsets
+  const ySlow   = useTransform(scrollYSpring, [0, 1], [0, 200])
+  const yMed    = useTransform(scrollYSpring, [0, 1], [0, -400])
+  const yFast   = useTransform(scrollYSpring, [0, 1], [0, -700])
+  const yReverse = useTransform(scrollYSpring, [0, 1], [0, 350])
 
   useEffect(() => {
     const supabase = createClient()
@@ -426,10 +433,18 @@ export default function LandingPage() {
       <div style={{ position: "relative" }}>
         {/* Large clouds scatter */}
         <div style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none", overflow: "hidden" }}>
-          <motion.img src="/cloud-1.png" animate={{ y: [0, -20, 0], x: [0, 10, 0] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "absolute", bottom: "5%", left: "-5%", width: 450, opacity: 0.6, filter: "blur(1px)" }} />
-          <motion.img src="/cloud-4.png" animate={{ y: [0, 25, 0], x: [0, -15, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            style={{ position: "absolute", bottom: "8%", right: "-8%", width: 500, opacity: 0.5, filter: "blur(2px)" }} />
+          <motion.img 
+            src="/cloud-1.png" 
+            style={{ position: "absolute", bottom: "5%", left: "-5%", width: 450, opacity: 0.6, filter: "blur(1px)", y: ySlow }} 
+            animate={{ x: [0, 10, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.img 
+            src="/cloud-4.png" 
+            style={{ position: "absolute", bottom: "8%", right: "-8%", width: 500, opacity: 0.5, filter: "blur(2px)", y: yMed }} 
+            animate={{ x: [0, -15, 0] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          />
         </div>
         <Feature1
           title="The intelligent outreach platform for landing research positions and internships."
@@ -445,9 +460,9 @@ export default function LandingPage() {
         {/* Cloud above the marquee all the way in the right */}
         <motion.img 
           src="/cloud-4.png" 
-          animate={{ x: [0, -20, 0], y: [0, 10, 0] }}
+          animate={{ x: [0, -20, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: -120, right: -40, width: 380, opacity: 0.7, pointerEvents: "none", zIndex: 20 }}
+          style={{ position: "absolute", top: -120, right: -40, width: 380, opacity: 0.7, pointerEvents: "none", zIndex: 20, y: yFast }}
         />
         <div className="flex overflow-hidden whitespace-nowrap">
           <div className="marquee-track flex items-center gap-16 px-8">

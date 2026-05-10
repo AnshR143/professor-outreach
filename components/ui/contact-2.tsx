@@ -20,6 +20,17 @@ export const Contact2 = ({
 }: Contact2Props) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: "success" | "error"; msg: string } | null>(null);
+  const ref = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [-150, 150]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const y4 = useTransform(scrollYProgress, [0, 1], [-80, 80]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,7 +69,7 @@ export const Contact2 = ({
   };
 
   return (
-    <section id="contact" className="py-12 bg-white relative overflow-hidden">
+    <section ref={ref} id="contact" className="py-12 bg-white relative overflow-hidden">
       <div className="absolute inset-0 z-0">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
@@ -66,28 +77,28 @@ export const Contact2 = ({
         {/* Variety of clouds around the form */}
         <motion.img 
           src="/cloud-1.png" 
-          animate={{ y: [0, -25, 0], x: [0, 15, 0] }}
+          animate={{ x: [0, 15, 0] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "10%", left: "-10%", width: 380, opacity: 0.5, pointerEvents: "none", filter: "blur(1px)" }}
+          style={{ position: "absolute", top: "10%", left: "-10%", width: 380, opacity: 0.5, pointerEvents: "none", filter: "blur(1px)", y: y1 }}
         />
         <motion.img 
           src="/cloud-3.png" 
-          animate={{ y: [0, 30, 0], x: [0, -20, 0] }}
+          animate={{ x: [0, -20, 0] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 420, opacity: 0.45, pointerEvents: "none", filter: "blur(2px)" }}
+          style={{ position: "absolute", bottom: "5%", right: "-12%", width: 420, opacity: 0.45, pointerEvents: "none", filter: "blur(2px)", y: y2 }}
         />
         {/* Repositioned bottom-left cloud closer to center */}
         <motion.img 
           src="/cloud-4.png" 
-          animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
+          animate={{ x: [0, 10, 0] }}
           transition={{ duration: 13, repeat: Infinity }}
-          style={{ position: "absolute", bottom: "15%", left: "15%", width: 280, opacity: 0.4, pointerEvents: "none" }}
+          style={{ position: "absolute", bottom: "15%", left: "15%", width: 280, opacity: 0.4, pointerEvents: "none", y: y3 }}
         />
         <motion.img 
           src="/cloud-1.png" 
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 10, repeat: Infinity }}
-          style={{ position: "absolute", top: "60%", right: "12%", width: 180, opacity: 0.3, pointerEvents: "none", transform: "scaleX(-1)" }}
+          style={{ position: "absolute", top: "60%", right: "12%", width: 180, opacity: 0.3, pointerEvents: "none", transform: "scaleX(-1)", y: y4 }}
         />
       </div>
 
