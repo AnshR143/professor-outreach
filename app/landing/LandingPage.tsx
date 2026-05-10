@@ -232,19 +232,23 @@ function SectionCarousel() {
     }}>
       {/* Ambient glow blobs and clouds */}
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 0 }}>
-        {/* Single cloud at top left */}
         <motion.img 
-          src="/single-cloud.png" 
-          animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "8%", left: "5%", width: 180, opacity: 0.8, filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.08))" }} 
-        />
-        {/* Another cloud at bottom right */}
-        <motion.img 
-          src="/single-cloud.png" 
-          animate={{ y: [0, 15, 0], x: [0, -10, 0] }}
+          src="/cloud-4.png" 
+          animate={{ y: [0, -20, 0], x: [0, 15, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", bottom: "12%", right: "6%", width: 220, opacity: 0.7, filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.1))", transform: "scaleX(-1)" }} 
+          style={{ position: "absolute", top: "12%", left: "7%", width: 200, opacity: 0.65, filter: "drop-shadow(0 10px 30px rgba(0,0,0,0.05))" }} 
+        />
+        <motion.img 
+          src="/cloud-2.png" 
+          animate={{ y: [0, 25, 0], x: [0, -12, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", bottom: "10%", right: "8%", width: 240, opacity: 0.6, filter: "drop-shadow(0 15px 35px rgba(0,0,0,0.07))", transform: "scaleX(-1)" }} 
+        />
+        <motion.img 
+          src="/cloud-3.png" 
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 12, repeat: Infinity }}
+          style={{ position: "absolute", top: "45%", right: "15%", width: 120, opacity: 0.4 }} 
         />
 
         <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%",
@@ -425,13 +429,24 @@ export default function LandingPage() {
       `}</style>
 
       {/* SECTION 1 - Feature1 Video Hero */}
-      <Feature1
-        title="The intelligent outreach platform for landing research positions and internships."
-        description="Precision contact matching, AI-crafted cold emails, and automated follow-ups powered by your resume. Stop guessing, start connecting."
-        videoSrc="/videos/sky_loop_v2.mp4"
-        buttonPrimary={{ label: "Get started free", href: "/signup" }}
-        buttonSecondary={{ label: "See how it works", href: "#carousel" }}
-      />
+      <div style={{ position: "relative" }}>
+        {/* Variety of clouds scatter */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none", overflow: "hidden" }}>
+          <motion.img src="/cloud-1.png" animate={{ y: [0, -12, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            style={{ position: "absolute", top: "10%", left: "4%", width: 160, opacity: 0.7, filter: "blur(0.5px)" }} />
+          <motion.img src="/cloud-2.png" animate={{ y: [0, 15, 0] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            style={{ position: "absolute", top: "15%", right: "6%", width: 190, opacity: 0.6, filter: "blur(1px)" }} />
+          <motion.img src="/cloud-3.png" animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            style={{ position: "absolute", bottom: "15%", left: "8%", width: 140, opacity: 0.5 }} />
+        </div>
+        <Feature1
+          title="The intelligent outreach platform for landing research positions and internships."
+          description="Precision contact matching, AI-crafted cold emails, and automated follow-ups powered by your resume. Stop guessing, start connecting."
+          videoSrc="/videos/sky_loop_v2.mp4"
+          buttonPrimary={{ label: "Get started free", href: "/signup" }}
+          buttonSecondary={{ label: "See how it works", href: "#carousel" }}
+        />
+      </div>
 
       {/* University marquee */}
       <div className="py-12 relative z-10" style={{ background: "#d8e1e8" }}>
@@ -481,6 +496,13 @@ export default function LandingPage() {
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(322px, 29vw)", position: "relative", flexShrink: 0, zIndex: 1 }}
         >
+          {/* Cloud behind the wolf */}
+          <motion.img 
+            src="/cloud-1.png" 
+            animate={{ scale: [1, 1.05, 1], rotate: [0, 2, 0] }}
+            transition={{ duration: 15, repeat: Infinity }}
+            style={{ position: "absolute", top: "-10%", left: "-10%", width: "120%", opacity: 0.4, zIndex: -1, filter: "blur(4px)" }} 
+          />
           <img src="/husky.png.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
           <div className="landing-wolf-text" style={{
             position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)",
