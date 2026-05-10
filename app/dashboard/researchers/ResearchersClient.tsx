@@ -259,9 +259,9 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
                   <button
                     onClick={e => deleteResearcher(e, r.id)}
                     title="Remove researcher"
-                    style={{ position: "absolute", top: -8, right: -8, zIndex: 10, width: 28, height: 28, borderRadius: "50%", background: "#fff", border: "2.5px solid #000", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#000", boxShadow: "2px 2px 0px #000", transition: "all 0.1s" }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.background = "#fee2e2" }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.background = "#fff" }}
+                    style={{ position: "absolute", top: -8, right: -8, zIndex: 10, width: 28, height: 28, borderRadius: "50%", background: "#fff", border: "2.5px solid #304674", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#304674", boxShadow: "2px 2px 0px #304674", transition: "all 0.1s" }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.borderColor = "#dc2626"; e.currentTarget.style.color = "#dc2626" }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#304674"; e.currentTarget.style.color = "#304674" }}
                   >
                     <X size={14} strokeWidth={3} />
                   </button>
@@ -270,11 +270,11 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
                     style={{ 
                       background: "#fff", 
                       borderRadius: 14, 
-                      border: "3px solid #000", 
+                      border: "3px solid #304674", 
                       padding: "18px 20px", 
                       cursor: "pointer", 
                       transition: "all 0.15s cubic-bezier(0.4, 0, 0.2, 1)", 
-                      boxShadow: "6px 6px 0px #000", 
+                      boxShadow: "6px 6px 0px #98bad5", 
                       display: "flex", 
                       flexDirection: "column", 
                       gap: 12, 
@@ -283,11 +283,11 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
                       position: "relative"
                     }}
                     onMouseEnter={e => { 
-                      e.currentTarget.style.boxShadow = "10px 10px 0px #000"; 
+                      e.currentTarget.style.boxShadow = "10px 10px 0px #98bad5"; 
                       e.currentTarget.style.transform = "translate(-2px, -2px)";
                     }}
                     onMouseLeave={e => { 
-                      e.currentTarget.style.boxShadow = "6px 6px 0px #000"; 
+                      e.currentTarget.style.boxShadow = "6px 6px 0px #98bad5"; 
                       e.currentTarget.style.transform = "translate(0, 0)";
                     }}
                   >

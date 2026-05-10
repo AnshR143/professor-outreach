@@ -410,13 +410,44 @@ export default function LandingPage() {
       `}</style>
 
       {/* SECTION 1 - Feature1 Video Hero */}
-      <Feature1
-        title="The intelligent outreach platform for landing research positions and internships."
-        description="Precision contact matching, AI-crafted cold emails, and automated follow-ups powered by your resume. Stop guessing, start connecting."
-        videoSrc="/videos/sky_loop_v2.mp4"
-        buttonPrimary={{ label: "Get started free", href: "/signup" }}
-        buttonSecondary={{ label: "See how it works", href: "#carousel" }}
-      />
+      <div style={{ position: "relative" }}>
+        {/* Clouds spritesheet scatter */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none", overflow: "hidden" }}>
+          {[
+            { top: "15%", left: "8%", index: 0, scale: 0.6, opacity: 0.8 },
+            { top: "25%", right: "10%", index: 1, scale: 0.8, opacity: 0.9 },
+            { top: "65%", left: "15%", index: 2, scale: 0.5, opacity: 0.7 },
+            { top: "55%", right: "12%", index: 3, scale: 0.7, opacity: 0.85 },
+            { top: "10%", right: "25%", index: 4, scale: 0.4, opacity: 0.6 },
+            { top: "75%", right: "5%", index: 5, scale: 0.9, opacity: 0.95 },
+          ].map((c, i) => (
+            <motion.div
+              key={i}
+              animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
+              transition={{ duration: 5 + i, repeat: Infinity, ease: "easeInOut" }}
+              style={{
+                position: "absolute",
+                top: c.top, left: c.left, right: c.right,
+                width: 334, height: 200,
+                backgroundImage: "url(/clouds.png)",
+                backgroundSize: "1002px 400px", // 3x2 grid of 334x200
+                backgroundPosition: `${-(c.index % 3) * 334}px ${-Math.floor(c.index / 3) * 200}px`,
+                transform: `scale(${c.scale})`,
+                opacity: c.opacity,
+                filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.1))",
+              }}
+            />
+          ))}
+        </div>
+
+        <Feature1
+          title="The intelligent outreach platform for landing research positions and internships."
+          description="Precision contact matching, AI-crafted cold emails, and automated follow-ups powered by your resume. Stop guessing, start connecting."
+          videoSrc="/videos/sky_loop_v2.mp4"
+          buttonPrimary={{ label: "Get started free", href: "/signup" }}
+          buttonSecondary={{ label: "See how it works", href: "#carousel" }}
+        />
+      </div>
 
       {/* University marquee */}
       <div className="py-12 relative z-10" style={{ background: "#d8e1e8" }}>

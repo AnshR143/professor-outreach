@@ -363,11 +363,11 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000,
       display: "flex", alignItems: "center", justifyContent: "center", padding: 20, backdropFilter: "blur(4px)" }}>
-      <div style={{ background: "#fff", borderRadius: 20, width: "100%", maxWidth: 560, border: "4px solid #000",
-        maxHeight: "92vh", overflow: "auto", boxShadow: "12px 12px 0px rgba(0,0,0,1)" }}>
+      <div style={{ background: "#fff", borderRadius: 20, width: "100%", maxWidth: 560, border: "4px solid #304674",
+        maxHeight: "92vh", overflow: "auto", boxShadow: "12px 12px 0px #98bad5" }}>
 
         {/* Header */}
-        <div style={{ padding: "20px 24px", borderBottom: "3px solid #000",
+        <div style={{ padding: "20px 24px", borderBottom: "3px solid #304674",
           display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: "-0.02em" }}>Find Researchers</h2>
@@ -375,14 +375,17 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               Match scores are calculated from your resume
             </p>
           </div>
-          <button onClick={onClose} style={{ background: "#f1f5f9", border: "2px solid #000", borderRadius: 8, cursor: "pointer", color: "#000", padding: "6px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "2px 2px 0px #000", transition: "all 0.1s" }}
-            onMouseEnter={e => e.currentTarget.style.transform = "translate(-1px, -1px)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "translate(0, 0)"}>
-            <X size={20} strokeWidth={3} />
+          <button
+            onClick={onClose}
+            style={{ position: "absolute", top: 16, right: 16, width: 32, height: 32, borderRadius: "50%", background: "#fff", border: "2.5px solid #304674", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#304674", boxShadow: "3px 3px 0px #304674", transition: "all 0.1s" }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.borderColor = "#dc2626"; e.currentTarget.style.color = "#dc2626" }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#304674"; e.currentTarget.style.color = "#304674" }}
+          >
+            <X size={18} strokeWidth={3} />
           </button>
         </div>
 
-        <div style={{ padding: "24px" }}>
+        <div style={{ padding: "24px 0" }}>
           {step === "config" && (
             <div>
               {error && (
