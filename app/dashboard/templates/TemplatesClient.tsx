@@ -3,8 +3,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import type { Template } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
-import FindResearchersModal from "@/components/researchers/FindResearchersModal"
-import LiquidGlassButton from "@/components/ui/liquid-glass-button"
 
 interface Props { templates: Template[]; userId: string; userName: string }
 
@@ -14,7 +12,6 @@ export default function TemplatesClient({ templates: initial, userId, userName }
   const [templates, setTemplates] = useState(initial)
   const [selected, setSelected] = useState<Template | null>(null)
   const [showCreate, setShowCreate] = useState(false)
-  const [showFind, setShowFind] = useState(false)
   const [search, setSearch] = useState("")
   const [newTemplate, setNewTemplate] = useState({ name: "", subject_line: "", body: "", description: "" })
   const [saving, setSaving] = useState(false)
@@ -44,18 +41,15 @@ export default function TemplatesClient({ templates: initial, userId, userName }
   const TemplateCard = ({ t }: { t: Template }) => (
     <div onClick={() => setSelected(t)}
       style={{ background: selected?.id === t.id ? "#d8e1e8" : "#fff", borderRadius: 10, border: `1px solid ${selected?.id === t.id ? "#98bad5" : "#e2e8f0"}`, padding: 16, cursor: "pointer", transition: "all 0.15s" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+      <div style={{ marginBottom: 4 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>{t.name}</div>
-        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: t.type === "general" ? "#c6d3e3" : "#f0fdf4", color: t.type === "general" ? "#304674" : "#16a34a", fontWeight: 500 }}>
-          {t.type === "general" ? "General" : "Personal"}
-        </span>
       </div>
       <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8 }}>Email Template</div>
       <div style={{ background: "#f8f9fb", borderRadius: 6, padding: "6px 10px", fontSize: 11, color: "#94a3b8" }}>
-         Template
+        Template
       </div>
       <div style={{ marginTop: 8, padding: "6px 10px", background: selected?.id === t.id ? "#d8e1e8" : "#f8f9fb", borderRadius: 6, fontSize: 11, color: "#64748b", textAlign: "center", border: "1px solid #e2e8f0" }}>
-        {selected?.id === t.id ? " Selected" : "Click to Preview"}
+        {selected?.id === t.id ? "Selected" : "Click to Preview"}
       </div>
     </div>
   )
@@ -66,10 +60,6 @@ export default function TemplatesClient({ templates: initial, userId, userName }
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Template Generation</h1>
         <div style={{ display: "flex", gap: 10 }}>
-          <LiquidGlassButton onClick={() => setShowFind(true)} variant="primary" size="md">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            Find Researchers
-          </LiquidGlassButton>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>{userName?.[0]?.toUpperCase() || "A"}</div>
         </div>
       </div>
@@ -126,7 +116,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
           <div style={{ flex: 1, overflow: "auto", padding: 12 }}>
             {personal.length === 0 ? (
               <div style={{ textAlign: "center", padding: 32, color: "#94a3b8" }}>
-                <div style={{ fontSize: 32, marginBottom: 8 }}></div>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>&#x1F4DD;</div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}>No personal templates</div>
                 <div style={{ fontSize: 12 }}>Create your first template</div>
               </div>
@@ -134,7 +124,14 @@ export default function TemplatesClient({ templates: initial, userId, userName }
               <div key={t.id} style={{ background: "#f8f9fb", borderRadius: 8, border: "1px solid #e2e8f0", padding: 12, marginBottom: 8 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 4, flex: 1 }}>{t.name}</div>
-                  <button onClick={() => deleteTemplate(t.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: 16, padding: "0 0 0 8px" }}>�</button>
+                  <button
+                    onClick={() => deleteTemplate(t.id)}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", padding: "0 0 0 8px", display: "flex", alignItems: "center" }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                  </button>
                 </div>
                 <div style={{ fontSize: 11, color: "#64748b" }}>{t.description}</div>
                 <button onClick={() => setSelected(t)}
@@ -147,9 +144,8 @@ export default function TemplatesClient({ templates: initial, userId, userName }
           {selected && (
             <div style={{ borderTop: "1px solid #e2e8f0", padding: 16, maxHeight: "50%", overflow: "auto" }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a", marginBottom: 4 }}>
-                ← Back to Templates
+                {selected.name}
               </div>
-              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 12 }}>{selected.name}</div>
               <div style={{ background: "#f8f9fb", borderRadius: 8, border: "1px solid #e2e8f0", padding: 12 }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", marginBottom: 4 }}>Subject:</div>
                 <div style={{ fontSize: 12, color: "#0f172a", marginBottom: 10 }}>{selected.subject_line}</div>
@@ -199,8 +195,6 @@ export default function TemplatesClient({ templates: initial, userId, userName }
           </div>
         </div>
       )}
-      {showFind && <FindResearchersModal onClose={() => setShowFind(false)} />}
     </div>
   )
 }
-

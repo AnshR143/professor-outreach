@@ -177,10 +177,6 @@ export default function StatisticsClient({ researchers: initial, emails, interns
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
         <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Statistics</h1>
         <div style={{ display: "flex", gap: 10 }}>
-          <LiquidGlassButton onClick={() => setShowFind(true)} variant="primary" size="md">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            Find Researchers
-          </LiquidGlassButton>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>

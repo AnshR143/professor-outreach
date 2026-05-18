@@ -1,46 +1,94 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
-import { detectApiKey, isGeminiKey } from "@/lib/ai/detect-key"
+import { detectApiKey } from "@/lib/ai/detect-key"
+import { callAI } from "@/lib/ai/call"
 
-// ── Groq AI company search (uses user's existing AI key) ─────────────────────
+// ── InternLink Partner organisations ─────────────────────────────────────────
+// Partners appear at the top of results when the search query matches their keywords.
 
-async function callGroq(apiKey: string, prompt: string): Promise<string> {
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + apiKey,
-    },
-    body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.4,
-      max_tokens: 1500,
-    }),
-  })
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error("Groq error " + res.status + ": " + err.slice(0, 200))
-  }
-  const data = await res.json()
-  return data.choices?.[0]?.message?.content || ""
-}
+const PARTNERS = [
+  {
+    name: "Behind The Mask",
+    role: "Student Healthcare Intern",
+    bio: "Behind The Mask prepares students for future healthcare careers by introducing critical care thinking, patient safety awareness, and real-world clinical career experiences. Student-led initiative with 1,000+ followers.",
+    website: "https://behindthemaskinitiative.org/",
+    keywords: ["healthcare", "medical", "clinical", "nursing", "doctor", "pre-med", "premed", "hospital", "patient", "health", "medicine", "physician", "surgery", "pharmacy", "dentistry", "public health", "biology", "biomedical"],
+  },
+  {
+    name: "See The World Foundation",
+    role: "Nonprofit & Medical Intern",
+    bio: "A nonprofit dedicated to providing financial relief for children who cannot afford critical eye procedures and care, removing barriers to life-changing pediatric vision care. 100+ volunteers, 12 associations, $3,000+ fundraised.",
+    website: "https://www.seetheworldfoundation.org/",
+    keywords: ["eye", "vision", "pediatric", "optometry", "ophthalmology", "medical", "health", "nonprofit", "children", "eye care", "fundraising", "humanitarian", "global health"],
+  },
+  {
+    name: "Sports Trinity",
+    role: "Nonprofit & Community Intern",
+    bio: "Sports Trinity bridges the economic disparity within sports by channeling equipment to youth sport programs in under-resourced communities. US Congress recognised, $15,000+ raised, helping 200+ kids in Nigeria.",
+    website: "https://sportstrinity3.wixsite.com/home",
+    keywords: ["sports", "youth", "athletics", "nonprofit", "ngo", "community", "fundraising", "social impact", "international development", "soccer", "basketball", "football", "tennis", "physical education", "kinesiology", "recreation"],
+  },
+  {
+    name: "The International Economics Post",
+    role: "Writer & Editorial Intern",
+    bio: "A student-run publication connecting international schools through opinion-driven writing on Economics, Finance, and Policy. Writers from 6+ countries with full author attribution.",
+    website: "https://www.internationaleconomicspost.com/",
+    keywords: ["economics", "finance", "policy", "writing", "journalism", "international", "publication", "editorial", "business", "trade", "macroeconomics", "microeconomics", "political science", "public policy", "investment", "banking", "accounting"],
+  },
+  {
+    name: "FinanceMeta",
+    role: "Financial Education & Research Intern",
+    bio: "Finance4All Meta is a global financial literacy initiative that has impacted 25,000+ students across 15+ countries. Started as grassroots outreach in India, now a worldwide network of 50+ members running programs in economics education, student research, school clubs, podcasts, and an Economics Olympiad. Collaborators include Jane Street, Stanford, MIT, Harvard, and UC Berkeley researchers.",
+    website: "https://finance4all-global-reach.vercel.app/",
+    keywords: ["finance", "financial literacy", "economics", "education", "research", "financial education", "investing", "markets", "entrepreneurship", "nonprofit", "global", "international", "policy", "economic research", "business", "accounting", "banking", "public policy", "development economics", "international economics", "economic development", "social impact", "humanitarian", "outreach", "publication", "journalism", "writing", "edtech"],
+  },
+  {
+    name: "Advanced Equities",
+    role: "Investment Research & Equity Analyst Intern",
+    bio: "Advanced Equities is a student-run investment and research organization with $15.5K+ in live capital, focused on developing the next generation of disciplined, research-driven investors. Sector-based coverage teams produce institutional-style equity research, with only highest-conviction case studies earning portfolio inclusion. Structure mirrors a real investment fund with Executive Directors, Senior Partners, Sector Heads, and analysts.",
+    website: "https://advancedequities.org/",
+    keywords: ["investing", "investment", "equity", "equity research", "finance", "financial", "stock market", "portfolio", "economics", "banking", "capital markets", "financial modeling", "hedge fund", "asset management", "securities", "derivatives", "macroeconomics", "microeconomics", "accounting", "business", "corporate finance", "valuation", "fundamental analysis", "quantitative", "trading", "fintech", "private equity", "venture capital", "wealth management"],
+  },
+  {
+    name: "Finctory",
+    role: "FinTech & Quantitative Finance Intern",
+    bio: "Finctory is an institutional-grade, no-code algorithmic trading platform. Build, backtest, and deploy powerful quant strategies using a visual node builder — no programming required. Features AI strategy synthesis via Phi-3 Mini, a real-time sentiment engine, and one-click export to Python (CCXT) or PineScript. Founded to dismantle the barriers that have historically gatekept algorithmic trading from non-coders.",
+    website: "https://finctory.app/",
+    keywords: ["finance", "financial", "trading", "algorithmic trading", "quant", "quantitative", "fintech", "investing", "investment", "stock market", "markets", "hedge fund", "economics", "financial engineering", "data science", "machine learning", "ai", "artificial intelligence", "blockchain", "cryptocurrency", "portfolio management", "risk management", "banking", "capital markets", "financial modeling", "derivatives", "securities", "asset management"],
+  },
+  {
+    name: "PeerPath",
+    role: "Education & Tutoring Intern",
+    bio: "PeerPath is a peer-to-peer tutoring platform built for students navigating IB, MYP and IGCSE curricula. Founded by students who have been through these programmes themselves, PeerPath connects learners with tutors who understand the pressure, marking schemes, and what it takes to succeed. Serving students across 20+ countries.",
+    website: "https://peerpath.lovable.app/",
+    keywords: ["education", "tutoring", "teaching", "curriculum", "ib", "international baccalaureate", "igcse", "myp", "e-learning", "edtech", "student", "academic", "school", "learning", "pedagogy", "instructional design", "test prep", "exam", "education policy", "higher education", "elementary education", "secondary education", "language education"],
+  },
+  {
+    name: "Casharoo",
+    role: "FinTech & Financial Education Intern",
+    bio: "Casharoo is a student-built platform that gamifies financial literacy for middle and high school students through daily challenges, leaderboards, and rewards. Founded by six high school students spanning development, business, marketing, and curriculum design, it covers budgeting, investing, saving, and credit in an engaging game-like format. Already deployed in schools across the US and internationally, with 501(c)(3) nonprofit partners in the financial education space.",
+    website: "https://skillnestlearning.com/",
+    keywords: ["finance", "financial", "financial literacy", "economics", "business", "accounting", "banking", "investment", "investing", "budgeting", "saving", "credit", "money", "personal finance", "fintech", "entrepreneurship", "microeconomics", "macroeconomics", "public policy", "trade", "quantitative"],
+  },
+]
 
-async function callGemini(apiKey: string, prompt: string): Promise<string> {
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 1500 },
-      }),
-    }
+function matchPartners(query: string): typeof PARTNERS {
+  const q = query.toLowerCase().trim()
+  // Tokenise the query so short keywords only match whole words, not substrings.
+  // Multi-word keywords (e.g. "machine learning") still match as phrases.
+  const tokens = new Set(q.split(/\s+/))
+  return PARTNERS.filter(p =>
+    p.keywords.some(k => {
+      if (k.includes(" ")) {
+        // Multi-word keyword: require it as an exact substring phrase
+        return q.includes(k)
+      }
+      // Single-word keyword: only match if it is one of the actual query tokens
+      return tokens.has(k)
+    })
   )
-  if (!res.ok) throw new Error("Gemini error " + res.status)
-  const data = await res.json()
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || ""
 }
+
+// ── AI company search (uses user's existing AI key — any supported provider) ──
 
 interface AIContact {
   name: string
@@ -56,9 +104,10 @@ async function findByCompanyWithAI(
   count: number,
   apiKey: string
 ): Promise<AIContact[]> {
-  const roleHint = role || "software engineer, product manager, researcher, data scientist, or designer"
+  const roleHint = role || "software engineer, product manager, data scientist, or designer"
   const prompt = [
-    "List " + count + " REAL, publicly known professionals who currently work or have recently worked at " + company + " in roles like " + roleHint + ".",
+    "List " + count + " REAL, publicly known industry professionals who currently work or have recently worked at " + company + " in roles like " + roleHint + ".",
+    "Do NOT include university professors, academic researchers, or anyone primarily affiliated with a university.",
     "Only include people with a public presence (LinkedIn, GitHub, personal blog, speaker profile, etc.) that a student could realistically find and cold-email.",
     "",
     "For each person return a JSON object with:",
@@ -73,7 +122,7 @@ async function findByCompanyWithAI(
     '[{"name":"Jane Smith","role":"Senior ML Engineer","bio":"Works on recommendation systems at ' + company + '. Previously at DeepMind. Open source contributor to PyTorch.","website":"https://janesmith.dev","linkedin":"linkedin.com/in/janesmith"}]',
   ].join("\n")
 
-  const raw = isGeminiKey(apiKey) ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
+  const raw = await callAI(apiKey, prompt, { temperature: 0.4, maxTokens: 1500 })
 
   const match = raw.match(/\[[\s\S]*\]/)
   if (!match) return []
@@ -101,22 +150,23 @@ async function findByFieldWithAI(
 ): Promise<AIContact[]> {
   const target = [field, role].filter(Boolean).join(" / ")
   const prompt = [
-    "List " + count + " REAL professionals who actively work in the field of " + target + ".",
-    "These should be practitioners, researchers, or engineers with a public online presence that a student could realistically find and cold-email.",
+    "List " + count + " REAL industry professionals who actively work in the field of " + target + " at companies, startups, or tech organizations.",
+    "IMPORTANT: Do NOT include university professors, academic researchers, PhD students, or anyone primarily affiliated with a university or research institution.",
+    "These should be industry practitioners — software engineers, product managers, data scientists, ML engineers, developers, or similar — who work at real companies and could offer internships or mentorship to students.",
     "Prioritize people who have LinkedIn profiles or personal websites.",
     "",
     "For each person return a JSON object with:",
     "  name: full real name (first + last)",
-    "  role: their actual job title and company",
+    "  role: their actual job title and company (must be a company, not a university)",
     "  bio: 2-3 sentences about their background, what they actually work on, and any notable projects or talks",
     "  website: personal site, GitHub, or portfolio URL if known, else null",
     "  linkedin: LinkedIn URL like linkedin.com/in/username if publicly known, else null",
     "",
-    "Only include people you are confident exist and are findable. Do not invent people.",
+    "Only include people you are confident exist, work at companies (not universities), and are findable. Do not invent people.",
     "Respond ONLY with a valid JSON array.",
   ].join("\n")
 
-  const raw = isGeminiKey(apiKey) ? await callGemini(apiKey, prompt) : await callGroq(apiKey, prompt)
+  const raw = await callAI(apiKey, prompt, { temperature: 0.4, maxTokens: 1500 })
   const match = raw.match(/\[[\s\S]*\]/)
   if (!match) return []
   try {
@@ -201,16 +251,30 @@ async function searchDevTo(field: string, role: string, count: number): Promise<
       const articles: DevToArticle[] = await res.json()
       for (const a of articles) {
         const uname = a.user.username
-        // Skip usernames that look like handles (no real name) or have numbers only
         if (seen.has(uname) || !a.user.name) continue
-        // Require name to look like a real person (at least 2 words or common name)
-        const nameParts = a.user.name.trim().split(/\s+/)
-        if (nameParts.length < 2 && a.user.name === uname) continue // username = name, skip
+
+        // Require a proper two-word name (First Last). Single-word display names
+        // are almost always usernames/handles, not real people.
+        const rawName = a.user.name.trim()
+        const nameParts = rawName.split(/\s+/)
+        if (nameParts.length < 2) continue
+        // Skip if name is identical to username (handle used as display name)
+        if (rawName.toLowerCase() === uname.toLowerCase()) continue
+        // Skip names with obvious non-person patterns (numbers, all-caps acronyms)
+        if (/\d/.test(rawName) || rawName === rawName.toUpperCase()) continue
+
+        // Clean up bio: dev.to descriptions sometimes append " in AuthorName" or
+        // trailing punctuation artifacts. Strip that trailing fragment.
+        const rawDesc = (a.description || "")
+          .replace(/\s+in\s+[A-Z][a-zA-Z\s]{2,30}$/, "") // remove " in Firstname Lastname"
+          .slice(0, 120)
+          .trim()
+
         seen.add(uname)
         results.push({
-          name: a.user.name,
+          name: rawName,
           username: uname,
-          bio: "Writes and publishes about " + a.tag_list.join(", ") + '. Recent post: "' + a.title + '". ' + (a.description || "").slice(0, 120).trim(),
+          bio: "Writes about " + a.tag_list.join(", ") + '. Recent post: "' + a.title + '".' + (rawDesc ? " " + rawDesc : ""),
           website: a.user.website_url || (a.user.github_username ? "https://github.com/" + a.user.github_username : null),
           articleTitle: a.title,
           tags: a.tag_list,
@@ -264,6 +328,44 @@ export async function POST(req: Request) {
     const existingNames = new Set(
       (existing || []).map(c => (c as { contact_name: string }).contact_name?.toLowerCase().trim())
     )
+
+    // Insert matched InternLink partners LAST so they float to the top (created_at DESC ordering)
+    async function insertPartners(query: string): Promise<number> {
+      const matched = matchPartners(query)
+      if (matched.length === 0) return 0
+
+      // Fresh DB check — don't rely on the stale existingNames snapshot
+      const { data: currentRows } = await supabase
+        .from("internship_contacts")
+        .select("contact_name")
+        .eq("user_id", user!.id)
+      const currentNames = new Set(
+        (currentRows || []).map((c: any) => (c.contact_name as string)?.toLowerCase().trim())
+      )
+
+      let partnerCount = 0
+      for (const p of matched) {
+        if (!currentNames.has(p.name.toLowerCase())) {
+          send({ type: "progress", found: partnerCount, total: matched.length, current: "Adding InternLink partner: " + p.name + "..." })
+          const { error } = await supabase.from("internship_contacts").insert({
+            user_id: user!.id,
+            company: "InternLink Partner",
+            contact_name: p.name,
+            role: p.role,
+            email: null,
+            linkedin_url: null,
+            website: p.website,
+            bio: p.bio,
+            notes: "InternLink Partner\nWebsite: " + p.website,
+            status: "unsorted",
+            email_status: "not_emailed",
+          })
+          if (error) throw new Error("Partner insert failed: " + error.message)
+          partnerCount++
+        }
+      }
+      return partnerCount
+    }
 
     send({ type: "progress", found: 0, total: count, current: "Searching for professionals..." })
 
@@ -323,6 +425,7 @@ export async function POST(req: Request) {
         added++
         send({ type: "progress", found: added, total: fresh.length, current: "Added " + c.name + "  " + c.role })
       }
+      added += await insertPartners(company + " " + (role || ""))
       send({ type: "done", found: added })
 
     } else if (mode === "field") {
@@ -369,6 +472,7 @@ export async function POST(req: Request) {
             added++
             send({ type: "progress", found: added, total: freshAI.length, current: "Added " + c.name })
           }
+          added += await insertPartners((field || "") + " " + (role || ""))
           send({ type: "done", found: added })
           writer.close(); return
         }
@@ -419,6 +523,7 @@ export async function POST(req: Request) {
         added++
         send({ type: "progress", found: added, total: fresh.length, current: "Added " + d.name })
       }
+      added += await insertPartners((field || "") + " " + (role || ""))
       send({ type: "done", found: added })
 
     } else {

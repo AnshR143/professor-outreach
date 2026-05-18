@@ -1,7 +1,7 @@
 /**
  * detect-key.ts
  * Centralized AI API key detection using strict regex patterns.
- * Add new providers here  never use startsWith() elsewhere in the codebase.
+ * Add new providers here — never use startsWith() elsewhere in the codebase.
  */
 
 export type AIProvider =
@@ -9,6 +9,12 @@ export type AIProvider =
   | "gemini"
   | "openai"
   | "anthropic"
+  | "openrouter"
+  | "perplexity"
+  | "cerebras"
+  | "xai"
+  | "fireworks"
+  | "together"
   | "cohere"
   | "mistral"
   | "huggingface"
@@ -21,62 +27,52 @@ export interface DetectedKey {
 }
 
 // ─── Regex patterns for each provider ────────────────────────────────────────
-// Each pattern is tested against the raw key string.
+// ORDER MATTERS — more specific prefixes must come before generic ones.
 const KEY_PATTERNS: Array<{ provider: AIProvider; label: string; regex: RegExp }> = [
-  // Groq:  gsk_<50+ alphanumeric>
-  {
-    provider: "groq",
-    label: "Groq",
-    regex: /^gsk_[A-Za-z0-9]{40,}$/,
-  },
-  // Gemini / Google AI Studio:  AIza<35+ base64url>
-  // Must come BEFORE the generic "AI" check
-  {
-    provider: "gemini",
-    label: "Gemini",
-    regex: /^AIza[A-Za-z0-9_-]{35,}$/,
-  },
-  // OpenAI project key:  sk-proj-<48+ base64url>
-  {
-    provider: "openai",
-    label: "OpenAI",
-    regex: /^sk-proj-[A-Za-z0-9_-]{40,}$/,
-  },
-  // OpenAI legacy:  sk-<48 alphanumeric>
-  {
-    provider: "openai",
-    label: "OpenAI",
-    regex: /^sk-[A-Za-z0-9]{32,}$/,
-  },
-  // Anthropic:  sk-ant-<48+ base64url>
-  {
-    provider: "anthropic",
-    label: "Anthropic",
-    regex: /^sk-ant-[A-Za-z0-9_-]{32,}$/,
-  },
-  // Cohere:  random 40-char alphanumeric (no prefix)  detected by elimination + length
-  // We match the exact documented format
-  {
-    provider: "cohere",
-    label: "Cohere",
-    regex: /^[A-Za-z0-9]{40}$/,
-  },
+  // Groq: gsk_<50+ alphanumeric>
+  { provider: "groq",       label: "Groq",        regex: /^gsk_[A-Za-z0-9]{40,}$/ },
+
+  // Gemini / Google AI Studio: AIza<35+ base64url>
+  { provider: "gemini",     label: "Gemini",       regex: /^AIza[A-Za-z0-9_-]{35,}$/ },
+
+  // Anthropic: sk-ant-<32+ base64url>
+  { provider: "anthropic",  label: "Anthropic",    regex: /^sk-ant-[A-Za-z0-9_-]{32,}$/ },
+
+  // OpenRouter: sk-or-<40+ base64url>  (MUST come before generic sk-proj- / sk-)
+  { provider: "openrouter", label: "OpenRouter",   regex: /^sk-or-[A-Za-z0-9_-]{40,}$/ },
+
+  // OpenAI project key: sk-proj-<48+ base64url>  (MUST come before generic sk-)
+  { provider: "openai",     label: "OpenAI",       regex: /^sk-proj-[A-Za-z0-9_-]{40,}$/ },
+
+  // OpenAI legacy: sk-<32+ alphanumeric>
+  { provider: "openai",     label: "OpenAI",       regex: /^sk-[A-Za-z0-9]{32,}$/ },
+
+  // Perplexity: pplx-<40+ alphanumeric>
+  { provider: "perplexity", label: "Perplexity",   regex: /^pplx-[A-Za-z0-9]{40,}$/ },
+
+  // Cerebras: csk-<40+ alphanumeric>
+  { provider: "cerebras",   label: "Cerebras",     regex: /^csk-[A-Za-z0-9]{40,}$/ },
+
+  // xAI (Grok): xai-<40+ base64url>
+  { provider: "xai",        label: "xAI (Grok)",   regex: /^xai-[A-Za-z0-9_-]{40,}$/ },
+
+  // Fireworks AI: fw-<40+ alphanumeric>
+  { provider: "fireworks",  label: "Fireworks AI", regex: /^fw-[A-Za-z0-9]{40,}$/ },
+
+  // Together AI: 64-char lowercase hex (must come before Cohere/Mistral generic checks)
+  { provider: "together",   label: "Together AI",  regex: /^[a-f0-9]{64}$/ },
+
+  // Cohere: random 40-char alphanumeric (no prefix)
+  { provider: "cohere",     label: "Cohere",       regex: /^[A-Za-z0-9]{40}$/ },
+
   // Mistral: random 32-char alphanumeric
-  {
-    provider: "mistral",
-    label: "Mistral",
-    regex: /^[A-Za-z0-9]{32}$/,
-  },
-  // HuggingFace:  hf_<alphanumeric>
-  {
-    provider: "huggingface",
-    label: "HuggingFace",
-    regex: /^hf_[A-Za-z0-9]{30,}$/,
-  },
+  { provider: "mistral",    label: "Mistral",      regex: /^[A-Za-z0-9]{32}$/ },
+
+  // HuggingFace: hf_<alphanumeric>
+  { provider: "huggingface", label: "HuggingFace", regex: /^hf_[A-Za-z0-9]{30,}$/ },
 ]
 
 // JWT pattern (Bearer / Auth0 / Firebase custom tokens)
-// Format: base64url.base64url.base64url
 const JWT_REGEX = /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/
 
 // Generic long key (anything 20–256 chars of safe characters that didn't match above)
@@ -96,19 +92,16 @@ export function detectApiKey(key: string): DetectedKey {
     return { provider: "unknown", label: "Unknown", isValid: false }
   }
 
-  // Try every known pattern
   for (const { provider, label, regex } of KEY_PATTERNS) {
     if (regex.test(trimmed)) {
       return { provider, label, isValid: true }
     }
   }
 
-  // JWT / Bearer token  treat as unknown but structurally valid
   if (JWT_REGEX.test(trimmed)) {
     return { provider: "unknown", label: "JWT Token", isValid: true }
   }
 
-  // Generic long key  valid format but unknown provider
   if (GENERIC_LONG_KEY_REGEX.test(trimmed)) {
     return { provider: "unknown", label: "API Key", isValid: true }
   }
@@ -116,26 +109,22 @@ export function detectApiKey(key: string): DetectedKey {
   return { provider: "unknown", label: "Unknown", isValid: false }
 }
 
-/**
- * Returns true if the key should be routed to the Gemini API.
- * More robust than `key.startsWith("AI")`.
- */
+// ─── Convenience helpers ──────────────────────────────────────────────────────
+
 export function isGeminiKey(key: string): boolean {
   return detectApiKey(key).provider === "gemini"
 }
 
-/**
- * Returns true if the key should be routed to the Groq API.
- */
 export function isGroqKey(key: string): boolean {
   return detectApiKey(key).provider === "groq"
 }
 
-/**
- * Returns true if the key should be routed to the OpenAI API.
- */
 export function isOpenAIKey(key: string): boolean {
   return detectApiKey(key).provider === "openai"
+}
+
+export function isAnthropicKey(key: string): boolean {
+  return detectApiKey(key).provider === "anthropic"
 }
 
 /**
@@ -148,7 +137,7 @@ export function pickBestKey(...keys: (string | null | undefined)[]): string {
 
 /**
  * Get a display label for a stored key (for Settings UI).
- * Never expose the key itself  only the provider name.
+ * Never expose the key itself — only the provider name.
  */
 export function getKeyProviderLabel(key: string | null | undefined): string {
   if (!key) return "No key set"

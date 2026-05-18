@@ -55,36 +55,64 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
   const [savingEmail, setSavingEmail] = useState(false)
   const [emailAddressSaved, setEmailAddressSaved] = useState(false)
 
-  function guessEmail(name: string, university: string): string {
-    const parts = name.toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/)
-    const first = parts[0] || ""
-    const last = parts[parts.length - 1] || ""
-    const uLow = university.toLowerCase()
-    const domainMap: Record<string, string> = {
-      "mit": "mit.edu", "harvard": "harvard.edu", "stanford": "stanford.edu",
-      "princeton": "princeton.edu", "yale": "yale.edu", "columbia": "columbia.edu",
-      "cornell": "cornell.edu", "duke": "duke.edu", "caltech": "caltech.edu",
-      "berkeley": "berkeley.edu", "ucla": "ucla.edu", "michigan": "umich.edu",
-      "carnegie mellon": "cmu.edu", "cmu": "cmu.edu", "nyu": "nyu.edu",
-      "northwestern": "northwestern.edu", "johns hopkins": "jhu.edu",
-      "upenn": "upenn.edu", "penn": "upenn.edu", "chicago": "uchicago.edu",
-      "uiuc": "illinois.edu", "illinois": "illinois.edu", "purdue": "purdue.edu",
-      "georgia tech": "gatech.edu", "gatech": "gatech.edu", "unc": "unc.edu",
-      "ut austin": "utexas.edu", "texas": "utexas.edu", "usc": "usc.edu",
-      "umass": "umass.edu", "ucsd": "ucsd.edu", "ucsb": "ucsb.edu",
-      "oxford": "ox.ac.uk", "cambridge": "cam.ac.uk", "toronto": "utoronto.ca",
-      "mcgill": "mcgill.ca", "waterloo": "uwaterloo.ca",
-    }
-    let domain = ""
-    for (const [key, d] of Object.entries(domainMap)) {
-      if (uLow.includes(key)) { domain = d; break }
-    }
-    if (!domain) {
-      const clean = uLow.replace(/university of\s+/i, "").replace(/\s+university$/i, "").replace(/\s+/g, "").slice(0, 8)
-      domain = `${clean}.edu`
-    }
-    return `${first}.${last}@${domain}`
+  // Live email lookup state — populated by calling /api/professors/find-email.
+  // We do NOT fabricate firstname.lastname@university.edu guesses; if the
+  // backend can't find one, we say so honestly.
+  type EmailLookup = {
+    status: "idle" | "loading" | "found" | "not_found" | "error"
+    email?: string
+    source?: string
+    confidence?: number
+    alternatives?: string[]
+    evidence?: string
+    error?: string
   }
+  const [emailLookup, setEmailLookup] = useState<EmailLookup>({ status: "idle" })
+
+  async function lookupProfessorEmail() {
+    setEmailLookup({ status: "loading" })
+    try {
+      const res = await fetch("/api/professors/find-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          researcherName: researcher.name,
+          university: researcher.university,
+          areas: (researcher as any).research_areas || [],
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setEmailLookup({ status: "error", error: data.error || `HTTP ${res.status}` })
+        return
+      }
+      if (data.email) {
+        setEmailLookup({
+          status: "found",
+          email: data.email,
+          source: data.source,
+          confidence: data.confidence,
+          alternatives: data.alternatives || [],
+          evidence: data.evidence,
+        })
+      } else {
+        setEmailLookup({
+          status: "not_found",
+          alternatives: data.alternatives || [],
+        })
+      }
+    } catch (e: any) {
+      setEmailLookup({ status: "error", error: e?.message || "Lookup failed" })
+    }
+  }
+
+  // Auto-look-up the email once on mount if we don't already have one saved.
+  useEffect(() => {
+    if (!professorEmail && emailLookup.status === "idle") {
+      lookupProfessorEmail()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function saveProfessorEmail() {
     if (!professorEmail.trim()) return
@@ -94,6 +122,10 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
     setSavingEmail(false)
     setEmailAddressSaved(true)
     setTimeout(() => setEmailAddressSaved(false), 3000)
+  }
+
+  function useFoundEmail(email: string) {
+    setProfessorEmail(email)
   }
 
   // Sync papersList when server sends fresh props (after router.refresh())
@@ -159,9 +191,17 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
 
   async function sendEmail() {
     if (!emailSubject || !emailBody) { setEmailValidationError("Please generate or write an email first."); return }
+    // Use the saved email, or — if the user hasn't saved one — the email the
+    // backend lookup actually found. We do NOT fall back to a fabricated
+    // firstname.lastname@domain.edu guess: better to make the user confirm
+    // than to send to an address that probably doesn't exist.
+    const toEmail = professorEmail.trim() || (emailLookup.status === "found" ? emailLookup.email! : "")
+    if (!toEmail) {
+      setEmailValidationError("No professor email found yet. Please enter and save one above before sending.")
+      return
+    }
     setEmailValidationError("")
     setSending(true)
-    const toEmail = professorEmail.trim() || guessEmail(researcher.name, researcher.university)
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(toEmail)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
     window.open(gmailUrl, "_blank")
 
@@ -350,7 +390,13 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                   <input
                     value={professorEmail}
                     onChange={e => setProfessorEmail(e.target.value)}
-                    placeholder={guessEmail(researcher.name, researcher.university)}
+                    placeholder={
+                      emailLookup.status === "loading"
+                        ? "Looking up email…"
+                        : emailLookup.status === "found"
+                          ? emailLookup.email
+                          : "Enter the professor's email address"
+                    }
                     style={{ flex: 1, padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", outline: "none", background: "#fff" }}
                   />
                   <button onClick={saveProfessorEmail} disabled={savingEmail}
@@ -358,11 +404,64 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     {savingEmail ? "Saving..." : emailAddressSaved ? "Saved ✓" : "Save Email"}
                   </button>
                 </div>
+
+                {/* Lookup status / suggestions — no fabricated guesses. */}
                 <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 5 }}>
-                  {professorEmail
-                    ? "This email will be pre-filled when you open Gmail."
-                    : `Estimated: ${guessEmail(researcher.name, researcher.university)}  confirm or correct before sending.`}
+                  {professorEmail ? (
+                    "This email will be pre-filled when you open Gmail."
+                  ) : emailLookup.status === "loading" ? (
+                    <span>Searching the web for {researcher.name}'s email…</span>
+                  ) : emailLookup.status === "found" ? (
+                    <span>
+                      Found <strong style={{ color: "#0f172a" }}>{emailLookup.email}</strong>
+                      {typeof emailLookup.confidence === "number" && (
+                        <span> · {Math.round(emailLookup.confidence)}% confidence</span>
+                      )}
+                      {emailLookup.source && <span> · via {emailLookup.source.replace(/[+_]/g, " ")}</span>}
+                      {" "}
+                      <button
+                        onClick={() => useFoundEmail(emailLookup.email!)}
+                        style={{ marginLeft: 4, padding: "2px 8px", fontSize: 11, fontWeight: 600, color: "#304674", background: "#eef2f7", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
+                        Use this
+                      </button>
+                    </span>
+                  ) : emailLookup.status === "not_found" ? (
+                    <span>
+                      Couldn't find a verified email — please enter it manually.{" "}
+                      <button onClick={lookupProfessorEmail} style={{ padding: "2px 8px", fontSize: 11, color: "#304674", background: "transparent", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
+                        Retry search
+                      </button>
+                    </span>
+                  ) : emailLookup.status === "error" ? (
+                    <span>
+                      Lookup failed: {emailLookup.error}.{" "}
+                      <button onClick={lookupProfessorEmail} style={{ padding: "2px 8px", fontSize: 11, color: "#304674", background: "transparent", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
+                        Retry
+                      </button>
+                    </span>
+                  ) : (
+                    <button onClick={lookupProfessorEmail} style={{ padding: "2px 8px", fontSize: 11, color: "#304674", background: "transparent", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
+                      Look up email
+                    </button>
+                  )}
                 </div>
+
+                {/* Other candidates the lookup considered, if any. */}
+                {!professorEmail && emailLookup.alternatives && emailLookup.alternatives.length > 0 && (
+                  <div style={{ fontSize: 11, color: "#64748b", marginTop: 6 }}>
+                    Other candidates:{" "}
+                    {emailLookup.alternatives.map((alt, i) => (
+                      <span key={alt}>
+                        {i > 0 && ", "}
+                        <button
+                          onClick={() => useFoundEmail(alt)}
+                          style={{ padding: "1px 6px", fontSize: 11, color: "#304674", background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 4, cursor: "pointer" }}>
+                          {alt}
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Subject */}

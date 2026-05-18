@@ -288,7 +288,7 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                       }}
                       onFocus={() => { setFieldSuggestions(fuzzyMatchFields(field)); setShowFieldDrop(true) }}
                       onBlur={() => setTimeout(() => setShowFieldDrop(false), 150)}
-                      placeholder="Type anything  e.g. art → Artificial Intelligence"
+                      placeholder="Type a field or major"
                       style={inp()}
                       autoComplete="off"
                     />

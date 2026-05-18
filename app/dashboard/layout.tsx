@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         .sidebar {
           width: 56px;
           transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-          overflow: hidden;
+          overflow: visible;
           background: #304674;
           display: flex;
           flex-direction: column;
@@ -101,25 +101,35 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           align-items: center;
           justify-content: center;
           gap: 10px;
-          padding: 0;
-          margin-bottom: 20px;
+          padding: 4px 6px;
+          margin-bottom: 14px;
           width: 100%;
+          height: 56px;
           text-decoration: none;
-          white-space: nowrap;
-          overflow: hidden;
-          transition: justify-content 0.25s, padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          flex-shrink: 0;
+          box-sizing: border-box;
+          transition: justify-content 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .sidebar-expanded .logo-area {
           justify-content: flex-start;
-          padding-left: 10px;
+          padding: 4px 10px;
+        }
+        .logo-img {
+          width: 44px;
+          height: 44px;
+          object-fit: contain;
+          display: block;
+          flex-shrink: 0;
         }
         .logo-text {
           opacity: 0;
           max-width: 0;
           overflow: hidden;
+          white-space: nowrap;
           transition: opacity 0.2s ease, max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 700;
+          letter-spacing: -0.01em;
           color: #f8fafc;
         }
         .sidebar-expanded .logo-text {
@@ -127,18 +137,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           max-width: 140px;
         }
       `}</style>
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+      <div style={{ display: "flex", height: "100vh" }}>
         {/* Sidebar */}
         <aside
           className={`sidebar${expanded ? " sidebar-expanded" : ""}`}
           onMouseEnter={() => setExpanded(true)}
           onMouseLeave={() => setExpanded(false)}
         >
-          {/* Logo  clicks back to landing page */}
+          {/* Logo — clicks back to landing page */}
           <Link href="/" className="logo-area">
-            <div style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <img src="/link.png" alt="InternLink" style={{ width: 28, height: 28 }} />
-            </div>
+            <img src="/link.png" alt="InternLink" className="logo-img" />
             <span className="logo-text">InternLink</span>
           </Link>
 
@@ -181,16 +189,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Bottom */}
           <div style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 8px", width: "100%" }}>
             <Link
-              href="/settings"
+              href="/dashboard/settings"
               title={expanded ? undefined : "Settings"}
               className="nav-item"
               style={{
-                color: pathname === "/settings" ? "#fff" : "#c6d3e3",
-                background: pathname === "/settings" ? "rgba(255,255,255,0.16)" : "transparent",
+                color: pathname === "/dashboard/settings" ? "#fff" : "#c6d3e3",
+                background: pathname === "/dashboard/settings" ? "rgba(255,255,255,0.16)" : "transparent",
               }}
             >
               <span className="nav-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><circle cx="12" cy="12" r="10"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               </span>
               <span className="nav-label">Settings</span>
             </Link>

@@ -1,6 +1,7 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { X } from "lucide-react"
 import { Loader9 } from "@/components/ui/loader-9"
 
 interface Props {
@@ -361,49 +362,46 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
   }
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000,
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1000,
       display: "flex", alignItems: "center", justifyContent: "center", padding: 20, backdropFilter: "blur(4px)" }}>
-      <div style={{ background: "#fff", borderRadius: 20, width: "100%", maxWidth: 560, border: "4px solid #304674",
-        maxHeight: "92vh", overflow: "auto", boxShadow: "12px 12px 0px #98bad5" }}>
+      <div style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: 680,
+        maxHeight: "92vh", overflow: "auto", boxShadow: "0 24px 64px rgba(0,0,0,0.18)", border: "1px solid #e2e8f0" }}>
 
         {/* Header */}
-        <div style={{ padding: "20px 24px", borderBottom: "3px solid #304674",
-          display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ padding: "22px 28px 20px", borderBottom: "1px solid #f1f5f9",
+          display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: "-0.02em" }}>Find Researchers</h2>
-            <p style={{ margin: "2px 0 0", fontSize: 13, color: "#64748b", fontWeight: 500 }}>
+            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#0f172a" }}>Find Researchers</h2>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>
               Match scores are calculated from your resume
             </p>
           </div>
           <button
             onClick={onClose}
-            style={{ position: "absolute", top: 16, right: 16, width: 32, height: 32, borderRadius: "50%", background: "#fff", border: "2.5px solid #304674", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#304674", boxShadow: "3px 3px 0px #304674", transition: "all 0.1s" }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.borderColor = "#dc2626"; e.currentTarget.style.color = "#dc2626" }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#304674"; e.currentTarget.style.color = "#304674" }}
+            style={{ width: 32, height: 32, borderRadius: 8, background: "#f8fafc", border: "1px solid #e2e8f0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b", flexShrink: 0 }}
+            onMouseEnter={e => { e.currentTarget.style.background = "#fee2e2"; e.currentTarget.style.color = "#dc2626"; e.currentTarget.style.borderColor = "#fca5a5" }}
+            onMouseLeave={e => { e.currentTarget.style.background = "#f8fafc"; e.currentTarget.style.color = "#64748b"; e.currentTarget.style.borderColor = "#e2e8f0" }}
           >
-            <X size={18} strokeWidth={3} />
+            <X size={15} strokeWidth={2.5} />
           </button>
         </div>
 
-        <div style={{ padding: "24px 0" }}>
+        <div style={{ padding: "24px 28px" }}>
           {step === "config" && (
             <div>
               {error && (
                 <div style={{ background: "#fee2e2", border: "1px solid #fecaca", borderRadius: 8,
-                  padding: "10px 14px", color: "#dc2626", fontSize: 13, marginBottom: 16 }}>
+                  padding: "10px 14px", color: "#dc2626", fontSize: 13, marginBottom: 20 }}>
                   {error}
                 </div>
               )}
 
               {/* Keywords / Fields with autocomplete */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>
                   Keywords or research fields
-                  <span style={{ color: "#94a3b8", fontWeight: 400 }}>  separate multiple with commas</span>
+                  <span style={{ color: "#94a3b8", fontWeight: 400, fontSize: 12 }}> — separate multiple with commas</span>
                 </label>
-                <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
-                  Spelling and capitalisation don&apos;t matter. "AI", "artificial intelligence", and "machien lerning" all work.
-                </p>
 
                 {/* Input + dropdown wrapper */}
                 <div style={{ position: "relative" }}>
@@ -465,13 +463,10 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
 
               {/* University */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 4 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>
                   University
-                  <span style={{ color: "#94a3b8", fontWeight: 400 }}>  optional, leave blank to search all</span>
+                  <span style={{ color: "#94a3b8", fontWeight: 400, fontSize: 12 }}> — optional, leave blank to search all</span>
                 </label>
-                <p style={{ fontSize: 12, color: "#64748b", margin: "0 0 8px", lineHeight: 1.5 }}>
-                  Comma-separate multiple. Fuzzy-matched  "stanfrod" and "carnegie melon" still work.
-                </p>
                 <input
                   value={form.universityText}
                   onChange={e => setForm(fm => ({ ...fm, universityText: e.target.value }))}
@@ -483,24 +478,19 @@ export default function FindResearchersModal({ onClose, initialKeyword = "" }: P
               </div>
 
               {/* Count */}
-              <div style={{ marginBottom: 24 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 8 }}>
+              <div style={{ marginBottom: 28 }}>
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151", display: "block", marginBottom: 10 }}>
                   How many? <span style={{ color: "#304674", fontWeight: 700 }}>{form.count}</span>
                 </label>
                 <input type="range" min={1} max={5} step={1} value={form.count}
                   onChange={e => setForm(fm => ({ ...fm, count: Number(e.target.value) }))}
                   style={{ width: "100%", accentColor: "#304674" }} />
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
-                  <span>1</span><span>5 (max)</span>
-                </div>
               </div>
 
               <button onClick={handleFind}
-                style={{ width: "100%", padding: "12px", background: "#304674", color: "#fff",
-                  border: "none", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
-                {form.keyword.trim()
-                  ? `Search "${form.keyword.split(",")[0].trim()}${form.keyword.includes(",") ? "…" : ""}"  Find ${form.count} Researchers`
-                  : `Find ${form.count} Researchers`}
+                style={{ width: "100%", padding: "13px", background: "#304674", color: "#fff",
+                  border: "none", borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
+                Search
               </button>
             </div>
           )}

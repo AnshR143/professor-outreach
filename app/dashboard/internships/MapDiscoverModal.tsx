@@ -600,7 +600,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
               <div style={{ fontSize: 12, color: "#64748b" }}>Find local businesses that need interns</div>
             </div>
           </div>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1, padding: 4 }}>�</button>
+          <button onClick={onClose} style={{ background: "#f1f5f9", border: "2px solid #304674", borderRadius: 8, cursor: "pointer", color: "#304674", padding: 6, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "2px 2px 0px #304674" }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
 
         {/* ── Search bar ── */}
@@ -705,7 +705,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
             {!loading && businesses.length === 0 && !error && (
               <div style={{ padding: 32, textAlign: "center", color: "#94a3b8" }}>
-                <div style={{ fontSize: 36, marginBottom: 12 }}>📍</div>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" style={{ marginBottom: 12 }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#64748b", marginBottom: 6 }}>Search a location</div>
                 <div style={{ fontSize: 13 }}>Enter a city and industry above to find businesses near you</div>
               </div>
@@ -860,7 +860,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                     style={{ padding: "6px 16px", background: added.has(selected.id) ? "#dcfce7" : "#304674", color: added.has(selected.id) ? "#15803d" : "#fff", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: added.has(selected.id) ? "default" : "pointer" }}>
                     {adding.has(selected.id) ? "Adding..." : added.has(selected.id) ? "Added" : "+ Add to Contacts"}
                   </button>
-                  <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 18, padding: 2 }}>�</button>
+                  <button onClick={() => setSelected(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center", padding: 4 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 </div>
               </div>
             )}
@@ -878,7 +878,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
                 <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{kitFor.name}</div>
                 <div style={{ fontSize: 12, color: "#64748b" }}>Tailored for {kitFor.industry}{kitFor.phone ? ` · ${kitFor.phone}` : ""}</div>
               </div>
-              <button onClick={() => setKitFor(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 22, lineHeight: 1 }}>�</button>
+              <button onClick={() => setKitFor(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center", padding: 4 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
 
             {kit?.callScript && (

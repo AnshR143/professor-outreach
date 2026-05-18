@@ -1,8 +1,9 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { searchAuthors, getAuthorPapers } from "@/lib/apis/semantic-scholar"
 import { NextResponse } from "next/server"
+import { callAIJson } from "@/lib/ai/call"
 
-// Use Groq to generate plausible paper titles when Semantic Scholar has nothing
+// Use AI to generate plausible paper titles when Semantic Scholar has nothing
 async function generatePapersWithAI(
   professorName: string,
   university: string,
@@ -16,21 +17,14 @@ Return JSON array ONLY:
 [{"title":"...","abstract":"...","year":"2023"},...]`
 
   try {
-    const Groq = (await import("groq-sdk")).default
-    const groq = new Groq({ apiKey })
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
+    const parsed = await callAIJson<unknown[]>(apiKey, prompt, {
       temperature: 0.4,
-      max_tokens: 800,
+      maxTokens: 800,
     })
-    const raw = completion.choices[0].message.content || ""
-    const clean = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim()
-    const parsed = JSON.parse(clean || "{}")
-    const arr = Array.isArray(parsed) ? parsed : (parsed.papers || parsed.data || [])
-    if (arr.length > 0) return arr
+    const arr = Array.isArray(parsed) ? parsed : []
+    if (arr.length > 0) return arr as Array<{ title: string; abstract: string; year: string }>
   } catch (e) {
-    console.error("Groq paper generation failed:", e)
+    console.error("AI paper generation failed:", e)
   }
 
   return []
@@ -103,14 +97,14 @@ export async function POST(req: Request) {
     } catch {}
   }
 
-  // 3. If still nothing, generate with Groq
-  const groqKey = profile?.ai_api_key || process.env.GROQ_API_KEY
-  if (papers.length === 0 && groqKey) {
+  // 3. If still nothing, generate with AI
+  const aiKey = profile?.ai_api_key || process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
+  if (papers.length === 0 && aiKey) {
     const aiPapers = await generatePapersWithAI(
       researcher.name,
       researcher.university,
       researcher.research_areas || [],
-      groqKey
+      aiKey
     )
     papers = aiPapers
   }

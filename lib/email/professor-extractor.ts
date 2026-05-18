@@ -516,22 +516,37 @@ export async function pickBestProfessorEmail(opts: {
   verifyTopN?: number
 }): Promise<BestPick> {
   const verifyTopN = opts.verifyTopN ?? 3
-  const allScored: Array<{ c: EmailCandidate; score: number; breakdown: ScoreBreakdown }> = []
-  for (const p of opts.pages) {
-    if (!p.html) continue
-    const text = htmlToText(p.html)
-    const ctx: ScoreContext = {
-      name: opts.name,
-      pageUrl: p.url,
-      pageTitle: getTitle(p.html),
-      pageText: text,
+
+  // Score every candidate against every page, optionally enforcing a
+  // domain match. We run a strict pass first (must match `expectedDomain`).
+  // If that pass yields nothing, the guessed domain is likely wrong, so we
+  // retry without the domain constraint — the AI verifier downstream still
+  // has to confirm the candidate is the right person.
+  const scoreAll = (
+    expectedDomain?: string
+  ): Array<{ c: EmailCandidate; score: number; breakdown: ScoreBreakdown }> => {
+    const out: Array<{ c: EmailCandidate; score: number; breakdown: ScoreBreakdown }> = []
+    for (const p of opts.pages) {
+      if (!p.html) continue
+      const text = htmlToText(p.html)
+      const ctx: ScoreContext = {
+        name: opts.name,
+        pageUrl: p.url,
+        pageTitle: getTitle(p.html),
+        pageText: text,
+      }
+      const candidates = extractCandidates(p.html, p.url)
+      for (const c of candidates) {
+        const b = scoreCandidate(c, ctx, expectedDomain)
+        if (b.rejected) continue
+        out.push({ c, score: b.total, breakdown: b })
+      }
     }
-    const candidates = extractCandidates(p.html, p.url)
-    for (const c of candidates) {
-      const b = scoreCandidate(c, ctx, opts.expectedDomain)
-      if (b.rejected) continue
-      allScored.push({ c, score: b.total, breakdown: b })
-    }
+    return out
+  }
+  let allScored = scoreAll(opts.expectedDomain)
+  if (allScored.length === 0 && opts.expectedDomain) {
+    allScored = scoreAll(undefined)
   }
   // Dedupe across pages: keep the highest-scoring instance of each email.
   const byEmail = new Map<string, { c: EmailCandidate; score: number; breakdown: ScoreBreakdown }>()

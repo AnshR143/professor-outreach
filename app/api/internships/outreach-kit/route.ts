@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
-import { isGeminiKey } from "@/lib/ai/detect-key"
+import { detectApiKey } from "@/lib/ai/detect-key"
+import { callAIJson } from "@/lib/ai/call"
 
 interface OutreachKit {
   subject: string
@@ -46,7 +47,7 @@ ${oppLine}
 Write a SHORT, specific cold email asking about an internship at this company.
 - Subject line: under 60 chars, no clickbait, mentions the company.
 - Body: 90–150 words. First person. Reference one concrete thing about the company
-  (their industry, the complaint area, or the opportunity above)  not generic
+  (their industry, the complaint area, or the opportunity above) — not generic
   "I admire your work". End with a clear ask for a 15-minute call or to send a resume.
 
 ${p.hasPhone ? `Also write a 30-second voicemail script the student could leave if they call the company's listed phone number. Friendly, names the company, says who's calling, why, and leaves a callback ask. Plain text, ~60 words.` : ""}
@@ -56,50 +57,6 @@ Return JSON:
   "subject": string,
   "body": string${p.hasPhone ? `,\n  "callScript": string` : ""}
 }`
-}
-
-async function callGroq(apiKey: string, prompt: string): Promise<OutreachKit | null> {
-  const Groq = (await import("groq-sdk")).default
-  const client = new Groq({ apiKey })
-  const completion = await client.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [
-      { role: "system", content: SYSTEM },
-      { role: "user", content: prompt },
-    ],
-    temperature: 0.5,
-    max_tokens: 800,
-    response_format: { type: "json_object" },
-  })
-  return parse(completion.choices[0]?.message?.content ?? "")
-}
-
-async function callGemini(apiKey: string, prompt: string): Promise<OutreachKit | null> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: SYSTEM + "\n\n" + prompt }] }],
-      generationConfig: { temperature: 0.5, responseMimeType: "application/json" },
-    }),
-  })
-  if (!res.ok) return null
-  const data = await res.json()
-  return parse(data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "")
-}
-
-function parse(raw: string): OutreachKit | null {
-  try {
-    const json = raw.match(/\{[\s\S]*\}/)?.[0] ?? raw
-    const obj = JSON.parse(json)
-    if (typeof obj.subject !== "string" || typeof obj.body !== "string") return null
-    return {
-      subject: obj.subject,
-      body: obj.body,
-      callScript: typeof obj.callScript === "string" ? obj.callScript : undefined,
-    }
-  } catch { return null }
 }
 
 export async function POST(req: Request) {
@@ -148,6 +105,8 @@ export async function POST(req: Request) {
     )
   }
 
+  const { label } = detectApiKey(apiKey)
+
   const prompt = buildPrompt({
     studentName: profile?.name || "Student",
     studentLevel: profile?.academic_level || "undergraduate",
@@ -164,14 +123,15 @@ export async function POST(req: Request) {
   })
 
   try {
-    const useGemini = isGeminiKey(apiKey) || (!isGeminiKey(apiKey) && !!process.env.GEMINI_API_KEY)
-    let result: OutreachKit | null = null
-    if (useGemini) {
-      const key = isGeminiKey(apiKey) ? apiKey : (process.env.GEMINI_API_KEY as string)
-      result = await callGemini(key, prompt)
+    const result = await callAIJson<OutreachKit>(
+      apiKey,
+      SYSTEM + "\n\n" + prompt,
+      { temperature: 0.5, maxTokens: 800 }
+    )
+    if (!result || typeof result.subject !== "string" || typeof result.body !== "string") {
+      return NextResponse.json({ error: "AI returned empty result." }, { status: 502 })
     }
-    if (!result) result = await callGroq(apiKey, prompt)
-    if (!result) return NextResponse.json({ error: "AI returned empty result." }, { status: 502 })
+    console.log(`Outreach kit generated via ${label}`)
     return NextResponse.json(result)
   } catch (e: any) {
     console.error("Outreach kit gen failed:", e.message)

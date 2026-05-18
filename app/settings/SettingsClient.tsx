@@ -210,7 +210,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
 
           <Section title="AI API Key">
             <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#0369a1", marginBottom: 16 }}>
-              <strong>Used to generate personalized emails.</strong> Accepts any key  Groq, Gemini, or OpenAI compatible. Stored securely server-side, never sent to your browser.
+              <strong>Used to generate personalized emails.</strong> Your key is stored securely server-side and never sent to your browser.
             </div>
 
             {hasKey && (
@@ -238,7 +238,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                   type="text"
                   value={apiKey}
                   onChange={e => setApiKey(e.target.value)}
-                  placeholder="gsk_... or AIza... or sk-... (Groq, Gemini, OpenAI)"
+                  placeholder="gsk_... · AIza... · sk-or-... · csk-... · xai-... · pplx-..."
                   autoComplete="one-time-code"
                   name="api_key_confidential"
                   style={{ flex: 1, padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#0f172a", outline: "none", background: "#f8f9fb" }}
@@ -248,12 +248,49 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                   {savingKey ? "Saving..." : "Save Key"}
                 </button>
               </div>
-              <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
-                Free options:{" "}
-                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" style={{ color: "#304674" }}>Groq</a>
-                {" (fastest) or "}
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style={{ color: "#304674" }}>Gemini</a>
-                {"  both free tiers available."}
+              <div style={{ marginTop: 14 }}>
+                <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
+                  Supported providers — paste any key below:
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
+                  {[
+                    { name: "Groq", badge: "gsk_...", free: true,  url: "https://console.groq.com/keys" },
+                    { name: "Gemini", badge: "AIza...", free: true, url: "https://aistudio.google.com/app/apikey" },
+                    { name: "OpenRouter", badge: "sk-or-...", free: true, url: "https://openrouter.ai/keys" },
+                    { name: "Cerebras", badge: "csk-...", free: true, url: "https://cloud.cerebras.ai" },
+                    { name: "xAI (Grok)", badge: "xai-...", free: false, url: "https://console.x.ai" },
+                    { name: "Perplexity", badge: "pplx-...", free: false, url: "https://www.perplexity.ai/settings/api" },
+                    { name: "Fireworks AI", badge: "fw-...", free: true, url: "https://fireworks.ai/account/api-keys" },
+                    { name: "OpenAI", badge: "sk-...", free: false, url: "https://platform.openai.com/api-keys" },
+                    { name: "Anthropic", badge: "sk-ant-...", free: false, url: "https://console.anthropic.com/settings/keys" },
+                  ].map(p => (
+                    <a
+                      key={p.name}
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener"
+                      style={{
+                        display: "flex", alignItems: "center", justifyContent: "space-between",
+                        padding: "7px 10px", background: "#f8fafc",
+                        border: "1px solid #e2e8f0", borderRadius: 7,
+                        textDecoration: "none", gap: 6,
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a" }}>{p.name}</div>
+                        <div style={{ fontSize: 11, color: "#94a3b8", fontFamily: "monospace" }}>{p.badge}</div>
+                      </div>
+                      <span style={{
+                        fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 4,
+                        background: p.free ? "#dcfce7" : "#f1f5f9",
+                        color: p.free ? "#15803d" : "#64748b",
+                        whiteSpace: "nowrap",
+                      }}>
+                        {p.free ? "FREE" : "PAID"}
+                      </span>
+                    </a>
+                  ))}
+                </div>
               </div>
             </Field>
           </Section>

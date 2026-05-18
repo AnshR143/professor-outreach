@@ -17,9 +17,9 @@ export default function TermsPage() {
       {/* Header */}
       <header style={{ background: "#fff", borderBottom: "1px solid #e2e8f0", padding: "16px 24px", position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", color: "#304674", fontWeight: 700 }}>
-            <img src="/link.png" alt="Logo" style={{ width: 32, height: 32 }} />
-            <span>InternLink</span>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 4, textDecoration: "none", color: "#304674", fontWeight: 700 }}>
+            <img src="/link.png" alt="Logo" style={{ width: 72, height: 72, objectFit: "contain" }} />
+            <span style={{ fontSize: 18, fontWeight: 800 }}>InternLink</span>
           </Link>
           <Link href={isFromSignup ? "/signup" : "/"} style={{ fontSize: 14, fontWeight: 600, color: "#304674", textDecoration: "none" }}>
             {isFromSignup ? "Back to Sign Up" : "Back to Home"}
@@ -79,7 +79,7 @@ export default function TermsPage() {
 
         <section style={{ marginBottom: 48, padding: "24px", background: "#fff", border: "2px solid #304674", borderRadius: 12, boxShadow: "4px 4px 0px #304674" }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Contact Us</h2>
-          <p>If you have any questions about these Terms, please contact us at support@internlink.ai</p>
+          <p>If you have any questions about these Terms, please contact us at <a href="mailto:admin.internlink@gmail.com" style={{ color: "#304674" }}>admin.internlink@gmail.com</a></p>
         </section>
       </main>
 

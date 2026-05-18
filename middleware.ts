@@ -11,7 +11,11 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/onboarding") ||
     pathname.startsWith("/3d-demo") ||
     pathname === "/terms" ||
-    pathname === "/privacy"
+    pathname === "/privacy" ||
+    pathname === "/partners" ||
+    pathname === "/contact" ||
+    pathname === "/sitemap.xml" ||
+    pathname === "/robots.txt"
 
   // If env vars are missing, just let the request through to avoid hard crash
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -71,6 +75,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|webm|mov)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4|webm|mov)$).*)",
   ],
 }

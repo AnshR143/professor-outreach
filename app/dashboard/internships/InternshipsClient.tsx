@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client"
 import dynamic from "next/dynamic"
 import LiquidGlassButton from "@/components/ui/liquid-glass-button"
 import FindInternshipContactsModal from "@/components/internships/FindInternshipContactsModal"
+import FloatingActionMenu from "@/components/ui/floating-action-menu"
 import "maplibre-gl/dist/maplibre-gl.css"
 import { Map, MapMarker, MarkerContent, MarkerTooltip } from "@/components/ui/map"
 const MapDiscoverModal = dynamic(() => import("./MapDiscoverModal"), { ssr: false })
@@ -62,6 +63,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
   const [copied, setCopied] = useState(false)
   const [gmailCopied, setGmailCopied] = useState(false)
   const [savingDraft, setSavingDraft] = useState(false)
+  const [expandedBios, setExpandedBios] = useState<Set<string>>(new Set())
 
   async function cycleEmailStatus(e: React.MouseEvent, contact: InternshipContact) {
     e.preventDefault(); e.stopPropagation()
@@ -120,14 +122,13 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
 
   async function openGmail() {
     if (!emailContact) return
-    // Copy body to clipboard so user can paste in Gmail  avoids URL-length limit that causes tab to close
-    try { await navigator.clipboard.writeText(genBody) } catch {}
     const url = "https://mail.google.com/mail/?view=cm&fs=1&to=" +
       encodeURIComponent(emailContact.email || "") +
-      "&su=" + encodeURIComponent(genSubject)
+      "&su=" + encodeURIComponent(genSubject) +
+      "&body=" + encodeURIComponent(genBody)
     window.open(url, "_blank", "noopener,noreferrer")
     setGmailCopied(true)
-    setTimeout(() => setGmailCopied(false), 6000)
+    setTimeout(() => setGmailCopied(false), 3000)
   }
 
   async function handleAdd(e: React.FormEvent) {
@@ -221,26 +222,6 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
           </button>
-          <button onClick={() => setViewMode(v => v === "list" ? "map" : "list")}
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", background: "#fff", color: "#0f172a", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            {viewMode === "list" ? (
-              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Map View</>
-            ) : (
-              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> List View</>
-            )}
-          </button>
-          <LiquidGlassButton 
-            onClick={() => setShowMap(true)} 
-            size="sm"
-            style={{ background: "#0f172a", color: "#fff" }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Map Discovery <span style={{ fontSize: 9, fontWeight: 900, background: "#304674", color: "#fff", padding: "1px 6px", borderRadius: 4, marginLeft: 6, textTransform: "uppercase", letterSpacing: 0.5, boxShadow: "0 0 10px rgba(48,70,116,0.3)" }}>Beta</span>
-          </LiquidGlassButton>
-          <LiquidGlassButton onClick={() => setShowFind(true)} variant="primary" size="sm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            Find Contacts
-          </LiquidGlassButton>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
           </div>
@@ -335,21 +316,41 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.company || "Unknown Company"}</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0f172a" }}>{c.contact_name || "Unknown Contact"}</div>
                       <div style={{ fontSize: 12, fontWeight: 600, color: "#304674", marginTop: 2 }}>{c.role}</div>
-                      {c.contact_name && <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{c.contact_name}</div>}
+                      {c.company && <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{c.company}</div>}
                     </div>
                     {c.bio && (
                       <div style={{ fontSize: 11, color: "#475569", lineHeight: 1.5, background: "#f8fafc", borderRadius: 8, padding: "8px 10px", borderLeft: "3px solid #e2e8f0" }}>
-                        {c.bio.slice(0, 100)}{c.bio.length > 100 ? "..." : ""}
+                        {expandedBios.has(c.id) ? c.bio : c.bio.slice(0, 120) + (c.bio.length > 120 ? "…" : "")}
+                        {c.bio.length > 120 && (
+                          <button
+                            onClick={e => { e.stopPropagation(); setExpandedBios(prev => { const next = new Set(prev); next.has(c.id) ? next.delete(c.id) : next.add(c.id); return next }) }}
+                            style={{ marginLeft: 4, fontSize: 10, color: "#304674", fontWeight: 600, background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline" }}
+                          >
+                            {expandedBios.has(c.id) ? "less" : "more"}
+                          </button>
+                        )}
                       </div>
                     )}
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 4, borderTop: "1px solid #f1f5f9", marginTop: "auto" }}>
-                      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
                         <span style={{ fontSize: 11, color: "#304674", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                           Generate Email
                         </span>
+                        {c.website && (
+                          <a
+                            href={c.website.startsWith("http") ? c.website : "https://" + c.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={e => e.stopPropagation()}
+                            style={{ fontSize: 10, color: "#64748b", display: "flex", alignItems: "center", gap: 3, textDecoration: "none" }}
+                          >
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            Website
+                          </a>
+                        )}
                         {c.email && <span style={{ fontSize: 10, color: "#94a3b8" }}>· has email</span>}
                       </div>
                       <button onClick={e => cycleEmailStatus(e, c)}
@@ -364,7 +365,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
           </div>
         )}
 
-        {filtered.length > 0 && viewMode === "map" && (
+        {viewMode === "map" && (
           <div style={{ height: "65vh", borderRadius: 16, overflow: "hidden", border: "2px solid #304674", boxShadow: "4px 4px 0px #304674" }}>
             <Map center={[-98.5795, 39.8283]} zoom={3} minZoom={2} maxZoom={18}>
               {filtered.map(c => {
@@ -460,9 +461,19 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               <div>
                 <div style={{ fontSize: 17, fontWeight: 700, color: "#0f172a" }}>{emailContact.contact_name || emailContact.company}</div>
                 <div style={{ fontSize: 12, color: "#304674", fontWeight: 600, marginTop: 2 }}>{emailContact.role}{emailContact.company && emailContact.contact_name ? " at " + emailContact.company : ""}</div>
-                {(emailContact.email || (emailContact.notes && emailContact.notes.includes("Phone:"))) && (
-                  <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 12, color: "#475569" }}>
+                {(emailContact.email || emailContact.website || (emailContact.notes && emailContact.notes.includes("Phone:"))) && (
+                  <div style={{ marginTop: 8, display: "flex", gap: 8, fontSize: 12, color: "#475569", flexWrap: "wrap" }}>
                     {emailContact.email && <div style={{ background: "#f1f5f9", padding: "4px 8px", borderRadius: 6, border: "1px solid #e2e8f0" }}><strong>Email:</strong> {emailContact.email}</div>}
+                    {emailContact.website && (
+                      <a
+                        href={emailContact.website.startsWith("http") ? emailContact.website : "https://" + emailContact.website}
+                        target="_blank" rel="noopener noreferrer"
+                        style={{ background: "#f0f9ff", padding: "4px 8px", borderRadius: 6, border: "1px solid #bae6fd", color: "#0369a1", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}
+                      >
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Visit website
+                      </a>
+                    )}
                     {emailContact.notes && emailContact.notes.includes("Phone:") && (
                       <div style={{ background: "#f1f5f9", padding: "4px 8px", borderRadius: 6, border: "1px solid #e2e8f0" }}>
                         <strong>Phone:</strong> {emailContact.notes.match(/Phone:\s*([^.]+)/)?.[1]}
@@ -533,7 +544,7 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
                 <button onClick={openGmail} disabled={!genSubject && !genBody}
                   style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 14px", background: gmailCopied ? "#dcfce7" : "#fff", color: gmailCopied ? "#15803d" : "#374151", border: `1px solid ${gmailCopied ? "#86efac" : "#e2e8f0"}`, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: !genSubject && !genBody ? 0.4 : 1, transition: "all 0.2s" }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  {gmailCopied ? "Body copied  paste in Gmail!" : "Open in Gmail"}
+                  {gmailCopied ? "Opened in Gmail!" : "Open in Gmail"}
                 </button>
                 <button onClick={copyEmail} disabled={!genSubject && !genBody}
                   style={{ padding: "9px 14px", background: copied ? "#dcfce7" : "#f1f5f9", color: copied ? "#15803d" : "#475569", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", opacity: !genSubject && !genBody ? 0.4 : 1 }}>
@@ -562,6 +573,49 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
       {showMap && (
         <MapDiscoverModal onClose={handleMapClose} />
       )}
+
+      {/* ── Floating Action Menu ── */}
+      <FloatingActionMenu
+        actions={[
+          {
+            label: "Find Contacts",
+            icon: (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            ),
+            color: "#304674",
+            onClick: () => setShowFind(true),
+          },
+          {
+            label: viewMode === "list" ? "Map View" : "List View",
+            icon: viewMode === "list" ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+              </svg>
+            ),
+            color: "#0f172a",
+            onClick: () => setViewMode(v => v === "list" ? "map" : "list"),
+          },
+          {
+            label: "Map Discovery",
+            icon: (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            ),
+            color: "#304674",
+            onClick: () => setShowMap(true),
+          },
+        ]}
+      />
 
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>

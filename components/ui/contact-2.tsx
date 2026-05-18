@@ -106,52 +106,52 @@ export const Contact2 = ({
         />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-md mx-auto flex flex-col items-center gap-4">
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="max-w-2xl mx-auto flex flex-col items-center gap-8">
           <div className="text-center">
-            <h2 className="mb-0.5 text-2xl font-bold tracking-tight text-[#304674]">
+            <h2 className="mb-2 text-4xl font-bold tracking-tight text-[#304674]">
               {title}
             </h2>
-            <p className="text-muted-foreground text-[10px] max-w-xs mx-auto">{description}</p>
+            <p className="text-muted-foreground text-base max-w-md mx-auto">{description}</p>
           </div>
 
-          <form 
+          <form
             onSubmit={handleSubmit}
-            className="w-full flex flex-col gap-2.5 rounded-xl border border-[#e2e8f0] p-4 bg-[#f8f9fb] shadow-sm"
+            className="w-full flex flex-col gap-5 rounded-2xl border border-[#e2e8f0] p-8 bg-[#f8f9fb] shadow-sm"
           >
-            <div className="flex gap-3">
-              <div className="grid w-full items-center gap-1">
-                <Label htmlFor="firstname" className="text-[10px] font-bold text-[#304674]">First Name</Label>
-                <Input type="text" id="firstname" name="firstname" placeholder="First Name" required className="bg-white h-8 text-[11px] px-2" />
+            <div className="flex gap-5">
+              <div className="grid w-full items-center gap-2">
+                <Label htmlFor="firstname" className="text-sm font-bold text-[#304674]">First Name</Label>
+                <Input type="text" id="firstname" name="firstname" placeholder="First Name" required className="bg-white h-12 text-sm px-4" />
               </div>
-              <div className="grid w-full items-center gap-1">
-                <Label htmlFor="lastname" className="text-[10px] font-bold text-[#304674]">Last Name</Label>
-                <Input type="text" id="lastname" name="lastname" placeholder="Last Name" required className="bg-white h-8 text-[11px] px-2" />
+              <div className="grid w-full items-center gap-2">
+                <Label htmlFor="lastname" className="text-sm font-bold text-[#304674]">Last Name</Label>
+                <Input type="text" id="lastname" name="lastname" placeholder="Last Name" required className="bg-white h-12 text-sm px-4" />
               </div>
             </div>
-            <div className="grid w-full items-center gap-1">
-              <Label htmlFor="email" className="text-[10px] font-bold text-[#304674]">Email</Label>
-              <Input type="email" id="email" name="email" placeholder="Email" required className="bg-white h-8 text-[11px] px-2" />
+            <div className="grid w-full items-center gap-2">
+              <Label htmlFor="email" className="text-sm font-bold text-[#304674]">Email</Label>
+              <Input type="email" id="email" name="email" placeholder="Email" required className="bg-white h-12 text-sm px-4" />
             </div>
-            <div className="grid w-full items-center gap-1">
-              <Label htmlFor="subject" className="text-[10px] font-bold text-[#304674]">Subject</Label>
-              <Input type="text" id="subject" name="subject" placeholder="Subject" required className="bg-white h-8 text-[11px] px-2" />
+            <div className="grid w-full items-center gap-2">
+              <Label htmlFor="subject" className="text-sm font-bold text-[#304674]">Subject</Label>
+              <Input type="text" id="subject" name="subject" placeholder="Subject" required className="bg-white h-12 text-sm px-4" />
             </div>
-            <div className="grid w-full gap-1">
-              <Label htmlFor="message" className="text-[10px] font-bold text-[#304674]">Message</Label>
-              <Textarea placeholder="Type your message here." id="message" name="message" required className="bg-white min-h-[60px] text-[11px] px-2 py-1.5" />
+            <div className="grid w-full gap-2">
+              <Label htmlFor="message" className="text-sm font-bold text-[#304674]">Message</Label>
+              <Textarea placeholder="Type your message here." id="message" name="message" required className="bg-white min-h-[140px] text-sm px-4 py-3" />
             </div>
 
             {status && (
-              <div className={`p-2 rounded-md text-[10px] font-bold ${status.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+              <div className={`p-3 rounded-lg text-sm font-bold ${status.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
                 {status.msg}
               </div>
             )}
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
-              className="w-full bg-[#304674] hover:bg-[#1a2e52] text-white font-bold h-8 text-xs transition-all active:scale-95"
+              className="w-full bg-[#304674] hover:bg-[#1a2e52] text-white font-bold h-12 text-sm transition-all active:scale-95"
             >
               {loading ? "Sending..." : "Send Message"}
             </Button>
