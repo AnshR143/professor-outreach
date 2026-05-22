@@ -1,5 +1,6 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import Link from "next/link"
 import type { Profile, Researcher, Activity, Email } from "@/lib/supabase/types"
 import { timeAgo } from "@/lib/utils"
@@ -20,6 +21,27 @@ export default function DashboardClient({ profile, researchers, activities, emai
   const emailsSent = researchers.filter(r => ["emailed", "accepted", "rejected"].includes(r.email_status || "")).length
   const accepted = researchers.filter(r => r.email_status === "accepted").length
   const awaiting = researchers.filter(r => r.email_status === "emailed").length
+
+  const barData = (() => {
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    const counts = new Array(7).fill(0)
+    const now = new Date()
+    const dayOfWeek = now.getDay()
+    const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+    const monday = new Date(now)
+    monday.setDate(now.getDate() - mondayOffset)
+    monday.setHours(0, 0, 0, 0)
+
+    activities.forEach(a => {
+      const d = new Date(a.created_at)
+      if (d >= monday) {
+        const idx = d.getDay() === 0 ? 6 : d.getDay() - 1
+        counts[idx]++
+      }
+    })
+    const max = Math.max(...counts, 1)
+    return days.map((day, i) => ({ day, count: counts[i], pct: (counts[i] / max) * 100 }))
+  })()
 
   const kpis = [
     {
@@ -69,6 +91,10 @@ export default function DashboardClient({ profile, researchers, activities, emai
             </p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+              <img src="/link.png" alt="InternLink" style={{ width: 36, height: 36, objectFit: "contain" }} />
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#f8fafc", letterSpacing: "-0.01em" }}>InternLink</span>
+            </Link>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(48, 70, 116,0.85)", border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 14, fontWeight: 700, backdropFilter: "blur(8px)" }}>
               {profile?.name?.[0]?.toUpperCase() || "A"}
             </div>
@@ -111,37 +137,75 @@ export default function DashboardClient({ profile, researchers, activities, emai
           ))}
         </div>
 
-        <div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          {/* Weekly Activity Bar Graph */}
+          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0" }}>
+              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0f172a" }}>Weekly Activity</h3>
+              <p style={{ margin: "2px 0 0", fontSize: 12, color: "#94a3b8" }}>Outreach actions this week</p>
+            </div>
+            <div style={{ padding: "20px 20px 16px", display: "flex", alignItems: "flex-end", gap: 10, height: 160 }}>
+              {barData.map((bar, i) => (
+                <div key={bar.day} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, height: "100%" }}>
+                  <div style={{ flex: 1, width: "100%", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: `${Math.max(bar.pct, 8)}%` }}
+                      transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                      style={{
+                        width: "100%",
+                        maxWidth: 36,
+                        background: bar.count > 0 ? "#304674" : "#e2e8f0",
+                        borderRadius: "6px 6px 3px 3px",
+                        position: "relative",
+                      }}
+                    >
+                      {bar.count > 0 && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.4 + i * 0.08 }}
+                          style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%)", fontSize: 11, fontWeight: 700, color: "#304674" }}
+                        >
+                          {bar.count}
+                        </motion.span>
+                      )}
+                    </motion.div>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8" }}>{bar.day}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Recent Activity */}
           <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#0f172a" }}>Recent Activity</h3>
               <Link href="/dashboard/history" style={{ fontSize: 12, color: "#304674", textDecoration: "none", fontWeight: 500 }}>View all</Link>
             </div>
-            <div style={{ maxHeight: 320, overflowY: "auto" }}>
+            <div style={{ maxHeight: 180, overflowY: "auto" }}>
               {activities.length === 0 ? (
-                <div style={{ padding: 32, textAlign: "center", color: "#94a3b8", fontSize: 14 }}>
+                <div style={{ padding: 24, textAlign: "center", color: "#94a3b8", fontSize: 14 }}>
                   No activity yet. Find researchers to get started.
                 </div>
-              ) : activities.slice(0, 8).map(a => (
-                <div key={a.id} style={{ padding: "12px 20px", borderBottom: "1px solid #f1f5f9", display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <div style={{ width: 32, height: 32, borderRadius: "50%", background: a.type === "email_sent" ? "#dcfce7" : "#c6d3e3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              ) : activities.slice(0, 4).map(a => (
+                <div key={a.id} style={{ padding: "10px 20px", borderBottom: "1px solid #f1f5f9", display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: a.type === "email_sent" ? "#dcfce7" : "#c6d3e3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     {a.type === "email_sent"
-                      ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                      : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#304674" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                      : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#304674" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     }
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>{a.researcher_name}</div>
-                    <div style={{ fontSize: 12, color: "#64748b" }}>{a.university}</div>
-                    <div style={{ fontSize: 12, color: "#94a3b8" }}>{a.description}</div>
+                    <div style={{ fontSize: 11, color: "#64748b" }}>{a.university}</div>
                   </div>
                   <div style={{ fontSize: 11, color: "#94a3b8", flexShrink: 0 }}>{timeAgo(a.created_at)}</div>
                 </div>
               ))}
             </div>
           </div>
-
         </div>
       </div>
 

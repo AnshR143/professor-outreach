@@ -116,7 +116,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
           <div style={{ flex: 1, overflow: "auto", padding: 12 }}>
             {personal.length === 0 ? (
               <div style={{ textAlign: "center", padding: 32, color: "#94a3b8" }}>
-                <div style={{ fontSize: 32, marginBottom: 8 }}>&#x1F4DD;</div>
+                <div style={{ fontSize: 32, marginBottom: 8 }}></div>
                 <div style={{ fontSize: 13, marginBottom: 4 }}>No personal templates</div>
                 <div style={{ fontSize: 12 }}>Create your first template</div>
               </div>

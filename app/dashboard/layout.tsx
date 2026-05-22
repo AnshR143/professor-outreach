@@ -144,12 +144,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           onMouseEnter={() => setExpanded(true)}
           onMouseLeave={() => setExpanded(false)}
         >
-          {/* Logo — clicks back to landing page */}
-          <Link href="/" className="logo-area">
-            <img src="/link.png" alt="InternLink" className="logo-img" />
-            <span className="logo-text">InternLink</span>
-          </Link>
-
           {/* Nav */}
           <nav style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1, width: "100%", padding: "0 8px" }}>
             {NAV.map(({ href, label, icon: Icon, badge }: { href: string; label: string; icon: () => JSX.Element; badge?: string }) => {
