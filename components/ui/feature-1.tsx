@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 interface Feature1Props {
   title: React.ReactNode;
   description?: React.ReactNode;
-  videoSrc: string;
+  youtubeId: string;
   buttonPrimary: { label: string; href: string };
   buttonSecondary: { label: string; href: string };
 }
@@ -16,12 +16,13 @@ interface Feature1Props {
 export const Feature1 = ({
   title = "The intelligent outreach platform.",
   description = "",
-  videoSrc = "/hero-demo2.mp4",
+  youtubeId = "RxeBAETeMZw",
   buttonPrimary = { label: "Get started free", href: "/signup" },
   buttonSecondary = { label: "See how it works", href: "#carousel" },
 }: Feature1Props) => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isHoveringSign, setIsHoveringSign] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setHasLoaded(true), 900);
@@ -170,18 +171,50 @@ export const Feature1 = ({
               </div>
             </div>
 
-            {/* Video */}
-            <video
-              key={videoSrc}
-              src={videoSrc}
-              autoPlay muted loop playsInline
-              style={{ 
-                position: "relative", zIndex: 2,
-                width: "100%", height: "100%", display: "block", 
-                objectFit: "cover", aspectRatio: "16/9", 
-                transform: "translateZ(0)", willChange: "transform" 
-              }}
-            />
+            {/* YouTube Video */}
+            {isPlaying ? (
+              <div style={{ position: "relative", aspectRatio: "16/9" }}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&start=0&rel=0&modestbranding=1`}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  style={{
+                    position: "absolute", inset: 0,
+                    width: "100%", height: "100%", border: "none",
+                  }}
+                />
+              </div>
+            ) : (
+              <div
+                style={{ position: "relative", cursor: "pointer", aspectRatio: "16/9", background: "#0a0f1e" }}
+                onClick={() => setIsPlaying(true)}
+              >
+                <img
+                  src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
+                  alt="Watch intro video"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+                  }}
+                />
+                <div style={{
+                  position: "absolute", inset: 0, zIndex: 3,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "rgba(0,0,0,0.25)",
+                }}>
+                  <div style={{
+                    width: 64, height: 64, borderRadius: "50%",
+                    background: "rgba(255,255,255,0.9)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                  }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="#304674">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>

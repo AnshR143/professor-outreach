@@ -328,6 +328,7 @@ function SectionCarousel({ ySlow, yReverse, isMobile }: { ySlow: any, yReverse: 
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const ctaVideoRef = useRef<HTMLVideoElement>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
@@ -347,6 +348,28 @@ export default function LandingPage() {
     function raf(time: number) { lenis.raf(time); requestAnimationFrame(raf) }
     requestAnimationFrame(raf)
     return () => { lenis.destroy(); window.removeEventListener('resize', checkMobile) }
+  }, [])
+
+  useEffect(() => {
+    const vid = ctaVideoRef.current
+    if (!vid) return
+    let isVisible = false
+    let scrollTimer: ReturnType<typeof setTimeout>
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+        if (!isVisible) vid.pause()
+      },
+      { threshold: 0.1 }
+    )
+    observer.observe(vid)
+    const onScroll = () => {
+      vid.pause()
+      clearTimeout(scrollTimer)
+      scrollTimer = setTimeout(() => { if (isVisible) vid.play() }, 200)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { observer.disconnect(); window.removeEventListener('scroll', onScroll); clearTimeout(scrollTimer) }
   }, [])
 
   return (
@@ -379,7 +402,8 @@ export default function LandingPage() {
           .landing-hero-text h1 { margin: 0 auto 24px !important; }
           .landing-hero-text p { margin: 0 auto 32px !important; }
           /* Wolf CTA: stack vertically */
-          .landing-wolf { width: min(280px, 75vw) !important; margin: 0 auto !important; }
+          .landing-wolf { width: min(320px, 80vw) !important; margin: 0 auto !important; }
+          .landing-wolf-text { top: 58% !important; width: 60% !important; }
           /* PixVerse watermark: hide bg video on mobile, gradient bg is enough */
           .cta-bg-video { display: none !important; }
           /* Wolf clear-box fix: remove drop-shadow on mobile (GPU compositing artifact) */
@@ -430,7 +454,7 @@ export default function LandingPage() {
       <Feature1
         title="Our mission is to put opportunity within reach of every student."
         description=""
-        videoSrc="/videos/sky_loop_v2.mp4"
+        youtubeId="RxeBAETeMZw"
         buttonPrimary={{ label: "Get started free", href: "/signup" }}
         buttonSecondary={{ label: "See how it works", href: "#carousel" }}
       />
@@ -447,10 +471,10 @@ export default function LandingPage() {
         background: "radial-gradient(ellipse at 50% 50%, rgba(48,70,116,0.6) 0%, transparent 70%), #0a0f1e",
         padding: "120px 40px", display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        <video autoPlay muted loop playsInline preload="auto"
+        <video ref={ctaVideoRef} muted loop playsInline preload="none"
           className="cta-bg-video"
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.7, zIndex: 0, pointerEvents: "none" }}
-          src="/videos/PixVerse_V6_Image_Text_720P_A_hyperrealistic_w.mp4" />
+          src="/videos/2ndvideo.mp4" />
         
         {/* Cloud to the left of the wolf */}
         <motion.img src="/cloud-3.png"
