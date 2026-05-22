@@ -471,7 +471,7 @@ export default function LandingPage() {
         background: "radial-gradient(ellipse at 50% 50%, rgba(48,70,116,0.6) 0%, transparent 70%), #0a0f1e",
         padding: "120px 40px", display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        <video ref={ctaVideoRef} muted loop playsInline preload="none"
+        <video ref={ctaVideoRef} muted loop playsInline preload="auto"
           className="cta-bg-video"
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.7, zIndex: 0, pointerEvents: "none" }}
           src="/videos/2ndvideo.mp4" />
