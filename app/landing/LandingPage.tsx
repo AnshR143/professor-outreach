@@ -353,23 +353,12 @@ export default function LandingPage() {
   useEffect(() => {
     const vid = ctaVideoRef.current
     if (!vid) return
-    let isVisible = false
-    let scrollTimer: ReturnType<typeof setTimeout>
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting
-        if (!isVisible) vid.pause()
-      },
+      ([entry]) => { entry.isIntersecting ? vid.play() : vid.pause() },
       { threshold: 0.1 }
     )
     observer.observe(vid)
-    const onScroll = () => {
-      vid.pause()
-      clearTimeout(scrollTimer)
-      scrollTimer = setTimeout(() => { if (isVisible) vid.play() }, 200)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => { observer.disconnect(); window.removeEventListener('scroll', onScroll); clearTimeout(scrollTimer) }
+    return () => observer.disconnect()
   }, [])
 
   return (
