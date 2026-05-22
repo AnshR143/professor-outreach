@@ -326,9 +326,8 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
 
             {/* Subject */}
             <div style={{ marginBottom: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+              <div style={{ marginBottom: 5 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Subject</label>
-                <span style={{ fontSize: 11, color: subject.length > MAX_SUBJECT * 0.9 ? "#ef4444" : "#94a3b8" }}>{subject.length}/{MAX_SUBJECT}</span>
               </div>
               <input value={subject} onChange={e => setSubject(e.target.value.slice(0, MAX_SUBJECT))}
                 placeholder="Subject line will appear here..."
@@ -337,9 +336,8 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
 
             {/* Body */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+              <div style={{ marginBottom: 5 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Body</label>
-                <span style={{ fontSize: 11, color: body.length > MAX_BODY * 0.9 ? "#ef4444" : "#94a3b8" }}>{body.length}/{MAX_BODY}</span>
               </div>
               <textarea value={body} onChange={e => setBody(e.target.value.slice(0, MAX_BODY))} rows={13}
                 placeholder="Email body will appear here after generation..."

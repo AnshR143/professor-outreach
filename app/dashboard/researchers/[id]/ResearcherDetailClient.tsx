@@ -466,9 +466,8 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
 
               {/* Subject */}
               <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4, display: "flex", justifyContent: "space-between" }}>
+                <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4 }}>
                   <span>Email Subject</span>
-                  <span>{emailSubject.length}/120</span>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <input value={emailSubject} onChange={e => setEmailSubject(e.target.value)}
@@ -482,9 +481,8 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
 
               {/* Body */}
               <div style={{ marginBottom: 14 }}>
-                <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4, display: "flex", justifyContent: "space-between" }}>
+                <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 4 }}>
                   <span>Email Body</span>
-                  <span>{emailBody.length}/1000</span>
                 </div>
                 <div style={{ position: "relative" }}>
                   <textarea value={emailBody} onChange={e => setEmailBody(e.target.value)}

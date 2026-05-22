@@ -72,6 +72,7 @@ Requirements:
 5. Make a clear ask (internship opportunity, 15-min call, etc.)
 6. Sign off with: ${p.userName}
 7. Under 200 words, plain text, no markdown, no bullet points in body
+8. Use proper paragraph spacing — separate each paragraph with a blank line (two newlines). Each distinct thought (intro, company interest, your qualifications, the ask, sign-off) should be its own paragraph.
 
 Respond in EXACTLY this format:
 SUBJECT: <subject line>

@@ -176,6 +176,7 @@ TEMPLATE BODY:
 ${params.templateBody}
 
 Fill in the [bracketed placeholders] using the information above. Keep the tone ${toneGuide}.
+Use proper paragraph spacing in the body — separate each paragraph with a blank line (\\n\\n).
 Return ONLY valid JSON: {"subject": "...", "body": "..."}`
   } else {
     prompt = `You are helping a student write a cold email to a professor for a research opportunity.
@@ -196,6 +197,7 @@ TONE: ${toneGuide}
 
 Write a personalized cold email under 200 words. Reference their specific research. Sound like a real student.
 The resume lines above are pre-selected as the most relevant to this professor  weave 1-2 of them naturally into the email.
+Use proper paragraph spacing in the body — separate each paragraph with a blank line (\\n\\n). Each thought (intro, research reference, your fit, the ask, sign-off) should be its own paragraph.
 Return ONLY valid JSON: {"subject": "...", "body": "..."}`
   }
 
@@ -281,6 +283,7 @@ export async function generateInternshipEmailGemini(params: {
     "- Sound like a real thoughtful student, not a template",
     "- Tone: " + toneGuide,
     "- End with a clear low-pressure ask (e.g. a 15-min chat)",
+    "- Use proper paragraph spacing — separate each paragraph with a blank line. Each thought (intro, their work, your fit, the ask, sign-off) should be its own paragraph.",
     "",
     "Respond in EXACTLY this format:",
     "SUBJECT: <subject line>",

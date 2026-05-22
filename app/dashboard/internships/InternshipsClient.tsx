@@ -513,9 +513,8 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               )}
 
               <div style={{ marginBottom: 12 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                <div style={{ marginBottom: 5 }}>
                   <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Subject</label>
-                  <span style={{ fontSize: 11, color: "#94a3b8" }}>{genSubject.length}/120</span>
                 </div>
                 <input value={genSubject} onChange={e => setGenSubject(e.target.value.slice(0, 120))}
                   placeholder="Subject line..."
@@ -523,9 +522,8 @@ export default function InternshipsClient({ contacts: initial, userName }: Props
               </div>
 
               <div style={{ marginBottom: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                <div style={{ marginBottom: 5 }}>
                   <label style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 0.5 }}>Email Body</label>
-                  <span style={{ fontSize: 11, color: "#94a3b8" }}>{genBody.length}/1000</span>
                 </div>
                 <textarea value={genBody} onChange={e => setGenBody(e.target.value.slice(0, 1000))} rows={10}
                   placeholder="Email body will appear here after generation..."

@@ -59,6 +59,7 @@ INSTRUCTIONS:
 - Write in FIRST PERSON ("I", "my", "me") — the student is the author
 - Reference SPECIFIC skills/projects from the resume relevant to this professor
 - Keep the tone ${toneGuide}
+- Use proper paragraph spacing — separate each paragraph with a blank line
 
 Respond in EXACTLY this format:
 SUBJECT: <subject line>
@@ -92,6 +93,7 @@ Requirements:
 5. Make a clear ask (research opportunity, 15-min call, etc.)
 6. Sign off with: ${p.userName}
 7. Under 200 words, plain text, no markdown
+8. Use proper paragraph spacing — separate each paragraph with a blank line (two newlines). Each distinct thought (intro, research reference, your connection, the ask, sign-off) should be its own paragraph.
 
 Respond in EXACTLY this format:
 SUBJECT: <subject line>

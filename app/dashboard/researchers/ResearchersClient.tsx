@@ -77,7 +77,6 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
   const [search, setSearch] = useState("")
   const [fieldFilter, setFieldFilter] = useState("")
   const [showFind, setShowFind] = useState(false)
-  const [highMatchOnly, setHighMatchOnly] = useState(false)
   // Track optimistic email status per researcher id
   const [emailStatuses, setEmailStatuses] = useState<Record<string, EmailStatus>>({})
   const [resetting, setResetting] = useState(false)
@@ -126,10 +125,9 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
         r.university.toLowerCase().includes(q) ||
         r.research_areas.some(a => a.toLowerCase().includes(q))
       const matchesField = !fieldFilter || r.research_areas.some(a => a.toLowerCase().includes(fieldFilter.toLowerCase()))
-      const matchesScore = !highMatchOnly || r.match_score >= 75
-      return matchesSearch && matchesField && matchesScore
+      return matchesSearch && matchesField
     })
-    .sort((a, b) => b.match_score - a.match_score)
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
@@ -186,22 +184,10 @@ export default function ResearchersClient({ researchers: initial, profile }: Pro
             <option value="">All Fields</option>
             {allFields.map(f => <option key={f} value={f}>{f}</option>)}
           </select>
-          <button
-            onClick={() => setHighMatchOnly(v => !v)}
-            style={{
-              padding: "9px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
-              border: highMatchOnly ? "none" : "1px solid #e2e8f0",
-              background: highMatchOnly ? "#304674" : "#fff",
-              color: highMatchOnly ? "#fff" : "#64748b",
-            }}
-          >
-            75%+ Match
-          </button>
         </div>
 
         <div style={{ fontSize: 13, color: "#64748b", marginBottom: 16 }}>
           Showing <strong style={{ color: "#0f172a" }}>{filtered.length}</strong> of {researchers.length} researchers
-          {highMatchOnly && <span style={{ color: "#304674", marginLeft: 6 }}>(75%+ match filter active)</span>}
         </div>
 
         {/* Empty state */}

@@ -255,7 +255,6 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
                   {[
                     { name: "Groq", badge: "gsk_...", free: true,  url: "https://console.groq.com/keys" },
-                    { name: "Gemini", badge: "AIza...", free: true, url: "https://aistudio.google.com/app/apikey" },
                     { name: "OpenRouter", badge: "sk-or-...", free: true, url: "https://openrouter.ai/keys" },
                     { name: "Cerebras", badge: "csk-...", free: true, url: "https://cloud.cerebras.ai" },
                     { name: "xAI (Grok)", badge: "xai-...", free: false, url: "https://console.x.ai" },
