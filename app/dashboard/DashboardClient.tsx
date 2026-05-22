@@ -91,9 +91,9 @@ export default function DashboardClient({ profile, researchers, activities, emai
             </p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
-              <img src="/link.png" alt="InternLink" style={{ width: 36, height: 36, objectFit: "contain" }} />
-              <span style={{ fontSize: 15, fontWeight: 700, color: "#f8fafc", letterSpacing: "-0.01em" }}>InternLink</span>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+              <img src="/link.png" alt="InternLink" style={{ width: 48, height: 48, objectFit: "contain" }} />
+              <span style={{ fontSize: 22, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>InternLink</span>
             </Link>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(48, 70, 116,0.85)", border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 14, fontWeight: 700, backdropFilter: "blur(8px)" }}>
               {profile?.name?.[0]?.toUpperCase() || "A"}

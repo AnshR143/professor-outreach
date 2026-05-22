@@ -143,7 +143,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
     title: string; color: string; status: string; list: any[]; emptyMsg: string; type: "research" | "internship"
   }) => (
     <div onDrop={e => handleDrop(e, status, type)} onDragOver={handleDragOver}
-      style={{ flex: 1, minWidth: 260, background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", overflow: "hidden" }}>
+      style={{ flex: 1, minWidth: 260, background: "#fff", borderRadius: 14, border: "2.5px solid #304674", overflow: "hidden", boxShadow: "3px 3px 0px #304674" }}>
       <div style={{ padding: "12px 16px", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 8 }}>
         <div style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
         <span style={{ fontSize: 14, fontWeight: 700, color }}>{title}</span>
@@ -165,17 +165,17 @@ export default function StatisticsClient({ researchers: initial, emails, interns
 
   // ── Tab button style helper ───────────────────────────────────────────
   const tabBtn = (active: boolean) => ({
-    padding: "8px 16px", borderRadius: 7, border: "none", cursor: "pointer" as const, fontSize: 13, fontWeight: 500,
+    padding: "8px 16px", borderRadius: 10, border: active ? "2px solid #304674" : "2px solid transparent", cursor: "pointer" as const, fontSize: 13, fontWeight: 700,
     background: active ? "#fff" : "transparent",
-    color: active ? "#0f172a" : "#64748b",
-    boxShadow: active ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+    color: active ? "#304674" : "#64748b",
+    boxShadow: active ? "2px 2px 0px #304674" : "none",
   })
 
   return (
     <div>
       {/* Topbar */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Statistics</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "2.5px solid #304674", background: "#fff" }}>
+        <h1 style={{ fontSize: 18, fontWeight: 800, color: "#304674", margin: 0 }}>Statistics</h1>
         <div style={{ display: "flex", gap: 10 }}>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>
             {userName?.[0]?.toUpperCase() || "A"}
@@ -233,7 +233,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     { label: "Accepted", value: accepted, sub: "Replied positively", pct: `${emailsSent ? Math.round(accepted/emailsSent*100) : 0}% reply rate`, color: "#22c55e" },
                     { label: "Rejected", value: rejectedEmail, sub: `${pending} awaiting reply`, pct: `${emailsSent ? Math.round(rejectedEmail/emailsSent*100) : 0}% rejected`, color: "#ef4444" },
                   ].map((k, i) => (
-                    <div key={i} style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0" }}>
+                    <div key={i} style={{ background: "#fff", borderRadius: 14, padding: 20, border: "2.5px solid #304674", boxShadow: "3px 3px 0px #304674" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                         <div style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>{k.label}</div>
                         <div style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${k.color}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -249,7 +249,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                   ))}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
+                  <div style={{ background: "#fff", borderRadius: 14, border: "2.5px solid #304674", padding: 20, boxShadow: "3px 3px 0px #304674" }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Top Universities</h3>
                     {topUniversities.map((u, i) => (
                       <div key={u.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topUniversities.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -262,7 +262,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     ))}
                     {topUniversities.length === 0 && <div style={{ color: "#94a3b8", fontSize: 13, textAlign: "center", padding: 20 }}>No data yet</div>}
                   </div>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
+                  <div style={{ background: "#fff", borderRadius: 14, border: "2.5px solid #304674", padding: 20, boxShadow: "3px 3px 0px #304674" }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Research Fields</h3>
                     {topFields.map((f, i) => (
                       <div key={f.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topFields.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -280,7 +280,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
             )}
 
             {activeTab === "sankey" && (
-              <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 40, textAlign: "center" }}>
+              <div style={{ background: "#fff", borderRadius: 14, border: "2.5px solid #304674", padding: 40, textAlign: "center", boxShadow: "3px 3px 0px #304674" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🔬</div>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0f172a", margin: "0 0 8px" }}>Research Outreach Funnel</h3>
                 <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>
@@ -342,7 +342,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     { label: "Accepted", value: intAccepted, sub: "Replied positively", pct: `${intEmailsSent ? Math.round(intAccepted/intEmailsSent*100) : 0}% reply rate`, color: "#22c55e" },
                     { label: "Rejected", value: intRejected, sub: `${intPending} awaiting reply`, pct: `${intEmailsSent ? Math.round(intRejected/intEmailsSent*100) : 0}% rejected`, color: "#ef4444" },
                   ].map((k, i) => (
-                    <div key={i} style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0" }}>
+                    <div key={i} style={{ background: "#fff", borderRadius: 14, padding: 20, border: "2.5px solid #304674", boxShadow: "3px 3px 0px #304674" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                         <div style={{ fontSize: 13, fontWeight: 500, color: "#64748b" }}>{k.label}</div>
                         <div style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${k.color}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -358,7 +358,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                   ))}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
+                  <div style={{ background: "#fff", borderRadius: 14, border: "2.5px solid #304674", padding: 20, boxShadow: "3px 3px 0px #304674" }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Top Companies</h3>
                     {topCompanies.map((u, i) => (
                       <div key={u.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topCompanies.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -371,7 +371,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
                     ))}
                     {topCompanies.length === 0 && <div style={{ color: "#94a3b8", fontSize: 13, textAlign: "center", padding: 20 }}>No data yet</div>}
                   </div>
-                  <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20 }}>
+                  <div style={{ background: "#fff", borderRadius: 14, border: "2.5px solid #304674", padding: 20, boxShadow: "3px 3px 0px #304674" }}>
                     <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Top Roles</h3>
                     {topRoles.map((f, i) => (
                       <div key={f.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: i < topRoles.length - 1 ? "1px solid #f1f5f9" : "none" }}>
@@ -389,7 +389,7 @@ export default function StatisticsClient({ researchers: initial, emails, interns
             )}
 
             {activeTab === "sankey" && (
-              <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 40, textAlign: "center" }}>
+              <div style={{ background: "#fff", borderRadius: 14, border: "2.5px solid #304674", padding: 40, textAlign: "center", boxShadow: "3px 3px 0px #304674" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>💼</div>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0f172a", margin: "0 0 8px" }}>Internship Outreach Funnel</h3>
                 <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 20px" }}>Contacts Added → Emailed → Awaiting → Accepted</p>

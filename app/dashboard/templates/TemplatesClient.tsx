@@ -40,7 +40,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
 
   const TemplateCard = ({ t }: { t: Template }) => (
     <div onClick={() => setSelected(t)}
-      style={{ background: selected?.id === t.id ? "#d8e1e8" : "#fff", borderRadius: 10, border: `1px solid ${selected?.id === t.id ? "#98bad5" : "#e2e8f0"}`, padding: 16, cursor: "pointer", transition: "all 0.15s" }}>
+      style={{ background: selected?.id === t.id ? "#d8e1e8" : "#fff", borderRadius: 12, border: `2.5px solid ${selected?.id === t.id ? "#304674" : "#304674"}`, padding: 16, cursor: "pointer", transition: "all 0.15s", boxShadow: selected?.id === t.id ? "3px 3px 0px #304674" : "2px 2px 0px #304674" }}>
       <div style={{ marginBottom: 4 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>{t.name}</div>
       </div>
@@ -57,8 +57,8 @@ export default function TemplatesClient({ templates: initial, userId, userName }
   return (
     <div>
       {/* Topbar */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "1px solid #e2e8f0", background: "#fff" }}>
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Template Generation</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 28px", borderBottom: "2.5px solid #304674", background: "#fff" }}>
+        <h1 style={{ fontSize: 18, fontWeight: 800, color: "#304674", margin: 0 }}>Template Generation</h1>
         <div style={{ display: "flex", gap: 10 }}>
           <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#304674", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700 }}>{userName?.[0]?.toUpperCase() || "A"}</div>
         </div>
@@ -98,7 +98,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
         </div>
 
         {/* Right panel */}
-        <div style={{ width: 320, borderLeft: "1px solid #e2e8f0", background: "#fff", display: "flex", flexDirection: "column" }}>
+        <div style={{ width: 320, borderLeft: "2.5px solid #304674", background: "#fff", display: "flex", flexDirection: "column" }}>
           <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>Personal</div>
@@ -107,7 +107,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <span style={{ fontSize: 12, color: "#94a3b8" }}>{personal.length}/10</span>
               <button onClick={() => setShowCreate(true)}
-                style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 12px", background: "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 12px", background: "#304674", color: "#fff", border: "2px solid #304674", borderRadius: 10, fontSize: 12, fontWeight: 700, cursor: "pointer", boxShadow: "2px 2px 0px rgba(48,70,116,0.5)" }}>
                 + Create Template
               </button>
             </div>
@@ -161,7 +161,7 @@ export default function TemplatesClient({ templates: initial, userId, userName }
       {/* Create template modal */}
       {showCreate && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ background: "#fff", borderRadius: 12, padding: 28, width: 520, maxHeight: "90vh", overflow: "auto" }}>
+          <div style={{ background: "#fff", borderRadius: 16, padding: 28, width: 520, maxHeight: "90vh", overflow: "auto", border: "2.5px solid #304674", boxShadow: "4px 4px 0px #304674" }}>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: "0 0 20px" }}>Create Personal Template</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div>
