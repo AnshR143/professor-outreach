@@ -27,6 +27,9 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
   const [gmailCopied, setGmailCopied] = useState(false)
+  const [manualEmail, setManualEmail] = useState(contact.email || "")
+  const [savingEmail, setSavingEmail] = useState(false)
+  const [emailSaved, setEmailSaved] = useState(false)
   const [notes, setNotes] = useState(contact.notes || "")
   const [savingNotes, setSavingNotes] = useState(false)
   const [notesSaved, setNotesSaved] = useState(false)
@@ -102,8 +105,17 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function useFoundEmail(email: string) {
-    await updateField("email", email)
+  function useFoundEmail(email: string) {
+    setManualEmail(email)
+  }
+
+  async function saveManualEmail() {
+    if (!manualEmail.trim()) return
+    setSavingEmail(true)
+    await updateField("email", manualEmail.trim())
+    setSavingEmail(false)
+    setEmailSaved(true)
+    setTimeout(() => setEmailSaved(false), 3000)
   }
 
   async function generateEmail() {
@@ -165,7 +177,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
   async function openGmail() {
     // Copy body to clipboard so user can paste in Gmail  avoids URL-length limit that causes tab to close
     try { await navigator.clipboard.writeText(body) } catch {}
-    const url = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(contact.email || "") +
+    const url = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(contact.email || manualEmail.trim()) +
       "&su=" + encodeURIComponent(subject)
     window.open(url, "_blank", "noopener,noreferrer")
     setGmailCopied(true)
@@ -397,8 +409,29 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     {contact.contact_name || "Contact"}'s Email Address
                   </div>
-                  <div style={{ fontSize: 12, color: "#94a3b8" }}>
-                    {emailLookup.status === "loading" ? (
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <input
+                      type="email"
+                      value={manualEmail}
+                      onChange={e => setManualEmail(e.target.value)}
+                      placeholder={
+                        emailLookup.status === "loading"
+                          ? "Looking up email…"
+                          : emailLookup.status === "found"
+                            ? emailLookup.email
+                            : "Enter " + (contact.contact_name || "the contact") + "'s email address"
+                      }
+                      style={{ flex: 1, padding: "7px 10px", border: "1px solid #e2e8f0", borderRadius: 6, fontSize: 12, color: "#0f172a", outline: "none", background: "#fff" }}
+                    />
+                    <button onClick={saveManualEmail} disabled={savingEmail || !manualEmail.trim()}
+                      style={{ padding: "7px 12px", background: emailSaved ? "#22c55e" : "#304674", color: "#fff", border: "none", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: savingEmail || !manualEmail.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap", opacity: !manualEmail.trim() ? 0.5 : 1 }}>
+                      {savingEmail ? "Saving..." : emailSaved ? "Saved ✓" : "Save Email"}
+                    </button>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 6 }}>
+                    {manualEmail.trim() ? (
+                      "This email will be pre-filled when you open Gmail. Click Save Email to keep it."
+                    ) : emailLookup.status === "loading" ? (
                       <span style={{ display: "flex", alignItems: "center", gap: 7 }}>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
                         Searching the web for {contact.contact_name}'s email…
@@ -421,7 +454,7 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
                       </span>
                     ) : emailLookup.status === "not_found" ? (
                       <span>
-                        Couldn't find a verified email — add one by clicking Edit above.{" "}
+                        Couldn't find a verified email — type it in above, or{" "}
                         <button onClick={lookupContactEmail} style={{ padding: "2px 8px", fontSize: 11, color: "#304674", background: "transparent", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
                           Retry search
                         </button>
@@ -437,11 +470,11 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
                       <button onClick={lookupContactEmail}
                         style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", fontSize: 12, fontWeight: 600, color: "#304674", background: "#eef2f7", border: "1px solid #c6d3e3", borderRadius: 6, cursor: "pointer" }}>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        Find Email
+                        Find it for me
                       </button>
                     )}
                   </div>
-                  {emailLookup.alternatives && emailLookup.alternatives.length > 0 && (
+                  {!manualEmail.trim() && emailLookup.alternatives && emailLookup.alternatives.length > 0 && (
                     <div style={{ fontSize: 11, color: "#64748b", marginTop: 6 }}>
                       Other candidates:{" "}
                       {emailLookup.alternatives.map((alt, i) => (
