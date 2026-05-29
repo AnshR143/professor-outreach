@@ -50,6 +50,16 @@ function fuzzyMatchFields(query: string): string[] {
   }).slice(0, 8)
 }
 
+function fuzzyMatchRoles(query: string): string[] {
+  const q = query.trim().toLowerCase()
+  if (!q) return TECH_ROLES
+  return TECH_ROLES.filter(r => {
+    const rl = r.toLowerCase()
+    if (rl.includes(q)) return true
+    return rl.split(/[\s/\-&,]+/).some(word => word.startsWith(q))
+  })
+}
+
 // Internal reference list  used only for typo correction, not shown as chips.
 const KNOWN_COMPANIES = [
   "Google","Meta","Apple","Microsoft","Amazon","OpenAI","Anthropic","Stripe",
@@ -115,6 +125,8 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
   const [field, setField] = useState("")
   const [fieldSuggestions, setFieldSuggestions] = useState<string[]>([])
   const [showFieldDrop, setShowFieldDrop] = useState(false)
+  const [roleSuggestions, setRoleSuggestions] = useState<string[]>([])
+  const [showRoleDrop, setShowRoleDrop] = useState(false)
 
   const [specName, setSpecName] = useState("")
   const [specCompany, setSpecCompany] = useState("")
@@ -260,14 +272,34 @@ export default function FindInternshipContactsModal({ onClose }: Props) {
                       )
                     })()}
                   </div>
-                  <div>
+                  <div style={{ position: "relative" }}>
                     <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>
                       Role Filter <span style={{ fontWeight: 400, color: "#94a3b8" }}>(optional)</span>
                     </label>
-                    <select value={companyRole} onChange={e => setCompanyRole(e.target.value)} style={{ ...inp(), background: "#fff" }}>
-                      <option value="">Any role</option>
-                      {TECH_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
+                    <input
+                      value={companyRole}
+                      onChange={e => {
+                        setCompanyRole(e.target.value)
+                        setRoleSuggestions(fuzzyMatchRoles(e.target.value))
+                        setShowRoleDrop(true)
+                      }}
+                      onFocus={() => { setRoleSuggestions(fuzzyMatchRoles(companyRole)); setShowRoleDrop(true) }}
+                      onBlur={() => setTimeout(() => setShowRoleDrop(false), 150)}
+                      placeholder="Type any role, e.g. Software Engineering Intern"
+                      style={inp()}
+                      autoComplete="off"
+                    />
+                    {showRoleDrop && roleSuggestions.length > 0 && (
+                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 50, background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", marginTop: 2, maxHeight: 220, overflowY: "auto" }}>
+                        {roleSuggestions.map(s => (
+                          <button key={s} type="button" onMouseDown={() => { setCompanyRole(s); setShowRoleDrop(false) }}
+                            style={{ width: "100%", padding: "9px 14px", textAlign: "left", background: "transparent", border: "none", borderBottom: "1px solid #f1f5f9", fontSize: 13, color: "#0f172a", cursor: "pointer" }}
+                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "#f8fafc"}
+                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
+                          >{s}</button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
