@@ -6,6 +6,7 @@ import {
   verifyWithAI,
   isUniversityEmail,
   isGenericInbox,
+  computeGroundedConfidence,
   type PageInput,
 } from "@/lib/email/professor-extractor"
 
@@ -584,7 +585,13 @@ export async function POST(req: Request) {
             JSON.stringify({
               email: lower,
               source: "ai_search+verified",
-              confidence: verdict.confidence,
+              confidence: computeGroundedConfidence({
+                email: lower,
+                name: researcherName,
+                expectedDomain,
+                source: "ai_search",
+                aiVerified: true,
+              }),
               evidence: verdict.evidence,
               alternatives: pick.alternatives,
               score: 0,
@@ -602,7 +609,13 @@ export async function POST(req: Request) {
             JSON.stringify({
               email: lower,
               source: "ai_search",
-              confidence: Math.max(40, verdict.confidence || 0),
+              confidence: computeGroundedConfidence({
+                email: lower,
+                name: researcherName,
+                expectedDomain,
+                source: "ai_search",
+                aiVerified: false,
+              }),
               evidence: verdict.evidence || ai.snippet?.slice(0, 200) || "",
               alternatives: pick.alternatives,
               score: 0,

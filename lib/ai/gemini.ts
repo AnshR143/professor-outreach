@@ -1,5 +1,7 @@
 // Gemini AI module
 
+import { EMAIL_STYLE_RULES, HUMAN_TONE_GUIDE, STUDENT_ACCURACY_RULES } from "./email-style"
+
 async function callGemini(apiKey: string, prompt: string): Promise<string> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`
   const res = await fetch(url, {
@@ -223,15 +225,12 @@ export async function generateInternshipEmailGemini(params: {
   userInterests: string[]
   userLevel: string
   userName: string
+  school?: string
   resumeText?: string
   tone: "formal" | "casual" | "enthusiastic"
   apiKey: string
 }): Promise<{ subject: string; body: string }> {
-  const toneGuide = {
-    formal: "professional, respectful, concise",
-    casual: "friendly, conversational, approachable but still professional",
-    enthusiastic: "energetic, passionate, show genuine excitement about the person and company",
-  }[params.tone]
+  const toneGuide = HUMAN_TONE_GUIDE[params.tone]
 
   const personDetails: string[] = []
   if (params.bio) personDetails.push("About them: " + params.bio.slice(0, 400))
@@ -262,9 +261,16 @@ export async function generateInternshipEmailGemini(params: {
   const lines = [
     "Write a cold email FROM a student TO a specific professional, asking about internship opportunities or mentorship.",
     "",
+    "Write in FIRST PERSON (I, my) as the student.",
+    "",
+    EMAIL_STYLE_RULES,
+    "",
+    STUDENT_ACCURACY_RULES,
+    "",
     "STUDENT (write in first person as this person):",
     "- Name: " + params.userName,
     "- Academic Level: " + params.userLevel,
+    params.school ? "- School: " + params.school : "",
     "- Interests: " + params.userInterests.join(", "),
     resumeBlock,
     "",
@@ -274,16 +280,15 @@ export async function generateInternshipEmailGemini(params: {
     "- Role: " + params.role,
     personInfo,
     "",
-    "RULES:",
-    "- Write in FIRST PERSON (I, my) as the student",
-    "- Reference something SPECIFIC about this person (from bio/notes/website)  not generic praise",
-    "- Naturally mention 1-2 skills or projects from the resume lines above that align with their work",
-    "- Under 180 words  short and punchy",
-    "- No generic openers like 'I came across your profile' or 'I admire your work'",
-    "- Sound like a real thoughtful student, not a template",
+    "WHAT THE EMAIL MUST DO (keep each step tight):",
+    "- Open by saying who you are ACCURATELY: your name and real grade level + school as given above. Never call yourself a university/college student unless that is your stated level.",
+    "- Reference something SPECIFIC about this person (from their bio/notes/website) — a real, concrete detail, not generic praise.",
+    "- Connect 1-2 concrete skills or projects from the resume lines above to their work.",
+    "- End with one clear, low-pressure ask (e.g. a 10-15 minute chat).",
+    "- Sign off with the student's name on its own line: " + params.userName,
+    "- Subject line must be specific — name the role or the ask, never generic like 'Internship Inquiry'.",
     "- Tone: " + toneGuide,
-    "- End with a clear low-pressure ask (e.g. a 15-min chat)",
-    "- Use proper paragraph spacing — separate each paragraph with a blank line. Each thought (intro, their work, your fit, the ask, sign-off) should be its own paragraph.",
+    "- Plain text. Separate each paragraph with a blank line; keep paragraphs to 1-2 sentences.",
     "",
     "Respond in EXACTLY this format:",
     "SUBJECT: <subject line>",

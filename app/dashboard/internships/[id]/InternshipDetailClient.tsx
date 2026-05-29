@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { InternshipContact, InternshipEmail } from "@/lib/supabase/types"
@@ -39,8 +39,72 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
   const [savingEdit, setSavingEdit] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
+  // Live email lookup — populated by /api/internships/find-email. We never
+  // fabricate a guess; if the backend can't find one, we say so honestly.
+  type EmailLookup = {
+    status: "idle" | "loading" | "found" | "not_found" | "error"
+    email?: string
+    source?: string
+    confidence?: number
+    alternatives?: string[]
+    evidence?: string
+    error?: string
+  }
+  const [emailLookup, setEmailLookup] = useState<EmailLookup>({ status: "idle" })
+
   const MAX_SUBJECT = 120
   const MAX_BODY = 2000
+
+  async function lookupContactEmail() {
+    if (!contact.contact_name || !contact.company) {
+      setEmailLookup({ status: "error", error: "Add a contact name and company first." })
+      return
+    }
+    setEmailLookup({ status: "loading" })
+    try {
+      const res = await fetch("/api/internships/find-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contactName: contact.contact_name,
+          company: contact.company,
+          role: contact.role,
+          website: contact.website,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setEmailLookup({ status: "error", error: data.error || `HTTP ${res.status}` })
+        return
+      }
+      if (data.email) {
+        setEmailLookup({
+          status: "found",
+          email: data.email,
+          source: data.source,
+          confidence: data.confidence,
+          alternatives: data.alternatives || [],
+          evidence: data.evidence,
+        })
+      } else {
+        setEmailLookup({ status: "not_found", alternatives: data.alternatives || [] })
+      }
+    } catch (e: any) {
+      setEmailLookup({ status: "error", error: e?.message || "Lookup failed" })
+    }
+  }
+
+  // Auto-look-up once on mount when we don't already have an email saved.
+  useEffect(() => {
+    if (!contact.email && contact.contact_name && contact.company && emailLookup.status === "idle") {
+      lookupContactEmail()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function useFoundEmail(email: string) {
+    await updateField("email", email)
+  }
 
   async function generateEmail() {
     setGenerating(true); setGenError("")
@@ -314,15 +378,86 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
               })}
             </div>
 
-            {/* Contact email hint */}
-            {contact.email ? (
-              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                Sending to: <a href={"mailto:" + contact.email} style={{ color: "#304674", textDecoration: "none" }}>{contact.email}</a>
-              </div>
-            ) : (
-              <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 14 }}>No email address on file  add one by clicking Edit above.</div>
-            )}
+            {/* Contact email — found via lookup or entered manually */}
+            <div style={{ marginBottom: 14, padding: "10px 12px", background: "#f8f9fb", border: "1px solid #e2e8f0", borderRadius: 8 }}>
+              {contact.email ? (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+                  <div style={{ fontSize: 12, color: "#64748b", display: "flex", alignItems: "center", gap: 6 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Sending to: <a href={"mailto:" + contact.email} style={{ color: "#304674", textDecoration: "none", fontWeight: 600 }}>{contact.email}</a>
+                  </div>
+                  <button onClick={lookupContactEmail} disabled={emailLookup.status === "loading"}
+                    style={{ padding: "3px 10px", fontSize: 11, color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: 4, cursor: "pointer" }}>
+                    {emailLookup.status === "loading" ? "Searching…" : "Find again"}
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", marginBottom: 6, display: "flex", alignItems: "center", gap: 5 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    {contact.contact_name || "Contact"}'s Email Address
+                  </div>
+                  <div style={{ fontSize: 12, color: "#94a3b8" }}>
+                    {emailLookup.status === "loading" ? (
+                      <span style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+                        Searching the web for {contact.contact_name}'s email…
+                      </span>
+                    ) : emailLookup.status === "found" ? (
+                      <span>
+                        Found <strong style={{ color: "#0f172a" }}>{emailLookup.email}</strong>
+                        {typeof emailLookup.confidence === "number" && (
+                          <span style={{ color: emailLookup.confidence >= 75 ? "#16a34a" : emailLookup.confidence >= 55 ? "#b45309" : "#dc2626" }}> · {Math.round(emailLookup.confidence)}% confidence</span>
+                        )}
+                        {emailLookup.source && <span> · via {emailLookup.source.replace(/[+_]/g, " ")}</span>}
+                        {typeof emailLookup.confidence === "number" && emailLookup.confidence < 75 && (
+                          <span style={{ color: "#b45309" }}> — double-check before sending</span>
+                        )}
+                        {" "}
+                        <button onClick={() => useFoundEmail(emailLookup.email!)}
+                          style={{ marginLeft: 4, padding: "2px 8px", fontSize: 11, fontWeight: 600, color: "#304674", background: "#eef2f7", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
+                          Use this
+                        </button>
+                      </span>
+                    ) : emailLookup.status === "not_found" ? (
+                      <span>
+                        Couldn't find a verified email — add one by clicking Edit above.{" "}
+                        <button onClick={lookupContactEmail} style={{ padding: "2px 8px", fontSize: 11, color: "#304674", background: "transparent", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
+                          Retry search
+                        </button>
+                      </span>
+                    ) : emailLookup.status === "error" ? (
+                      <span>
+                        {emailLookup.error}{" "}
+                        <button onClick={lookupContactEmail} style={{ padding: "2px 8px", fontSize: 11, color: "#304674", background: "transparent", border: "1px solid #c6d3e3", borderRadius: 4, cursor: "pointer" }}>
+                          Retry
+                        </button>
+                      </span>
+                    ) : (
+                      <button onClick={lookupContactEmail}
+                        style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", fontSize: 12, fontWeight: 600, color: "#304674", background: "#eef2f7", border: "1px solid #c6d3e3", borderRadius: 6, cursor: "pointer" }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        Find Email
+                      </button>
+                    )}
+                  </div>
+                  {emailLookup.alternatives && emailLookup.alternatives.length > 0 && (
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 6 }}>
+                      Other candidates:{" "}
+                      {emailLookup.alternatives.map((alt, i) => (
+                        <span key={alt}>
+                          {i > 0 && ", "}
+                          <button onClick={() => useFoundEmail(alt)}
+                            style={{ padding: "1px 6px", fontSize: 11, color: "#304674", background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 4, cursor: "pointer" }}>
+                            {alt}
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Subject */}
             <div style={{ marginBottom: 12 }}>

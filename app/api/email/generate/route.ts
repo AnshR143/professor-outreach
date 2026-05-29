@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { detectApiKey } from "@/lib/ai/detect-key"
 import { callAI } from "@/lib/ai/call"
+import { EMAIL_STYLE_RULES, HUMAN_TONE_GUIDE, STUDENT_ACCURACY_RULES } from "@/lib/ai/email-style"
 
 function parseSubjectBody(raw: string): { subject: string; body: string } {
   const subjectMatch = raw.match(/SUBJECT:\s*(.+)/i)
@@ -20,28 +21,30 @@ function buildProfessorEmailPrompt(p: {
   userInterests: string[]
   userLevel: string
   userName: string
+  school?: string
   resumeText?: string
   tone: "formal" | "casual" | "enthusiastic"
   templateSubject?: string
   templateBody?: string
 }): string {
-  const toneGuide = {
-    formal: "professional, respectful, concise, third-person references",
-    casual: "friendly, conversational, approachable but still professional",
-    enthusiastic: "energetic, passionate, show genuine excitement about their work",
-  }[p.tone]
+  const toneGuide = HUMAN_TONE_GUIDE[p.tone]
+  const schoolLine = p.school ? `\n- School: ${p.school}` : ""
 
   const recentPaper = p.papers[0]
   const resumeSection = p.resumeText
-    ? `STUDENT RESUME (use specific skills, projects, courses, and experience from this to personalize the email — pick the 2-3 most relevant things that match the professor's work):\n---\n${p.resumeText.slice(0, 1800)}\n---`
+    ? `STUDENT BACKGROUND (their resume — pull the 1-2 most relevant CONCRETE things: a specific project, skill, course, or past research that genuinely connects to this professor's work. Use real specifics, not vague claims):\n---\n${p.resumeText.slice(0, 1800)}\n---`
     : ""
 
   if (p.templateBody) {
     return `Fill in an email template that a student (${p.userName}) is sending TO a professor. Write everything in FIRST PERSON ("I", "my", "me") — the student is the author.
 
+${EMAIL_STYLE_RULES}
+
+${STUDENT_ACCURACY_RULES}
+
 STUDENT (the sender):
 - Name: ${p.userName}
-- Academic Level: ${p.userLevel}
+- Academic Level: ${p.userLevel}${schoolLine}
 ${resumeSection}
 
 PROFESSOR (the recipient):
@@ -55,11 +58,11 @@ TEMPLATE BODY:
 ${p.templateBody}
 
 INSTRUCTIONS:
-- Fill in the [bracketed placeholders] using real details
-- Write in FIRST PERSON ("I", "my", "me") — the student is the author
-- Reference SPECIFIC skills/projects from the resume relevant to this professor
-- Keep the tone ${toneGuide}
-- Use proper paragraph spacing — separate each paragraph with a blank line
+- Fill in the [bracketed placeholders] with real, specific details (the actual paper title above, real resume specifics).
+- Reference 1-2 concrete things from the resume that genuinely connect to this professor's work.
+- Keep the template's structure, but if any sentence sounds like AI filler or breaks the rules above, rewrite it so it sounds like a real person.
+- Keep the tone ${toneGuide}.
+- Plain text, no markdown. Separate each paragraph with a blank line.
 
 Respond in EXACTLY this format:
 SUBJECT: <subject line>
@@ -71,9 +74,13 @@ BODY:
 
 CRITICAL: Write in FIRST PERSON from the student's perspective. Use "I", "my", "me".
 
+${EMAIL_STYLE_RULES}
+
+${STUDENT_ACCURACY_RULES}
+
 STUDENT (the sender):
 - Name: ${p.userName}
-- Academic Level: ${p.userLevel}
+- Academic Level: ${p.userLevel}${schoolLine}
 - Interests: ${p.userInterests.join(", ") || "general"}
 ${resumeSection}
 
@@ -85,15 +92,18 @@ ${recentPaper ? `- Recent paper: "${recentPaper.title}"${recentPaper.abstract ? 
 
 TONE: ${toneGuide}
 
-Requirements:
-1. Address: "Dear Professor ${p.professorName.split(" ").pop()},"
-2. Introduce yourself (name, level, field of study)
-3. Reference the professor's specific research area (not generic praise)
-4. Pull 1-2 SPECIFIC things from the resume that connect to their work
-5. Make a clear ask (research opportunity, 15-min call, etc.)
-6. Sign off with: ${p.userName}
-7. Under 200 words, plain text, no markdown
-8. Use proper paragraph spacing — separate each paragraph with a blank line (two newlines). Each distinct thought (intro, research reference, your connection, the ask, sign-off) should be its own paragraph.
+WHAT THE EMAIL MUST DO (keep each step tight — one or two short sentences):
+1. Greeting: "Dear Professor ${p.professorName.split(" ").pop()},"
+2. Say who you are in one sentence, ACCURATELY: your name and your real grade level + school exactly as given above (e.g. a high-school junior at their named school — never call yourself a university/college student unless that is your stated level).
+3. Reference the professor's SPECIFIC work — name the actual paper or topic above and say one genuine, concrete thing about it: an idea that caught your attention or a real question it raised. No empty praise.
+4. Connect YOUR own concrete experience (from the resume above) to their work — show why you'd actually be useful, not just interested.
+5. End with one clear, specific, low-pressure ask (e.g. whether they're taking students in their lab this term, or a 10-15 minute chat).
+6. Sign off with your name on its own line: ${p.userName}
+
+ALSO:
+- Subject line must be specific — name the topic or the ask. Never generic like "Research Inquiry" or "Prospective Student".
+- Plain text, no markdown, no bullet points inside the email.
+- Separate each paragraph with a blank line. Keep paragraphs to 1-2 sentences.
 
 Respond in EXACTLY this format:
 SUBJECT: <subject line>
@@ -121,7 +131,7 @@ export async function POST(req: Request) {
     .single()
   const profile = profileRaw as {
     ai_api_key?: string; name?: string; academic_level?: string
-    resume_text?: string; interests?: string[]
+    institution?: string; resume_text?: string; interests?: string[]
   } | null
 
   if (!researcher) return NextResponse.json({ error: "Researcher not found" }, { status: 404 })
@@ -155,6 +165,7 @@ export async function POST(req: Request) {
     userInterests: profile?.interests || [],
     userLevel: profile?.academic_level || "Student",
     userName: profile?.name || "Student",
+    school: profile?.institution || undefined,
     resumeText: profile?.resume_text || undefined,
     tone: (tone || "formal") as "formal" | "casual" | "enthusiastic",
     templateSubject: templateSubject || undefined,

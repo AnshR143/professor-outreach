@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { generateInternshipEmailGemini } from "@/lib/ai/gemini"
 import { detectApiKey } from "@/lib/ai/detect-key"
 import { callAI } from "@/lib/ai/call"
+import { EMAIL_STYLE_RULES, HUMAN_TONE_GUIDE, STUDENT_ACCURACY_RULES } from "@/lib/ai/email-style"
 import { NextResponse } from "next/server"
 
 function parseSubjectBody(raw: string): { subject: string; body: string } {
@@ -25,17 +26,15 @@ function buildUniversalPrompt(p: {
   userInterests: string[]
   userLevel: string
   userName: string
+  school?: string
   resumeText?: string
   tone: "formal" | "casual" | "enthusiastic"
 }): string {
-  const toneGuide = {
-    formal: "professional, respectful, concise",
-    casual: "friendly, conversational, approachable but still professional",
-    enthusiastic: "energetic, passionate, show genuine excitement about the company and role",
-  }[p.tone]
+  const toneGuide = HUMAN_TONE_GUIDE[p.tone]
+  const schoolLine = p.school ? `\n- School: ${p.school}` : ""
 
   const resumeSection = p.resumeText
-    ? `STUDENT RESUME (pick the 2-3 most relevant skills/projects/experiences for this role):\n---\n${p.resumeText.slice(0, 1800)}\n---`
+    ? `STUDENT BACKGROUND (their resume — pull the 1-2 most relevant CONCRETE things: a specific project, skill, or experience that directly relates to this role):\n---\n${p.resumeText.slice(0, 1800)}\n---`
     : ""
 
   const contextLines = [
@@ -50,9 +49,13 @@ function buildUniversalPrompt(p: {
 
 CRITICAL: Write in FIRST PERSON from the student's perspective. Use "I", "my", "me".
 
+${EMAIL_STYLE_RULES}
+
+${STUDENT_ACCURACY_RULES}
+
 STUDENT (the sender):
 - Name: ${p.userName}
-- Academic Level: ${p.userLevel}
+- Academic Level: ${p.userLevel}${schoolLine}
 - Interests: ${p.userInterests.join(", ") || "general"}
 ${resumeSection}
 
@@ -64,15 +67,18 @@ ${contextLines}
 
 TONE: ${toneGuide}
 
-Requirements:
-1. Address: "Dear ${p.contactName || "Hiring Manager"},"
-2. Introduce yourself (name, level, school if in resume)
-3. Mention the specific role and why THIS company/role excites you
-4. Pull 1-2 SPECIFIC things from the resume (a project, skill, course) that directly relate to this role
-5. Make a clear ask (internship opportunity, 15-min call, etc.)
-6. Sign off with: ${p.userName}
-7. Under 200 words, plain text, no markdown, no bullet points in body
-8. Use proper paragraph spacing — separate each paragraph with a blank line (two newlines). Each distinct thought (intro, company interest, your qualifications, the ask, sign-off) should be its own paragraph.
+WHAT THE EMAIL MUST DO (keep each step tight — one or two short sentences):
+1. Greeting: "Dear ${p.contactName || "Hiring Manager"},"
+2. Say who you are in one sentence, ACCURATELY: your name and your real grade level + school exactly as given above (e.g. a high-school junior at their named school — never call yourself a university/college student unless that is your stated level).
+3. Name the specific role and one concrete, genuine reason this company/role fits you — not generic excitement.
+4. Connect 1-2 CONCRETE things from the resume (a project, skill, course) that directly relate to this role.
+5. End with one clear, specific, low-pressure ask (e.g. whether they're taking interns, or a 10-15 minute chat).
+6. Sign off with your name on its own line: ${p.userName}
+
+ALSO:
+- Subject line must be specific — name the role or the ask. Never generic like "Internship Inquiry".
+- Plain text, no markdown, no bullet points inside the email.
+- Separate each paragraph with a blank line. Keep paragraphs to 1-2 sentences.
 
 Respond in EXACTLY this format:
 SUBJECT: <subject line>
@@ -105,7 +111,7 @@ export async function POST(req: Request) {
     .single()
   const profile = profileRaw as {
     ai_api_key?: string; name?: string; academic_level?: string
-    resume_text?: string; interests?: string[]
+    institution?: string; resume_text?: string; interests?: string[]
   } | null
 
   if (!contact) return NextResponse.json({ error: "Contact not found" }, { status: 404 })
@@ -137,6 +143,7 @@ export async function POST(req: Request) {
         userInterests: profile?.interests || [],
         userLevel: profile?.academic_level || "Student",
         userName: profile?.name || "Student",
+        school: profile?.institution || undefined,
         resumeText: profile?.resume_text || undefined,
         tone: (tone || "formal") as "formal" | "casual" | "enthusiastic",
         apiKey,
@@ -155,6 +162,7 @@ export async function POST(req: Request) {
         userInterests: profile?.interests || [],
         userLevel: profile?.academic_level || "Student",
         userName: profile?.name || "Student",
+        school: profile?.institution || undefined,
         resumeText: profile?.resume_text || undefined,
         tone: (tone || "formal") as "formal" | "casual" | "enthusiastic",
       })

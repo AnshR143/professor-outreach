@@ -415,9 +415,12 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     <span>
                       Found <strong style={{ color: "#0f172a" }}>{emailLookup.email}</strong>
                       {typeof emailLookup.confidence === "number" && (
-                        <span> · {Math.round(emailLookup.confidence)}% confidence</span>
+                        <span style={{ color: emailLookup.confidence >= 75 ? "#16a34a" : emailLookup.confidence >= 55 ? "#b45309" : "#dc2626" }}> · {Math.round(emailLookup.confidence)}% confidence</span>
                       )}
                       {emailLookup.source && <span> · via {emailLookup.source.replace(/[+_]/g, " ")}</span>}
+                      {typeof emailLookup.confidence === "number" && emailLookup.confidence < 75 && (
+                        <span style={{ color: "#b45309" }}> — double-check before sending</span>
+                      )}
                       {" "}
                       <button
                         onClick={() => useFoundEmail(emailLookup.email!)}

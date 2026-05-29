@@ -259,6 +259,67 @@ function nameMatchScore(email: string, name: string): { score: number; reasons: 
   return { score, reasons }
 }
 
+// ─── Grounded confidence ─────────────────────────────────────────────────────
+
+/**
+ * Produce a 0–100 confidence we can actually defend, instead of echoing the
+ * LLM's self-reported number (which trends to ~95 even when it's wrong).
+ *
+ * The score is built from observable signals:
+ *   • how we found the address (a verified faculty page beats an LLM guess),
+ *   • whether the domain matches the school we expected,
+ *   • whether the local-part actually looks like this person's name.
+ *
+ * Hard caps encode "we are not allowed to look near-certain here": an address
+ * the model produced but that we never saw on a real page can never read as a
+ * sure thing, and a domain/name mismatch pulls the ceiling down further.
+ */
+export function computeGroundedConfidence(opts: {
+  email: string
+  name: string
+  expectedDomain?: string
+  source: BestPick["source"]
+  /** Did an AI verifier independently judge this to be the professor? */
+  aiVerified?: boolean
+}): number {
+  const { email, name, expectedDomain, source, aiVerified } = opts
+  const domain = getDomain(email)
+
+  // Base: page-corroborated sources start higher than an unseen LLM guess.
+  let conf: number
+  if (source === "scraped+verified") conf = 55
+  else if (source === "scraped") conf = 35
+  else if (source === "ai_search") conf = aiVerified ? 35 : 22
+  else return 0 // "none"
+
+  // Domain corroboration.
+  let domainMatches = false
+  if (expectedDomain) {
+    const exp = expectedDomain.toLowerCase().replace(/^www\./, "")
+    domainMatches = domain === exp || domain.endsWith("." + exp)
+    conf += domainMatches ? 25 : -10
+  } else {
+    // We couldn't guess the school's domain; a university-looking TLD is only
+    // a mild positive, and a non-university domain is a real warning sign.
+    conf += isUniversityEmail(email) ? 5 : -15
+  }
+
+  // Name corroboration: does the local-part actually look like this person?
+  const nm = nameMatchScore(email, name)
+  if (nm.score >= 6) conf += 18 // last name present (strong)
+  else if (nm.score >= 4) conf += 10 // first name present
+  else if (nm.score >= 1) conf += 3 // generically person-shaped
+  else conf -= 12 // no name signal at all
+
+  // Ceilings. These can only lower the number, never raise it.
+  if (source === "ai_search") conf = Math.min(conf, aiVerified ? 68 : 50)
+  if (expectedDomain && !domainMatches) conf = Math.min(conf, 60)
+  if (nm.score === 0) conf = Math.min(conf, 55)
+  if (source === "scraped") conf = Math.min(conf, 80)
+
+  return Math.max(5, Math.min(96, Math.round(conf)))
+}
+
 // ─── Email extraction with surrounding context ───────────────────────────────
 
 /** Strip HTML tags + decode common entities into plain text. */
@@ -568,7 +629,12 @@ export async function pickBestProfessorEmail(opts: {
       email: ranked[0].c.email,
       score: ranked[0].score,
       source: "scraped",
-      confidence: Math.min(80, ranked[0].score * 5),
+      confidence: computeGroundedConfidence({
+        email: ranked[0].c.email,
+        name: opts.name,
+        expectedDomain: opts.expectedDomain,
+        source: "scraped",
+      }),
       alternatives: ranked.slice(1, 4).map((r) => r.c.email),
     }
   }
@@ -607,8 +673,14 @@ export async function pickBestProfessorEmail(opts: {
     return {
       email: winner.c.email,
       score: winner.score,
-            source: "scraped+verified",
-      confidence: verdict.confidence,
+      source: "scraped+verified",
+      confidence: computeGroundedConfidence({
+        email: winner.c.email,
+        name: opts.name,
+        expectedDomain: opts.expectedDomain,
+        source: "scraped+verified",
+        aiVerified: true,
+      }),
       evidence: verdict.evidence,
       alternatives: verifyPicks
         .filter((_, i) => i !== bestIdx)
@@ -622,7 +694,12 @@ export async function pickBestProfessorEmail(opts: {
     email: ranked[0].c.email,
     score: ranked[0].score,
     source: "scraped",
-    confidence: Math.min(50, ranked[0].score * 4),
+    confidence: computeGroundedConfidence({
+      email: ranked[0].c.email,
+      name: opts.name,
+      expectedDomain: opts.expectedDomain,
+      source: "scraped",
+    }),
     alternatives: ranked.slice(1, 4).map((r) => r.c.email),
   }
 }

@@ -12,10 +12,12 @@ interface Props {
   profile: Profile | null
   researchers: Researcher[]
   activities: Activity[]
+  /** Email-sent activities from the last ~2 weeks, for the Weekly Activity chart. */
+  weeklyOutreach: Pick<Activity, "type" | "created_at">[]
   emails: Email[]
 }
 
-export default function DashboardClient({ profile, researchers, activities, emails }: Props) {
+export default function DashboardClient({ profile, researchers, activities, weeklyOutreach, emails }: Props) {
   const [showFind, setShowFind] = useState(false)
 
   const emailsSent = researchers.filter(r => ["emailed", "accepted", "rejected"].includes(r.email_status || "")).length
@@ -32,7 +34,9 @@ export default function DashboardClient({ profile, researchers, activities, emai
     monday.setDate(now.getDate() - mondayOffset)
     monday.setHours(0, 0, 0, 0)
 
-    activities.forEach(a => {
+    // Only outreach (emails sent) counts here — discovery/status/note actions
+    // are excluded so the chart matches its "Outreach actions this week" label.
+    weeklyOutreach.forEach(a => {
       const d = new Date(a.created_at)
       if (d >= monday) {
         const idx = d.getDay() === 0 ? 6 : d.getDay() - 1

@@ -362,7 +362,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div ref={containerRef} style={{ background: "#fff", color: "#304674", overflowX: "hidden", position: "relative" }}>
+    <div ref={containerRef} style={{ background: "#fff", color: "#304674", overflowX: "hidden", position: "relative", fontFamily: '"DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .marquee-track { animation: marquee 35s linear infinite; }
