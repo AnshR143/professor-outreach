@@ -1,5 +1,5 @@
 "use client"
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion"
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion"
 import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react"
 import { useRef, useState, useCallback, useEffect } from "react"
 import Link from "next/link"
@@ -32,6 +32,43 @@ function FloatingStar({ top, left, size = 40, delay = 0, rotation = 0, speed = 1
         <img src="/star.png.png" alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
       </motion.div>
     </motion.div>
+  )
+}
+
+/**
+ * Scroll-reveal wrapper: content drifts up + fades in the first time it
+ * scrolls into view. Disabled for users with prefers-reduced-motion.
+ */
+function Reveal({ children, delay = 0, y = 44 }: { children: React.ReactNode; delay?: number; y?: number }) {
+  const reduce = useReducedMotion()
+  if (reduce) return <>{children}</>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+/**
+ * Hero parallax: as the hero scrolls out, its content drifts down slower
+ * than the page and gently fades — classic depth effect against the
+ * marquee band that slides up over it.
+ */
+function HeroParallax({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
+  const y = useTransform(scrollYProgress, [0, 1], [0, 140])
+  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.3])
+  if (disabled) return <div>{children}</div>
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <motion.div style={{ y, opacity, willChange: "transform" }}>{children}</motion.div>
+    </div>
   )
 }
 
@@ -337,6 +374,14 @@ export default function LandingPage() {
   const yMed     = useTransform(scrollYSpring, [0, 1], [0, -400])
   const yFast    = useTransform(scrollYSpring, [0, 1], [0, -700])
   const yReverse = useTransform(scrollYSpring, [0, 1], [0, 350])
+  const reduceMotion = useReducedMotion()
+
+  // CTA-section parallax: cloud and wolf drift at opposing speeds while the
+  // section crosses the viewport.
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress: ctaProgress } = useScroll({ target: ctaRef, offset: ["start end", "end start"] })
+  const wolfY     = useTransform(ctaProgress, [0, 1], [70, -70])
+  const ctaCloudY = useTransform(ctaProgress, [0, 1], [110, -150])
 
   useEffect(() => {
     const supabase = createClient()
@@ -439,23 +484,31 @@ export default function LandingPage() {
 
       <Navbar />
 
-      {/* SECTION 1 — Hero */}
-      <Feature1
-        title="Our mission is to put opportunity within reach of every student."
-        description=""
-        youtubeId="RxeBAETeMZw"
-        buttonPrimary={{ label: "Get started free", href: "/signup" }}
-        buttonSecondary={{ label: "See how it works", href: "#carousel" }}
-      />
+      {/* SECTION 1 — Hero (parallax: drifts slower than scroll + fades out) */}
+      <HeroParallax disabled={isMobile || !!reduceMotion}>
+        <Feature1
+          title="Our mission is to put opportunity within reach of every student."
+          description=""
+          youtubeId="RxeBAETeMZw"
+          buttonPrimary={{ label: "Get started free", href: "/signup" }}
+          buttonSecondary={{ label: "See how it works", href: "#carousel" }}
+        />
+      </HeroParallax>
 
-      {/* University marquee */}
-      <UniversityMarquee />
+      {/* University marquee — slides up over the fading hero */}
+      <div style={{ position: "relative", zIndex: 2 }}>
+        <Reveal y={28}>
+          <UniversityMarquee />
+        </Reveal>
+      </div>
 
       {/* SECTION 2 — 3D Carousel */}
-      <SectionCarousel ySlow={ySlow} yReverse={yReverse} isMobile={isMobile} />
+      <Reveal y={56}>
+        <SectionCarousel ySlow={ySlow} yReverse={yReverse} isMobile={isMobile} />
+      </Reveal>
 
       {/* SECTION 3 — CTA with Wolf */}
-      <div className="landing-cta-section" style={{
+      <div ref={ctaRef} className="landing-cta-section" style={{
         position: "relative", overflow: "hidden",
         background: "radial-gradient(ellipse at 50% 50%, rgba(48,70,116,0.6) 0%, transparent 70%), #0a0f1e",
         padding: "120px 40px", display: "flex", alignItems: "center", justifyContent: "center",
@@ -465,12 +518,14 @@ export default function LandingPage() {
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.7, zIndex: 0, pointerEvents: "none" }}
           src="/videos/2ndvideo.mp4" />
         
-        {/* Cloud to the left of the wolf */}
+        {/* Cloud to the left of the wolf — scroll parallax, opposing drift */}
         <motion.img src="/cloud-3.png"
           className="hidden lg:block absolute left-[-2%] top-[15%] w-[480px] opacity-70"
-          style={{ willChange: "transform", zIndex: 210 }}
+          style={{ willChange: "transform", zIndex: 210, y: reduceMotion ? 0 : ctaCloudY }}
           animate={{ x: [0, 15, 0] }} transition={{ duration: 14, repeat: Infinity }} />
 
+        {/* Outer wrapper = scroll parallax; inner motion.div keeps the float loop */}
+        <motion.div style={{ y: isMobile || reduceMotion ? 0 : wolfY, zIndex: 1, margin: "0 auto", flexShrink: 0, willChange: "transform" }}>
         <motion.div className="landing-wolf" animate={{ y: [0, -15, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           style={{ width: "min(500px, 60vw)", position: "relative", flexShrink: 0, zIndex: 1, margin: "0 auto", willChange: "transform" }}>
           {/* Wrapper div holds the shadow so filter is NOT on the animated element — prevents GPU compositing box artifact */}
@@ -489,10 +544,13 @@ export default function LandingPage() {
             <p style={{ fontSize: "clamp(8px, 1vw, 12px)", color: "#4a5568", lineHeight: 1.35, margin: "4px 0 0", maxWidth: "85%", fontWeight: 700, opacity: 0.8 }}>Join 500+ students landing positions.</p>
           </div>
         </motion.div>
+        </motion.div>
       </div>
 
       {/* SECTION 4 — Student Endorsements */}
-      <TestimonialsMarquee />
+      <Reveal y={36}>
+        <TestimonialsMarquee />
+      </Reveal>
 
       {/* Footer */}
       <div className="landing-footer" style={{ background: "#d8e1e8", borderTop: "2px solid #b2cbde", padding: "28px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
