@@ -6,9 +6,9 @@ import type { Profile } from "@/lib/supabase/types"
 import { createClient } from "@/lib/supabase/client"
 import { ACADEMIC_LEVELS } from "@/lib/utils"
 
-interface Props { profile: Profile | null; hasApiKey: boolean }
+interface Props { profile: Profile | null }
 
-export default function SettingsClient({ profile: initial, hasApiKey: initialHasKey }: Props) {
+export default function SettingsClient({ profile: initial }: Props) {
   const router = useRouter()
   const supabase = createClient()
   const [saving, setSaving] = useState(false)
@@ -17,14 +17,6 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
   const [uploadStatus, setUploadStatus] = useState<{ ok: boolean; msg: string } | null>(null)
   const [resetting, setResetting] = useState(false)
   const [resetDone, setResetDone] = useState(false)
-
-  // AI API key
-  const [apiKey, setApiKey] = useState("")
-  const [hasKey, setHasKey] = useState(initialHasKey)
-  const [savingKey, setSavingKey] = useState(false)
-  const [keySaved, setKeySaved] = useState(false)
-  const [clearingKey, setClearingKey] = useState(false)
-
 
   const [form, setForm] = useState({
     name: initial?.name || "",
@@ -44,35 +36,6 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
     setSaving(false)
     router.refresh()
   }
-
-  async function saveApiKey() {
-    if (!apiKey.trim()) return
-    setSavingKey(true)
-    try {
-      const res = await fetch("/api/settings/api-key", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: apiKey.trim() }),
-      })
-      if (res.ok) {
-        setHasKey(true)
-        setApiKey("")
-        setKeySaved(true)
-        setTimeout(() => setKeySaved(false), 3000)
-      }
-    } catch {}
-    setSavingKey(false)
-  }
-
-  async function clearApiKey() {
-    setClearingKey(true)
-    try {
-      const res = await fetch("/api/settings/api-key", { method: "DELETE" })
-      if (res.ok) { setHasKey(false); setApiKey("") }
-    } catch {}
-    setClearingKey(false)
-  }
-
 
   async function handleReset() {
     if (!confirm("This will permanently delete all your researchers, emails, and activities. Are you sure?")) return
@@ -156,7 +119,7 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
       <main style={{ flex: 1, overflowY: "auto", background: "#f8f9fb" }}>
         <div style={{ padding: "24px 32px", maxWidth: 800 }}>
           <h1 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>Settings</h1>
-          <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 28px" }}>Manage your profile, API keys, and preferences</p>
+          <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 28px" }}>Manage your profile and preferences</p>
 
           {saved && (
             <div style={{ background: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: 8, padding: "10px 16px", color: "#15803d", fontSize: 14, marginBottom: 20 }}>
@@ -207,93 +170,6 @@ export default function SettingsClient({ profile: initial, hasApiKey: initialHas
               </label>
             </div>
           </Section>
-
-          <Section title="AI API Key">
-            <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#0369a1", marginBottom: 16 }}>
-              <strong>Used to generate personalized emails.</strong> Your key is stored securely server-side and never sent to your browser.
-            </div>
-
-            {hasKey && (
-              <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: "12px 16px", marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span style={{ fontSize: 13, color: "#15803d", fontWeight: 600 }}>AI key is set and active</span>
-                </div>
-                <button onClick={clearApiKey} disabled={clearingKey}
-                  style={{ padding: "5px 10px", background: "transparent", color: "#94a3b8", border: "none", borderRadius: 6, fontSize: 12, fontWeight: 400, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>
-                  {clearingKey ? "Clearing..." : "Remove Key"}
-                </button>
-              </div>
-            )}
-
-            {keySaved && (
-              <div style={{ background: "#dcfce7", border: "1px solid #bbf7d0", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#15803d", marginBottom: 12 }}>
-                AI key saved securely.
-              </div>
-            )}
-
-            <Field label={hasKey ? "Replace with a new key" : "Paste your API key"}>
-              <div style={{ display: "flex", gap: 8 }}>
-                <input
-                  type="text"
-                  value={apiKey}
-                  onChange={e => setApiKey(e.target.value)}
-                  placeholder="gsk_... · AIza... · sk-or-... · csk-... · xai-... · pplx-..."
-                  autoComplete="one-time-code"
-                  name="api_key_confidential"
-                  style={{ flex: 1, padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#0f172a", outline: "none", background: "#f8f9fb" }}
-                />
-                <button onClick={saveApiKey} disabled={savingKey || !apiKey.trim()}
-                  style={{ padding: "10px 20px", background: savingKey || !apiKey.trim() ? "#e2e8f0" : "#304674", color: savingKey || !apiKey.trim() ? "#94a3b8" : "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: savingKey || !apiKey.trim() ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-                  {savingKey ? "Saving..." : "Save Key"}
-                </button>
-              </div>
-              <div style={{ marginTop: 14 }}>
-                <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-                  Supported providers — paste any key below:
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
-                  {[
-                    { name: "Groq", badge: "gsk_...", free: true,  url: "https://console.groq.com/keys" },
-                    { name: "OpenRouter", badge: "sk-or-...", free: true, url: "https://openrouter.ai/keys" },
-                    { name: "Cerebras", badge: "csk-...", free: true, url: "https://cloud.cerebras.ai" },
-                    { name: "xAI (Grok)", badge: "xai-...", free: false, url: "https://console.x.ai" },
-                    { name: "Perplexity", badge: "pplx-...", free: false, url: "https://www.perplexity.ai/settings/api" },
-                    { name: "Fireworks AI", badge: "fw-...", free: true, url: "https://fireworks.ai/account/api-keys" },
-                    { name: "OpenAI", badge: "sk-...", free: false, url: "https://platform.openai.com/api-keys" },
-                    { name: "Anthropic", badge: "sk-ant-...", free: false, url: "https://console.anthropic.com/settings/keys" },
-                  ].map(p => (
-                    <a
-                      key={p.name}
-                      href={p.url}
-                      target="_blank"
-                      rel="noopener"
-                      style={{
-                        display: "flex", alignItems: "center", justifyContent: "space-between",
-                        padding: "7px 10px", background: "#f8fafc",
-                        border: "1px solid #e2e8f0", borderRadius: 7,
-                        textDecoration: "none", gap: 6,
-                      }}
-                    >
-                      <div>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a" }}>{p.name}</div>
-                        <div style={{ fontSize: 11, color: "#94a3b8", fontFamily: "monospace" }}>{p.badge}</div>
-                      </div>
-                      <span style={{
-                        fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 4,
-                        background: p.free ? "#dcfce7" : "#f1f5f9",
-                        color: p.free ? "#15803d" : "#64748b",
-                        whiteSpace: "nowrap",
-                      }}>
-                        {p.free ? "FREE" : "PAID"}
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </Field>
-          </Section>
-
 
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
             <button onClick={save} disabled={saving}

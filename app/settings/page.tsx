@@ -16,11 +16,11 @@ export default async function SettingsPage() {
 
   const profile = profileRaw as Record<string, unknown> | null
 
-  const hasApiKey = !!(profile?.ai_api_key)
+  // Strip server secrets before sending the profile to the client.
   if (profile) {
     delete profile.ai_api_key
     delete profile.apollo_api_key
   }
 
-  return <SettingsClient profile={profile as any} hasApiKey={hasApiKey} />
+  return <SettingsClient profile={profile as any} />
 }

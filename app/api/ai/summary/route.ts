@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { callAI } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 export async function POST(req: Request) {
   const supabase = await createClient()
@@ -9,12 +10,12 @@ export async function POST(req: Request) {
 
   const { data: profileRaw } = await supabase
     .from("profiles")
-    .select("ai_api_key, name")
+    .select("name")
     .eq("user_id", user.id)
     .single()
-  const profile = profileRaw as { ai_api_key?: string; name?: string } | null
+  const profile = profileRaw as { name?: string } | null
 
-  const apiKey = profile?.ai_api_key || process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
+  const apiKey = getAiKey()
   if (!apiKey) return NextResponse.json({ summary: "" })
 
   const body = await req.json()

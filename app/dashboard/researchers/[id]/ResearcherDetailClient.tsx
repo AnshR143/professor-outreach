@@ -161,7 +161,7 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
       })
       const data = await res.json()
       if (!res.ok || data.error) {
-        setEmailError(data.error || "Failed to generate email. Check your API key in Settings.")
+        setEmailError(data.error || "Failed to generate email. Please try again in a moment.")
       } else {
         if (data.subject) setEmailSubject(data.subject)
         if (data.body) setEmailBody(data.body)
@@ -413,12 +413,16 @@ export default function ResearcherDetailClient({ researcher, papers, emails: ini
                     <span>Searching the web for {researcher.name}'s email…</span>
                   ) : emailLookup.status === "found" ? (
                     <span>
-                      Found <strong style={{ color: "#0f172a" }}>{emailLookup.email}</strong>
-                      {typeof emailLookup.confidence === "number" && (
+                      {emailLookup.source === "pattern_guess" ? (
+                        <>Couldn't find it published online. Best guess: <strong style={{ color: "#0f172a" }}>{emailLookup.email}</strong><span style={{ color: "#dc2626" }}> · unverified — based on the school's common email format</span></>
+                      ) : (
+                        <>Found <strong style={{ color: "#0f172a" }}>{emailLookup.email}</strong></>
+                      )}
+                      {emailLookup.source !== "pattern_guess" && typeof emailLookup.confidence === "number" && (
                         <span style={{ color: emailLookup.confidence >= 75 ? "#16a34a" : emailLookup.confidence >= 55 ? "#b45309" : "#dc2626" }}> · {Math.round(emailLookup.confidence)}% confidence</span>
                       )}
-                      {emailLookup.source && <span> · via {emailLookup.source.replace(/[+_]/g, " ")}</span>}
-                      {typeof emailLookup.confidence === "number" && emailLookup.confidence < 75 && (
+                      {emailLookup.source && emailLookup.source !== "pattern_guess" && <span> · via {emailLookup.source.replace(/[+_]/g, " ")}</span>}
+                      {emailLookup.source !== "pattern_guess" && typeof emailLookup.confidence === "number" && emailLookup.confidence < 75 && (
                         <span style={{ color: "#b45309" }}> — double-check before sending</span>
                       )}
                       {" "}

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { generateInternshipEmailGemini } from "@/lib/ai/gemini"
 import { detectApiKey } from "@/lib/ai/detect-key"
 import { callAI } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 import { EMAIL_STYLE_RULES, HUMAN_TONE_GUIDE, STUDENT_ACCURACY_RULES } from "@/lib/ai/email-style"
 import { NextResponse } from "next/server"
 
@@ -110,17 +111,17 @@ export async function POST(req: Request) {
     .eq("user_id", user.id)
     .single()
   const profile = profileRaw as {
-    ai_api_key?: string; name?: string; academic_level?: string
+    name?: string; academic_level?: string
     institution?: string; resume_text?: string; interests?: string[]
   } | null
 
   if (!contact) return NextResponse.json({ error: "Contact not found" }, { status: 404 })
 
-  const apiKey = profile?.ai_api_key || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY
+  const apiKey = getAiKey()
   if (!apiKey) {
     return NextResponse.json(
-      { error: "No API key found. Add your API key in Settings." },
-      { status: 500 }
+      { error: "AI service is temporarily unavailable. Please try again in a moment." },
+      { status: 503 }
     )
   }
 

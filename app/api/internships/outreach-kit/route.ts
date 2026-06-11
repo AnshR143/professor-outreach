@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { detectApiKey } from "@/lib/ai/detect-key"
 import { callAIJson } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 interface OutreachKit {
   subject: string
@@ -93,15 +94,15 @@ export async function POST(req: Request) {
     .eq("user_id", user.id)
     .single()
   const profile = profileRaw as {
-    ai_api_key?: string; name?: string; academic_level?: string
+    name?: string; academic_level?: string
     resume_text?: string; interests?: string[]
   } | null
 
-  const apiKey = profile?.ai_api_key || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY
+  const apiKey = getAiKey()
   if (!apiKey) {
     return NextResponse.json(
-      { error: "No AI API key configured. Add one in Settings." },
-      { status: 500 }
+      { error: "AI service is temporarily unavailable. Please try again in a moment." },
+      { status: 503 }
     )
   }
 

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { detectApiKey } from "@/lib/ai/detect-key"
 import { callAIJson } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 interface BizInput { name: string; type: string; address: string }
 type ScoreRow = { score: number; reason: string; industry: string }
@@ -39,9 +40,6 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    const { data: profileRaw } = await supabase
-      .from("profiles").select("ai_api_key").eq("user_id", user.id).single() as { data: { ai_api_key: string | null } | null }
-
     const body = await request.json()
     const { businesses, industry = "technology" } = body as {
       businesses: BizInput[]
@@ -53,7 +51,7 @@ export async function POST(request: Request) {
     }
 
     const capped = businesses.slice(0, 50)
-    const apiKey = profileRaw?.ai_api_key || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY
+    const apiKey = getAiKey()
 
     let scores: ScoreRow[] = capped.map(() => ({ score: 5, reason: "Local business", industry }))
 

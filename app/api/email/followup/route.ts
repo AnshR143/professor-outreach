@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { callAI } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 function parseSubjectBody(raw: string): { subject: string; body: string } {
   const subjectMatch = raw.match(/SUBJECT:\s*(.+)/i)
@@ -18,12 +19,10 @@ export async function POST(req: Request) {
 
   const { researcherId, originalBody, daysSince } = await req.json()
   const { data: researcher } = await supabase.from("researchers").select("name").eq("id", researcherId).single()
-  const { data: profileRaw } = await supabase.from("profiles").select("ai_api_key").eq("user_id", user.id).single()
-  const profile = profileRaw as { ai_api_key?: string } | null
 
-  const apiKey = profile?.ai_api_key || process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
+  const apiKey = getAiKey()
   if (!apiKey) {
-    return NextResponse.json({ error: "No AI API key configured. Add your API key in Settings." }, { status: 500 })
+    return NextResponse.json({ error: "AI service is temporarily unavailable. Please try again in a moment." }, { status: 503 })
   }
 
   const professorName = researcher?.name || "Professor"

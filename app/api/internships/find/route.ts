@@ -1,6 +1,7 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { detectApiKey } from "@/lib/ai/detect-key"
 import { callAI } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 // ── InternLink Partner organisations ─────────────────────────────────────────
 // Partners appear at the top of results when the search query matches their keywords.
@@ -308,11 +309,10 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ type: "error", message: "Rate limit exceeded: You can only add 50 contacts per hour." }), { status: 429 });
   }
 
-  // Load user's AI key (works with Groq OR Gemini  whatever they set in Settings)
-  const { data: profileRaw } = await supabase
-    .from("profiles").select("ai_api_key").eq("user_id", user.id).single()
-  const profile = profileRaw as { ai_api_key?: string | null } | null
-  const aiKey = profile?.ai_api_key || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY || ""
+  // AI key comes from the server-side rotating pool — users no longer
+  // supply their own keys. If the entire pool is in cool-down, getAiKey()
+  // still returns the least-stale option so we don't 503 on a brief blip.
+  const aiKey = getAiKey()
 
   const encoder = new TextEncoder()
   const stream = new TransformStream()
@@ -375,7 +375,7 @@ export async function POST(req: Request) {
         writer.close(); return
       }
       if (!aiKey) {
-        send({ type: "error", message: "Add your AI API key in Settings (Groq or Gemini) to search by company." })
+        send({ type: "error", message: "AI service is temporarily unavailable. Please try again in a moment." })
         writer.close(); return
       }
 

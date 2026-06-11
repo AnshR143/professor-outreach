@@ -343,10 +343,34 @@ function deobfuscate(text: string): string {
   return text
     .replace(/\s*\[\s*at\s*\]\s*/gi, "@")
     .replace(/\s*\(\s*at\s*\)\s*/gi, "@")
+    .replace(/\s*\{\s*at\s*\}\s*/gi, "@")
     .replace(/\s+at\s+/gi, "@")
     .replace(/\s*\[\s*dot\s*\]\s*/gi, ".")
     .replace(/\s*\(\s*dot\s*\)\s*/gi, ".")
+    .replace(/\s*\{\s*dot\s*\}\s*/gi, ".")
     .replace(/\s+dot\s+/gi, ".")
+    .replace(/&#0?64;/g, "@")
+    .replace(/&#0?46;/g, ".")
+}
+
+/**
+ * Harvest emails hidden in mailto: hrefs from the RAW html. This matters:
+ * htmlToText strips tags, so `<a href="mailto:jdoe@uni.edu">Email me</a>`
+ * loses the address entirely. Many faculty pages ONLY expose the email this
+ * way.
+ */
+function extractMailtoEmails(html: string): string[] {
+  const out: string[] = []
+  const re = /mailto:([^"'?\s>\\]+)/gi
+  let m: RegExpExecArray | null
+  while ((m = re.exec(html)) !== null) {
+    let raw = m[1]
+    try { raw = decodeURIComponent(raw) } catch { /* keep raw */ }
+    EMAIL_RE.lastIndex = 0
+    const e = raw.match(EMAIL_RE)?.[0]?.toLowerCase()
+    if (e) out.push(e)
+  }
+  return out
 }
 
 function getTitle(html: string): string {
@@ -378,6 +402,22 @@ export function extractCandidates(html: string, pageUrl: string): EmailCandidate
       snippet: text.slice(start, end),
       position: m.index,
     })
+  }
+
+  // mailto: links from the raw HTML — these are stripped out by htmlToText,
+  // so without this pass we miss every "Email me" button on faculty pages.
+  for (const e of extractMailtoEmails(html)) {
+    if (seen.has(e)) continue
+    seen.add(e)
+    if (/\.(png|jpg|jpeg|gif|svg|css|js|ico|woff2?|ttf)$/i.test(e)) continue
+    // Use surrounding plain text near the local-part if present, else title.
+    const local = e.split("@")[0]
+    const idx = text.toLowerCase().indexOf(local)
+    const snippet =
+      idx >= 0
+        ? text.slice(Math.max(0, idx - 200), Math.min(text.length, idx + 200))
+        : `mailto link on page: ${title}`
+    out.push({ email: e, pageUrl, pageTitle: title, snippet, position: idx >= 0 ? idx : 0 })
   }
   return out
 }

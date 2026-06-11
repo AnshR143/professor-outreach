@@ -33,7 +33,6 @@ export default function OnboardingPage() {
     goals: [] as string[],
     resumeUrl: "",
     resumeText: "",
-    apiKey: "",
   })
 
   const supabase = createClient()
@@ -90,9 +89,6 @@ export default function OnboardingPage() {
       onboarding_complete: true,
       updated_at: new Date().toISOString(),
     }
-    if (form.apiKey.trim()) {
-      profileData.ai_api_key = form.apiKey.trim()
-    }
 
     const { error } = await supabase.from("profiles").upsert(profileData, { onConflict: "user_id" })
 
@@ -133,7 +129,7 @@ export default function OnboardingPage() {
 
         {/* Progress Bar */}
         <div style={{ display: "flex", gap: 8, marginBottom: 40 }}>
-          {[1, 2, 3, 4, 5].map(s => (
+          {[1, 2, 3, 4].map(s => (
             <div key={s} style={{ flex: 1, height: 6, borderRadius: 3, background: s <= step ? "#304674" : "#e2e8f0", transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }} />
           ))}
         </div>
@@ -241,83 +237,6 @@ export default function OnboardingPage() {
           )}
 
           {step === 4 && (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#0f172a", margin: "0 0 24px" }}>AI API Key</h2>
-
-              <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#0369a1", marginBottom: 20 }}>
-                <strong>Used to generate personalized emails.</strong> Your key is stored securely server-side and never sent to your browser.
-              </div>
-
-              <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle as any}>Paste your API key</label>
-                <input
-                  type="text"
-                  value={form.apiKey}
-                  onChange={e => setForm(f => ({ ...f, apiKey: e.target.value }))}
-                  placeholder="gsk_... · sk-or-... · csk-... · xai-... · pplx-..."
-                  autoComplete="one-time-code"
-                  style={inputStyle}
-                />
-              </div>
-
-              <div style={{ marginBottom: 28 }}>
-                <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-                  Supported providers — click to get a key:
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                  {[
-                    { name: "Groq", badge: "gsk_...", free: true, url: "https://console.groq.com/keys" },
-                    { name: "OpenRouter", badge: "sk-or-...", free: true, url: "https://openrouter.ai/keys" },
-                    { name: "Cerebras", badge: "csk-...", free: true, url: "https://cloud.cerebras.ai" },
-                    { name: "xAI (Grok)", badge: "xai-...", free: false, url: "https://console.x.ai" },
-                    { name: "Perplexity", badge: "pplx-...", free: false, url: "https://www.perplexity.ai/settings/api" },
-                    { name: "Fireworks AI", badge: "fw-...", free: true, url: "https://fireworks.ai/account/api-keys" },
-                    { name: "OpenAI", badge: "sk-...", free: false, url: "https://platform.openai.com/api-keys" },
-                    { name: "Anthropic", badge: "sk-ant-...", free: false, url: "https://console.anthropic.com/settings/keys" },
-                  ].map(p => (
-                    <a
-                      key={p.name}
-                      href={p.url}
-                      target="_blank"
-                      rel="noopener"
-                      style={{
-                        display: "flex", alignItems: "center", justifyContent: "space-between",
-                        padding: "7px 10px", background: "#f8fafc",
-                        border: "1px solid #e2e8f0", borderRadius: 7,
-                        textDecoration: "none", gap: 6,
-                      }}
-                    >
-                      <div>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a" }}>{p.name}</div>
-                        <div style={{ fontSize: 11, color: "#94a3b8", fontFamily: "monospace" }}>{p.badge}</div>
-                      </div>
-                      <span style={{
-                        fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 4,
-                        background: p.free ? "#dcfce7" : "#f1f5f9",
-                        color: p.free ? "#15803d" : "#64748b",
-                        whiteSpace: "nowrap",
-                      }}>
-                        {p.free ? "FREE" : "PAID"}
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ display: "flex", gap: 12 }}>
-                <button onClick={() => setStep(3)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Back</button>
-                <button onClick={() => setStep(5)}
-                  style={{ flex: 2, padding: 14, background: "#304674", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
-                  Almost There
-                </button>
-              </div>
-              <button onClick={() => setStep(5)} style={{ width: "100%", marginTop: 16, background: "none", border: "none", color: "#94a3b8", fontSize: 13, cursor: "pointer", textDecoration: "underline", textAlign: "center" }}>
-                Skip for now
-              </button>
-            </motion.div>
-          )}
-
-          {step === 5 && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}>
               <div style={{ textAlign: "center", padding: "20px 0" }}>
                 <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#dcfce7", color: "#22c55e", display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
@@ -330,7 +249,7 @@ export default function OnboardingPage() {
                 </p>
 
                 <div style={{ display: "flex", gap: 12 }}>
-                  <button onClick={() => setStep(4)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Review</button>
+                  <button onClick={() => setStep(3)} style={{ flex: 1, padding: 14, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer" }}>Review</button>
                   <button onClick={handleFinish} disabled={loading}
                     style={{ flex: 2, padding: 14, background: "#304674", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: "pointer", boxShadow: "0 4px 12px rgba(48, 70, 116,0.3)" }}>
                     {loading ? "Finalizing..." : "Enter Dashboard →"}
@@ -344,4 +263,3 @@ export default function OnboardingPage() {
     </div>
   )
 }
-

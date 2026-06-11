@@ -515,9 +515,6 @@ export default function InternshipDetailClient({ contact: initial, emails: initi
             {genError && (
               <div style={{ background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#dc2626", marginBottom: 14 }}>
                 {genError}
-                {(genError.toLowerCase().includes("key") || genError.toLowerCase().includes("api")) && (
-                  <span> <a href="/settings" style={{ color: "#dc2626", fontWeight: 600 }}>Add your API key in Settings.</a></span>
-                )}
               </div>
             )}
 

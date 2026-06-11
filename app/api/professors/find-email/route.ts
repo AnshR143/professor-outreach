@@ -1,5 +1,6 @@
-import { createClient, createServiceClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { isGeminiKey } from "@/lib/ai/detect-key"
+import { getAiKey } from "@/lib/ai/key-pool"
 import { callAI } from "@/lib/ai/call"
 import {
   pickBestProfessorEmail,
@@ -9,6 +10,7 @@ import {
   computeGroundedConfidence,
   type PageInput,
 } from "@/lib/email/professor-extractor"
+import { domainAcceptsMail, patternGuess } from "@/lib/email/verify"
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -20,9 +22,15 @@ async function fetchPage(url: string, timeoutMs = 8000): Promise<string> {
     const res = await fetch(url, {
       signal: ctrl.signal,
       headers: {
+        // A realistic browser UA matters: Bing/DDG serve empty pages or
+        // captchas to anything that self-identifies as a bot from a
+        // datacenter IP — which is exactly where this code runs.
         "User-Agent":
-          "Mozilla/5.0 (compatible; InternLink/1.0; +https://internlink.app)",
-        Accept: "text/html,application/xhtml+xml",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Upgrade-Insecure-Requests": "1",
       },
     })
     clearTimeout(t)
@@ -301,8 +309,14 @@ async function scrapeDuckDuckGo(
   universityDomain: string
 ): Promise<PageInput[]> {
   const query = encodeURIComponent(`${name} ${university} email`)
-  const seedUrl = `https://html.duckduckgo.com/html/?q=${query}`
-  const seedHtml = await fetchPage(seedUrl)
+  // html.duckduckgo.com rate-limits hard; lite.duckduckgo.com is a simpler
+  // endpoint that often still answers when the html one refuses.
+  let seedUrl = `https://html.duckduckgo.com/html/?q=${query}`
+  let seedHtml = await fetchPage(seedUrl)
+  if (!seedHtml) {
+    seedUrl = `https://lite.duckduckgo.com/lite/?q=${query}`
+    seedHtml = await fetchPage(seedUrl)
+  }
   if (!seedHtml) return []
 
   // Extract result links and follow the few that point at an academic-looking
@@ -361,9 +375,14 @@ async function scrapeBing(
   university: string,
   universityDomain: string
 ): Promise<PageInput[]> {
+  // NOTE: don't exact-quote the university — "Harvard University" misses
+  // pages that say "Harvard Graduate School of Education". The site: query
+  // is the strongest one: it lands directly on the faculty profile, which
+  // also covers department subdomains (gse.harvard.edu etc.).
   const queries = [
-    `"${name}" "${university}" email`,
-    `"${name}" ${university} contact site:${universityDomain}`,
+    `"${name}" ${university} email`,
+    `"${name}" site:${universityDomain}`,
+    `"${name}" email site:${universityDomain}`,
     `"${name}" professor email`,
   ]
   const out: PageInput[] = []
@@ -407,6 +426,50 @@ async function scrapeBing(
       }
     })
   }
+  return out
+}
+
+/**
+ * Mojeek — independent index, no captcha wall, tolerant of server-side
+ * fetches. A third engine matters because Bing and DDG both rate-limit
+ * datacenter IPs; with three engines at least one usually answers.
+ */
+async function scrapeMojeek(
+  name: string,
+  university: string,
+  universityDomain: string
+): Promise<PageInput[]> {
+  const query = encodeURIComponent(`"${name}" ${university} email`)
+  const seedUrl = `https://www.mojeek.com/search?q=${query}`
+  const seedHtml = await fetchPage(seedUrl)
+  if (!seedHtml) return []
+
+  const academicHints = [
+    universityDomain,
+    ".edu", ".ac.uk", ".ac.jp", ".ac.in", ".ac.kr", ".ac.il", ".ac.at", ".ac.nz",
+    ".edu.cn", ".edu.au", ".edu.sg", ".edu.hk",
+    ".uni-", ".ethz.ch", ".epfl.ch", ".mpg.de", ".inria.fr",
+  ]
+  const urlMatches = seedHtml.match(/href="(https?:\/\/[^"]+)"/g) || []
+  const resultUrls = Array.from(
+    new Set(
+      urlMatches
+        .map((m) => m.replace('href="', "").replace('"', ""))
+        .filter(
+          (u) =>
+            !u.includes("mojeek.com") &&
+            academicHints.some((h) => u.includes(h))
+        )
+    )
+  ).slice(0, 4)
+
+  const pages = await Promise.allSettled(resultUrls.map((u) => fetchPage(u)))
+  const out: PageInput[] = [{ url: seedUrl, html: seedHtml }]
+  pages.forEach((r, i) => {
+    if (r.status === "fulfilled" && r.value) {
+      out.push({ url: resultUrls[i], html: r.value })
+    }
+  })
   return out
 }
 
@@ -495,21 +558,11 @@ export async function POST(req: Request) {
     })
   }
 
-  const supabase = await createServiceClient()
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("ai_api_key")
-    .eq("user_id", user.id)
-    .single()
-  const aiKey =
-    (profile as any)?.ai_api_key ||
-    process.env.GEMINI_API_KEY ||
-    process.env.GROQ_API_KEY
-
+  const aiKey = getAiKey()
   if (!aiKey) {
     return new Response(
-      JSON.stringify({ error: "No AI API key found. Add one in Settings." }),
-      { status: 400 }
+      JSON.stringify({ error: "AI service is temporarily unavailable. Please try again in a moment." }),
+      { status: 503 }
     )
   }
 
@@ -520,12 +573,13 @@ export async function POST(req: Request) {
     // in parallel. Bing is the most reliable SERP we can scrape; we also
     // follow its top academic-looking results to load the actual profile
     // pages where the email lives.
-    const [uniPages, ddgPages, bingPages] = await Promise.all([
+    const [uniPages, ddgPages, bingPages, mojeekPages] = await Promise.all([
       scrapeUniversityPages(researcherName, university),
       scrapeDuckDuckGo(researcherName, university, expectedDomain),
       scrapeBing(researcherName, university, expectedDomain),
+      scrapeMojeek(researcherName, university, expectedDomain),
     ])
-    const pages: PageInput[] = [...uniPages, ...ddgPages, ...bingPages]
+    const pages: PageInput[] = [...uniPages, ...ddgPages, ...bingPages, ...mojeekPages]
 
     // Step 3: Run the rule-based + AI verification pipeline.
     const pick = await pickBestProfessorEmail({
@@ -557,6 +611,10 @@ export async function POST(req: Request) {
     // that the email be a *plausible* university address and not a generic
     // mailbox — then defer to the AI verifier for the final yes/no.
     const ai = await aiSearchEmail(aiKey, researcherName, university, areas)
+    // Reject hallucinated addresses on domains that can't even receive mail.
+    if (ai.email && !(await domainAcceptsMail(ai.email.split("@")[1] || ""))) {
+      ai.email = ""
+    }
     if (ai.email) {
       const lower = ai.email.toLowerCase()
       // Try strict check first; if that fails, fall back to the looser one
@@ -639,6 +697,26 @@ export async function POST(req: Request) {
         }),
         { headers: { "Content-Type": "application/json" } }
       )
+    }
+
+    // Step 6: last resort — pattern guess on the university's domain.
+    // Only fires when the domain actually accepts mail (MX check), and is
+    // clearly labelled so the UI shows it as a guess, never a verified find.
+    if (expectedDomain) {
+      const guess = await patternGuess(researcherName, expectedDomain, { academic: true })
+      if (guess) {
+        return new Response(
+          JSON.stringify({
+            email: guess.best,
+            source: "pattern_guess",
+            confidence: 20,
+            evidence: `No published address found; this is the most common .edu pattern for ${expectedDomain} (domain verified to accept mail).`,
+            alternatives: guess.alternatives,
+            score: 0,
+          }),
+          { headers: { "Content-Type": "application/json" } }
+        )
+      }
     }
 
     return new Response(

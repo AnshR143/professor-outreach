@@ -3,6 +3,7 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import { useState, useCallback, useRef, useEffect } from "react"
 import { Map, MapMarker, MarkerContent, MarkerTooltip, MapControls, useMap } from "@/components/ui/map"
 import { createClient } from "@/lib/supabase/client"
+import { geocodeLocation as geocodeMulti } from "@/lib/maps/geocode"
 // ─── OSM helpers (client-side Overpass parsing) ───────────────────────────────
 
 interface RawBiz {
@@ -117,6 +118,16 @@ const US_LOCATIONS = [
   "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
   "Wisconsin","Wyoming",
 ]
+
+// ─── Zoom that actually fits the chosen search radius ────────────────────────
+
+function zoomForRadius(radiusM: number): number {
+  if (radiusM <= 1000) return 15
+  if (radiusM <= 2000) return 14
+  if (radiusM <= 4000) return 13
+  if (radiusM <= 7000) return 12
+  return 11.3
+}
 
 // ─── FlyTo helper  must be inside Map context ────────────────────────────────
 
@@ -233,39 +244,55 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
     )
   }, [])
 
-  // ── Client-side geocode via Nominatim ───────────────────────────────────────
+  // ── Client-side geocode: Nominatim + Photon in parallel, cross-checked ──────
 
   async function geocodeLocation(loc: string): Promise<{ lat: number; lon: number } | null> {
-    try {
-      const ctrl = new AbortController()
-      const t = setTimeout(() => ctrl.abort(), 8000)
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(loc)}&format=json&limit=1`,
-        { headers: { "User-Agent": "InternLink/1.0" }, signal: ctrl.signal }
-      )
-      clearTimeout(t)
-      const data = await res.json()
-      if (!data.length) return null
-      return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) }
-    } catch { return null }
+    const r = await geocodeMulti(loc)
+    return r ? { lat: r.lat, lon: r.lon } : null
   }
 
   // ── Client-side Overpass (tries endpoints in parallel, takes first win) ───────
 
-  async function queryOverpass(lat: number, lon: number, radiusM: number): Promise<RawBiz[]> {
-    const r = Math.min(radiusM, 10000)
-    // Include both node AND way  US cities map most businesses as ways (building polygons)
-    // "out center" returns centroid coords for ways so we can place markers
-    const q = (tag: string) =>
-      `node["${tag}"]["name"](around:${r},${lat},${lon});way["${tag}"]["name"](around:${r},${lat},${lon});`
-    const query = `[out:json][timeout:15];(${q("office")}${q("shop")}${q("craft")}${q("company")}${q("industrial")}${q("business")}node["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace|bank|post_office)$"]["name"](around:${r},${lat},${lon});way["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace|bank|post_office)$"]["name"](around:${r},${lat},${lon}););out center 100;`
+  // Industry → OSM tag selectors. Querying the right tags up front returns far
+  // more relevant businesses than fetching everything and hoping AI scoring
+  // sorts it out. Each entry is a list of Overpass attribute filters.
+  const INDUSTRY_OSM_SELECTORS: Record<string, string[]> = {
+    "Technology / Software":      ['["office"~"^(it|software|telecommunication|engineering|research|computer)$"]', '["amenity"="coworking_space"]'],
+    "Design / Creative":          ['["office"~"^(design|advertising_agency|architect|graphic_design)$"]', '["craft"~"^(photographer|printmaker|signmaker)$"]', '["shop"~"^(art|photo|frame)$"]'],
+    "Marketing / Advertising":    ['["office"~"^(advertising_agency|marketing|public_relations|newspaper)$"]'],
+    "Finance / Accounting":       ['["office"~"^(financial|accountant|insurance|tax_advisor|financial_advisor)$"]', '["amenity"="bank"]'],
+    "Healthcare / Medical":       ['["amenity"~"^(clinic|doctors|dentist|pharmacy|hospital|veterinary)$"]', '["healthcare"]'],
+    "Legal / Law":                ['["office"~"^(lawyer|notary)$"]'],
+    "Media / Journalism":         ['["office"~"^(newspaper|media|broadcaster|publisher)$"]', '["amenity"="studio"]'],
+    "Education":                  ['["amenity"~"^(school|college|university|library|language_school|music_school)$"]', '["office"~"^(educational_institution|research|tutoring)$"]'],
+    "Real Estate":                ['["office"~"^(estate_agent|property_management)$"]'],
+    "Retail / E-commerce":        ['["shop"]'],
+    "Food & Hospitality":         ['["amenity"~"^(restaurant|cafe|bar|fast_food|food_court|ice_cream)$"]', '["tourism"="hotel"]'],
+    "Architecture / Engineering": ['["office"~"^(architect|engineering|surveyor|construction_company)$"]'],
+    "Non-profit / NGO":           ['["office"~"^(ngo|association|charity|foundation|non_profit)$"]'],
+  }
 
-    const ENDPOINTS = [
-      "https://overpass-api.de/api/interpreter",
-      "https://overpass.kumi.systems/api/interpreter",
-      "https://overpass.openstreetmap.ru/api/interpreter",
-    ]
+  // Broad selectors — used for "Any" and as a fallback when a targeted query
+  // returns too few results.
+  const BROAD_OSM_SELECTORS = [
+    '["office"]', '["shop"]', '["craft"]', '["company"]',
+    '["amenity"~"^(cafe|studio|coworking|clinic|school|college|library|marketplace|bank|post_office|restaurant)$"]',
+  ]
 
+  function buildOverpassQuery(selectors: string[], lat: number, lon: number, r: number): string {
+    // `nwr` = nodes + ways + relations in one clause; `out center` returns
+    // centroid coords for ways/relations so markers can be placed.
+    const clauses = selectors.map(s => `nwr${s}["name"](around:${r},${lat},${lon});`).join("")
+    return `[out:json][timeout:15];(${clauses});out center 100;`
+  }
+
+  const OVERPASS_ENDPOINTS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+  ]
+
+  async function runOverpass(query: string): Promise<RawBiz[]> {
     // Try all endpoints in parallel, return first successful non-empty result
     const tryEndpoint = async (url: string): Promise<RawBiz[]> => {
       const ctrl = new AbortController()
@@ -291,12 +318,29 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         throw new Error("failed")
       }
     }
-
     try {
-      return await Promise.any(ENDPOINTS.map(tryEndpoint))
+      return await Promise.any(OVERPASS_ENDPOINTS.map(tryEndpoint))
     } catch {
       return []
     }
+  }
+
+  async function queryOverpass(lat: number, lon: number, radiusM: number, industryName: string): Promise<RawBiz[]> {
+    const r = Math.min(radiusM, 10000)
+    const targeted = INDUSTRY_OSM_SELECTORS[industryName]
+
+    // Industry-targeted query first (much higher relevance)…
+    let results: RawBiz[] = []
+    if (targeted) {
+      results = await runOverpass(buildOverpassQuery(targeted, lat, lon, r))
+    }
+    // …broad fallback when targeted found little (or industry is "Any").
+    if (results.length < 12) {
+      const broad = await runOverpass(buildOverpassQuery(BROAD_OSM_SELECTORS, lat, lon, r))
+      const seen = new Set(results.map(b => b.id))
+      for (const b of broad) if (!seen.has(b.id)) results.push(b)
+    }
+    return results
   }
 
   // ── Search ──────────────────────────────────────────────────────────────────
@@ -363,14 +407,6 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         }
       } else if (provider === "geoapify") {
         setStep("Searching Geoapify Places…")
-        
-        const coords = await geocodeLocation(location.trim())
-        if (!coords) {
-          setError(`Could not find "${location}".`)
-          setLoading(false)
-          return
-        }
-        setCenter([coords.lon, coords.lat])
 
         const res = await fetch("/api/maps/geoapify", {
           method: "POST",
@@ -402,22 +438,15 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             scoreReason: "Verified local business",
             industry: industry
           }))
-          .slice(0, 5)
+          .slice(0, 20)
 
         setBusinesses(results)
         if (results.length === 0) setError("No businesses found via Geoapify. Try a larger radius or different industry.")
       } else {
-        // 1. Geocode
-        const coords = await geocodeLocation(location.trim())
-        if (!coords) {
-          setError(`Could not find "${location}". Try a city name like "Chicago, IL".`)
-          return
-        }
-        setCenter([coords.lon, coords.lat])
         setStep("Fetching nearby businesses…")
 
-        // 2. Overpass (browser-side, parallel endpoints)
-        const elements = await queryOverpass(coords.lat, coords.lon, radius)
+        // 2. Overpass (browser-side, parallel endpoints, industry-targeted)
+        const elements = await queryOverpass(coords.lat, coords.lon, radius, industry)
         if (elements.length === 0) {
           setError("No businesses found in this area. Try a larger radius or different city.")
           return
@@ -476,10 +505,9 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
           .sort((a, b) => b.internScore - a.internScore)
 
         setBusinesses(results)
-      }
-
-      if (businesses.length === 0 && !error) {
-        // Wait, state update is async. We should check results length.
+        if (results.length === 0) {
+          setError("No businesses found matching the filters. Try a larger radius or lower min score.")
+        }
       }
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please check your connection and try again.")
@@ -586,8 +614,8 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
   const inp: React.CSSProperties = { width: "100%", padding: "8px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 13, color: "#0f172a", background: "#f8fafc", outline: "none", boxSizing: "border-box" }
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16 }}>
-      <div style={{ background: "#fff", borderRadius: 18, width: "100%", maxWidth: 1100, height: "88vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.22)" }}>
+    <div className="mdm-overlay" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16 }}>
+      <div className="mdm-panel" style={{ background: "#fff", borderRadius: 18, width: "100%", maxWidth: 1100, height: "88vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.22)" }}>
 
         {/* ── Header ── */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px", borderBottom: "1px solid #e2e8f0", flexShrink: 0 }}>
@@ -604,8 +632,8 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         </div>
 
         {/* ── Search bar ── */}
-        <form onSubmit={handleSearch} style={{ display: "flex", gap: 10, padding: "12px 20px", borderBottom: "1px solid #f1f5f9", background: "#fafbfc", flexShrink: 0, flexWrap: "wrap", alignItems: "flex-end" }}>
-          <div style={{ flex: "2 1 200px" }}>
+        <form className="mdm-form" onSubmit={handleSearch} style={{ display: "flex", gap: 10, padding: "12px 20px", borderBottom: "1px solid #f1f5f9", background: "#fafbfc", flexShrink: 0, flexWrap: "wrap", alignItems: "flex-end" }}>
+          <div className="mdm-field mdm-field-wide" style={{ flex: "2 1 200px" }}>
             <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>
               Location {locating && <span style={{ fontWeight: 400, color: "#94a3b8" }}>· detecting…</span>}
             </label>
@@ -625,25 +653,25 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             </div>
           </div>
 
-          <div style={{ flex: "2 1 180px" }}>
+          <div className="mdm-field mdm-field-wide" style={{ flex: "2 1 180px" }}>
             <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Industry</label>
             <select value={industry} onChange={e => setIndustry(e.target.value)} style={{ ...inp }}>
               {INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
             </select>
           </div>
 
-          <div style={{ flex: "1 1 130px" }}>
+          <div className="mdm-field" style={{ flex: "1 1 130px" }}>
             <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Radius: {(radius / 1000).toFixed(1)} km</label>
             <input type="range" min={500} max={10000} step={500} value={radius} onChange={e => setRadius(Number(e.target.value))} style={{ width: "100%", accentColor: "#304674" }} />
           </div>
 
-          <div style={{ flex: "1 1 130px" }}>
+          <div className="mdm-field" style={{ flex: "1 1 130px" }}>
             <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Min score: {minScore}/10</label>
             <input type="range" min={1} max={9} step={1} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: "100%", accentColor: "#304674" }} />
           </div>
 
           {(googleEnabled || geoapifyEnabled) && (
-            <div style={{ flex: "0 0 auto" }}>
+            <div className="mdm-field" style={{ flex: "0 0 auto" }}>
               <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Provider</label>
               <div style={{ display: "flex", background: "#f1f5f9", padding: 2, borderRadius: 8 }}>
                 {googleEnabled && (
@@ -684,8 +712,8 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
             </div>
           )}
 
-          <button type="submit" disabled={loading || !location.trim()}
-            style={{ padding: "8px 20px", background: loading ? "#b2cbde" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: 7, flexShrink: 0, height: 36 }}>
+          <button type="submit" className="mdm-search-btn" disabled={loading || !location.trim()}
+            style={{ padding: "8px 20px", background: loading ? "#b2cbde" : "#304674", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, flexShrink: 0, height: 36 }}>
             {loading ? (
               <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>Searching...</>
             ) : (
@@ -695,10 +723,10 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         </form>
 
         {/* ── Body: map + list ── */}
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <div className="mdm-body" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
 
           {/* Left: scrollable business list */}
-          <div ref={listRef} style={{ width: 320, flexShrink: 0, overflowY: "auto", borderRight: "1px solid #e2e8f0", background: "#fff" }}>
+          <div ref={listRef} className="mdm-list" style={{ width: 320, flexShrink: 0, overflowY: "auto", borderRight: "1px solid #e2e8f0", background: "#fff" }}>
             {error && (
               <div style={{ margin: 12, padding: "10px 14px", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 8, color: "#c2410c", fontSize: 13 }}>{error}</div>
             )}
@@ -797,7 +825,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
           </div>
 
           {/* Right: map */}
-          <div style={{ flex: 1, position: "relative" }}>
+          <div className="mdm-map" style={{ flex: 1, position: "relative" }}>
             {!center && !loading && (
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f4f8", zIndex: 1, flexDirection: "column", gap: 12 }}>
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -807,11 +835,11 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
             <Map
               center={center ?? [-87.6298, 41.8781]}
-              zoom={center ? 13 : 3}
+              zoom={center ? zoomForRadius(radius) : 3}
               minZoom={2}
               maxZoom={18}
             >
-              {center && <FlyToCenter center={center} zoom={13} />}
+              {center && <FlyToCenter center={center} zoom={zoomForRadius(radius)} />}
               <MapControls showZoom showLocate />
 
               {businesses.map(biz => (
@@ -833,7 +861,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
 
             {/* Selected business popup overlay */}
             {selected && (
-              <div style={{
+              <div className="mdm-popup" style={{
                 position: "absolute", bottom: 16, left: 16, right: 16, background: "#fff",
                 borderRadius: 12, padding: "14px 16px", boxShadow: "0 8px 28px rgba(0,0,0,0.16)",
                 border: "1px solid #e2e8f0", zIndex: 10, display: "flex", gap: 14, alignItems: "flex-start",
@@ -871,7 +899,7 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
       {/* Outreach Kit panel  opens after Add Contact */}
       {kitFor && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1100, padding: 16 }}>
-          <div style={{ background: "#fff", borderRadius: 14, width: "100%", maxWidth: 640, maxHeight: "85vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.28)" }}>
+          <div className="mdm-kit-panel" style={{ background: "#fff", borderRadius: 14, width: "100%", maxWidth: 640, maxHeight: "85vh", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,0.28)" }}>
             <div style={{ padding: "14px 18px", borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#304674", textTransform: "uppercase", letterSpacing: 0.5 }}>Outreach Kit</div>
@@ -947,6 +975,55 @@ export default function MapDiscoverModal({ onClose, onContactAdded }: Props) {
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .maplibregl-popup-content { padding: 0 !important; border-radius: 10px !important; box-shadow: none !important; }
         .maplibregl-popup-tip { display: none !important; }
+
+        /* ── Tablet & below: stack map above list ── */
+        @media (max-width: 900px) {
+          .mdm-body { flex-direction: column-reverse !important; }
+          .mdm-list {
+            width: 100% !important;
+            max-height: 42% !important;
+            border-right: none !important;
+            border-top: 1px solid #e2e8f0 !important;
+          }
+          .mdm-map { min-height: 0 !important; }
+          .mdm-panel { height: 92vh; height: 92dvh; }
+        }
+
+        /* ── Phone: full-screen modal, stacked form fields ── */
+        @media (max-width: 640px) {
+          .mdm-overlay { padding: 0 !important; }
+          .mdm-panel {
+            max-width: 100% !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            border-radius: 0 !important;
+          }
+          .mdm-form { padding: 10px 12px !important; gap: 8px !important; }
+          .mdm-field-wide { flex: 1 1 100% !important; }
+          .mdm-field { flex: 1 1 45% !important; min-width: 0 !important; }
+          .mdm-search-btn { flex: 1 1 100% !important; height: 42px !important; }
+          .mdm-popup {
+            left: 8px !important; right: 8px !important; bottom: 8px !important;
+            flex-wrap: wrap !important;
+            max-height: 45% !important;
+            overflow-y: auto !important;
+            padding: 12px !important;
+          }
+          .mdm-kit-panel {
+            max-width: 100% !important;
+            max-height: 100vh !important;
+            max-height: 100dvh !important;
+            height: 100vh; height: 100dvh;
+            border-radius: 0 !important;
+          }
+        }
+
+        /* iOS safe areas (notch / home indicator) */
+        @supports (padding: env(safe-area-inset-bottom)) {
+          @media (max-width: 640px) {
+            .mdm-panel { padding-bottom: env(safe-area-inset-bottom); }
+          }
+        }
       `}</style>
     </div>
   )

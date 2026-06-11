@@ -1,12 +1,14 @@
-import { createClient, createServiceClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { isGeminiKey } from "@/lib/ai/detect-key"
 import { callAI } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 import {
   extractCandidates,
   isGenericInbox,
   looksLikePersonName,
   type PageInput,
 } from "@/lib/email/professor-extractor"
+import { domainAcceptsMail, patternGuess } from "@/lib/email/verify"
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -35,9 +37,14 @@ async function fetchPage(url: string, timeoutMs = 8000): Promise<string> {
     const res = await fetch(url, {
       signal: ctrl.signal,
       headers: {
+        // Realistic browser headers — bot UAs get blank pages from search
+        // engines when running on datacenter IPs.
         "User-Agent":
-          "Mozilla/5.0 (compatible; InternLink/1.0; +https://internlink.app)",
-        Accept: "text/html,application/xhtml+xml",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Upgrade-Insecure-Requests": "1",
       },
     })
     clearTimeout(t)
@@ -151,6 +158,24 @@ function computeContactConfidence(opts: {
 }
 
 // ─── Scraper ──────────────────────────────────────────────────────────────────
+
+/**
+ * Scrape the company's OWN website — the single highest-yield source for a
+ * contact email, and previously skipped entirely (we only mined search-engine
+ * results). Team/about/contact pages routinely list staff emails or at least
+ * reveal the company's address pattern.
+ */
+async function scrapeCompanySite(domain: string): Promise<PageInput[]> {
+  if (!domain) return []
+  const paths = ["", "/contact", "/contact-us", "/about", "/about-us", "/team", "/people"]
+  const urls = paths.map((p) => `https://${domain}${p}`)
+  const results = await Promise.allSettled(urls.map((u) => fetchPage(u, 6000)))
+  const out: PageInput[] = []
+  results.forEach((r, i) => {
+    if (r.status === "fulfilled" && r.value) out.push({ url: urls[i], html: r.value })
+  })
+  return out
+}
 
 async function scrapeBing(
   name: string,
@@ -440,33 +465,24 @@ export async function POST(req: Request) {
     })
   }
 
-  const supabase = await createServiceClient()
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("ai_api_key")
-    .eq("user_id", user.id)
-    .single()
-  const aiKey =
-    (profile as any)?.ai_api_key ||
-    process.env.GEMINI_API_KEY ||
-    process.env.GROQ_API_KEY
-
+  const aiKey = getAiKey()
   if (!aiKey) {
     return new Response(
-      JSON.stringify({ error: "No AI API key found. Add one in Settings." }),
-      { status: 400 }
+      JSON.stringify({ error: "AI service is temporarily unavailable. Please try again in a moment." }),
+      { status: 503 }
     )
   }
 
   try {
     const expectedDomain = resolveCompanyDomain(website, company)
 
-    // Step 1: scrape Bing + DuckDuckGo (SERP snippets + company-domain pages).
-    const [bingPages, ddgPages] = await Promise.all([
+    // Step 1: scrape the company's own site + Bing + DuckDuckGo in parallel.
+    const [sitePages, bingPages, ddgPages] = await Promise.all([
+      scrapeCompanySite(expectedDomain),
       scrapeBing(contactName, company, expectedDomain),
       scrapeDuckDuckGo(contactName, company, expectedDomain),
     ])
-    const pages: PageInput[] = [...bingPages, ...ddgPages]
+    const pages: PageInput[] = [...sitePages, ...bingPages, ...ddgPages]
 
     // Step 2: score candidates. Strict (must match company domain) first; if
     // that finds nothing, retry loose so a corporate address on a sibling
@@ -523,6 +539,10 @@ export async function POST(req: Request) {
 
     // Step 4: AI search fallback (Gemini grounding or universal model).
     const ai = await aiSearchContactEmail(aiKey, contactName, company, role, website)
+    // Reject hallucinated addresses on domains that can't receive mail.
+    if (ai.email && !(await domainAcceptsMail(ai.email.split("@")[1] || ""))) {
+      ai.email = ""
+    }
     if (ai.email && !isGenericInbox(ai.email) && isCorporateEmail(ai.email)) {
       const lower = ai.email.toLowerCase()
       const exp = expectedDomain.toLowerCase().replace(/^www\./, "")
@@ -553,6 +573,22 @@ export async function POST(req: Request) {
         score: 0,
         domainMatch,
       })
+    }
+
+    // Step 5: last resort — pattern guess on the company domain, only if the
+    // domain accepts mail (MX check). Labelled clearly as a guess.
+    if (expectedDomain) {
+      const guess = await patternGuess(contactName, expectedDomain)
+      if (guess) {
+        return Response.json({
+          email: guess.best,
+          source: "pattern_guess",
+          confidence: 20,
+          evidence: `No published address found; this is the most common corporate pattern for ${expectedDomain} (domain verified to accept mail).`,
+          alternatives: guess.alternatives,
+          score: 0,
+        })
+      }
     }
 
     return Response.json({ email: "", source: "none", confidence: 0, alternatives: [] })

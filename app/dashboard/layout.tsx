@@ -136,8 +136,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           opacity: 1;
           max-width: 140px;
         }
+        .dash-shell {
+          display: flex;
+          height: 100vh;
+          height: 100dvh; /* mobile browsers: exclude collapsing URL bar */
+        }
       `}</style>
-      <div style={{ display: "flex", height: "100vh" }}>
+      <div className="dash-shell">
         {/* Sidebar */}
         <aside
           className={`sidebar${expanded ? " sidebar-expanded" : ""}`}

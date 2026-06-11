@@ -2,6 +2,7 @@ import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { searchAuthors, getAuthorPapers } from "@/lib/apis/semantic-scholar"
 import { NextResponse } from "next/server"
 import { callAIJson } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 // Use AI to generate plausible paper titles when Semantic Scholar has nothing
 async function generatePapersWithAI(
@@ -50,13 +51,6 @@ export async function POST(req: Request) {
 
   if (!researcher) return NextResponse.json({ error: "Researcher not found" }, { status: 404 })
 
-  const { data: profileRaw } = await supabase
-    .from("profiles")
-    .select("ai_api_key")
-    .eq("user_id", user.id)
-    .single()
-  const profile = profileRaw as { ai_api_key?: string } | null
-
   // 1. Try to resolve Semantic Scholar ID if we don't have one
   let semanticId = researcher.semantic_scholar_id
   if (!semanticId) {
@@ -98,7 +92,7 @@ export async function POST(req: Request) {
   }
 
   // 3. If still nothing, generate with AI
-  const aiKey = profile?.ai_api_key || process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
+  const aiKey = getAiKey()
   if (papers.length === 0 && aiKey) {
     const aiPapers = await generatePapersWithAI(
       researcher.name,

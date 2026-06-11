@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
 import { detectApiKey } from "@/lib/ai/detect-key"
 import { callAIJson } from "@/lib/ai/call"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 export async function POST(req: NextRequest) {
   try {
     const { location, industry, count = 15 } = await req.json()
-    const apiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
+    const apiKey = getAiKey()
 
     if (!apiKey) {
-      return NextResponse.json({ error: "Missing AI API Key" }, { status: 500 })
+      return NextResponse.json({ error: "AI service is temporarily unavailable. Please try again in a moment." }, { status: 503 })
     }
 
     const { label } = detectApiKey(apiKey)

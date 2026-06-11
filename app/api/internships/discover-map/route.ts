@@ -1,14 +1,17 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 import { detectApiKey } from "@/lib/ai/detect-key"
+import { getAiKey } from "@/lib/ai/key-pool"
+import { geocodeLocation } from "@/lib/maps/geocode"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface OverpassElement {
   type: string
   id: number
-  lat: number
-  lon: number
+  lat?: number                            // nodes
+  lon?: number
+  center?: { lat: number; lon: number }   // ways/relations (via `out center`)
   tags: Record<string, string>
 }
 
@@ -32,30 +35,25 @@ export interface DiscoveredBusiness {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-async function geocode(location: string): Promise<{ lat: number; lon: number } | null> {
-  try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`
-    const res = await fetch(url, {
-      headers: { "User-Agent": "InternLink/1.0 (internship discovery)" },
-    })
-    const data = await res.json()
-    if (!data.length) return null
-    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) }
-  } catch {
-    return null
-  }
-}
-
+// `nwr` queries nodes AND ways AND relations. US cities map most businesses
+// as ways (building polygons) — node-only queries miss the majority of them.
+// `out center` adds centroid coords for ways/relations so we can place markers.
 function buildOverpassQuery(lat: number, lon: number, radiusM: number): string {
   return `[out:json][timeout:25];
 (
-  node["office"]["name"](around:${radiusM},${lat},${lon});
-  node["shop"]["name"](around:${radiusM},${lat},${lon});
-  node["amenity"~"^(restaurant|cafe|bar|studio|coworking|gym|salon|clinic|pharmacy|school|college|library|marketplace)$"]["name"](around:${radiusM},${lat},${lon});
-  node["craft"]["name"](around:${radiusM},${lat},${lon});
-  node["company"]["name"](around:${radiusM},${lat},${lon});
+  nwr["office"]["name"](around:${radiusM},${lat},${lon});
+  nwr["shop"]["name"](around:${radiusM},${lat},${lon});
+  nwr["amenity"~"^(restaurant|cafe|bar|studio|coworking|gym|salon|clinic|pharmacy|school|college|library|marketplace)$"]["name"](around:${radiusM},${lat},${lon});
+  nwr["craft"]["name"](around:${radiusM},${lat},${lon});
+  nwr["company"]["name"](around:${radiusM},${lat},${lon});
 );
-out body 80;`
+out center 120;`
+}
+
+function elementCoords(el: OverpassElement): { lat: number; lon: number } | null {
+  if (el.lat != null && el.lon != null) return { lat: el.lat, lon: el.lon }
+  if (el.center?.lat != null) return { lat: el.center.lat, lon: el.center.lon }
+  return null
 }
 
 function osmTagToType(tags: Record<string, string>): string {
@@ -157,8 +155,6 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-    const { data: profile } = await supabase.from("profiles").select("ai_api_key").eq("user_id", user.id).single() as { data: { ai_api_key: string | null } | null }
-
     const body = await request.json()
     const {
       location,
@@ -171,8 +167,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Location is required" }, { status: 400 })
     }
 
-    // 1. Geocode location
-    const coords = await geocode(location)
+    // 1. Geocode location (Nominatim with Photon fallback + cross-check)
+    const coords = await geocodeLocation(location)
     if (!coords) {
       return NextResponse.json({ error: `Could not find location: "${location}"` }, { status: 400 })
     }
@@ -180,8 +176,8 @@ export async function POST(request: Request) {
     // 2. Query Overpass API for nearby businesses (try multiple endpoints)
     const OVERPASS_ENDPOINTS = [
       "https://overpass-api.de/api/interpreter",
+      "https://overpass.private.coffee/api/interpreter",
       "https://overpass.kumi.systems/api/interpreter",
-      "https://overpass.openstreetmap.ru/api/interpreter",
     ]
     const query = buildOverpassQuery(coords.lat, coords.lon, Math.min(radius, 10000))
     let elements: OverpassElement[] = []
@@ -200,7 +196,7 @@ export async function POST(request: Request) {
         clearTimeout(timer)
         if (!ovRes.ok) continue
         const ovData: OverpassResponse = await ovRes.json()
-        elements = ovData.elements?.filter(el => el.tags?.name) || []
+        elements = ovData.elements?.filter(el => el.tags?.name && elementCoords(el)) || []
         overpassOk = true
         break
       } catch {
@@ -232,8 +228,8 @@ export async function POST(request: Request) {
       address: buildAddress(el.tags),
     }))
 
-    // 4. Score with AI
-    const apiKey = profile?.ai_api_key || process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY
+    // 4. Score with AI (key from the shared rotating pool)
+    const apiKey = getAiKey()
     let scores: { score: number; reason: string; industry: string }[] = forScoring.map(() => ({ score: 5, reason: "Local business", industry }))
 
     if (apiKey) {
@@ -254,8 +250,8 @@ export async function POST(request: Request) {
       .map((el, i) => ({
         id: String(el.id),
         name: el.tags.name,
-        lat: el.lat,
-        lon: el.lon,
+        lat: elementCoords(el)!.lat,
+        lon: elementCoords(el)!.lon,
         type: osmTagToType(el.tags),
         address: buildAddress(el.tags),
         website: el.tags.website || el.tags["contact:website"] || null,
@@ -271,6 +267,7 @@ export async function POST(request: Request) {
       businesses,
       center: [coords.lon, coords.lat],
       total: businesses.length,
+      matchedLocation: coords.displayName,
     })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error"
@@ -278,4 +275,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Discovery failed: " + message }, { status: 500 })
   }
 }
-

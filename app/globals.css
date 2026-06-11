@@ -36,6 +36,64 @@ body {
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+/* ──────────────────────────────────────────────────────────────────────── */
+/*  Global UI polish                                                        */
+/* ──────────────────────────────────────────────────────────────────────── */
+
+/* Text selection in brand color */
+::selection { background: #c6d3e3; color: #0f172a; }
+
+/* No grey tap flash on mobile */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* Numbers line up in KPIs, stats and tables */
+body { font-variant-numeric: tabular-nums; }
+
+/* Keyboard focus is visible even where inline styles set outline:none */
+:focus-visible {
+  outline: 2px solid #304674 !important;
+  outline-offset: 2px;
+}
+
+/* Inputs: consistent brand-colored focus + smooth transition.
+   Most inputs in the app set outline:none inline — this restores a clear
+   focus state without touching every component. */
+input, select, textarea {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #304674 !important;
+  box-shadow: 0 0 0 3px rgba(48, 70, 116, 0.14) !important;
+  outline: none !important;
+}
+input[type="range"]:focus { box-shadow: none !important; }
+::placeholder { color: #94a3b8; opacity: 1; }
+
+/* Chrome autofill: keep our background instead of yellow */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #f8fafc inset;
+  -webkit-text-fill-color: #0f172a;
+}
+
+/* Buttons & links: smooth color changes, subtle press feedback */
+button, a {
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+              box-shadow 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+button:not(:disabled):active { transform: translateY(1px); }
+button:disabled { cursor: not-allowed; }
+
+/* Respect users who turn off animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @keyframes from-left {
   0%   { z-index: 20; opacity: 0; translate: -20px -6px; }
   20%  { z-index: 10; opacity: 1; translate: 0px 0px; }
@@ -72,9 +130,19 @@ img, video, svg { max-width: 100%; }
    (e.g. `repeat(4` rather than `grid-template-columns: repeat(4, 1fr)`).
    This is whitespace-tolerant and keeps the targeting precise. */
 
+/* ── Laptop: ≤1280px — 5-up KPI rows get cramped ────────────────────────── */
+@media (max-width: 1280px) {
+  [style*="repeat(5, 1fr)"],
+  [style*="repeat(5,1fr)"] {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
 /* ── Tablet: ≤900px ─────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  /* 4-up KPI grids → 2-up */
+  /* 5-up / 4-up KPI grids → 2-up */
+  [style*="repeat(5, 1fr)"],
+  [style*="repeat(5,1fr)"],
   [style*="repeat(4, 1fr)"],
   [style*="repeat(4,1fr)"] {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -140,24 +208,15 @@ img, video, svg { max-width: 100%; }
     max-width: 100% !important;
     width: 100% !important;
     max-height: 100vh !important;
+    max-height: 100dvh !important;
     height: 100vh !important;
+    height: 100dvh !important;
     border-radius: 0 !important;
   }
 
-  /* MapDiscoverModal split (left list + right map): stack vertically. */
-  [style*="320"][style*="overflow"][style*="border-right"],
-  [style*="width: 320"] {
-    width: 100% !important;
-    max-height: 240px !important;
-    border-right: none !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    flex-shrink: 1 !important;
-  }
-  /* And put the modal body in column flow */
-  [style*="display: flex"][style*="flex: 1"][style*="overflow: hidden"],
-  [style*="display:flex"][style*="flex: 1"][style*="overflow:hidden"] {
-    flex-direction: column !important;
-  }
+  /* MapDiscoverModal layout is handled by its own .mdm-* classes —
+     see MapDiscoverModal.tsx. (The old attribute-selector overrides for it
+     were removed; they conflicted with the class-based rules.) */
 
   /* Hero banner — slimmer */
   [style*="height: 160"] { height: auto !important; min-height: 130px !important; }
@@ -191,14 +250,20 @@ img, video, svg { max-width: 100%; }
   /* Selected-business floating popup at bottom of map — cap height & wrap */
   [style*="position: absolute"][style*="bottom: 16"][style*="left: 16"] {
     max-height: 50vh !important;
+    max-height: 50dvh !important;
     overflow-y: auto !important;
     flex-wrap: wrap !important;
     gap: 8px !important;
   }
+
+  /* Tap targets: keep range sliders usable with thumbs */
+  input[type="range"] { min-height: 28px; }
 }
 
 /* ── Very small: ≤380px ─────────────────────────────────────────────────── */
 @media (max-width: 380px) {
+  [style*="repeat(5, 1fr)"],
+  [style*="repeat(5,1fr)"],
   [style*="repeat(4, 1fr)"],
   [style*="repeat(4,1fr)"] {
     grid-template-columns: 1fr !important;

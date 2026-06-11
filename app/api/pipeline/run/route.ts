@@ -4,12 +4,13 @@ import { scrapeWebsite } from "@/lib/maps/scraper"
 import { scoreLead } from "@/lib/maps/lead-score"
 import { analyzeReviews } from "@/lib/ai/review-analysis"
 import { mapWithLimit } from "@/lib/maps/cache"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 export async function POST(req: NextRequest) {
   try {
     const { lat, lng, radius, keyword, type, maxResults = 15 } = await req.json()
     const mapsApiKey = process.env.GOOGLE_MAPS_API_KEY
-    const aiApiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
+    const aiApiKey = getAiKey()
 
     if (!mapsApiKey) {
       return NextResponse.json({ error: "Missing GOOGLE_MAPS_API_KEY" }, { status: 500 })

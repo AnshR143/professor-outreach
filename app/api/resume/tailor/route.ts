@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { tailorResume } from "@/lib/ai/resume-tailor"
+import { getAiKey } from "@/lib/ai/key-pool"
 
 export async function POST(req: NextRequest) {
   try {
     const { resume, companyContext } = await req.json()
-    const aiApiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY
+    const aiApiKey = getAiKey()
 
     if (!resume) {
       return NextResponse.json({ error: "Missing resume text" }, { status: 400 })

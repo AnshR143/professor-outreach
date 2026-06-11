@@ -37,8 +37,9 @@ export async function POST(req: NextRequest) {
     const categories = INDUSTRY_CATEGORIES[keyword] || INDUSTRY_CATEGORIES["Any"]
 
     // Geoapify expects: circle:lon,lat,radius_in_meters. Cap radius at 50km (API limit).
+    // bias=proximity ranks closer places first; limit 20 gives a real result set.
     const r = Math.min(Math.max(Math.round(radius), 100), 50000)
-    const url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${lon},${lat},${r}&limit=5&apiKey=${apiKey}`
+    const url = `https://api.geoapify.com/v2/places?categories=${categories}&filter=circle:${lon},${lat},${r}&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`
 
     const res = await fetch(url)
     const text = await res.text()
