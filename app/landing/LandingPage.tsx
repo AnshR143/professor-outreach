@@ -96,7 +96,7 @@ function UniversityMarquee() {
   const posRef   = useRef(0)
   const speedRef = useRef(1)
   const hoveredRef = useRef(false)
-  const rafRef   = useRef<number>()
+  const rafRef   = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     const track = trackRef.current
@@ -288,10 +288,10 @@ function SectionCarousel({ ySlow, yReverse, isMobile }: { ySlow: any, yReverse: 
     <div id="carousel" className="py-12 md:py-20 lg:py-24 flex flex-col items-center justify-center relative min-h-[100vh]" style={{ background: "linear-gradient(180deg, #d8e1e8 0%, #c6d3e3 60%, #d8e1e8 100%)" }}>
       {/* Internal carousel clouds — stay within section */}
       <div style={{ pointerEvents: "none", position: "absolute", inset: 0, zIndex: 25, overflow: "visible" }}>
-        <motion.img src="/cloud-4.png" animate={{ x: [0, 20, 0] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        <motion.img src="/cloud-4.png" alt="" loading="lazy" decoding="async" animate={{ x: [0, 20, 0] }} transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
           className="hidden sm:block absolute top-[-18%] left-[2%] w-[500px] opacity-50 pointer-events-none"
           style={{ willChange: "transform", y: ySlow }} />
-        <motion.img src="/cloud-2.png" animate={{ x: [0, -25, 0] }} transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+        <motion.img src="/cloud-2.png" alt="" loading="lazy" decoding="async" animate={{ x: [0, -25, 0] }} transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
           className="hidden sm:block absolute bottom-[30%] right-[2%] w-[520px] opacity-65 pointer-events-none scale-x-[-1]"
           style={{ willChange: "transform", y: yReverse }} />
         <div style={{ position: "absolute", top: "0%", left: "-10%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle,rgba(152,186,213,0.35) 0%,transparent 70%)" }} />
@@ -389,10 +389,23 @@ export default function LandingPage() {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), orientation: "vertical", gestureOrientation: "vertical", smoothWheel: true, smoothTouch: false })
+    const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), orientation: "vertical", gestureOrientation: "vertical", smoothWheel: true })
     function raf(time: number) { lenis.raf(time); requestAnimationFrame(raf) }
     requestAnimationFrame(raf)
-    return () => { lenis.destroy(); window.removeEventListener('resize', checkMobile) }
+
+    // Route in-page anchors ("See how it works" → #carousel) through Lenis
+    // so they glide instead of fighting the smooth-scroll loop.
+    const onAnchorClick = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest?.('a[href^="#"]') as HTMLAnchorElement | null
+      if (!a) return
+      const el = document.querySelector(a.getAttribute("href") || "")
+      if (el) {
+        e.preventDefault()
+        lenis.scrollTo(el as HTMLElement, { offset: -16, duration: 1.4 })
+      }
+    }
+    document.addEventListener("click", onAnchorClick)
+    return () => { lenis.destroy(); window.removeEventListener('resize', checkMobile); document.removeEventListener("click", onAnchorClick) }
   }, [])
 
   useEffect(() => {
@@ -453,20 +466,20 @@ export default function LandingPage() {
       ─────────────────────────────────────────────────────────────── */}
       <div style={{ position: "absolute", inset: 0, zIndex: 150, pointerEvents: "none", overflow: "visible" }}>
         {/* Cloud between See how it works and Marquee — right side */}
-        <motion.img src="/cloud-3.png"
+        <motion.img src="/cloud-3.png" alt="" loading="lazy" decoding="async"
           className="hidden md:block absolute w-[300px] opacity-60"
           style={{ top: "60vh", right: "5%", willChange: "transform", y: yMed }}
           animate={{ x: [0, -10, 0] }} transition={{ duration: 12, repeat: Infinity }} />
 
         {/* Above marquee — right side */}
-        <motion.img src="/cloud-4.png"
+        <motion.img src="/cloud-4.png" alt="" loading="lazy" decoding="async"
           className="hidden md:block absolute w-[420px] opacity-75"
           style={{ top: "calc(100vh - 160px)", right: "-20px", willChange: "transform", zIndex: 160, y: yFast }}
           animate={{ x: [0, -18, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
 
 
         {/* Cloud at the bottom — brought up (offset increased to account for testimonials section) */}
-        <motion.img src="/cloud-1.png"
+        <motion.img src="/cloud-1.png" alt="" loading="lazy" decoding="async"
           className="hidden md:block absolute w-[550px] opacity-60"
           style={{ bottom: "1080px", right: "-2%", willChange: "transform", y: yReverse }}
           animate={{ x: [0, 15, 0] }} transition={{ duration: 14, repeat: Infinity }} />
@@ -513,13 +526,13 @@ export default function LandingPage() {
         background: "radial-gradient(ellipse at 50% 50%, rgba(48,70,116,0.6) 0%, transparent 70%), #0a0f1e",
         padding: "120px 40px", display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        <video ref={ctaVideoRef} muted loop playsInline preload="auto"
+        <video ref={ctaVideoRef} muted loop playsInline preload="metadata"
           className="cta-bg-video"
           style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.7, zIndex: 0, pointerEvents: "none" }}
           src="/videos/2ndvideo.mp4" />
         
         {/* Cloud to the left of the wolf — scroll parallax, opposing drift */}
-        <motion.img src="/cloud-3.png"
+        <motion.img src="/cloud-3.png" alt="" loading="lazy" decoding="async"
           className="hidden lg:block absolute left-[-2%] top-[15%] w-[480px] opacity-70"
           style={{ willChange: "transform", zIndex: 210, y: reduceMotion ? 0 : ctaCloudY }}
           animate={{ x: [0, 15, 0] }} transition={{ duration: 14, repeat: Infinity }} />
@@ -530,7 +543,7 @@ export default function LandingPage() {
           style={{ width: "min(500px, 60vw)", position: "relative", flexShrink: 0, zIndex: 1, margin: "0 auto", willChange: "transform" }}>
           {/* Wrapper div holds the shadow so filter is NOT on the animated element — prevents GPU compositing box artifact */}
           <div className="wolf-shadow-wrap" style={{ filter: "drop-shadow(0 20px 60px rgba(0,0,0,0.4))" }}>
-            <img src="/husky.png.png" alt="InternLink Guide" style={{ width: "100%", height: "auto", display: "block" }} />
+            <img src="/husky.png.png" alt="InternLink Guide" loading="lazy" decoding="async" style={{ width: "100%", height: "auto", display: "block" }} />
           </div>
           <div className="landing-wolf-text" style={{ position: "absolute", top: "62%", left: "50%", transform: "translate(-50%, -50%)", width: "65%", textAlign: "center", pointerEvents: "auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
             <p style={{ fontSize: "clamp(14px, 2.2vw, 26px)", fontWeight: 900, color: "#304674", lineHeight: 1.1, margin: 0, letterSpacing: "-0.03em" }}>Ready to start?</p>
@@ -559,7 +572,9 @@ export default function LandingPage() {
           <span style={{ fontSize: 14, fontWeight: 700, color: "#304674" }}>InternLink</span>
         </div>
         <p style={{ fontSize: 13, color: "#4a5568", margin: 0 }}>Built for students. Powered by AI. © 2026 InternLink.</p>
-        <div style={{ display: "flex", gap: 20 }}>
+        <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+          <Link href="/partners" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none" }}>Partnerships</Link>
+          <Link href="/contact" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none" }}>Contact</Link>
           <Link href="/privacy" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none" }}>Privacy</Link>
           <Link href="/terms" style={{ fontSize: 13, color: "#4a5568", textDecoration: "none" }}>Terms</Link>
         </div>

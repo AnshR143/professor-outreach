@@ -3,8 +3,23 @@ import "./globals.css"
 import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://internlink.net"),
   title: "InternLink | Find Professors. Send Perfect Emails.",
   description: "AI-powered professor outreach and research connection platform",
+  openGraph: {
+    title: "InternLink | Find Professors. Send Perfect Emails.",
+    description: "AI-powered professor outreach and internship discovery for students. Find contacts, generate tailored cold emails, and track replies.",
+    url: "https://internlink.net",
+    siteName: "InternLink",
+    images: [{ url: "/link.png", width: 512, height: 512, alt: "InternLink logo" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "InternLink | Find Professors. Send Perfect Emails.",
+    description: "AI-powered professor outreach and internship discovery for students.",
+    images: ["/link.png"],
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },

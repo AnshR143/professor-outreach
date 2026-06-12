@@ -130,9 +130,11 @@ export function Navbar() {
       </div>
 
       {/* Mobile Toggle */}
-      <button 
+      <button
         className="md:hidden"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isMobileMenuOpen}
         style={{ background: "none", border: "none", color: "#304674", cursor: "pointer", padding: 4 }}
       >
         {isMobileMenuOpen ? <X size={28} strokeWidth={3} /> : <Menu size={28} strokeWidth={3} />}

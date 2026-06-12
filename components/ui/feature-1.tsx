@@ -126,20 +126,53 @@ export const Feature1 = ({
             </p>
           )}
 
-          {/* CTA */}
-          <Link
-            href={buttonSecondary.href}
-            style={{
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              padding: "13px 32px", borderRadius: 14,
-              background: "#fff", color: "#304674", fontWeight: 800, fontSize: 15,
-              border: "2.5px solid #304674",
-              boxShadow: "4px 4px 0px #304674",
-              textDecoration: "none",
-            }}
-          >
-            {buttonSecondary.label}
-          </Link>
+          {/* CTAs — primary (signup) + secondary (scroll to demo) */}
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+            <Link
+              href={buttonPrimary.href}
+              style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center",
+                padding: "13px 32px", borderRadius: 14,
+                background: "#304674", color: "#fff", fontWeight: 800, fontSize: 15,
+                border: "2.5px solid #0f172a",
+                boxShadow: "4px 4px 0px #0f172a",
+                textDecoration: "none",
+                transition: "transform 0.15s, box-shadow 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translate(-2px,-2px)"
+                e.currentTarget.style.boxShadow = "6px 6px 0px #0f172a"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "none"
+                e.currentTarget.style.boxShadow = "4px 4px 0px #0f172a"
+              }}
+            >
+              {buttonPrimary.label}
+            </Link>
+            <Link
+              href={buttonSecondary.href}
+              style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center",
+                padding: "13px 32px", borderRadius: 14,
+                background: "#fff", color: "#304674", fontWeight: 800, fontSize: 15,
+                border: "2.5px solid #304674",
+                boxShadow: "4px 4px 0px #304674",
+                textDecoration: "none",
+                transition: "transform 0.15s, box-shadow 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translate(-2px,-2px)"
+                e.currentTarget.style.boxShadow = "6px 6px 0px #304674"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "none"
+                e.currentTarget.style.boxShadow = "4px 4px 0px #304674"
+              }}
+            >
+              {buttonSecondary.label}
+            </Link>
+          </div>
         </motion.div>
 
         {/* RIGHT: comic browser + video */}
@@ -186,8 +219,12 @@ export const Feature1 = ({
               </div>
             ) : (
               <div
+                role="button"
+                aria-label="Play intro video"
+                tabIndex={0}
                 style={{ position: "relative", cursor: "pointer", aspectRatio: "16/9", background: "#0a0f1e" }}
                 onClick={() => setIsPlaying(true)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setIsPlaying(true) }}
               >
                 <img
                   src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
