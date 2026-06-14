@@ -122,6 +122,19 @@ const PARTNERS = [
             "300K Page Views",
         ],
     },
+    {
+        name: "FinFuture Academy",
+        logoUrl: "/finfuture-logo.png",
+        description: "A U.S.-based 501(c)(3) nonprofit rebuilding business education for the next generation of founders, operators, and investors. An execution-first learning ecosystem covering finance, entrepreneurship, and leadership through simulations, real-world case studies, and AI-powered tools.",
+        link: "https://finfutureacademy.org/",
+        color: "purple",
+        features: [
+            "501(c)(3) Nonprofit",
+            "Active in 50+ Countries",
+            "Simulation-Based Learning",
+            "Execution-First Curriculum",
+        ],
+    },
 ];
 
 function Cloud({ top, left, delay, scale = 1, src }: { top: string, left: string, delay: number, scale?: number, src: string }) {
